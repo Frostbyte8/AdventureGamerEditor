@@ -10,4 +10,9 @@ namespace EditorConstants {
     const unsigned int DirtroadStartRow     = 8;
 }
 
+namespace LanguageConstants {
+    const unsigned int FileMenuItem         = 100;
+    const unsigned int ExitMenuItem         = 101;
+}
+
 #endif // __EDITOR_CONSTANTS_H__

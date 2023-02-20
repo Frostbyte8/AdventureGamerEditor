@@ -1,5 +1,6 @@
 #include "editor_mainwindow.h"
 #include "../editor_constants.h"
+#include <stdexcept>      // std::out_of_range
 
 //=============================================================================
 // Constructors / Destructor
@@ -37,6 +38,12 @@ MainWindowFrame::~MainWindowFrame() {
 
 HWND MainWindowFrame::Create(HWND parent) {
 	SetView(*entityView);
+
+    // Until we do some parsing, we'll load the Language Map here
+
+    languageMapper[LanguageConstants::FileMenuItem] = "&File";
+    languageMapper[LanguageConstants::ExitMenuItem] = "E&xit";
+
 	return CDockFrame::Create(parent);
 }
 
@@ -53,10 +60,13 @@ void MainWindowFrame::CreateMenuBar() {
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
 
+	std::string tempStr = languageMapper.getLangString(100);
+    CStringW caption = AtoW(tempStr.c_str(), CP_UTF8);
+	
     fileMenu.AppendMenu(MF_STRING, 0, L"E&xit");
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
-                        reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), L"&File");
+                        reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
 
     SetFrameMenu(mainMenu);
 

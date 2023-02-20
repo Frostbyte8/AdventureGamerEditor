@@ -66,10 +66,10 @@ set(SOURCES
     src/gitinfo.h
 )
 
-#file(GLOB JSON_LIB
-#    src/thirdparty/jsoncpp/json/*.h
-#    src/thirdparty/jsoncpp/*.cpp
-#)
+file(GLOB JSON_LIB
+    src/thirdparty/simpleson/*.h
+    src/thirdparty/simpleson/*.cpp
+)
 
 file(GLOB INTERFACES
     src/interface/*.h
@@ -149,7 +149,7 @@ SOURCE_GROUP("model"                FILES ${DATA_MODELS})
 SOURCE_GROUP("interfaces"           FILES ${INTERFACES})
 SOURCE_GROUP("util"                 FILES ${UTIL})
 SOURCE_GROUP("resources"            FILES ${WIN32_RESOURCES})
-#SOURCE_GROUP("thirdparty/json"      FILES ${JSON_LIB})
+SOURCE_GROUP("thirdparty/simpleson" FILES ${JSON_LIB})
 SOURCE_GROUP("win32pp"              FILES ${WIN_SOURCES})
 SOURCE_GROUP("win32"                FILES ${WIN32_SOURCES})
 
@@ -231,7 +231,7 @@ if(MSVC)
         # Get the user to set the lib and include folders
         
         # Setup the executable
-        add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${WIN32_SOURCES} ${WIN32_RESOURCES} ${COMPAT} ${UTIL} ${COMPAT} ${INTERFACES} ${DATA_MODELS} ${CONTROLLERS} ${WIN_SOURCES} ${WINBUILD_SOURCES})
+        add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${WIN32_SOURCES} ${WIN32_RESOURCES} ${COMPAT} ${UTIL} ${JSON_LIB} ${COMPAT} ${INTERFACES} ${DATA_MODELS} ${CONTROLLERS} ${WIN_SOURCES} ${WINBUILD_SOURCES})
         set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "advedit")
 
         # Set the libs to link

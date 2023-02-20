@@ -7,6 +7,8 @@
 #include "editor_mainwindow_dockers.h"
 #include "../win32/window_metrics.h"
 
+#include "../util/languagemapper.h"
+
 class MainWindowFrame : public CDockFrame {
 
 	public:
@@ -31,6 +33,7 @@ class MainWindowFrame : public CDockFrame {
 		RoadSelectorDocker* roadSelectorDocker;
 		EntitiesHereDocker* entitiesHereDocker;
 
+		LanguageMapper		languageMapper;
 		WindowMetrics		windowMetrics;
 
 		// Disable copy construction and assignment operator
