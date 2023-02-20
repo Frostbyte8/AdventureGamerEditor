@@ -1,0 +1,6 @@
+{
+    "MainWindow": {
+        "FileMenuItem" = "&File",   // File Menu
+        "ExitMenuItem" = "E&xit"    // Exit Menu Item
+    }
+}

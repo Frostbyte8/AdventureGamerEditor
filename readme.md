@@ -1,0 +1,1 @@
+An editor for Adventure Gamer for Windows.
