@@ -167,3 +167,19 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	return WndProcDefault(msg, wParam, lParam);
 }
+
+//=============================================================================
+// Public Interface Functions
+//=============================================================================
+
+int MainWindowFrame::AskYesNoQuestion(const std::string& inQuestion, const std::string& inTitle, bool allowCancel) {
+
+    const CString question      = AtoW(inQuestion.c_str(), CP_UTF8);
+    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
+    const UINT messageBoxFlags  = MB_ICONQUESTION | (allowCancel ? MB_YESNOCANCEL : MB_YESNO);
+
+    const int retVal = MessageBox(question, title, messageBoxFlags);
+
+    return retVal;
+}
+
