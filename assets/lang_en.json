@@ -1,6 +1,5 @@
 {
-    "MainWindow": {
-        "FileMenuItem" = "&File",   // File Menu
-        "ExitMenuItem" = "E&xit"    // Exit Menu Item
-    }
+    "100" : "&File",    // File Menu
+    "101" : "E&xit",    // Exit Menu Item
+    "32767" : ""        // Unused
 }

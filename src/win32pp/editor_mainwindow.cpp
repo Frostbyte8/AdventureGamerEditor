@@ -1,6 +1,8 @@
 #include "editor_mainwindow.h"
 #include "../editor_constants.h"
-#include <stdexcept>      // std::out_of_range
+#include <fstream>
+#include "../thirdparty/simpleson/json.h"
+#include "../compat/std_extras_compat.h"
 
 //=============================================================================
 // Constructors / Destructor
@@ -39,10 +41,31 @@ MainWindowFrame::~MainWindowFrame() {
 HWND MainWindowFrame::Create(HWND parent) {
 	SetView(*entityView);
 
-    // Until we do some parsing, we'll load the Language Map here
+    // Until we do some parsing, we'll load the Language Map here.
 
-	languageMapper.addLangString(LanguageConstants::FileMenuItem, "&File");
-    languageMapper.addLangString(LanguageConstants::ExitMenuItem, "E&xit");
+	std::wstring fileName = L"lang_en.json";
+
+	std::ifstream ifs;
+	ifs.open(fileName.c_str(), std::ifstream::in | std::ios::binary);
+
+	if(ifs) {
+		std::string data;
+		ifs.seekg(0, std::ios::end);
+		data.resize(ifs.tellg());
+		ifs.seekg(0, std::ios::beg);
+		ifs.read(&data[0], data.size());
+		ifs.close();
+
+
+		json::jobject result = json::jobject::parse(data);
+		json::key_list_t keyList = result.list_keys();
+		json::key_list_t::iterator it;
+
+		for(it = keyList.begin(); it != keyList.end(); ++it) {
+			int key = std::stoi(*it);
+			languageMapper.addLangString(key, result.get(*it));
+		}
+	}
 
 	return CDockFrame::Create(parent);
 }
@@ -60,11 +83,11 @@ void MainWindowFrame::CreateMenuBar() {
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
 
-	std::string tempStr = languageMapper.getLangString(100);
-    CStringW caption = AtoW(tempStr.c_str(), CP_UTF8);
-	
-    fileMenu.AppendMenu(MF_STRING, 0, L"E&xit");
+	CStringW caption = AtoW(languageMapper.getLangString(101).c_str(), CP_UTF8);
+    fileMenu.AppendMenu(MF_STRING, 0, caption);
 
+
+	caption = AtoW(languageMapper.getLangString(100).c_str(), CP_UTF8);
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
 
