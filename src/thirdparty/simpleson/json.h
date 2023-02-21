@@ -103,7 +103,7 @@ namespace json
 		/*! \brief Length field exposed */
 		using std::string::length;
 
-		#if __GNUC__ && __GNUC__ < 11
+		#if (__GNUC__ && __GNUC__ < 11) || (_MSC_VER && _MSC_VER < 1600)
 		inline char front() const { return this->at(0); }
 		inline char back() const { return this->at(this->length() - 1); }
 		#else
@@ -112,6 +112,7 @@ namespace json
 
 		/*! \brief Back method exposed */
 		using std::string::back;
+
 		#endif
 
 		/*!\ brief Pushes a value to the back of the reader 

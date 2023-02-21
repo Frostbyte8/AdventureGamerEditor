@@ -41,8 +41,8 @@ HWND MainWindowFrame::Create(HWND parent) {
 
     // Until we do some parsing, we'll load the Language Map here
 
-    languageMapper[LanguageConstants::FileMenuItem] = "&File";
-    languageMapper[LanguageConstants::ExitMenuItem] = "E&xit";
+	languageMapper.addLangString(LanguageConstants::FileMenuItem, "&File");
+    languageMapper.addLangString(LanguageConstants::ExitMenuItem, "E&xit");
 
 	return CDockFrame::Create(parent);
 }
