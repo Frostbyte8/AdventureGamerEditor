@@ -5,7 +5,6 @@
 #include "json.h"
 #include <string.h>
 #include <assert.h>
-#include <windows.h>
 
 /*! \brief Checks for an empty string
  * 
@@ -968,7 +967,8 @@ json::jobject json::jobject::parse(const char *input)
         json::parsing::parse_results value = json::parsing::parse(index);
         if (value.type == json::jtype::not_valid) throw json::parsing_error(error);
 
-		if(value.type == json::jtype::jstring) {
+		if(value.type == json::jtype::jstring)
+		{
 			// [FB] Remove quotes on strings.
 			value.value.erase(0, 1);
 			value.value.erase(value.value.size() - 1);
