@@ -1,8 +1,6 @@
 #include "editor_mainwindow.h"
 #include "../editor_constants.h"
 #include <fstream>
-#include "../thirdparty/simpleson/json.h"
-#include "../compat/std_extras_compat.h"
 
 //=============================================================================
 // Constructors / Destructor
@@ -14,8 +12,9 @@
 ///----------------------------------------------------------------------------
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
-                                     roadSelectorDocker(0) {
+                                     roadSelectorDocker(0), gameWorldController(0) {
 	entityView = new GameEntitiesView();
+    gameWorldController = new GameWorldController();
 }
 
 ///----------------------------------------------------------------------------
@@ -23,10 +22,16 @@ MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHe
 ///----------------------------------------------------------------------------
 
 MainWindowFrame::~MainWindowFrame() {
+
 	if(entityView) {
 		delete entityView;
 		entityView = NULL;
 	}
+
+    if(gameWorldController) {
+        delete gameWorldController;
+        gameWorldController = NULL;
+    }
 }
 
 //=============================================================================
@@ -40,33 +45,7 @@ MainWindowFrame::~MainWindowFrame() {
 
 HWND MainWindowFrame::Create(HWND parent) {
 	SetView(*entityView);
-
-    // Until we do some parsing, we'll load the Language Map here.
-
-	std::wstring fileName = L"lang_en.json";
-
-	std::ifstream ifs;
-	ifs.open(fileName.c_str(), std::ifstream::in | std::ios::binary);
-
-	if(ifs) {
-		std::string data;
-		ifs.seekg(0, std::ios::end);
-		data.resize(ifs.tellg());
-		ifs.seekg(0, std::ios::beg);
-		ifs.read(&data[0], data.size());
-		ifs.close();
-
-
-		json::jobject result = json::jobject::parse(data);
-		json::key_list_t keyList = result.list_keys();
-		json::key_list_t::iterator it;
-
-		for(it = keyList.begin(); it != keyList.end(); ++it) {
-			int key = std::stoi(*it);
-			languageMapper.addLangString(key, result.get(*it));
-		}
-	}
-
+    gameWorldController->LoadLanguageFile("TODO", "TODO");
 	return CDockFrame::Create(parent);
 }
 
@@ -82,6 +61,8 @@ void MainWindowFrame::CreateMenuBar() {
 
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
+
+    LanguageMapper& languageMapper = gameWorldController->getLanguageMapper();
 
 	CStringW caption = AtoW(languageMapper.getLangString(101).c_str(), CP_UTF8);
     fileMenu.AppendMenu(MF_STRING, 0, caption);
