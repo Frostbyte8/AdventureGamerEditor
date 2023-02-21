@@ -7,6 +7,7 @@
 #include "editor_mainwindow_dockers.h"
 #include "../interface/mainwindow_interface.h"
 #include "../controller/gameworld_controller.h"
+#include "../controller/language_controller.h"
 #include "../win32/window_metrics.h"
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
@@ -37,6 +38,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 		RoadSelectorDocker* roadSelectorDocker;
 		EntitiesHereDocker* entitiesHereDocker;
 
+        LanguageController*     languageController;
         GameWorldController*    gameWorldController;
 		WindowMetrics		    windowMetrics;
 

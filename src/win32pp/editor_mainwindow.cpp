@@ -1,6 +1,5 @@
 #include "editor_mainwindow.h"
 #include "../editor_constants.h"
-#include <fstream>
 
 //=============================================================================
 // Constructors / Destructor
@@ -12,9 +11,11 @@
 ///----------------------------------------------------------------------------
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
-                                     roadSelectorDocker(0), gameWorldController(0) {
+                                     roadSelectorDocker(0), gameWorldController(0),
+                                     languageController(0) {
 	entityView = new GameEntitiesView();
     gameWorldController = new GameWorldController();
+    languageController = new LanguageController();
 }
 
 ///----------------------------------------------------------------------------
@@ -32,6 +33,12 @@ MainWindowFrame::~MainWindowFrame() {
         delete gameWorldController;
         gameWorldController = NULL;
     }
+
+    if(languageController) {
+        delete languageController;
+        languageController = NULL;
+    }
+
 }
 
 //=============================================================================
@@ -45,7 +52,7 @@ MainWindowFrame::~MainWindowFrame() {
 
 HWND MainWindowFrame::Create(HWND parent) {
 	SetView(*entityView);
-    gameWorldController->LoadLanguageFile("TODO", "TODO");
+    languageController->LoadLanguageFile("TODO", "TODO");
 	return CDockFrame::Create(parent);
 }
 
@@ -62,7 +69,7 @@ void MainWindowFrame::CreateMenuBar() {
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
 
-    LanguageMapper& languageMapper = gameWorldController->getLanguageMapper();
+    LanguageMapper& languageMapper = languageController->getLanguageMapper();
 
 	CStringW caption = AtoW(languageMapper.getLangString(101).c_str(), CP_UTF8);
     fileMenu.AppendMenu(MF_STRING, 0, caption);

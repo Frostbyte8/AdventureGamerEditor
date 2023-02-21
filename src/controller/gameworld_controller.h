@@ -1,20 +1,13 @@
-#ifndef __GAMEWORLD_CONTROLLER_H_
-#define __GAMEWORLD_CONTROLLER_H_
+#ifndef __GAMEWORLD_CONTROLLER_H__
+#define __GAMEWORLD_CONTROLLER_H__
 
 #include <deque>
-#include "../util/languagemapper.h"
-
-// Perhaps this should be renamed to MainWindow_Controller?
 
 class GameWorldController {
 
     public:
         //bool LoadWorld(const std::string& filePath, const std::string& fileName);
-        bool LoadLanguageFile(const std::string& filePath, const std::string& fileName);
-
-        // TODO: return a copy of this
-        LanguageMapper& getLanguageMapper() { return languageMapper; }
-
+        
     private:
 
         //MainWindowInterface*            mainWindow;
@@ -29,8 +22,7 @@ class GameWorldController {
         std::deque<GameCharacters*>     gameCharacters;
         std::deque<GameObjects*>        gameObjects;
         */
-        LanguageMapper		languageMapper;
 
 };
 
-#endif // __GAMEWORLD_CONTROLLER_H_
+#endif // __GAMEWORLD_CONTROLLER_H__
