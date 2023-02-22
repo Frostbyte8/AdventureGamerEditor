@@ -13,9 +13,11 @@
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
                                      roadSelectorDocker(0), gameWorldController(0),
                                      languageController(0) {
+
 	entityView = new GameEntitiesView();
     gameWorldController = new GameWorldController();
     languageController = new LanguageController();
+
 }
 
 ///----------------------------------------------------------------------------

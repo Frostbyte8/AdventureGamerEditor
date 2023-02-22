@@ -2,11 +2,12 @@
 #define __GAMEWORLD_CONTROLLER_H__
 
 #include <deque>
+#include "../model/gameinfo.h"
 
 class GameWorldController {
 
     public:
-        //bool LoadWorld(const std::string& filePath, const std::string& fileName);
+        bool LoadWorld(const std::string& filePath, const std::string& fileName);
         
     private:
 
@@ -14,6 +15,8 @@ class GameWorldController {
 
         // Game World is composed of several other objects which I have
         // split up here to make doing undo/redo operations easier.
+
+        GameInfo                        gameInfo;
 
         /*
         GameMap*                        gameMap;
