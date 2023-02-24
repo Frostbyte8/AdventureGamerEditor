@@ -2,6 +2,7 @@
 #define __GAMEINFO_H__
 
 #include <string>
+#include <fstream>
 #include "../compat/stdint_compat.h"
 #include "../editor_constants.h"
 
@@ -9,6 +10,8 @@ class GameInfo {
 
     public:
         GameInfo();
+        bool readHeader(std::ifstream& mapFile);
+        //void readPlayerAttributes(std::ifstream& mapFile);
 
 	private:
 		std::string         gameName;

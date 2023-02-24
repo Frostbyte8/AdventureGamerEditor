@@ -3,6 +3,8 @@
 #include "std_extras_compat.h"
 #include <stdio.h>
 
+// TODO: This should be here, it got copied from a previous project
+
 bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR, const std::string& MAX_INT_STR) {
 
     const size_t MAX_WITH_SIGN = MIN_INT_STR.length();
