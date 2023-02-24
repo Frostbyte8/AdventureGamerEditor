@@ -3,15 +3,17 @@
 
 #include <deque>
 #include "../model/gameinfo.h"
+#include "../interface/mainwindow_interface.h"
 
 class GameWorldController {
 
     public:
+        GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {};
         bool LoadWorld(const std::string& filePath, const std::string& fileName);
         
     private:
 
-        //MainWindowInterface*            mainWindow;
+        MainWindowInterface*            mainWindow;
 
         // Game World is composed of several other objects which I have
         // split up here to make doing undo/redo operations easier.

@@ -13,6 +13,7 @@ class MainWindowInterface {
 
     public:
         virtual int AskYesNoQuestion(const std::string& question, const std::string& title, bool allowCancel) = 0;
+        virtual void DisplayErrorMessage(const std::string& message, const std::string& title) = 0;
 };
 
 #endif // __MAINWINDOW_INTERFACE_H__

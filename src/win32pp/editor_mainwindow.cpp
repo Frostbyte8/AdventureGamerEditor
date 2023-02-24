@@ -15,8 +15,8 @@ MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHe
                                      languageController(0) {
 
 	entityView = new GameEntitiesView();
-    gameWorldController = new GameWorldController();
-    languageController = new LanguageController();
+    gameWorldController = new GameWorldController(this);
+    languageController  = new LanguageController();
 
 }
 
@@ -135,6 +135,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::OnInitialUpdate() {
+    gameWorldController->LoadWorld("D:\\dump\\ADV\\", "GATES.SG0");
 }
 
 ///----------------------------------------------------------------------------
@@ -173,3 +174,12 @@ int MainWindowFrame::AskYesNoQuestion(const std::string& inQuestion, const std::
     return retVal;
 }
 
+void MainWindowFrame::DisplayErrorMessage(const std::string& inMessage, const std::string& inTitle) {
+
+    const CString message       = AtoW(inMessage.c_str(), CP_UTF8);
+    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
+    const UINT messageBoxFlags  = MB_ICONERROR;
+
+    MessageBox(message, title, messageBoxFlags);
+
+}

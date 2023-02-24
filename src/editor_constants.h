@@ -24,7 +24,21 @@ namespace AttributeTypes {
 }
 
 namespace AdventureGamerConstants {
-    const int NumAttributes                 = AttributeTypes::NumTypes;
+    const unsigned int NumAttributes    = AttributeTypes::NumTypes;
+}
+
+namespace AdventureGamerHeadings {
+    const std::string Row           = "{row ";      // Space is intentional.
+    const std::string Jumps         = "{jumps";
+    const std::string Switches      = "{swtchs";
+    const std::string Attributes    = "{attrb";
+    const std::string Objects       = "{objct";
+    const std::string Character     = "{cretr";
+}
+
+namespace AdventureGamerSubHeadings {
+    const unsigned int NumAttributeSubHeadings = AttributeTypes::NumTypes;
+    const std::string Attributes[NumAttributeSubHeadings] = { "Stamina", "Skill", "Willpower", "Luck", "Torch Life" };
 }
 
 namespace HearingTypes {

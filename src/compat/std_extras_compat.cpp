@@ -3,12 +3,10 @@
 #include "std_extras_compat.h"
 #include <stdio.h>
 
-// TODO: This should be here, it got copied from a previous project
-
 bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR, const std::string& MAX_INT_STR) {
 
-    const size_t MAX_WITH_SIGN = MIN_INT_STR.length();
-    const size_t MAX_WITHOUT_SIGN = MAX_INT_STR.length();
+    const size_t MAX_WITH_SIGN      = MIN_INT_STR.length();
+    const size_t MAX_WITHOUT_SIGN   = MAX_INT_STR.length();
 
     if(MAX_WITH_SIGN != 1 && in.length() > MAX_WITH_SIGN) {
         return false;
@@ -41,6 +39,17 @@ bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR,
     return true;
 }
 
+bool IsValidInteger(const std::string& in) {
+    for(size_t i = 1; i <= in.length(); i++) {
+        // Number, Plus, or Minus sign are the only valid characters
+        if((in[i] < 48 && in[i] > 57) && in[i] != 42 && in[i] != 45) {
+            throw std::invalid_argument("The argument \"" + in + "\" is not a valid integer.");
+        }
+    }
+
+    return true;
+}
+
 std::string std::to_string(const int& in) {
     const int bufferSize = _scprintf("%d", in);
     char* buffer = new char[bufferSize+1];
@@ -56,7 +65,7 @@ int std::stoi(const std::string& in) {
     const std::string MAX_STR = "2147483647";
 
     if(!IsIntegerWithinRange(in, MIN_STR, MAX_STR)) {
-        throw std::invalid_argument("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
+        throw std::out_of_range("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
     }
 
     return atoi(in.c_str());
@@ -68,7 +77,7 @@ long std::stol(const std::string& in) {
     const std::string MAX_STR = "2147483647";
 
     if(!IsIntegerWithinRange(in, MIN_STR, MAX_STR)) {
-        throw std::invalid_argument("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
+        throw std::out_of_range("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
     }
 
     return atol(in.c_str());
@@ -80,7 +89,7 @@ unsigned long std::stoul(const std::string& in) {
     const std::string MAX_STR = "4294967295";
 
     if(!IsIntegerWithinRange(in, MIN_STR, MAX_STR)) {
-        throw std::invalid_argument("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
+        throw std::out_of_range("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
     }
 
     return atol(in.c_str());

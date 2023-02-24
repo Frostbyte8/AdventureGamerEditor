@@ -20,6 +20,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         // Public Interface Functions
         virtual int AskYesNoQuestion(const std::string& question, const std::string& title,
                                      bool allowCancel = true);
+        virtual void DisplayErrorMessage(const std::string& message, const std::string& title);
 
 	protected:
 		virtual int     OnCreate(CREATESTRUCT& cs);
