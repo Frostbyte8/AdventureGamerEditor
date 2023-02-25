@@ -33,7 +33,6 @@ void GameInfo::readHeader(std::ifstream& mapFile) {
 
     if(!saveName.compare("Master")) {
         throw std::runtime_error("File is not an Adventure Gamer World File.");
-
         isSaveFile = true; // Maybe in the future we can add this into the editor.
     }
 
@@ -60,7 +59,9 @@ void GameInfo::readPlayerAttributes(std::ifstream &mapFile) {
             std::getline(mapFile, lineRead);
 
             if(!(lineRead.compare(AdventureGamerSubHeadings::Attributes[i]))) {
-                throw std::runtime_error("Subheading read error. Expected \"" + AdventureGamerSubHeadings::Attributes[i] + "\", but got \"" + lineRead + "\".");
+                throw std::runtime_error("Subheading read error. Expected \"" + 
+                                         AdventureGamerSubHeadings::Attributes[i] + 
+                                         "\", but got \"" + lineRead + "\".");
             }
 
             std::getline(mapFile, lineRead);

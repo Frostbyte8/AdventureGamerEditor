@@ -45,7 +45,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
 		// Disable copy construction and assignment operator
 		MainWindowFrame(const MainWindowFrame&);
-		MainWindowFrame& operator = (const MainWindowFrame&);
+		MainWindowFrame& operator= (const MainWindowFrame&);
 
 };
 

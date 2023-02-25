@@ -8,6 +8,7 @@
 class GameWorldController {
 
     public:
+
         GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {};
         bool LoadWorld(const std::string& filePath, const std::string& fileName);
         
@@ -20,9 +21,9 @@ class GameWorldController {
 
         GameInfo                        gameInfo;
 
+
         /*
         GameMap*                        gameMap;
-        GameInfo*                       gameInfo;
         std::string                     gameStory;
         std::deque<GameCharacters*>     gameCharacters;
         std::deque<GameObjects*>        gameObjects;

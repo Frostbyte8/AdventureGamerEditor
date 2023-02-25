@@ -9,17 +9,22 @@ bool GameWorldController::LoadWorld(const std::string &filePath, const std::stri
 	ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
 
     if(ifs) {
+
         try {
             gameInfo.readHeader(ifs);
         }
         catch (const std::runtime_error& e) {
+
             mainWindow->DisplayErrorMessage(e.what(), "Error reading file");
             return false;
+
         }
     }
     else {
+
         mainWindow->DisplayErrorMessage("Unable to open file.", "File not found");
         return false;
+
     }
 
     return true;
