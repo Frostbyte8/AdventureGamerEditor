@@ -165,6 +165,12 @@ class GameTile {
                         bool invalidModifer = false;
                         switch(base.spriteIndex) {
 
+                            case RoadTypes::Empty:
+                                if(base.spriteModifier != 0 && base.spriteModifier != TileModifiers::DirtRoad) {
+                                    invalidModifer = true;
+                                }
+                                break;
+
                             case RoadTypes::DeadEndNorth:
                             case RoadTypes::DeadEndEast:
                             case RoadTypes::DeadEndSouth:
@@ -242,4 +248,4 @@ class GameTile {
 
 };
 
-#endif // __GAMEMAP_H__
+#endif // __GAMETILE_H__
