@@ -46,7 +46,7 @@ void GameInfo::readHeader(std::ifstream& mapFile) {
 /// @throws std::runtime_error if any of the numbers read are invalid.
 ///----------------------------------------------------------------------------
 
-void GameInfo::readPlayerAttributes(std::ifstream &mapFile) {
+void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
     
     std::string lineRead;
 
@@ -95,7 +95,7 @@ void GameInfo::readPlayerAttributes(std::ifstream &mapFile) {
 
     }
     catch (const std::invalid_argument& e) {
-        throw std::runtime_error("Tried to read a attribute value, but did not get a valid integer.");
+        throw std::runtime_error("Tried to read an attribute value, but did not get a valid integer.");
     }
     catch (const std::out_of_range& e) {
         throw std::runtime_error("Tried to read an attribute value, but the value was outside the vaild integer range.");

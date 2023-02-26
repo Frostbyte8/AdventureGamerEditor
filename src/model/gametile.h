@@ -208,6 +208,10 @@ class GameTile {
                         }
                     }
 
+                    if(base.flags & TileFlags::MoreInfo && base.description.empty()) {
+                        throw std::invalid_argument("Attempted to build a tile that indicates it has a description, but no description was set.");
+                    }
+
                     return GameTile(*this);
                 }
 
@@ -241,7 +245,8 @@ class GameTile {
 
         // Public Function
         
-        inline bool             hasAnyFeature() const;
+        inline bool hasAnyFeature() const;
+        void readTile(std::ifstream& mapFile, std::ifstream& rowFile);
 
     private:
         Base base;
