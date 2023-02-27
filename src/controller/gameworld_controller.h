@@ -3,6 +3,7 @@
 
 #include <deque>
 #include "../model/gameinfo.h"
+#include "../model/gamemap.h"
 #include "../interface/mainwindow_interface.h"
 
 class GameWorldController {
@@ -20,7 +21,7 @@ class GameWorldController {
         // split up here to make doing undo/redo operations easier.
 
         GameInfo                        gameInfo;
-
+        GameMap                         gameMap;
 
         /*
         GameMap*                        gameMap;

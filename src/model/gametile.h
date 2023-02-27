@@ -160,13 +160,15 @@ class GameTile {
 
                 GameTile build() {
 
-                    if(base.spriteModifier != 0) {
+                    const uint8_t modifier = (base.spriteModifier & TileModifiers::ALLMODS);
+
+                    if(modifier != 0) {
 
                         bool invalidModifer = false;
                         switch(base.spriteIndex) {
 
                             case RoadTypes::Empty:
-                                if(base.spriteModifier != 0 && base.spriteModifier != TileModifiers::DirtRoad) {
+                                if(modifier != 0) {
                                     invalidModifer = true;
                                 }
                                 break;
@@ -175,7 +177,7 @@ class GameTile {
                             case RoadTypes::DeadEndEast:
                             case RoadTypes::DeadEndSouth:
                             case RoadTypes::DeadEndWest:
-                                if(base.spriteModifier != TileModifiers::JumpPad) {
+                                if(modifier != TileModifiers::JumpPad) {
                                     invalidModifer = true; 
                                 }
                                 break;
@@ -184,21 +186,21 @@ class GameTile {
                             case RoadTypes::CornerNW:
                             case RoadTypes::CornerSE:
                             case RoadTypes::CornerSW:
-                                if(base.spriteModifier != TileModifiers::SwitchOn ||
-                                   base.spriteModifier != TileModifiers::SwitchOff) {
+                                if(modifier != TileModifiers::SwitchOn &&
+                                   modifier != TileModifiers::SwitchOff) {
                                    invalidModifer = true;
                                 }
                                 break;
 
                             case RoadTypes::StraightawayVertical:
                             case RoadTypes::StraightawayHorizontal:
-                                if(base.spriteModifier > TileModifiers::ALLMODS) {
+                                if(modifier > TileModifiers::ALLMODS) {
                                     invalidModifer = true;
                                 }
                                 break;
                             case RoadTypes::Crossroads:
-                                if(base.spriteModifier != TileModifiers::SafeHaven ||
-                                   base.spriteModifier != TileModifiers::Hazard) {
+                                if(modifier != TileModifiers::SafeHaven &&
+                                   modifier != TileModifiers::Hazard) {
                                     invalidModifer = true;
                                 }
                                 break;
@@ -209,7 +211,7 @@ class GameTile {
                     }
 
                     if(base.flags & TileFlags::MoreInfo && base.description.empty()) {
-                        throw std::invalid_argument("Attempted to build a tile that indicates it has a description, but no description was set.");
+                        //throw std::invalid_argument("Attempted to build a tile that indicates it has a description, but no description was set.");
                     }
 
                     return GameTile(*this);
@@ -249,6 +251,7 @@ class GameTile {
         void readTile(std::ifstream& mapFile, std::ifstream& rowFile);
 
     private:
+        //GameTile(){};
         Base base;
 
 };

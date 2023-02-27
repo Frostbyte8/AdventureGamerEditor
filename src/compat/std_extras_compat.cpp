@@ -3,7 +3,41 @@
 #include "std_extras_compat.h"
 #include <stdio.h>
 
+// At some point, I'll make these work better, but this should be enough for now.
+
+void IsValidInteger(const std::string& in) {
+
+    bool signFound = false;
+    for(size_t i = 0; i < in.length(); i++) {
+        
+        // Check for whitespace characters
+
+        if(!signFound) {
+            if(in[i] == 0x20 || in[i] == 0x0C || in[i] == 0x0A || in[i] == 0x0D || in[i] == 0x09 || in[i] == 0x0B) {
+                continue;
+            }
+            
+            if(in[i] == '-' || in[i] == '+') {
+                bool signFound = true; // The next character after this MUST be a number.
+            }
+        }
+
+        // Number, Plus, or Minus sign are the only valid characters
+        if((in[i] < 48 || in[i] > 57)) {
+            throw std::invalid_argument("The argument \"" + in + "\" is not a valid integer.");
+        }
+        else {
+            return;
+        }
+    }
+
+    // No numbers found, so it can't possibly be valid.
+    throw std::invalid_argument("The argument \"" + in + "\" is not a valid integer.");
+}
+
 bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR, const std::string& MAX_INT_STR) {
+
+    IsValidInteger(in);
 
     const size_t MAX_WITH_SIGN      = MIN_INT_STR.length();
     const size_t MAX_WITHOUT_SIGN   = MAX_INT_STR.length();
@@ -39,16 +73,7 @@ bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR,
     return true;
 }
 
-bool IsValidInteger(const std::string& in) {
-    for(size_t i = 1; i <= in.length(); i++) {
-        // Number, Plus, or Minus sign are the only valid characters
-        if((in[i] < 48 && in[i] > 57) && in[i] != 42 && in[i] != 45) {
-            throw std::invalid_argument("The argument \"" + in + "\" is not a valid integer.");
-        }
-    }
 
-    return true;
-}
 
 std::string std::to_string(const int& in) {
     const int bufferSize = _scprintf("%d", in);
