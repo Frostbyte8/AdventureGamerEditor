@@ -13,11 +13,8 @@ namespace Frost {
         }
         const size_t pos = str.length() - val.length();
 
-        // Compare the end of the string with the value given
-        if(!str.compare(pos, val.length(), val)) {
-            return true;
-        }
-        return false;
+        return !str.compare(pos, val.length(), val);
+
     }
 
     bool startsWith(const std::string& str, const std::string& val) {
@@ -27,11 +24,8 @@ namespace Frost {
             return false;
         }
 
-        // Compare the beginning of the string with the value given
-        if(!str.compare(0, val.length(), val)) {
-            return true;
-        }
-        return false;
+        return !str.compare(0, val.length(), val);
+
     }
 
     std::vector<std::string> split(const std::string& str, const char& delimiter,

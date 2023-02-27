@@ -11,7 +11,7 @@ class GameMap {
 
     public:
     
-        void readMap(std::ifstream& mapFile, const std::string& fileName, const std::string& filePath);
+        void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
 
     private:
 

@@ -2,7 +2,7 @@
 #include <fstream>
 #include <stdexcept>
 
-bool GameWorldController::LoadWorld(const std::string &filePath, const std::string &fileName) {
+bool GameWorldController::LoadWorld(const std::string& filePath, const std::string& fileName) {
     
     std::string fileNameTemp = filePath + fileName;
 	std::ifstream ifs;
@@ -12,7 +12,7 @@ bool GameWorldController::LoadWorld(const std::string &filePath, const std::stri
 
         try {
             gameInfo.readHeader(ifs);
-            gameMap.readMap(ifs, "", "");
+            gameMap.readMap(ifs, filePath, fileName);
         }
         catch (const std::runtime_error& e) {
 

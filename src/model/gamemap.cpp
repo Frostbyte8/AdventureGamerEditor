@@ -6,8 +6,8 @@
 // Public Functions
 //=============================================================================
 
-void GameMap::readMap(std::ifstream& mapFile, const std::string& fileName,
-                      const std::string& filePath) {
+void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
+                      const std::string& fileName) {
 
     std::string line;
 
@@ -28,11 +28,12 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& fileName,
         std::getline(mapFile, line);
         line = Frost::rtrim(line, 13);
 
-        if(rowID.compare(line) != 0) {
+        // This is only true if they're not equal.
+        if(rowID.compare(line)) {
             throw std::runtime_error("Row identifier not found. Expected \"" + rowID + "\", but got \"" + line + "\".");
         }
 
-        std::string rowFilePath = filePath + fileName + ".T"; 
+        std::string rowFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".T"; 
         
         if(row < 10) {
             rowFilePath += "0";
@@ -43,7 +44,20 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& fileName,
         const std::map<unsigned int, std::string> rowDescriptions = readRowDescriptions(rowFilePath);
 
         for(int col = 0; col < numCols; col++) {
-            GameTile gt = readTile(mapFile, "");
+
+            // Before we can read a tile, we'll need to get the description for it,
+            // if one exists.
+
+            std::string tileDescription;
+
+            std::map<unsigned int, std::string>::const_iterator it;
+			it = rowDescriptions.find(col);
+
+            if(it != rowDescriptions.end()) {
+                tileDescription = it->second;
+            }
+
+            GameTile gt = readTile(mapFile, tileDescription);
             tiles.push_back(gt);
         }
     }
@@ -82,11 +96,21 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
             const unsigned int colID = std::stoi(line);
             std::string description;
 
-            std::getline(ifs, line);
-            while(!Frost::endsWith(line, "\"")) {
-                description += line;
+            do {
+                if(ifs.eof()) {
+                    break;
+                }
                 std::getline(ifs, line);
-            }
+
+                line = Frost::rtrim(line, '\r');
+
+                if(Frost::endsWith(line, "\"")) {
+                    break;
+                }
+
+                description += line;
+
+            } while(true);
 
             description += line;
 
