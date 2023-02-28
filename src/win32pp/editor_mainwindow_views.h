@@ -52,14 +52,37 @@ class RoadSelectorView : public CWnd {
 class GameMapView : public CScrollView {
 	
 	public:
-		GameMapView() {}
-		virtual ~GameMapView() {}
+        GameMapView() : bmpLoaded(false) {}
+        virtual ~GameMapView() {}
+
+        const bool isBMPLoaded() const {
+            return bmpLoaded;
+        }
+
+        virtual int OnCreate(CREATESTRUCT& cs) {
+            bmpLoaded = tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+            return CScrollView::OnCreate(cs);
+        }
+
+        virtual void OnDraw(CDC& dc) {
+
+            CMemDC dcMem(::GetDC(GetHwnd()));
+            HBITMAP oldBMP = dcMem.SelectObject(tilesetBMP);
+
+            dc.BitBlt(0, 0, tilesetBMP.GetSize().cx, tilesetBMP.GetSize().cy, dcMem, 0, 0, SRCCOPY);
+
+            dcMem.SelectObject(oldBMP);
+            dcMem.Destroy();
+
+        }
 
 	private:
 
 		// Disable copy construction and assignment operator
 	    GameMapView(const GameMapView&);
 		GameMapView& operator = (const GameMapView&);
+        CBitmap tilesetBMP;
+        bool bmpLoaded;
 };
 
 ///----------------------------------------------------------------------------

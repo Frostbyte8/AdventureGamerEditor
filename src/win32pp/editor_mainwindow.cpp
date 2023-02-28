@@ -55,8 +55,8 @@ MainWindowFrame::~MainWindowFrame() {
 ///----------------------------------------------------------------------------
 
 HWND MainWindowFrame::Create(HWND parent) {
-	SetView(*entityView);
     languageController->LoadLanguageFile("TODO", "TODO");
+    SetView(*entityView);
 	return CDockFrame::Create(parent);
 }
 
@@ -95,7 +95,6 @@ void MainWindowFrame::CreateMenuBar() {
 
 int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
-
 	UseThemes(FALSE);				// Don't use themes
     //m_bUseCustomDraw = FALSE;     // Don't use custom draw for menu items (?)
 
@@ -110,6 +109,14 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 	gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
+
+    // TODO: The tileset image should be created here and pass to the view on creation.
+
+    if(!(reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).isBMPLoaded())) {
+        MessageBox(L"Could not find tileset.bmp. Please ensure this file is in the same directory as advedit.exe. The program will now close.", L"Missing file tileset.bmp", MB_OK | MB_ICONERROR);
+        Close();
+        return 1;
+    }
 
 	roadSelectorDocker = static_cast<RoadSelectorDocker*>(gameMapDocker->AddDockedChild(
                                                           new RoadSelectorDocker(),
@@ -137,12 +144,12 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::OnInitialUpdate() {
+    /*
     gameWorldController->LoadWorld("D:\\dump\\ADV\\", "GATES.SG0");
     const std::vector<GameTile> tiles = gameWorldController->getTiles();
-
     // Just for a test.
     DisplayErrorMessage(tiles.at(0).getDescription(), tiles.at(0).getName());
-    
+    */
 }
 
 ///----------------------------------------------------------------------------

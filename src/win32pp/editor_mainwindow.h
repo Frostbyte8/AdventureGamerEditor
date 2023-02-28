@@ -33,6 +33,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         CMenu mainMenu;
         CMenu fileMenu;
+        CBitmap tilesetBMP; 
 
 		GameEntitiesView*	entityView;
 		GameMapDocker*		gameMapDocker;
