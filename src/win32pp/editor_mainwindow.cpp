@@ -1,5 +1,7 @@
 #include "editor_mainwindow.h"
 #include "../editor_constants.h"
+#include "../model/gametile.h"
+#include <vector>
 
 //=============================================================================
 // Constructors / Destructor
@@ -136,6 +138,11 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 void MainWindowFrame::OnInitialUpdate() {
     gameWorldController->LoadWorld("D:\\dump\\ADV\\", "GATES.SG0");
+    const std::vector<GameTile> tiles = gameWorldController->getTiles();
+
+    // Just for a test.
+    DisplayErrorMessage(tiles.at(0).getDescription(), tiles.at(0).getName());
+    
 }
 
 ///----------------------------------------------------------------------------

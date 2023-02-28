@@ -12,6 +12,7 @@ class GameWorldController {
 
         GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {};
         bool LoadWorld(const std::string& filePath, const std::string& fileName);
+        const std::vector<GameTile> getTiles() const { return gameMap.getTiles(); }
         
     private:
 

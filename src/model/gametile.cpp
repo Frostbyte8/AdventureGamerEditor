@@ -14,6 +14,24 @@ const std::string& GameTile::getDescription() const {
 }
 
 ///----------------------------------------------------------------------------
+/// getFlags - Gets the flags set on the tile.
+/// @return an integer indicating the flags applied to the tile.
+///----------------------------------------------------------------------------
+
+const uint8_t& GameTile::getFlags() const {
+    return base.flags;
+}
+
+///----------------------------------------------------------------------------
+/// getName - Gets the name of the tile
+/// @return a string containing the name of the tile
+///----------------------------------------------------------------------------
+
+const std::string& GameTile::getName() const {
+    return base.name;
+}
+
+///----------------------------------------------------------------------------
 /// getSpriteModifier - Get which modifier is set on the tile. This is the
 /// Y offset on the sprite sheet.
 /// @return an integer indicating the modifier applied to the tile.
@@ -31,16 +49,6 @@ const uint8_t& GameTile::getSpriteModifier() const {
 
 const uint8_t& GameTile::getSpriteIndex() const {
     return base.spriteIndex;
-}
-
-
-///----------------------------------------------------------------------------
-/// getFlags - Get the flags set on the tile.
-/// @return an integer indicating the flags applied to the tile.
-///----------------------------------------------------------------------------
-
-const uint8_t& GameTile::getFlags() const {
-    return base.flags;
 }
 
 //=============================================================================
