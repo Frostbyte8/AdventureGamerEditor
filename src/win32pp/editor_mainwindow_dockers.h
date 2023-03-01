@@ -2,6 +2,7 @@
 #define __EDITOR_MAINWINDOW_DOCKERS_H__
 
 #include "editor_mainwindow_views.h"
+#include "../controller/gameworld_controller.h"
 
 ///----------------------------------------------------------------------------
 /// RoadSelectorDocker - Docker that cotains the RoadSelectorView
@@ -32,7 +33,7 @@ class RoadSelectorDocker : public CDocker {
 class GameMapDocker : public CDocker {
 
 	public:
-		GameMapDocker() {
+        GameMapDocker(GameWorldController* gwc) : view(gwc) {
 			SetView(view);
 			SetBarWidth(6);
 		}

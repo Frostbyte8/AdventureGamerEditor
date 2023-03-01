@@ -4,6 +4,8 @@
 #include <wxx_wincore.h>
 #include <wxx_docking.h>
 #include <wxx_scrollview.h>
+#include "../controller/gameworld_controller.h"
+#include <vector>
 
 ///----------------------------------------------------------------------------
 /// GameEntitiesView - Shows Objects and Characters defined by the game world.
@@ -52,28 +54,26 @@ class RoadSelectorView : public CWnd {
 class GameMapView : public CScrollView {
 	
 	public:
-        GameMapView() : bmpLoaded(false) {}
+        GameMapView(GameWorldController* gwc) : gameWorldController(gwc) {}
         virtual ~GameMapView() {}
 
         const bool isBMPLoaded() const {
-            return bmpLoaded;
+            return tilesetBMP.GetHandle();
         }
 
         virtual int OnCreate(CREATESTRUCT& cs) {
-            bmpLoaded = tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+            tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+            CSize abc(32, 32);
+            SetScrollSizes(abc); // Otherwise it won't work.
             return CScrollView::OnCreate(cs);
         }
 
         virtual void OnDraw(CDC& dc) {
-
-            CMemDC dcMem(::GetDC(GetHwnd()));
-            HBITMAP oldBMP = dcMem.SelectObject(tilesetBMP);
-
-            dc.BitBlt(0, 0, tilesetBMP.GetSize().cx, tilesetBMP.GetSize().cy, dcMem, 0, 0, SRCCOPY);
-
-            dcMem.SelectObject(oldBMP);
-            dcMem.Destroy();
-
+            
+            if(tilesetBMP.GetHandle()) {
+                std::vector<GameTile> gameMap = gameWorldController->getTiles();
+                dc.SelectObject(tilesetBMP);
+            }
         }
 
 	private:
@@ -82,7 +82,7 @@ class GameMapView : public CScrollView {
 	    GameMapView(const GameMapView&);
 		GameMapView& operator = (const GameMapView&);
         CBitmap tilesetBMP;
-        bool bmpLoaded;
+        GameWorldController*    gameWorldController;
 };
 
 ///----------------------------------------------------------------------------

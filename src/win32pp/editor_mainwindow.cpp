@@ -107,7 +107,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	DWORD styleFlags = DS_NO_UNDOCK | DS_NO_CAPTION | DS_DEFAULT_CURSORS | DS_CLIENTEDGE;
 	SetDockStyle(styleFlags);
 
-	gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(), 
+    gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(gameWorldController), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
 
     // TODO: The tileset image should be created here and pass to the view on creation.
@@ -144,8 +144,9 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::OnInitialUpdate() {
-    /*
+    
     gameWorldController->LoadWorld("D:\\dump\\ADV\\", "GATES.SG0");
+    /*
     const std::vector<GameTile> tiles = gameWorldController->getTiles();
     // Just for a test.
     DisplayErrorMessage(tiles.at(0).getDescription(), tiles.at(0).getName());
