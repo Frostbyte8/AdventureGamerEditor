@@ -54,7 +54,7 @@ class RoadSelectorView : public CWnd {
 class GameMapView : public CScrollView {
 	
 	public:
-        GameMapView(GameWorldController* gwc) : gameWorldController(gwc) {}
+        GameMapView(GameWorldController* gwc) : backBufferDC(NULL), tilesetDC(NULL), gameWorldController(gwc) {}
         virtual ~GameMapView() {}
 
         const bool isBMPLoaded() const {
@@ -62,18 +62,55 @@ class GameMapView : public CScrollView {
         }
 
         virtual int OnCreate(CREATESTRUCT& cs) {
+            
             tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-            CSize abc(32, 32);
+            CSize abc(512, 512);
             SetScrollSizes(abc); // Otherwise it won't work.
+            CBrush outofbounds(RGB(255,0,0));
+            SetScrollBkgnd(outofbounds);
+
+            CClientDC dc(*this);
+            CBitmap oldBMP;
+
+            tilesetDC = CMemDC(dc);
+            tilesetDC.SelectObject(tilesetBMP);
+
+            backBufferBMP = CreateCompatibleBitmap(dc, 512, 512);
+            backBufferDC = CMemDC(dc);
+
+            oldBMP = backBufferDC.SelectObject(backBufferBMP);
+            backBufferDC.BitBlt(0,0,128,128,tilesetDC,0,0,SRCCOPY);
+            backBufferDC.SelectObject(oldBMP);
+
             return CScrollView::OnCreate(cs);
+        }
+
+        virtual void OnInitialUpdate() {
+        }
+
+        // void onZoomChange()
+
+        void doSomething() {
+            CBitmap oldBMP;
+            oldBMP = backBufferDC.SelectObject(backBufferBMP);
+            backBufferDC.BitBlt(0,0,128,128,tilesetDC,128,0,SRCCOPY);
+            backBufferDC.SelectObject(oldBMP);
+            InvalidateRect(NULL);
         }
 
         virtual void OnDraw(CDC& dc) {
             
-            if(tilesetBMP.GetHandle()) {
-                std::vector<GameTile> gameMap = gameWorldController->getTiles();
-                dc.SelectObject(tilesetBMP);
+            if(backBufferBMP.GetHandle()) {
+                dc.SelectObject(backBufferBMP);
             }
+        }
+
+        virtual LRESULT WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
+            if(msg == WM_LBUTTONDOWN) {
+                doSomething();
+                return 0;
+            }
+            return WndProcDefault(msg, wparam, lparam);
         }
 
 	private:
@@ -81,7 +118,12 @@ class GameMapView : public CScrollView {
 		// Disable copy construction and assignment operator
 	    GameMapView(const GameMapView&);
 		GameMapView& operator = (const GameMapView&);
-        CBitmap tilesetBMP;
+
+        CBitmap     tilesetBMP;
+        CMemDC      tilesetDC;
+        CMemDC      backBufferDC;
+        CBitmap     backBufferBMP;
+        
         GameWorldController*    gameWorldController;
 };
 
