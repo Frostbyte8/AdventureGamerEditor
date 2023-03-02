@@ -12,9 +12,9 @@ class GameMap {
     public:
     
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
-        const uint8_t& getWidth() const {return numCols;}
-        const uint8_t& getHeight() const {return numRows;}
-        const std::vector<GameTile> getTiles() const {return tiles;}
+        const int& getWidth() const {return numCols;}
+        const int& getHeight() const {return numRows;}
+        const std::vector<GameTile>& getTiles() const {return tiles;}
 
     private:
 
@@ -22,8 +22,8 @@ class GameMap {
         GameTile readTile(std::ifstream& mapFile, const std::string& description);
 
         std::vector<GameTile> tiles;
-        uint8_t numCols;
-        uint8_t numRows;
+        int numCols;
+        int numRows;
 
 };
 

@@ -1,7 +1,6 @@
 #ifndef __GAMEWORLD_CONTROLLER_H__
 #define __GAMEWORLD_CONTROLLER_H__
 
-#include <deque>
 #include "../model/gameinfo.h"
 #include "../model/gamemap.h"
 #include "../interface/mainwindow_interface.h"
@@ -12,7 +11,9 @@ class GameWorldController {
 
         GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {};
         bool LoadWorld(const std::string& filePath, const std::string& fileName);
-        const std::vector<GameTile> getTiles() const { return gameMap.getTiles(); }
+        const std::vector<GameTile>& getTiles() const { return gameMap.getTiles(); }
+        const int& getMapWidth() const {return gameMap.getWidth(); }
+        const int& getMapHeight() const {return gameMap.getHeight(); }
         
     private:
 
