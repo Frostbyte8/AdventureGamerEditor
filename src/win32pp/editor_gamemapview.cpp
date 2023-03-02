@@ -7,6 +7,7 @@
 
 GameMapView::GameMapView(GameWorldController* gwc) : backBufferDC(NULL), 
                          tilesetDC(NULL), gameWorldController(gwc) {
+    fakeZoomLevel = 1;
 }
 
 //=============================================================================
@@ -29,8 +30,8 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
 
     tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
-    const int mapWidth = gameWorldController->getMapWidth() * EditorConstants::TileWidth;
-    const int mapHeight = gameWorldController->getMapHeight() * EditorConstants::TileHeight;
+    const int mapWidth = gameWorldController->getMapWidth() * EditorConstants::TileWidth * fakeZoomLevel;
+    const int mapHeight = gameWorldController->getMapHeight() * EditorConstants::TileHeight * fakeZoomLevel;
 
     CSize abc(mapWidth, mapHeight);
     SetScrollSizes(abc); // Otherwise it won't work.
@@ -79,11 +80,13 @@ void GameMapView::OnDraw(CDC& dc) {
 
                 const int srcX = gt.getSpriteIndex() * EditorConstants::TileWidth;
                 const int srcY = gt.getSpriteModifier() * EditorConstants::TileHeight;
-                const int destX = i * EditorConstants::TileWidth;
-                const int destY = k * EditorConstants::TileHeight;
+                const int destX = i * EditorConstants::TileWidth * fakeZoomLevel;
+                const int destY = k * EditorConstants::TileHeight * fakeZoomLevel;
+                const int width = EditorConstants::TileWidth * fakeZoomLevel;
+                const int height = EditorConstants::TileHeight * fakeZoomLevel;
 
-                backBufferDC.BitBlt(destX, destY, EditorConstants::TileWidth, EditorConstants::TileHeight, tilesetDC, srcX, srcY, SRCCOPY);
-
+                backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC, 
+                                        srcX, srcY, EditorConstants::TileWidth, EditorConstants::TileHeight, SRCCOPY);
             }
         }
         

@@ -79,6 +79,8 @@ class GameMapView : public CScrollView {
         CBitmap     backBufferBMP;
         
         GameWorldController*    gameWorldController;
+
+        int fakeZoomLevel;
 };
 
 ///----------------------------------------------------------------------------
