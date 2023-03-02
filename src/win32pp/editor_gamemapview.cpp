@@ -35,7 +35,7 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
 
     CSize abc(mapWidth, mapHeight);
     SetScrollSizes(abc); // Otherwise it won't work.
-    CBrush outofbounds(RGB(255,0,0));
+    CBrush outofbounds(RGB(0,0,0));
     SetScrollBkgnd(outofbounds);
 
     CClientDC dc(*this);
@@ -60,10 +60,21 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void GameMapView::OnDraw(CDC& dc) {
+    
+
     if(backBufferBMP.GetHandle()) {
 
         CBitmap oldBMP;
         oldBMP = backBufferDC.SelectObject(backBufferBMP);
+
+        BLENDFUNCTION fn = {0};
+        fn.BlendOp = AC_SRC_OVER;
+        fn.SourceConstantAlpha = 192;
+        fn.AlphaFormat = 0;
+
+        CMemDC alphaDC(dc);
+        alphaDC.CreateCompatibleBitmap(dc, 1, 1);
+        alphaDC.SolidFill(RGB(0,0,192), CRect(0,0,1,1));
 
         // TODO: it might be better to return a reference to the entire gamemap
         // object as well
@@ -71,7 +82,7 @@ void GameMapView::OnDraw(CDC& dc) {
         const std::vector<GameTile>& gameMap = gameWorldController->getTiles();
         const int mapCols = gameWorldController->getMapWidth();
         const int mapRows = gameWorldController->getMapHeight();
-
+        
         for(int k = 0; k < mapRows; k++) {
             for(int i = 0; i < mapCols; i++) {
 
@@ -87,11 +98,17 @@ void GameMapView::OnDraw(CDC& dc) {
 
                 backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC, 
                                         srcX, srcY, EditorConstants::TileWidth, EditorConstants::TileHeight, SRCCOPY);
+
+                if(gt.getSpriteModifier() & TileFlags::Dark) {
+                    AlphaBlend(backBufferDC.GetHDC(), destX, destY, width, height, alphaDC, 0, 0, 1, 1, fn);
+                }
             }
         }
         
+
         backBufferDC.SelectObject(oldBMP);
         dc.SelectObject(backBufferBMP);
+
     }
 }
 
