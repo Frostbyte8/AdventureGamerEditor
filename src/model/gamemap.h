@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "gametile.h"
+#include "connection_point.h"
 #include "../compat/stdint_compat.h"
 
 class GameMap {
@@ -20,10 +21,14 @@ class GameMap {
 
         std::map<unsigned int, std::string> readRowDescriptions(const std::string& rowFileName);
         GameTile readTile(std::ifstream& mapFile, const std::string& description);
+        void readJumps(std::ifstream& mapFile);
 
+        std::vector<ConnectionPoint> jumpPoints;
         std::vector<GameTile> tiles;
         int numCols;
         int numRows;
+
+        const inline bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
 
 };
 

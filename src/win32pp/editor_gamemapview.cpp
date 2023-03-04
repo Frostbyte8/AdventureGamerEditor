@@ -61,8 +61,8 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
 
 void GameMapView::OnDraw(CDC& dc) {
     
-
-    if(backBufferBMP.GetHandle()) {
+    const std::vector<GameTile>& gameMap = gameWorldController->getTiles();
+    if(backBufferBMP.GetHandle() && gameMap.size() != 0) {
 
         CBitmap oldBMP;
         oldBMP = backBufferDC.SelectObject(backBufferBMP);
@@ -77,9 +77,8 @@ void GameMapView::OnDraw(CDC& dc) {
         alphaDC.SolidFill(RGB(0,0,192), CRect(0,0,1,1));
 
         // TODO: it might be better to return a reference to the entire gamemap
-        // object as well
+        // object as well   
 
-        const std::vector<GameTile>& gameMap = gameWorldController->getTiles();
         const int mapCols = gameWorldController->getMapWidth();
         const int mapRows = gameWorldController->getMapHeight();
         

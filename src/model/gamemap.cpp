@@ -1,6 +1,8 @@
 #include "gamemap.h"
 #include "../util/frost.h"
 #include "../compat/std_extras_compat.h"
+#include "../editor_constants.h"
+#include <algorithm>
 
 //=============================================================================
 // Public Functions
@@ -20,10 +22,11 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
     numRows = std::stoi(line) + 1;
 
     // TODO: out of range errors need to be caught to
+    // Further more, read rows needs to be in it's own function.
 
     for(int row = 0; row < numRows; row++) {
 
-        std::string rowID = "{row " + std::to_string(row);
+        std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
 
         std::getline(mapFile, line);
         line = Frost::rtrim(line, 13);
@@ -60,7 +63,14 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
             GameTile gt = readTile(mapFile, tileDescription);
             tiles.push_back(gt);
         }
+
+        // TODO: Throwing an error right now causes the object to be in an undefined state, to test
+        // this, throw an error here and find a way to stop it from being incomplete. Probably
+        // a builder pattern, but maybe not.
+
     }
+
+    readJumps(mapFile);
 
 }
 
@@ -116,6 +126,7 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
 
             descriptionMap[colID] = description;
         }
+
     }
 
     return descriptionMap;
@@ -169,4 +180,66 @@ GameTile GameMap::readTile(std::ifstream& mapFile, const std::string& descriptio
     catch (const std::invalid_argument& e) {
         throw std::runtime_error(e.what());
     }
+}
+
+///----------------------------------------------------------------------------
+/// readJumps - 
+///----------------------------------------------------------------------------
+
+void GameMap::readJumps(std::ifstream& mapFile) {
+
+    std::string line;
+    std::getline(mapFile, line);
+    line = Frost::rtrim(line, 13);
+
+    // Read the header
+
+    if(AdventureGamerHeadings::Jumps.compare(line)) {
+        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Jumps + "\", but got \"" + line + "\".");
+    }
+
+    try {
+        std::getline(mapFile, line);
+        const int numJumps = std::stoi(line);
+        jumpPoints.reserve(numJumps);
+
+        for(int i = 0; i < numJumps; i++) {
+
+            std::getline(mapFile, line);
+            int x = std::stoi(line);
+            std::getline(mapFile, line);
+            int y = std::stoi(line);
+            SimplePoint jumpA(x, y);
+
+            std::getline(mapFile, line);
+            x = std::stoi(line);
+            std::getline(mapFile, line);
+            y = std::stoi(line);
+            SimplePoint jumpB(x, y);
+
+            ConnectionPoint jumpConnection(jumpA, jumpB);
+
+            
+            if(!ifConnectionExists(jumpPoints, jumpConnection)) {
+                jumpPoints.push_back(jumpConnection);
+            }
+            else {
+                throw std::runtime_error("Error reading file: Duplicate Jump Point was read");
+            }
+
+        }
+    }
+    catch (const std::invalid_argument& e) {
+        throw std::runtime_error("Tried to read a number, but did not get a valid integer");
+    }
+}
+
+const inline bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const {
+    
+    if(!connections.size()) {
+        return false;
+    }
+    
+    std::vector<ConnectionPoint>::const_iterator it = find(connections.begin(), connections.end(), connectionPoint);
+    return !(it == connections.end());
 }
