@@ -247,7 +247,11 @@ class GameTile {
 
         // Public Function
         
-        inline bool hasAnyFeature() const;
+        const bool hasAnyFeature() const;
+        const bool hasJumpPad() const;
+
+        const bool isDeadend() const;
+
         void readTile(std::ifstream& mapFile, std::ifstream& rowFile);
 
     private:

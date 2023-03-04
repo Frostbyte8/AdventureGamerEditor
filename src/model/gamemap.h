@@ -16,6 +16,9 @@ class GameMap {
         const int& getWidth() const {return numCols;}
         const int& getHeight() const {return numRows;}
         const std::vector<GameTile>& getTiles() const {return tiles;}
+        
+        const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
+        inline const int indexFromRowCol(const int& row, const int& col) const;
 
     private:
 
@@ -23,12 +26,12 @@ class GameMap {
         GameTile readTile(std::ifstream& mapFile, const std::string& description);
         void readJumps(std::ifstream& mapFile);
 
-        std::vector<ConnectionPoint> jumpPoints;
+        std::vector<ConnectionPoint> jumpPoints; // TODO: This actually needs to be a list or a deque
         std::vector<GameTile> tiles;
         int numCols;
         int numRows;
 
-        const inline bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
+        
 
 };
 

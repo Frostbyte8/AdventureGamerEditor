@@ -211,13 +211,26 @@ void GameMap::readJumps(std::ifstream& mapFile) {
             int y = std::stoi(line);
             SimplePoint jumpA(x, y);
 
+            size_t tileIndex = indexFromRowCol(y, x);
+            if(!(tiles.at(tileIndex).hasJumpPad())) {
+                throw std::runtime_error("Error reading file: Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile");
+            }
+
             std::getline(mapFile, line);
             x = std::stoi(line);
             std::getline(mapFile, line);
             y = std::stoi(line);
             SimplePoint jumpB(x, y);
 
+            tileIndex = indexFromRowCol(y, x);
+            if(!(tiles.at(tileIndex).hasJumpPad())) {
+                throw std::runtime_error("Error reading file: Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile");
+            }
+
+            // Verify that those tiles are indeed Jump tiles
+
             ConnectionPoint jumpConnection(jumpA, jumpB);
+
 
             
             if(!ifConnectionExists(jumpPoints, jumpConnection)) {
@@ -234,7 +247,14 @@ void GameMap::readJumps(std::ifstream& mapFile) {
     }
 }
 
-const inline bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const {
+const int GameMap::indexFromRowCol(const int& row, const int& col) const {
+    if(row > numRows || col > numCols) {
+        throw std::out_of_range("Index of of range.");
+    }
+    return (row * numCols) + col;
+}
+
+const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const {
     
     if(!connections.size()) {
         return false;
