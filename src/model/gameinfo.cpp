@@ -1,5 +1,6 @@
 #include "gameinfo.h"
 #include "../compat/std_extras_compat.h"
+#include "../util/frost.h"
 #include <sstream>
 #include <stdexcept>
 
@@ -48,27 +49,33 @@ void GameInfo::readHeader(std::ifstream& mapFile) {
 
 void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
     
-    std::string lineRead;
+    std::string line;
 
     // Try and read the Headings for each attribute, and their values
+    std::getline(mapFile, line);
+    line = Frost::rtrim(line, 13);
+
+    if(AdventureGamerHeadings::Attributes.compare(line)) {
+        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Attributes + "\", but got \"" + line + "\".");
+    }
 
     try {
 
         for(int i = 0; i < AdventureGamerConstants::NumAttributes; i++) {
             
-            std::getline(mapFile, lineRead);
+            std::getline(mapFile, line);
 
-            if(!(lineRead.compare(AdventureGamerSubHeadings::Attributes[i]))) {
+            if(!(line.compare(AdventureGamerSubHeadings::Attributes[i]))) {
                 throw std::runtime_error("Subheading read error. Expected \"" + 
                                          AdventureGamerSubHeadings::Attributes[i] + 
-                                         "\", but got \"" + lineRead + "\".");
+                                         "\", but got \"" + line + "\".");
             }
 
-            std::getline(mapFile, lineRead);
-            baseAttributes[i]   = std::stoi(lineRead);
+            std::getline(mapFile, line);
+            baseAttributes[i]   = std::stoi(line);
 
-            std::getline(mapFile, lineRead);
-            randomAttributes[i] = std::stoi(lineRead);
+            std::getline(mapFile, line);
+            randomAttributes[i] = std::stoi(line);
 
         }
 
@@ -77,27 +84,31 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
         // Read the integer
         // TODO: If save game editing is added, these values can be used.
         
-        std::getline(mapFile, lineRead);
-        const int newSight = std::stoi(lineRead);
+        std::getline(mapFile, line);
+        const int newSight = std::stoi(line);
 
-        std::getline(mapFile, lineRead);
-        const int newHearing = std::stoi(lineRead);
+        std::getline(mapFile, line);
+        const int newHearing = std::stoi(line);
+
+        // These have to be ignored if it's not a save file as if you start the
+        // game Blind/Ultra-Sonic, etc it will crash the game upon equipping
+        // things.
 
         if(isSaveFile) {
             playerSight     = newSight;
             playerHearing   = newHearing;
         }
 
-        std::getline(mapFile, lineRead);
-        playerStartX = std::stoi(lineRead);
-        std::getline(mapFile, lineRead);
-        playerStartY = std::stoi(lineRead);
+        std::getline(mapFile, line);
+        playerStartX = std::stoi(line);
+        std::getline(mapFile, line);
+        playerStartY = std::stoi(line);
 
     }
     catch (const std::invalid_argument&) {
         throw std::runtime_error("Tried to read an attribute value, but did not get a valid integer.");
     }
-    catch (const std::out_of_range& e) {
+    catch (const std::out_of_range&) {
         throw std::runtime_error("Tried to read an attribute value, but the value was outside the vaild integer range.");
     }
 
