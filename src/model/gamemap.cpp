@@ -71,6 +71,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
     }
 
     readJumps(mapFile);
+    readSwitches(mapFile);
 
 }
 
@@ -183,11 +184,10 @@ GameTile GameMap::readTile(std::ifstream& mapFile, const std::string& descriptio
 }
 
 ///----------------------------------------------------------------------------
-/// readTile - Read the "{jumps" section of the file.
+/// readJumps - Read the "{jumps" section of the file.
 /// @param mapFile an ifstream of the map file to be read from
 /// @throws runtime_error if any of the numbers read are invalid
 /// @throws runtime_error if any of the tiles are 
-/// @returns a GameTile object
 ///----------------------------------------------------------------------------
 
 void GameMap::readJumps(std::ifstream& mapFile) {
@@ -248,6 +248,80 @@ void GameMap::readJumps(std::ifstream& mapFile) {
     catch (const std::out_of_range&) {
         throw std::out_of_range("Tried to access a jump pad tile, but the index given was out of the valid range");
     }
+}
+
+///----------------------------------------------------------------------------
+/// readSwitches - Read the "{swtchs" section of the file.
+/// @param mapFile an ifstream of the map file to be read from
+/// @throws runtime_error if any of the numbers read are invalid
+/// @throws runtime_error if any of the tiles are 
+///----------------------------------------------------------------------------
+
+void GameMap::readSwitches(std::ifstream& mapFile) {
+    std::string line;
+    std::getline(mapFile, line);
+    line = Frost::rtrim(line, 13);
+
+    // Read the header
+
+    if(AdventureGamerHeadings::Switches.compare(line)) {
+        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Switches + "\", but got \"" + line + "\".");
+    }
+
+    try {
+
+        std::getline(mapFile, line);
+        const int numSwitches = std::stoi(line);
+        switchConnections.reserve(numSwitches);
+
+        for(int i = 0; i < numSwitches; i++) {
+
+            // Get the tile with the switch on it
+            std::getline(mapFile, line);
+            int x = std::stoi(line);
+            std::getline(mapFile, line);
+            int y = std::stoi(line);
+            SimplePoint connectionA(x, y);
+
+            
+            unsigned int tileIndex = indexFromRowCol(y, x);
+            if(!(tiles.at(tileIndex).hasSwitch())) {
+                throw std::runtime_error("Error reading file: Read switch, but no switch was found at the coordinates read.");
+            }
+            
+
+            // Get the tile effected
+            std::getline(mapFile, line);
+            x = std::stoi(line);
+            std::getline(mapFile, line);
+            y = std::stoi(line);
+            SimplePoint connectionB(x, y);
+
+            
+            tileIndex = indexFromRowCol(y, x);
+            if(! (tiles.at(tileIndex).hasGate() || tiles.at(tileIndex).isDark()) ) {
+                throw std::runtime_error("Error reading file: Read switch, but the tile it effects is not a gate or dark space.");
+            }
+
+            /*
+            ConnectionPoint jumpConnection(jumpA, jumpB);
+            
+            if(!ifConnectionExists(jumpPoints, jumpConnection)) {
+                jumpPoints.push_back(jumpConnection);
+            }
+            else {
+                throw std::runtime_error("Error reading file: Duplicate Jump Point was read");
+            }
+            */
+        }
+    }
+    catch (const std::invalid_argument&) {
+        throw std::runtime_error("Tried to read a number, but did not get a valid integer");
+    }
+    catch (const std::out_of_range&) {
+        throw std::out_of_range("Tried to access a jump pad tile, but the index given was out of the valid range");
+    }
+
 }
 
 ///----------------------------------------------------------------------------

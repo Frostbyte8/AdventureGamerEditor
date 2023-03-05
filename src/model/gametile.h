@@ -231,6 +231,7 @@ class GameTile {
 
         GameTile(Builder& builder) {
             base.name           = builder.base.name;
+            base.flags          = builder.base.flags;
             base.description    = builder.base.description;
             base.sprite         = builder.base.sprite;
             base.spriteIndex    = builder.base.spriteIndex;
@@ -249,8 +250,13 @@ class GameTile {
         
         const bool hasAnyFeature() const;
         const bool hasJumpPad() const;
-
+        const bool hasGate() const;
+        const bool hasSwitch() const;
+        
+        const bool isCorner() const;
+        const bool isDark() const;
         const bool isDeadend() const;
+        const bool isStraightaway() const;
 
         void readTile(std::ifstream& mapFile, std::ifstream& rowFile);
 

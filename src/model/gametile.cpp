@@ -56,11 +56,38 @@ const uint8_t& GameTile::getSpriteIndex() const {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// isCorner - Checks if a tile is a corner tile
+/// @return true if it is, false if it is not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isCorner() const {
+
+    if(base.spriteIndex == RoadTypes::CornerNE || base.spriteIndex == RoadTypes::CornerNW ||
+       base.spriteIndex == RoadTypes::CornerSE || base.spriteIndex == RoadTypes::CornerSW) {
+          return true;
+    }
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// isDark - Checks if a tile is marked as being dark when a light switch is
+/// off.
+/// @return true if it is, false if it is not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isDark() const {
+
+    return (base.flags & TileFlags::Dark ? true : false);
+}
+
+///----------------------------------------------------------------------------
 /// isDeadend - Checks if a tile is a dead end tile.
 /// @return true if it is, false if it is not
 ///----------------------------------------------------------------------------
 
 const bool GameTile::isDeadend() const {
+
     if(base.spriteIndex == RoadTypes::DeadEndNorth || base.spriteIndex == RoadTypes::DeadEndEast ||
        base.spriteIndex == RoadTypes::DeadEndSouth || base.spriteIndex == RoadTypes::DeadEndWest) {
           return true;
@@ -69,6 +96,21 @@ const bool GameTile::isDeadend() const {
     return false;
 }
 
+///----------------------------------------------------------------------------
+/// isStraightaway - Checks if a tile is a straightaway tile
+/// @return true if it is, false if it is not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isStraightaway() const {
+
+    if(base.spriteIndex == RoadTypes::StraightawayHorizontal ||
+       base.spriteIndex == RoadTypes::StraightawayVertical) {
+          return true;
+    }
+
+    return false;
+
+}
 ///----------------------------------------------------------------------------
 /// hasAnyFeature - Checks is a tile has any features applied to it.
 /// @return true if it does, false if it does not.
@@ -86,10 +128,36 @@ const bool GameTile::hasAnyFeature() const {
 }
 
 ///----------------------------------------------------------------------------
+/// hasGate - Checks if the tile is straightaway, and has a gate
+/// @return true if it is a straightaway and has a gate, false otherwise
+///----------------------------------------------------------------------------
+
+const bool GameTile::hasGate() const {
+
+    const bool isGate = (base.spriteModifier & TileModifiers::GateClosed) ||
+                        (base.spriteModifier & TileModifiers::GateOpen);
+
+    return (isStraightaway() && isGate);
+}
+
+///----------------------------------------------------------------------------
 /// hasJumpPad - Checks if the tile is corner, and has a jumppad
 /// @return true if it is a corner and has a jumppad, false otherwise
 ///----------------------------------------------------------------------------
 
 const bool GameTile::hasJumpPad() const {
     return (isDeadend() && base.spriteModifier & TileModifiers::JumpPad);    
+}
+
+///----------------------------------------------------------------------------
+/// hasSwitch - Checks if the tile is a corner and has a switch
+/// @return true if it is a corner and has a switch, false otherwise.
+///----------------------------------------------------------------------------
+
+const bool GameTile::hasSwitch() const {
+
+    const bool isSwitch = (base.spriteModifier & TileModifiers::SwitchOn) ||
+                          (base.spriteModifier & TileModifiers::SwitchOff);
+
+    return (isCorner() && isSwitch);
 }

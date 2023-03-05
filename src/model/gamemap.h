@@ -25,8 +25,10 @@ class GameMap {
         std::map<unsigned int, std::string> readRowDescriptions(const std::string& rowFileName);
         GameTile readTile(std::ifstream& mapFile, const std::string& description);
         void readJumps(std::ifstream& mapFile);
+        void readSwitches(std::ifstream& mapFile);
 
-        std::vector<ConnectionPoint> jumpPoints; // TODO: This actually needs to be a list or a deque
+        std::vector<ConnectionPoint> jumpPoints;
+        std::vector<ConnectionPoint> switchConnections;
         std::vector<GameTile> tiles;
         int numCols;
         int numRows;

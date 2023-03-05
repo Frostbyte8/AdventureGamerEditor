@@ -73,13 +73,12 @@ bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR,
     return true;
 }
 
-
-
 std::string std::to_string(const int& in) {
-    const int bufferSize = _scprintf("%d", in);
+    // TODO: Make this portable
+    const int bufferSize = _scprintf("%d", in) + 1;
     char* buffer = new char[bufferSize+1];
     sprintf_s(buffer, bufferSize, "%d", in);
-    std::string output(buffer, bufferSize);
+    std::string output(buffer, bufferSize-1);
     delete[] buffer;
     return output;
 }
