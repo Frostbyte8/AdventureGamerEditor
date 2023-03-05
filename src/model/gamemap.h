@@ -18,7 +18,7 @@ class GameMap {
         const std::vector<GameTile>& getTiles() const {return tiles;}
         
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
-        inline const int indexFromRowCol(const int& row, const int& col) const;
+        const unsigned int indexFromRowCol(const int& row, const int& col) const;
 
     private:
 

@@ -94,7 +94,7 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
         playerStartY = std::stoi(lineRead);
 
     }
-    catch (const std::invalid_argument& e) {
+    catch (const std::invalid_argument&) {
         throw std::runtime_error("Tried to read an attribute value, but did not get a valid integer.");
     }
     catch (const std::out_of_range& e) {

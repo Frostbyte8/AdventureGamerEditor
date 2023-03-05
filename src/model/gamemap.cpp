@@ -166,7 +166,7 @@ GameTile GameMap::readTile(std::ifstream& mapFile, const std::string& descriptio
         }
 
     }
-    catch (const std::invalid_argument& e) {
+    catch (const std::invalid_argument&) {
         throw std::runtime_error("Tried to read a sprite number, but did not get a valid integer");
     }
 
@@ -183,7 +183,11 @@ GameTile GameMap::readTile(std::ifstream& mapFile, const std::string& descriptio
 }
 
 ///----------------------------------------------------------------------------
-/// readJumps - 
+/// readTile - Read the "{jumps" section of the file.
+/// @param mapFile an ifstream of the map file to be read from
+/// @throws runtime_error if any of the numbers read are invalid
+/// @throws runtime_error if any of the tiles are 
+/// @returns a GameTile object
 ///----------------------------------------------------------------------------
 
 void GameMap::readJumps(std::ifstream& mapFile) {
@@ -199,6 +203,7 @@ void GameMap::readJumps(std::ifstream& mapFile) {
     }
 
     try {
+
         std::getline(mapFile, line);
         const int numJumps = std::stoi(line);
         jumpPoints.reserve(numJumps);
@@ -211,7 +216,7 @@ void GameMap::readJumps(std::ifstream& mapFile) {
             int y = std::stoi(line);
             SimplePoint jumpA(x, y);
 
-            size_t tileIndex = indexFromRowCol(y, x);
+            unsigned int tileIndex = indexFromRowCol(y, x);
             if(!(tiles.at(tileIndex).hasJumpPad())) {
                 throw std::runtime_error("Error reading file: Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile");
             }
@@ -227,11 +232,7 @@ void GameMap::readJumps(std::ifstream& mapFile) {
                 throw std::runtime_error("Error reading file: Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile");
             }
 
-            // Verify that those tiles are indeed Jump tiles
-
             ConnectionPoint jumpConnection(jumpA, jumpB);
-
-
             
             if(!ifConnectionExists(jumpPoints, jumpConnection)) {
                 jumpPoints.push_back(jumpConnection);
@@ -239,20 +240,40 @@ void GameMap::readJumps(std::ifstream& mapFile) {
             else {
                 throw std::runtime_error("Error reading file: Duplicate Jump Point was read");
             }
-
         }
     }
-    catch (const std::invalid_argument& e) {
+    catch (const std::invalid_argument&) {
         throw std::runtime_error("Tried to read a number, but did not get a valid integer");
+    }
+    catch (const std::out_of_range&) {
+        throw std::out_of_range("Tried to access a jump pad tile, but the index given was out of the valid range");
     }
 }
 
-const int GameMap::indexFromRowCol(const int& row, const int& col) const {
-    if(row > numRows || col > numCols) {
+///----------------------------------------------------------------------------
+/// indexFromRowCol - Converts the given row and column to an index for the
+/// current map being edited.
+/// @param integer specifying the row the tile is on
+/// @param integer specifying the column the tile is on
+/// @throws out_of_range if the row or column is outside the boundries of the
+/// map
+/// @return the index of the tile specified
+///----------------------------------------------------------------------------
+
+const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) const {
+    if(row > numRows || col > numCols || col < 0 || row < 0) {
         throw std::out_of_range("Index of of range.");
     }
     return (row * numCols) + col;
 }
+
+///----------------------------------------------------------------------------
+/// ifConnectionExists - Checks to see if a connection exists in the specified
+/// connection vector, at the given coordinates given.
+/// @param vector containing the connection points
+/// @param ConnectionPoint to check for
+/// @return true if the connection was found, false if it was not.
+///----------------------------------------------------------------------------
 
 const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const {
     

@@ -78,7 +78,7 @@ bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR,
 std::string std::to_string(const int& in) {
     const int bufferSize = _scprintf("%d", in);
     char* buffer = new char[bufferSize+1];
-    sprintf(buffer, "%d", in);
+    sprintf_s(buffer, bufferSize, "%d", in);
     std::string output(buffer, bufferSize);
     delete[] buffer;
     return output;
