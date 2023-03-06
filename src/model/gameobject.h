@@ -144,6 +144,44 @@ class GameObject {
 
                 }
 
+                Builder& attributeBase(const int amount&, const unsigned int& whichAttribute) {
+
+                    if(whichAttribute >= AttributeTypes::NumTypes) {
+                        throw std::invalid_argument("Attempted to set an invalid base attribute");
+                    }
+
+                    base.attributeBase[whichAttribute] = amount;
+                    return *this;
+                }
+
+                Builder& attributeRandom(const int amount& const unsigned int& whichAttribute) {
+                    if(whichAttribute >= AttributeTypes::NumTypes) {
+                        throw std::invalid_argument("Attempted to set an invalid random attribute");
+                    }
+                    base.attributeRandom[whichAttribute] = amount;
+                    return *this;
+                }
+
+                Builder& creatureID(const int& creatureID) {
+                    base.creatureID = creatureID;
+                    return *this;
+                }
+
+                Builder& doorColumn(const int& doorColumn) {
+                    base.doorColumn = doorColumn;
+                    return *this;
+                }
+                
+                Builder& doorRow(const int& doorRow) {
+                    base.doorRow = doorRow;
+                    return *this;
+                }
+
+                Builder& flags1(const int& flags1) {
+                    base.flags1 = flags1;
+                    return *this
+                }
+
             private:
                 Base base;
                 friend class GamerObject;
@@ -182,6 +220,9 @@ class GameObject {
             base.x              = builder.base.x;
             base.y              = builder.base.y;
         }
+
+    private:
+        Base base;
 
 };
 
