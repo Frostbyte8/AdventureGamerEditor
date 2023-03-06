@@ -7,10 +7,10 @@
 #include "../editor_constants.h"
 
 //-----------------------------------------------------------------------------
-// GamerObjectConstants - Exactly what it says
+// GameObjectConstants - Exactly what it says
 //-----------------------------------------------------------------------------
 
-namespace GamerObjectConstants {
+namespace GameObjectConstants {
     const int NoID              = -1;
 
     const int NotOnCreature     = 0;
@@ -32,10 +32,10 @@ namespace GamerObjectConstants {
 }
 
 //-----------------------------------------------------------------------------
-// GamerObjectDescriptions - Nice names for each of the 6 descriptions
+// GameObjectDescriptions - Nice names for each of the 6 descriptions
 //-----------------------------------------------------------------------------
 
-namespace GamerObjectDescriptions {
+namespace GameObjectDescriptions {
     const int Name              = 0;
     const int OnSight           = 1;
     const int OnUse             = 2;
@@ -46,10 +46,10 @@ namespace GamerObjectDescriptions {
 }
 
 //-----------------------------------------------------------------------------
-// GamerObjectFlags1 - First set of flags used by objects
+// GameObjectFlags1 - First set of flags used by objects
 //-----------------------------------------------------------------------------
 
-namespace GamerObjectFlags1 {
+namespace GameObjectFlags1 {
     const uint8_t None              = 0x00;
     const uint8_t MasterKey         = 0x01;
     const uint8_t Invisible         = 0x02;
@@ -63,10 +63,10 @@ namespace GamerObjectFlags1 {
 }
 
 //-----------------------------------------------------------------------------
-// GamerObjectFlags2 - Second set of flags used by objects
+// GameObjectFlags2 - Second set of flags used by objects
 //-----------------------------------------------------------------------------
 
-namespace GamerObjectFlags2 {
+namespace GameObjectFlags2 {
     const uint8_t None              = 0x00;
     const uint8_t NotOnGround       = 0x01;
     const uint8_t Key               = 0x02; // If it unlocks a specific door
@@ -85,8 +85,8 @@ class GameObject {
     //-------------------------------------------------------------------------
 
         struct Base {
-            int             attributeBase[AdventureGamerConstants::NumAttributes];
-            int             attributeRandom[AdventureGamerConstants::NumAttributes];
+            int             attributeBase[AttributeTypes::NumTypes];
+            int             attributeRandom[AttributeTypes::NumTypes];
             int             creatureID;
             std::string     description[6];
             int             doorColumn;
@@ -106,59 +106,51 @@ class GameObject {
 
         };
 
-    public:
-
     //-------------------------------------------------------------------------
     // Builder - Builds a game object
     //-------------------------------------------------------------------------
-
-        class Buildler {
+    
+    public:
+        
+        class Builder {
             
             public:
                 Builder() {
 
-                    for(int i = 0; i < AdventureGamerConstants::NumAttributes; i++) {
-                        attributeBase[i] = 0;
-                        attributeRandom[i] = 0;
+                    for(int i = 0; i < AttributeTypes::NumTypes; i++) {
+                        base.attributeBase[i] = 0;
+                        base.attributeRandom[i] = 0;
                     } 
 
-                    for(int i = 0; i < GamerObjectDescriptions::NumDescriptions; i++) {
-                        description[i] = "";
+                    for(int i = 0; i < AttributeTypes::NumTypes; i++) {
+                        base.description[i] = "";
                     }
 
-                    creatureID      = 0;
-                    doorColumn      = 0;
-                    doorRow         = 0;
-                    flags1          = GamerObjectFlags1::None;
-                    flags2          = GamerObjectFlags2::None;
-                    ID              = GamerObjectConstants::NoID;
-                    isLocated       = GamerObjectConstants::LocatedOnGround;
-                    location        = "0,0";
-                    makesSight      = SightTypes::NoChange;
-                    makesHearing    = HearingTypes::NoChange;
-                    monetaryWorth   = GamerObjectConstants::MinMonetaryValue;
-                    uses            = GamerObjectConstants::MinNumUses;
-                    usedWithID      = GamerObjectConstants::NoID;
-                    x               = 0;
-                    y               = 0;
+                    base.creatureID     = 0;
+                    base.doorColumn     = 0;
+                    base.doorRow        = 0;
+                    base.flags1         = GameObjectFlags1::None;
+                    base.flags2         = GameObjectFlags2::None;
+                    base.ID             = GameObjectConstants::NoID;
+                    base.isLocated      = GameObjectConstants::LocatedOnGround;
+                    base.location       = "0,0";
+                    base.makesSight     = SightTypes::NoChange;
+                    base.makesHearing   = HearingTypes::NoChange;
+                    base.monetaryWorth  = GameObjectConstants::MinMonetaryValue;
+                    base.uses           = GameObjectConstants::MinNumUses;
+                    base.usedWithID     = GameObjectConstants::NoID;
+                    base.x              = 0;
+                    base.y              = 0;
 
                 }
 
-                Builder& attributeBase(const int amount&, const unsigned int& whichAttribute) {
-
-                    if(whichAttribute >= AttributeTypes::NumTypes) {
-                        throw std::invalid_argument("Attempted to set an invalid base attribute");
-                    }
-
-                    base.attributeBase[whichAttribute] = amount;
+                Builder& attributeBase(const int& amount, const AttributeTypes& type) {
+                    base.attributeBase[type.asInt()] = amount;
                     return *this;
                 }
 
-                Builder& attributeRandom(const int amount& const unsigned int& whichAttribute) {
-                    if(whichAttribute >= AttributeTypes::NumTypes) {
-                        throw std::invalid_argument("Attempted to set an invalid random attribute");
-                    }
-                    base.attributeRandom[whichAttribute] = amount;
+                Builder& attributeRandom(const int& amount, const AttributeTypes& type) {
+                    base.attributeRandom[type.asInt()] = amount;
                     return *this;
                 }
 
@@ -179,12 +171,17 @@ class GameObject {
 
                 Builder& flags1(const int& flags1) {
                     base.flags1 = flags1;
-                    return *this
+                    return *this;
+                }
+
+                Builder& flags2(const int& flags2) {
+                    base.flags2 = flags2;
+                    return *this;
                 }
 
             private:
                 Base base;
-                friend class GamerObject;
+                friend class GameObject;
         };
 
     //-------------------------------------------------------------------------
@@ -193,14 +190,14 @@ class GameObject {
 
     public:
 
-        GamerObject(Builder& builder) {
+        GameObject(Builder& builder) {
 
-            for(int i = 0; i < AdventureGamerConstants::NumAttributes; i++) {
+            for(int i = 0; i < AttributeTypes::NumTypes; i++) {
                 base.attributeBase[i] = builder.base.attributeBase[i];
                 base.attributeRandom[i] = builder.base.attributeRandom[i];
             }
 
-            for(int i = 0; i < GamerObjectConstants::NumDescriptions; i++) {
+            for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
                 base.description[i] = builder.base.description[i];
             }
 

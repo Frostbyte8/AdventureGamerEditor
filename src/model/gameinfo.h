@@ -17,8 +17,8 @@ class GameInfo {
 		std::string         gameName;
 		std::string         saveName; // If it isn't "Master", it's a save game
 		std::string         currencyName;
-        uint8_t	            baseAttributes[AdventureGamerConstants::NumAttributes];
-		uint8_t	            randomAttributes[AdventureGamerConstants::NumAttributes];
+        uint8_t	            baseAttributes[AttributeTypes::NumTypes];
+		uint8_t	            randomAttributes[AttributeTypes::NumTypes];
 		int8_t	            playerHearing;
         int8_t              playerSight;
         uint8_t             playerStartX;

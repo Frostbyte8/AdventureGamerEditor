@@ -13,7 +13,7 @@ GameInfo::GameInfo() : gameName("Untitled Game"), saveName("Master"), isSaveFile
                        currencyName("Dollar"), playerHearing(HearingTypes::Normal), 
                        playerSight(SightTypes::Normal), playerStartX(0), playerStartY(0) {
     
-    for(unsigned int i = 0; i < AdventureGamerConstants::NumAttributes; i++) {
+    for(unsigned int i = 0; i < AttributeTypes::NumTypes; i++) {
         baseAttributes[i]   = AttributeDefaults::Base;
         randomAttributes[i] = AttributeDefaults::Random;
     }
@@ -61,7 +61,7 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
 
     try {
 
-        for(int i = 0; i < AdventureGamerConstants::NumAttributes; i++) {
+        for(int i = 0; i < AttributeTypes::NumTypes; i++) {
             
             std::getline(mapFile, line);
 

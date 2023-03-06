@@ -19,7 +19,7 @@ GameMapView::GameMapView(GameWorldController* gwc) : backBufferDC(NULL),
 ///----------------------------------------------------------------------------
 
 const bool GameMapView::isBMPLoaded() const {
-    return tilesetBMP.GetHandle();
+    return (tilesetBMP.GetHandle() ? true : false);
 }
 
 //=============================================================================
