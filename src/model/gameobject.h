@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <assert.h>
 #include "../compat/stdint_compat.h"
 #include "../editor_constants.h"
 
@@ -36,13 +37,15 @@ namespace GameObjectConstants {
 //-----------------------------------------------------------------------------
 
 namespace GameObjectDescriptions {
-    const int Name              = 0;
-    const int OnSight           = 1;
-    const int OnUse             = 2;
-    const int OnLastUse         = 3;
-    const int Icon              = 4;
-    const int Sound             = 5;
-    const int NumDescriptions   = 6;
+    const int Name                  = 0;
+    const int OnSight               = 1;
+    const int OnUse                 = 2;
+    const int OnLastUse             = 3;
+    const int Icon                  = 4;
+    const int Sound                 = 5;
+    const int NumDescriptions       = 4;
+    const int NumFileNames          = 2;
+    const int NumAllDescriptions    = 6;
 }
 
 //-----------------------------------------------------------------------------
@@ -159,6 +162,11 @@ class GameObject {
                     return *this;
                 }
 
+                Builder& description(const std::string& description, const unsigned int& which) {
+                    base.description[which] = description;
+                    return *this;
+                }
+
                 Builder& doorColumn(const int& doorColumn) {
                     base.doorColumn = doorColumn;
                     return *this;
@@ -179,7 +187,77 @@ class GameObject {
                     return *this;
                 }
 
+                Builder& ID(const int& ID) {
+                    base.ID = ID;
+                    return *this;
+                }
+
+                Builder& isLocated(const int& isLocated) {
+                    base.isLocated = isLocated;
+                    return *this;
+                }
+
+                Builder& location(const std::string& location) {
+                    base.location = location;
+                    return *this;
+                }
+
+                Builder& makesSight(const int& makesSight) {
+                    base.makesSight = makesSight;
+                    return *this;
+                }
+
+                Builder& makesHearing(const int& makesHearing) {
+                    base.makesHearing = makesHearing;
+                    return *this;
+                }
+
+                Builder& monetaryWorth(const int& monetaryWorth) {
+                    base.monetaryWorth = monetaryWorth;
+                    return *this;
+                }
+
+                Builder& uses(const int& uses) {
+                    base.uses = uses;
+                    return *this;
+                }
+
+                Builder& usedWithID(const int& usedWithID) {
+                    base.usedWithID = usedWithID;
+                    return *this;
+                }
+
+                Builder& x(const int& x) {
+                    base.x = x;
+                    return *this;
+                }
+
+                Builder& y(const int& y) {
+                    base.y = y;
+                    return *this;
+                }
+
+                GameObject build() {
+                    // TOOD: Any additional error checking that must occur, we may also
+                    return (*this);
+                }
+                
+
             private:
+
+                // These ones should only be accessed via the read function
+                Builder& attributeBase(const int& amount, const unsigned int& type) {
+                    assert(type < AttributeTypes::NumTypes);
+                    base.attributeBase[type] = amount;
+                    return *this;
+                }
+
+                Builder& attributeRandom(const int& amount, const unsigned int& type) {
+                    assert(type < AttributeTypes::NumTypes);
+                    base.attributeRandom[type] = amount;
+                    return *this;
+                }
+
                 Base base;
                 friend class GameObject;
         };
@@ -190,6 +268,11 @@ class GameObject {
 
     public:
 
+        GameObject() {} // TODO: Remove this. Used for testing
+        void readObject(std::ifstream& mapFile);
+
+    private:
+
         GameObject(Builder& builder) {
 
             for(int i = 0; i < AttributeTypes::NumTypes; i++) {
@@ -197,7 +280,7 @@ class GameObject {
                 base.attributeRandom[i] = builder.base.attributeRandom[i];
             }
 
-            for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
+            for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
                 base.description[i] = builder.base.description[i];
             }
 
@@ -218,7 +301,7 @@ class GameObject {
             base.y              = builder.base.y;
         }
 
-    private:
+    
         Base base;
 
 };

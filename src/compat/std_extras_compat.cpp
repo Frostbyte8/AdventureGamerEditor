@@ -19,6 +19,7 @@ void IsValidInteger(const std::string& in) {
             
             if(in[i] == '-' || in[i] == '+') {
                 bool signFound = true; // The next character after this MUST be a number.
+                continue;
             }
         }
 

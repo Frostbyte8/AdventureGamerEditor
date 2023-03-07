@@ -229,15 +229,6 @@ class GameTile {
 
     public:
 
-        GameTile(Builder& builder) {
-            base.name           = builder.base.name;
-            base.flags          = builder.base.flags;
-            base.description    = builder.base.description;
-            base.sprite         = builder.base.sprite;
-            base.spriteIndex    = builder.base.spriteIndex;
-            base.spriteModifier = builder.base.spriteModifier;
-        }
-
         // Accessors
 
         const std::string&      getDescription() const;
@@ -261,6 +252,16 @@ class GameTile {
         void readTile(std::ifstream& mapFile, std::ifstream& rowFile);
 
     private:
+
+        GameTile(Builder& builder) {
+            base.name           = builder.base.name;
+            base.flags          = builder.base.flags;
+            base.description    = builder.base.description;
+            base.sprite         = builder.base.sprite;
+            base.spriteIndex    = builder.base.spriteIndex;
+            base.spriteModifier = builder.base.spriteModifier;
+        }
+
         //GameTile(){};
         Base base;
 

@@ -147,6 +147,8 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
 /// @returns a GameTile object
 ///----------------------------------------------------------------------------
 
+// TODO: readTile should be part of the gametile model.
+
 GameTile GameMap::readTile(std::ifstream& mapFile, const std::string& description) {
 
     std::string line;
