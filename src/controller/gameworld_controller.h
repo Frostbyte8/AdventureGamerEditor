@@ -4,6 +4,7 @@
 #include "../model/gameinfo.h"
 #include "../model/gamemap.h"
 #include "../model/gameobject.h"
+#include "../model/gamecharacter.h"
 #include "../interface/mainwindow_interface.h"
 
 class GameWorldController {

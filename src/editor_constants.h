@@ -48,6 +48,7 @@ class AttributeTypes {
         ATTRIBUTETYPES(Luck, 3);
         ATTRIBUTETYPES(TorchLife, 4);
         static const unsigned int NumTypes = 5;
+        static const unsigned int NumTypesForCharacters = 4; // Characters lack Torch Life
 
         bool operator==(const AttributeTypes& rhs) const { return this->value == rhs.value; }
         bool operator!=(const AttributeTypes& rhs) const { return !(*this == rhs);}

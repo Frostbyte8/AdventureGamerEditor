@@ -1,5 +1,5 @@
-#ifndef __GAMEOBJECT_H_
-#define __GAMEOBJECT_H_
+#ifndef __GAMEOBJECT_H__
+#define __GAMEOBJECT_H__
 
 #include <string>
 #include <fstream>
@@ -90,20 +90,22 @@ class GameObject {
         struct Base {
             int             attributeBase[AttributeTypes::NumTypes];
             int             attributeRandom[AttributeTypes::NumTypes];
-            int             creatureID;
             std::string     description[6];
             int             doorColumn;
             int             doorRow;
             uint8_t         flags1;
             uint8_t         flags2;
             int             ID;
-            int             isLocated;
             std::string     location;
             int             makesSight;
             int             makesHearing;
             int             monetaryWorth;
             int             uses;
             int             usedWithID;
+
+            // Cached information used by the editor
+            int             creatureID;
+            int             isLocated;
             int             x;
             int             y;
 
@@ -198,6 +200,8 @@ class GameObject {
                 }
 
                 Builder& location(const std::string& location) {
+                    // TODO: Location also sets X, Y, and IsLocated
+                    // for editor use.
                     base.location = location;
                     return *this;
                 }
@@ -306,4 +310,4 @@ class GameObject {
 
 };
 
-#endif // __GAMEOBJECT_H_
+#endif // __GAMEOBJECT_H__
