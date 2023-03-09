@@ -12,8 +12,8 @@ namespace EditorConstants {
 
     // TODO: Calculate the width/height from the source image and remove
     // the 37's.
-    const unsigned int TileWidth            = 37;
-    const unsigned int TileHeight           = 37;
+    //const unsigned int TileWidth            = 37;
+    //const unsigned int TileHeight           = 37;
     const unsigned int TilesPerRow          = 16;
     const unsigned int TilesPerCol          = 16;
     const unsigned int DirtroadStartRow     = 8;

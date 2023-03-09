@@ -133,7 +133,9 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     // TODO: Zoom Factor
 
 	CRect rc;
-	rc.right = EditorConstants::TileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
+
+    const int tileWidth = reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).getTileWidth();
+	rc.right = tileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
 	AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
 	const int newWidth = abs(rc.right - rc.left);
 	roadSelectorDocker->SetDockSize(newWidth);

@@ -59,6 +59,8 @@ class GameMapView : public CScrollView {
         virtual ~GameMapView() {}
 
         const bool isBMPLoaded() const;
+        const int& getTileWidth() const { return tileWidth; }
+        const int& gettileHeight() const { return tileHeight; }
         //void onZoomChange();
 
     protected:
@@ -81,6 +83,8 @@ class GameMapView : public CScrollView {
         GameWorldController*    gameWorldController;
 
         int fakeZoomLevel;
+        int tileWidth;
+        int tileHeight;
 };
 
 ///----------------------------------------------------------------------------

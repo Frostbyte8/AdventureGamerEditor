@@ -8,6 +8,8 @@
 GameMapView::GameMapView(GameWorldController* gwc) : backBufferDC(NULL), 
                          tilesetDC(NULL), gameWorldController(gwc) {
     fakeZoomLevel = 1;
+    tileWidth = 0;
+    tileHeight = 0;
 }
 
 //=============================================================================
@@ -30,8 +32,22 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
 
     tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
-    const int mapWidth = gameWorldController->getMapWidth() * EditorConstants::TileWidth * fakeZoomLevel;
-    const int mapHeight = gameWorldController->getMapHeight() * EditorConstants::TileHeight * fakeZoomLevel;
+    double tempWidth     = tilesetBMP.GetSize().cx / EditorConstants::TilesPerCol;
+    double tempHeight    = tilesetBMP.GetSize().cy / EditorConstants::TilesPerRow;
+
+    tileWidth   = static_cast<int>(tempWidth);
+    tileHeight  = static_cast<int>(tempHeight);
+
+    if(tempWidth - tileWidth != 0) {
+        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+    }
+
+    if(tempHeight - tileHeight != 0) {
+        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+    }
+
+    const int mapWidth = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
+    const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
 
     CSize abc(mapWidth, mapHeight);
     SetScrollSizes(abc); // Otherwise it won't work.
@@ -88,15 +104,15 @@ void GameMapView::OnDraw(CDC& dc) {
                 size_t index = (k * mapCols) + i;
                 const GameTile gt = gameMap.at(index);
 
-                const int srcX = gt.getSpriteIndex() * EditorConstants::TileWidth;
-                const int srcY = gt.getSpriteModifier() * EditorConstants::TileHeight;
-                const int destX = i * EditorConstants::TileWidth * fakeZoomLevel;
-                const int destY = k * EditorConstants::TileHeight * fakeZoomLevel;
-                const int width = EditorConstants::TileWidth * fakeZoomLevel;
-                const int height = EditorConstants::TileHeight * fakeZoomLevel;
+                const int srcX = gt.getSpriteIndex() * tileWidth;
+                const int srcY = gt.getSpriteModifier() * tileHeight;
+                const int destX = i * tileWidth * fakeZoomLevel;
+                const int destY = k * tileHeight * fakeZoomLevel;
+                const int width = tileWidth * fakeZoomLevel;
+                const int height = tileHeight * fakeZoomLevel;
 
                 backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC, 
-                                        srcX, srcY, EditorConstants::TileWidth, EditorConstants::TileHeight, SRCCOPY);
+                                        srcX, srcY, tileWidth, tileHeight, SRCCOPY);
 
                 if(gt.getSpriteModifier() & TileFlags::Dark) {
                     AlphaBlend(backBufferDC.GetHDC(), destX, destY, width, height, alphaDC, 0, 0, 1, 1, fn);
