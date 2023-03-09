@@ -18,6 +18,9 @@ bool GameWorldController::LoadWorld(const std::string& filePath, const std::stri
             // TODO: Just for testing. This wrongly reads all the objects for now
             GameObject go;
             go.readObject(ifs);
+
+            GameCharacter gc;
+            gc.readCharacter(ifs);
             
 
         }

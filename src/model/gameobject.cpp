@@ -11,7 +11,7 @@ void GameObject::readObject(std::ifstream& mapFile) {
     line = Frost::rtrim(line, 13);
 
     // Read the header
-    // TODO: Header reading is for the Mapfile, read object should strictly read
+    // TODO: Header reading should not be done here, read object should strictly read
     // just the object data.
 
     if(AdventureGamerHeadings::Objects.compare(line)) {
@@ -22,21 +22,17 @@ void GameObject::readObject(std::ifstream& mapFile) {
         
         std::getline(mapFile, line);
         const int numObjects = std::stoi(line);
-        GameObject::Builder builder;
         
         for(int k = 0; k < numObjects; k++) {
+
+            GameObject::Builder builder;
 
             std::getline(mapFile, line);
             builder.ID(std::stoi(line));
 
             for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
                 std::getline(mapFile, line);
-                const std::string desc = Frost::trim(line, '"');
-                builder.description(desc, i);
-
-                if(i == 0) {
-                    OutputDebugStringA(line.c_str());
-                }
+                builder.description(Frost::trim(Frost::rtrim(line, 13), '"'), i);
             }
 
             std::getline(mapFile, line);
@@ -85,10 +81,8 @@ void GameObject::readObject(std::ifstream& mapFile) {
             std::getline(mapFile, line);
             builder.usedWithID(std::stoi(line));
 
-            
+             // return builder.build();
         }
-
-        // return builder.build(); 
 
     }
     catch(std::invalid_argument& e) {

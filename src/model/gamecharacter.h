@@ -66,7 +66,7 @@ class GameCharacter {
 
         struct Base {
             int             attribute[AttributeTypes::NumTypesForCharacters];
-            std::string     description[GameObjectDescriptions::NumAllDescriptions];
+            std::string     description[GameCharacterDescriptions::NumAllDescriptions];
             uint8_t         flags;
             int             ID;
             std::string     location;
@@ -97,12 +97,12 @@ class GameCharacter {
                         base.attribute[i] = 0;
                     }
 
-                    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
+                    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; i++) {
                         base.description[i] = "";
                     }
 
                     base.flags      = 0;
-                    base.ID         = GameObjectConstants::NoID;
+                    base.ID         = GameCharacterConstants::NoID;
                     base.location   = "0,0";
                     base.money      = 0;
                     base.sight      = 0;

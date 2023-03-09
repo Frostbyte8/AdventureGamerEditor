@@ -71,7 +71,7 @@ namespace AdventureGamerHeadings {
     const std::string Switches      = "{swtchs";
     const std::string Attributes    = "{attrb";
     const std::string Objects       = "{objct";
-    const std::string Character     = "{cretr";
+    const std::string Characters    = "{cretr";
 }
 
 ///----------------------------------------------------------------------------
