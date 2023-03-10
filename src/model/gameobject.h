@@ -97,8 +97,8 @@ class GameObject {
             uint8_t         flags2;
             int             ID;
             std::string     location;
-            int             makesSight;
-            int             makesHearing;
+            unsigned int    makesSight;
+            unsigned int    makesHearing;
             int             monetaryWorth;
             int             uses;
             int             usedWithID;
@@ -139,8 +139,8 @@ class GameObject {
                     base.ID             = GameObjectConstants::NoID;
                     base.isLocated      = GameObjectConstants::LocatedOnGround;
                     base.location       = "0,0";
-                    base.makesSight     = SightTypes::NoChange;
-                    base.makesHearing   = HearingTypes::NoChange;
+                    base.makesSight     = SightTypes::NoChange().asInt();
+                    base.makesHearing   = HearingTypes::NoChange().asInt();
                     base.monetaryWorth  = GameObjectConstants::MinMonetaryValue;
                     base.uses           = GameObjectConstants::MinNumUses;
                     base.usedWithID     = GameObjectConstants::NoID;
@@ -206,13 +206,13 @@ class GameObject {
                     return *this;
                 }
 
-                Builder& makesSight(const int& makesSight) {
-                    base.makesSight = makesSight;
+                Builder& makesSight(const SightTypes& makesSight) {
+                    base.makesSight = makesSight.asInt();
                     return *this;
                 }
-
-                Builder& makesHearing(const int& makesHearing) {
-                    base.makesHearing = makesHearing;
+                
+                Builder& makesHearing(const HearingTypes& makesHearing) {
+                    base.makesHearing = makesHearing.asInt();
                     return *this;
                 }
 
@@ -259,6 +259,18 @@ class GameObject {
                 Builder& attributeRandom(const int& amount, const unsigned int& type) {
                     assert(type < AttributeTypes::NumTypes);
                     base.attributeRandom[type] = amount;
+                    return *this;
+                }
+
+                Builder& makesSight(const int& makesSight) {
+                    assert(makesSight < SightTypes::NumTypes);
+                    base.makesSight = makesSight;
+                    return *this;
+                }
+
+                Builder& makesHearing(const int& makesHearing) {
+                    assert(makesHearing < SightTypes::NumTypes);
+                    base.makesHearing = makesHearing;
                     return *this;
                 }
 

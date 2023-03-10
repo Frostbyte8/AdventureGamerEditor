@@ -10,13 +10,16 @@ namespace AttributeDefaults {
 }
 
 GameInfo::GameInfo() : gameName("Untitled Game"), saveName("Master"), isSaveFile(false),
-                       currencyName("Dollar"), playerHearing(HearingTypes::Normal), 
-                       playerSight(SightTypes::Normal), playerStartX(0), playerStartY(0) {
+                       currencyName("Dollar"), playerHearing(HearingTypes::Normal()), 
+                       playerSight(SightTypes::Normal()), playerStartX(0), playerStartY(0) {
     
     for(unsigned int i = 0; i < AttributeTypes::NumTypes; i++) {
         baseAttributes[i]   = AttributeDefaults::Base;
         randomAttributes[i] = AttributeDefaults::Random;
     }
+
+    
+    
 
 }
 
@@ -95,8 +98,8 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
         // things.
 
         if(isSaveFile) {
-            playerSight     = newSight;
-            playerHearing   = newHearing;
+            //playerSight     = newSight;
+            //playerHearing   = newHearing;
         }
 
         std::getline(mapFile, line);

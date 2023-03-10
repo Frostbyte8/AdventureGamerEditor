@@ -19,8 +19,8 @@ class GameInfo {
 		std::string         currencyName;
         uint8_t	            baseAttributes[AttributeTypes::NumTypes];
 		uint8_t	            randomAttributes[AttributeTypes::NumTypes];
-		int8_t	            playerHearing;
-        int8_t              playerSight;
+        HearingTypes        playerHearing;
+        SightTypes          playerSight;
         uint8_t             playerStartX;
         uint8_t             playerStartY;
         bool                isSaveFile;

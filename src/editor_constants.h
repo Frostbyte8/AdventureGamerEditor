@@ -9,11 +9,6 @@
 ///----------------------------------------------------------------------------
 
 namespace EditorConstants {
-
-    // TODO: Calculate the width/height from the source image and remove
-    // the 37's.
-    //const unsigned int TileWidth            = 37;
-    //const unsigned int TileHeight           = 37;
     const unsigned int TilesPerRow          = 16;
     const unsigned int TilesPerCol          = 16;
     const unsigned int DirtroadStartRow     = 8;
@@ -24,8 +19,10 @@ namespace EditorConstants {
 ///----------------------------------------------------------------------------
 
 namespace LanguageConstants {
-    const unsigned int FileMenuItem         = 100;
-    const unsigned int ExitMenuItem         = 101;
+    enum {
+        FileMenuItem = 100,
+        ExitMenuItem
+    };
 }
 
 // TODO: Below this line are Adventure Gamer Constants, not editor ones, so
@@ -62,6 +59,19 @@ class AttributeTypes {
 #undef ATTRIBUTETYPES
 
 ///----------------------------------------------------------------------------
+/// AdventureGamerConstants - Hard limits of the game itself
+///----------------------------------------------------------------------------
+
+namespace AdventureGamerConstants {
+
+    // Rows definately cannot exceed 100, but columns? I think it may be
+    // dependant on memory, which given that it was written in Visual Basic 3,
+    // is probably not much.
+    const unsigned int MaxCols              = 100;
+    const unsigned int MaxRows              = 100; // That's 0 to 99.
+}
+
+///----------------------------------------------------------------------------
 /// AdventureGamerHeadings - Various headings the File format uses
 ///----------------------------------------------------------------------------
 
@@ -88,27 +98,55 @@ namespace AdventureGamerSubHeadings {
 /// of a save game, what it was when the game was saved.
 ///----------------------------------------------------------------------------
 
-namespace HearingTypes {
-    enum types {
-        NoChange,
-        Deaf,
-        Normal,
-        Ultrasonic
-    };
-}
+#define HEARINGTYPES(name, value) static HearingTypes name() { return HearingTypes(value); }
+                                    
+class HearingTypes {
+    
+    public:
+        // The game refers to Energy as Stamina in some cases.
+        HEARINGTYPES(NoChange, 0); 
+        HEARINGTYPES(Deaf, 1);
+        HEARINGTYPES(Normal, 2);
+        HEARINGTYPES(Ultrasonic, 3);
+        static const unsigned int NumTypes = 4;
+
+        bool operator==(const HearingTypes& rhs) const { return this->value == rhs.value; }
+        bool operator!=(const HearingTypes& rhs) const { return !(*this == rhs);}
+        const unsigned int& asInt() const { return value; }
+
+    private:
+        explicit HearingTypes(unsigned int inValue) : value(inValue) {}
+        unsigned int value;
+};
+
+#undef HEARINGTYPES
 
 ///----------------------------------------------------------------------------
 /// SightTypes - How an object alters the player's sight, or in the case of a
 /// save game, what it was when the game was saved.
 ///----------------------------------------------------------------------------
 
-namespace SightTypes {
-    enum types {
-        NoChange,
-        Blind,
-        Normal,
-        Infrared
-    };
-}
+#define SIGHTTYPES(name, value) static SightTypes name() { return SightTypes(value); }
+                                    
+class SightTypes {
+    
+    public:
+        // The game refers to Energy as Stamina in some cases.
+        SIGHTTYPES(NoChange, 0); 
+        SIGHTTYPES(Blind, 1);
+        SIGHTTYPES(Normal, 2);
+        SIGHTTYPES(Infrared, 3);
+        static const unsigned int NumTypes = 4;
+
+        bool operator==(const SightTypes& rhs) const { return this->value == rhs.value; }
+        bool operator!=(const SightTypes& rhs) const { return !(*this == rhs);}
+        const unsigned int& asInt() const { return value; }
+
+    private:
+        explicit SightTypes(unsigned int inValue) : value(inValue) {}
+        unsigned int value;
+};
+
+#undef SIGHTTYPES
 
 #endif // __EDITOR_CONSTANTS_H__

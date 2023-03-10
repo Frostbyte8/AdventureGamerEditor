@@ -144,8 +144,8 @@ class GameCharacter {
                     return *this;
                 }
 
-                Builder& sight(const int& sight) {
-                    base.sight = sight;
+                Builder& sight(const SightTypes& sight) {
+                    base.sight = sight.asInt();
                     return *this;
                 }
 
@@ -176,9 +176,16 @@ class GameCharacter {
             private:
 
                 // These ones should only be accessed via the read function
+
                 Builder& attribute(const int& amount, const unsigned int& type) {
                     assert(type < AttributeTypes::TorchLife().asInt());
                     base.attribute[type] = amount;
+                    return *this;
+                }
+
+                Builder& sight(const int& sight) {
+                    assert(sight < SightTypes::NumTypes);
+                    base.sight = sight;
                     return *this;
                 }
 
