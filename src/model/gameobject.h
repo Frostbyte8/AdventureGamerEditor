@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <assert.h>
+#include "../util/enumflags.h"
 #include "../compat/stdint_compat.h"
 #include "../editor_constants.h"
 
@@ -53,17 +54,21 @@ namespace GameObjectDescriptions {
 //-----------------------------------------------------------------------------
 
 namespace GameObjectFlags1 {
-    const uint8_t None              = 0x00;
-    const uint8_t MasterKey         = 0x01;
-    const uint8_t Invisible         = 0x02;
-    const uint8_t Ladder            = 0x04;
-    const uint8_t Protection        = 0x08;
-    const uint8_t Torch             = 0x10;
-    const uint8_t Worn              = 0x20;
-    const uint8_t FixedLocation     = 0x40;
-    const uint8_t Money             = 0x80;
-    const uint8_t NumFlags          = 8;
+
+    enum flags {
+        MasterKey         = 0x01,
+        Invisible         = 0x02,
+        Ladder            = 0x04,
+        Protection        = 0x08,
+        Torch             = 0x10,
+        Worn              = 0x20,
+        FixedLocation     = 0x40,
+        Money             = 0x80,
+        NumFlags          = 8
+    };
 }
+
+typedef EnumFlags<enum GameObjectFlags1::flags, GameObjectFlags1::NumFlags> GameObjectFlags1_T;
 
 //-----------------------------------------------------------------------------
 // GameObjectFlags2 - Second set of flags used by objects
@@ -93,7 +98,7 @@ class GameObject {
             std::string     description[6];
             int             doorColumn;
             int             doorRow;
-            uint8_t         flags1;
+            GameObjectFlags1_T         flags1;
             uint8_t         flags2;
             int             ID;
             std::string     location;
@@ -134,7 +139,7 @@ class GameObject {
                     base.creatureID     = 0;
                     base.doorColumn     = 0;
                     base.doorRow        = 0;
-                    base.flags1         = GameObjectFlags1::None;
+                    //base.flags1         = GameObjectFlags1::None;
                     base.flags2         = GameObjectFlags2::None;
                     base.ID             = GameObjectConstants::NoID;
                     base.isLocated      = GameObjectConstants::LocatedOnGround;
@@ -179,8 +184,8 @@ class GameObject {
                     return *this;
                 }
 
-                Builder& flags1(const int& flags1) {
-                    base.flags1 = flags1;
+                Builder& flags1(const uint8_t& flags1) {
+                    base.flags1.from_uint(flags1);
                     return *this;
                 }
 
