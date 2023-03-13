@@ -218,6 +218,32 @@ const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& conne
 }
 
 ///----------------------------------------------------------------------------
+/// readCharacters - 
+///----------------------------------------------------------------------------
+
+void GameMap::readCharacters(std::ifstream& mapFile) {
+
+    std::string line;
+    std::getline(mapFile, line);
+    line = Frost::rtrim(line, 13);
+
+    if(AdventureGamerHeadings::Characters.compare(line)) {
+        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Characters + "\", but got \"" + line + "\".");
+    }
+
+    std::getline(mapFile, line);
+    const int numChars = std::stoi(line);
+    gameCharacters.reserve(numChars);
+
+    for(int i = 0; i < numChars; i++) {
+        GameCharacter::Builder characterBuilder;
+        characterBuilder.readCharacter(mapFile);
+        GameCharacter gameCharacter = characterBuilder.build();
+        gameCharacters.push_back(gameCharacter);
+    }
+}
+
+///----------------------------------------------------------------------------
 /// readObjects - 
 ///----------------------------------------------------------------------------
 

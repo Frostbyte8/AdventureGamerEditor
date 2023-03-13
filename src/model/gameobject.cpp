@@ -2,7 +2,6 @@
 #include "../util/frost.h"
 #include "../editor_constants.h"
 #include "../compat/std_extras_compat.h"
-#include <windows.h>
 
 void GameObject::Builder::readObject(std::ifstream& mapFile) {
     

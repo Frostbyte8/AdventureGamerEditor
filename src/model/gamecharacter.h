@@ -167,6 +167,8 @@ class GameCharacter {
                     return *this;
                 }
 
+                void readCharacter(std::ifstream& mapFile);
+
                 GameCharacter build() {
                     // TOOD: Any additional error checking that must occur, we may also
                     return (*this);
@@ -200,7 +202,6 @@ class GameCharacter {
     public:
 
         GameCharacter() {} // TODO: Remove this. Used for testing
-        void readCharacter(std::ifstream& mapFile);
 
     private:
 

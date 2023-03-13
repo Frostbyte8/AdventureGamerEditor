@@ -15,11 +15,7 @@ bool GameWorldController::LoadWorld(const std::string& filePath, const std::stri
             gameMap.readMap(ifs, filePath, fileName);
             gameInfo.readPlayerAttributes(ifs);
             gameMap.readObjects(ifs);
-
-            // TODO: Just for testing. This wrongly reads all the objects for now
-            GameCharacter gc;
-            gc.readCharacter(ifs);
-            
+            gameMap.readCharacters(ifs);           
 
         }
         catch (const std::runtime_error& e) {

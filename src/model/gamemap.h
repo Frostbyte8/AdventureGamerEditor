@@ -20,6 +20,7 @@ class GameMap {
         const int& getHeight() const;
         const unsigned int indexFromRowCol(const int& row, const int& col) const;
 
+        void readCharacters(std::ifstream& mapFile);
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void readObjects(std::ifstream& mapFile);
 
@@ -34,6 +35,7 @@ class GameMap {
         std::vector<ConnectionPoint> jumpPoints;
         std::vector<ConnectionPoint> switchConnections;
         std::vector<GameTile> tiles;
+        std::vector<GameCharacter> gameCharacters;
         std::vector<GameObject> gameObjects;
         int numCols;
         int numRows;
