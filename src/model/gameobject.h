@@ -246,6 +246,8 @@ class GameObject {
                     return *this;
                 }
 
+                void readObject(std::ifstream& mapFile);
+
                 GameObject build() {
                     // TOOD: Any additional error checking that must occur, we may also
                     return (*this);
@@ -290,7 +292,6 @@ class GameObject {
     public:
 
         GameObject() {} // TODO: Remove this. Used for testing
-        void readObject(std::ifstream& mapFile);
 
     private:
 

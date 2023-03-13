@@ -5,8 +5,66 @@
 #include <algorithm>
 
 //=============================================================================
+// Accessors
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// getHeight - Returns the height of the map
+/// @return an interger indicating the height of the map
+///----------------------------------------------------------------------------
+
+const int& GameMap::getHeight() const {
+    return numRows;
+}
+
+///----------------------------------------------------------------------------
+/// getTiles - Return a constant reference to a vector containing the tiles
+/// data on the map.
+/// @return a constant reference to a vector filled with GameTiles
+///----------------------------------------------------------------------------
+
+const std::vector<GameTile>& GameMap::getTiles() const {
+    return tiles;
+}
+
+///----------------------------------------------------------------------------
+/// getWidth - Returns the width of the map
+/// @return an interger indicating the width of the map
+///----------------------------------------------------------------------------
+
+const int& GameMap::getWidth() const {
+    return numCols;
+}
+
+//=============================================================================
 // Public Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// indexFromRowCol - Converts the given row and column to an index for the
+/// current map being edited.
+/// @param integer specifying the row the tile is on
+/// @param integer specifying the column the tile is on
+/// @throws out_of_range if the row or column is outside the boundries of the
+/// map
+/// @return the index of the tile specified
+///----------------------------------------------------------------------------
+
+const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) const {
+    if(row > numRows || col > numCols || col < 0 || row < 0) {
+        throw std::out_of_range("Index of of range.");
+    }
+    return (row * numCols) + col;
+}
+
+///----------------------------------------------------------------------------
+/// readMap - Reads the SG0 and TXX file of the map name given, and then uses
+/// it to construct the game map.
+/// @param an ifstream if the map file
+/// @param a string to the path where the mapfile is located
+/// @param a string indicating the file's name
+/// @throws runtime_error
+///----------------------------------------------------------------------------
 
 void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
                       const std::string& fileName) {
@@ -67,6 +125,8 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
         // TODO: Throwing an error right now causes the object to be in an undefined state, to test
         // this, throw an error here and find a way to stop it from being incomplete. Probably
         // a builder pattern, but maybe not.
+        // In addition, we need to catch the other errors and state that they are simply runtime
+        // errors
 
     }
 
@@ -136,6 +196,52 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
 //=============================================================================
 // Private Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// ifConnectionExists - Checks to see if a connection exists in the specified
+/// connection vector, at the given coordinates given.
+/// @param vector containing the connection points
+/// @param ConnectionPoint to check for
+/// @return true if the connection was found, false if it was not.
+///----------------------------------------------------------------------------
+
+const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& connections,
+                                       const ConnectionPoint& connectionPoint) const {
+    
+    if(!connections.size()) {
+        return false;
+    }
+    
+    std::vector<ConnectionPoint>::const_iterator it = find(connections.begin(), connections.end(),
+                                                           connectionPoint);
+    return !(it == connections.end());
+}
+
+///----------------------------------------------------------------------------
+/// readObjects - 
+///----------------------------------------------------------------------------
+
+void GameMap::readObjects(std::ifstream& mapFile) {
+
+    std::string line;
+    std::getline(mapFile, line);
+    line = Frost::rtrim(line, 13);
+
+    if(AdventureGamerHeadings::Objects.compare(line)) {
+        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Objects + "\", but got \"" + line + "\".");
+    }
+
+    std::getline(mapFile, line);
+    const int numObjects = std::stoi(line);
+    gameObjects.reserve(numObjects);
+
+    for(int i = 0; i < numObjects; i++) {
+        GameObject::Builder objectBuilder;
+        objectBuilder.readObject(mapFile);
+        GameObject gameObject = objectBuilder.build();
+        gameObjects.push_back(gameObject);
+    }
+}
 
 ///----------------------------------------------------------------------------
 /// readTile - Reads a single tile from the map file, and it will also give
@@ -324,39 +430,4 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
         throw std::out_of_range("Tried to access a jump pad tile, but the index given was out of the valid range");
     }
 
-}
-
-///----------------------------------------------------------------------------
-/// indexFromRowCol - Converts the given row and column to an index for the
-/// current map being edited.
-/// @param integer specifying the row the tile is on
-/// @param integer specifying the column the tile is on
-/// @throws out_of_range if the row or column is outside the boundries of the
-/// map
-/// @return the index of the tile specified
-///----------------------------------------------------------------------------
-
-const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) const {
-    if(row > numRows || col > numCols || col < 0 || row < 0) {
-        throw std::out_of_range("Index of of range.");
-    }
-    return (row * numCols) + col;
-}
-
-///----------------------------------------------------------------------------
-/// ifConnectionExists - Checks to see if a connection exists in the specified
-/// connection vector, at the given coordinates given.
-/// @param vector containing the connection points
-/// @param ConnectionPoint to check for
-/// @return true if the connection was found, false if it was not.
-///----------------------------------------------------------------------------
-
-const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const {
-    
-    if(!connections.size()) {
-        return false;
-    }
-    
-    std::vector<ConnectionPoint>::const_iterator it = find(connections.begin(), connections.end(), connectionPoint);
-    return !(it == connections.end());
 }
