@@ -11,12 +11,7 @@ bool GameWorldController::LoadWorld(const std::string& filePath, const std::stri
     if(ifs) {
 
         try {
-            gameInfo.readHeader(ifs);
             gameMap.readMap(ifs, filePath, fileName);
-            gameInfo.readPlayerAttributes(ifs);
-            gameMap.readObjects(ifs);
-            gameMap.readCharacters(ifs);           
-
         }
         catch (const std::runtime_error& e) {
 

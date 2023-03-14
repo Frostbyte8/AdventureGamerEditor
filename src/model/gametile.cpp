@@ -1,4 +1,40 @@
 #include "gametile.h"
+#include "../compat/std_extras_compat.h"
+
+//=============================================================================
+// GameTile::Builder
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// readTile - Reads a single tile from the map file, and it will also give
+/// the tile a long description if it's specified.
+/// @param mapFile an ifstream of the map file to be read from
+/// @param string containing the long description of the tile.
+///----------------------------------------------------------------------------
+
+void GameTile::Builder::readTile(std::ifstream& mapFile, const std::string& tileDescription) {
+    
+    if(!tileDescription.empty()) {
+        description(tileDescription);
+    }
+
+    try {
+
+        std::string line;
+        std::getline(mapFile, line);
+        sprite(std::stoi(line));
+
+        std::getline(mapFile, line);
+        flags(std::stoi(line));
+
+        if(base.sprite != 0) {
+            std::getline(mapFile, line);
+            name(line);
+        }
+
+    }
+
+}
 
 //=============================================================================
 // Accessors

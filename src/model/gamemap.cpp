@@ -69,6 +69,9 @@ const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) cons
 void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
                       const std::string& fileName) {
 
+
+    gameInfo.readHeader(mapFile);
+
     std::string line;
 
     // Whatever the value read is, it is always one more than it says.
@@ -84,7 +87,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     for(int row = 0; row < numRows; row++) {
 
-        std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
+        const std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
 
         std::getline(mapFile, line);
         line = Frost::rtrim(line, 13);
@@ -110,7 +113,6 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
             // if one exists.
 
             std::string tileDescription;
-
             std::map<unsigned int, std::string>::const_iterator it;
 			it = rowDescriptions.find(col);
 
@@ -118,8 +120,9 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
                 tileDescription = it->second;
             }
 
-            GameTile gt = readTile(mapFile, tileDescription);
-            tiles.push_back(gt);
+            GameTile::Builder tileBuilder;
+            tileBuilder.readTile(mapFile, tileDescription);
+            tiles.push_back(tileBuilder.build());
         }
 
         // TODO: Throwing an error right now causes the object to be in an undefined state, to test
@@ -130,9 +133,15 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     }
 
+    // TODO: Catch errors here: runtime_error, invalid_argument, out_of_range
+
     readJumps(mapFile);
     readSwitches(mapFile);
-
+    
+    gameInfo.readPlayerAttributes(mapFile);
+    
+    readObjects(mapFile);
+    readCharacters(mapFile);
 }
 
 ///----------------------------------------------------------------------------
@@ -266,54 +275,6 @@ void GameMap::readObjects(std::ifstream& mapFile) {
         objectBuilder.readObject(mapFile);
         GameObject gameObject = objectBuilder.build();
         gameObjects.push_back(gameObject);
-    }
-}
-
-///----------------------------------------------------------------------------
-/// readTile - Reads a single tile from the map file, and it will also give
-/// the tile a long description if it's specified.
-/// @param mapFile an ifstream of the map file to be read from
-/// @param string containing the long description of the tile.
-/// @throws runtime_error if any of the numbers read are invalid
-/// @throws runtime_error if the builder tries to build an invalid tile.
-/// @returns a GameTile object
-///----------------------------------------------------------------------------
-
-// TODO: readTile should be part of the gametile model.
-
-GameTile GameMap::readTile(std::ifstream& mapFile, const std::string& description) {
-
-    std::string line;
-    GameTile::Builder tileBuilder;
-
-    try {
-
-        std::getline(mapFile, line);
-        const int sprite = std::stoi(line);
-        tileBuilder.sprite(sprite);
-
-        std::getline(mapFile, line);
-        tileBuilder.flags(std::stoi(line));
-
-        if(sprite != 0) {
-            std::getline(mapFile, line);
-            tileBuilder.name(line);
-        }
-
-    }
-    catch (const std::invalid_argument&) {
-        throw std::runtime_error("Tried to read a sprite number, but did not get a valid integer");
-    }
-
-    if(!description.empty()) {
-        tileBuilder.description(description);
-    }
-
-    try {
-        return tileBuilder.build();
-    }
-    catch (const std::invalid_argument& e) {
-        throw std::runtime_error(e.what());
     }
 }
 

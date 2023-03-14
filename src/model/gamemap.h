@@ -7,6 +7,7 @@
 #include "gametile.h"
 #include "gameobject.h"
 #include "gamecharacter.h"
+#include "gameinfo.h"
 #include "connection_point.h"
 #include "../compat/stdint_compat.h"
 
@@ -19,19 +20,20 @@ class GameMap {
         const std::vector<GameTile>& getTiles() const;
         const int& getHeight() const;
         const unsigned int indexFromRowCol(const int& row, const int& col) const;
-
-        void readCharacters(std::ifstream& mapFile);
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
-        void readObjects(std::ifstream& mapFile);
 
     private:
 
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
         std::map<unsigned int, std::string> readRowDescriptions(const std::string& rowFileName);
-        GameTile readTile(std::ifstream& mapFile, const std::string& description);
+
+        //void reaadTiles(std::ifstream& mapFile);
+        void readCharacters(std::ifstream& mapFile);
         void readJumps(std::ifstream& mapFile);
+        void readObjects(std::ifstream& mapFile);
         void readSwitches(std::ifstream& mapFile);
 
+        GameInfo gameInfo;
         std::vector<ConnectionPoint> jumpPoints;
         std::vector<ConnectionPoint> switchConnections;
         std::vector<GameTile> tiles;

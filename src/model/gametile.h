@@ -3,6 +3,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <fstream>
 #include "../compat/stdint_compat.h"
 
 //-----------------------------------------------------------------------------
@@ -158,6 +159,8 @@ class GameTile {
                     return *this;
                 }
 
+                void readTile(std::ifstream& mapFile, const std::string& tileDescription);
+
                 GameTile build() {
 
                     const uint8_t modifier = (base.spriteModifier & TileModifiers::ALLMODS);
@@ -248,8 +251,6 @@ class GameTile {
         const bool isDark() const;
         const bool isDeadend() const;
         const bool isStraightaway() const;
-
-        void readTile(std::ifstream& mapFile, std::ifstream& rowFile);
 
     private:
 
