@@ -17,10 +17,6 @@ GameInfo::GameInfo() : gameName("Untitled Game"), saveName("Master"), isSaveFile
         baseAttributes[i]   = AttributeDefaults::Base;
         randomAttributes[i] = AttributeDefaults::Random;
     }
-
-    
-    
-
 }
 
 ///----------------------------------------------------------------------------
@@ -53,13 +49,15 @@ void GameInfo::readHeader(std::ifstream& mapFile) {
 void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
     
     std::string line;
+    std::string errorMsg = "Error reading attributes: ";
 
     // Try and read the Headings for each attribute, and their values
     std::getline(mapFile, line);
     line = Frost::rtrim(line, 13);
 
     if(AdventureGamerHeadings::Attributes.compare(line)) {
-        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Attributes + "\", but got \"" + line + "\".");
+        errorMsg.append("Expected \"" + AdventureGamerHeadings::Attributes + "\", but got \"" + line + "\".");
+        throw std::runtime_error(errorMsg);
     }
 
     try {
@@ -69,9 +67,8 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
             std::getline(mapFile, line);
 
             if(!(line.compare(AdventureGamerSubHeadings::Attributes[i]))) {
-                throw std::runtime_error("Subheading read error. Expected \"" + 
-                                         AdventureGamerSubHeadings::Attributes[i] + 
-                                         "\", but got \"" + line + "\".");
+                errorMsg.append("Expected \"" + AdventureGamerSubHeadings::Attributes[i] + "\", but got \"" + line + "\".");
+                throw std::runtime_error(errorMsg);
             }
 
             std::getline(mapFile, line);
@@ -108,11 +105,13 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
         playerStartY = std::stoi(line);
 
     }
-    catch (const std::invalid_argument&) {
-        throw std::runtime_error("Tried to read an attribute value, but did not get a valid integer.");
+    catch (const std::invalid_argument& e) {
+        errorMsg.append(e.what());
+        throw std::runtime_error(errorMsg);
     }
-    catch (const std::out_of_range&) {
-        throw std::runtime_error("Tried to read an attribute value, but the value was outside the vaild integer range.");
+    catch (const std::out_of_range& e) {
+        errorMsg.append(e.what());
+        throw std::runtime_error(errorMsg);
     }
 
 }

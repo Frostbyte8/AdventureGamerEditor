@@ -70,6 +70,9 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
                       const std::string& fileName) {
 
 
+    // TODO: Throwing an error right now causes the object to be in an undefined state.
+    // We also need to do some better error checking.
+
     gameInfo.readHeader(mapFile);
 
     std::string line;
@@ -81,9 +84,6 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     std::getline(mapFile, line);
     numRows = std::stoi(line) + 1;
-
-    // TODO: out of range errors need to be caught to
-    // Further more, read rows needs to be in it's own function.
 
     for(int row = 0; row < numRows; row++) {
 
@@ -114,7 +114,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
             std::string tileDescription;
             std::map<unsigned int, std::string>::const_iterator it;
-			it = rowDescriptions.find(col);
+		    it = rowDescriptions.find(col);
 
             if(it != rowDescriptions.end()) {
                 tileDescription = it->second;
@@ -125,81 +125,13 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
             tiles.push_back(tileBuilder.build());
         }
 
-        // TODO: Throwing an error right now causes the object to be in an undefined state, to test
-        // this, throw an error here and find a way to stop it from being incomplete. Probably
-        // a builder pattern, but maybe not.
-        // In addition, we need to catch the other errors and state that they are simply runtime
-        // errors
-
     }
-
-    // TODO: Catch errors here: runtime_error, invalid_argument, out_of_range
 
     readJumps(mapFile);
-    readSwitches(mapFile);
-    
+    readSwitches(mapFile);    
     gameInfo.readPlayerAttributes(mapFile);
-    
     readObjects(mapFile);
     readCharacters(mapFile);
-}
-
-///----------------------------------------------------------------------------
-/// readRowDescriptions - Reads the descriptions from the file given, if it
-/// exists. If it does not, it is possible that there are no descriptions for
-/// this row.
-/// @param a string indicating the full path to the row file.
-/// @return a map containing the strings, with they key being the column index
-/// @throws invalid_argument, runtime_error, 
-///----------------------------------------------------------------------------
-
-std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::string& rowFileName) {
-
-    std::ifstream ifs;
-    std::string line;
-    std::map<unsigned int, std::string> descriptionMap;
-
-    ifs.open(rowFileName.c_str(), std::ifstream::in | std::ios::binary);
-    
-    if(ifs) {
-
-        std::getline(ifs, line);
-        const unsigned long numDescriptions = std::stoul(line);
-
-        for(unsigned long i = 0; i < numDescriptions; i++) {
-            std::getline(ifs, line);
-
-            if(line.empty()) {
-                break; // Nothing left.
-            }
-            
-            const unsigned int colID = std::stoi(line);
-            std::string description;
-
-            do {
-                if(ifs.eof()) {
-                    break;
-                }
-                std::getline(ifs, line);
-
-                line = Frost::rtrim(line, '\r');
-
-                if(Frost::endsWith(line, "\"")) {
-                    break;
-                }
-
-                description += line;
-
-            } while(true);
-
-            description += line;
-
-            descriptionMap[colID] = description;
-        }
-
-    }
-
-    return descriptionMap;
 }
 
 //=============================================================================
@@ -227,17 +159,22 @@ const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& conne
 }
 
 ///----------------------------------------------------------------------------
-/// readCharacters - 
+/// readCharacters - Reads the "{cretr" section of the map file
+/// @param mapFile an ifstream of the map file to be read from already at the
+/// "{cretr" section
+/// @throws runtime_error if there is a problem reading the file.
 ///----------------------------------------------------------------------------
 
 void GameMap::readCharacters(std::ifstream& mapFile) {
 
     std::string line;
     std::getline(mapFile, line);
+    std::string errorMsg = "Error reading characters: ";
     line = Frost::rtrim(line, 13);
 
     if(AdventureGamerHeadings::Characters.compare(line)) {
-        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Characters + "\", but got \"" + line + "\".");
+        errorMsg.append("Expected \"" + AdventureGamerHeadings::Characters + "\", but got \"" + line + "\".");
+        throw std::runtime_error(errorMsg);
     }
 
     std::getline(mapFile, line);
@@ -253,17 +190,98 @@ void GameMap::readCharacters(std::ifstream& mapFile) {
 }
 
 ///----------------------------------------------------------------------------
-/// readObjects - 
+/// readRowDescriptions - Reads the descriptions from the file given, if it
+/// exists. If it does not, it is possible that there are no descriptions for
+/// this row.
+/// @param a string indicating the full path to the row file.
+/// @return a map containing the strings, with they key being the column index
+/// @throws runtime_error if there is a problem reading the file.
+///----------------------------------------------------------------------------
+
+std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::string& rowFileName) {
+
+    std::ifstream ifs;
+    std::string line;
+    std::string errorMsg = "Error reading row descriptions: ";
+    std::map<unsigned int, std::string> descriptionMap;
+
+    // TODO: check if the file exists, then check if we can open it, and error out
+    // if necessary.
+
+    ifs.open(rowFileName.c_str(), std::ifstream::in | std::ios::binary);
+    
+    if(ifs) {
+
+        try {
+            std::getline(ifs, line);
+            const unsigned long numDescriptions = std::stoul(line);
+
+            for(unsigned long i = 0; i < numDescriptions; i++) {
+                std::getline(ifs, line);
+
+                if(line.empty()) {
+                    break; // Nothing left.
+                }
+                
+                const unsigned int colID = std::stoi(line);
+
+                if(colID >= static_cast<unsigned int>(numCols)) {
+                    errorMsg.append("The column indicated is outside the boundries of the map.");
+                    throw std::runtime_error(errorMsg);
+                }
+
+                std::string description;
+
+                do {
+                    if(ifs.eof()) {
+                        break;
+                    }
+                    std::getline(ifs, line);
+
+                    line = Frost::rtrim(line, '\r');
+
+                    if(Frost::endsWith(line, "\"")) {
+                        break;
+                    }
+
+                    description += line;
+
+                } while(true);
+
+                description += line;
+
+                descriptionMap[colID] = description;
+            }
+        }
+        catch (const std::invalid_argument& e) {
+            errorMsg.append(e.what());            
+            throw std::runtime_error(errorMsg);
+        }
+        catch (const std::out_of_range& e) {
+            errorMsg.append(e.what());
+            throw std::runtime_error(errorMsg);
+        }
+    }
+
+    return descriptionMap;
+}
+
+///----------------------------------------------------------------------------
+/// readObjects - Reads the "{objct" section of the map file
+/// @param mapFile an ifstream of the map file to be read from already at the
+/// "{objct" section
 ///----------------------------------------------------------------------------
 
 void GameMap::readObjects(std::ifstream& mapFile) {
 
     std::string line;
     std::getline(mapFile, line);
+    std::string errorMsg = "Error reading objects: ";
     line = Frost::rtrim(line, 13);
 
     if(AdventureGamerHeadings::Objects.compare(line)) {
-        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Objects + "\", but got \"" + line + "\".");
+        errorMsg.append("Expected \"" + AdventureGamerHeadings::Objects + "\", but got \"" + line + "\".");
+        throw std::runtime_error(errorMsg); 
     }
 
     std::getline(mapFile, line);
@@ -280,21 +298,23 @@ void GameMap::readObjects(std::ifstream& mapFile) {
 
 ///----------------------------------------------------------------------------
 /// readJumps - Read the "{jumps" section of the file.
-/// @param mapFile an ifstream of the map file to be read from
-/// @throws runtime_error if any of the numbers read are invalid
-/// @throws runtime_error if any of the tiles are 
+/// @param mapFile an ifstream of the map file to be read from, already at the
+/// "{jumps" section.
+/// @throws runtime_error if there are any problems reading the file.
 ///----------------------------------------------------------------------------
 
 void GameMap::readJumps(std::ifstream& mapFile) {
 
     std::string line;
     std::getline(mapFile, line);
+    std::string errorMsg = "Error reading Jumps: ";
     line = Frost::rtrim(line, 13);
 
     // Read the header
 
     if(AdventureGamerHeadings::Jumps.compare(line)) {
-        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Jumps + "\", but got \"" + line + "\".");
+        errorMsg.append("Expected \"" + AdventureGamerHeadings::Jumps + "\", but got \"" + line + "\".");
+        throw std::runtime_error(errorMsg);
     }
 
     try {
@@ -313,7 +333,8 @@ void GameMap::readJumps(std::ifstream& mapFile) {
 
             unsigned int tileIndex = indexFromRowCol(y, x);
             if(!(tiles.at(tileIndex).hasJumpPad())) {
-                throw std::runtime_error("Error reading file: Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile");
+                errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
+                throw std::runtime_error(errorMsg);
             }
 
             std::getline(mapFile, line);
@@ -324,7 +345,8 @@ void GameMap::readJumps(std::ifstream& mapFile) {
 
             tileIndex = indexFromRowCol(y, x);
             if(!(tiles.at(tileIndex).hasJumpPad())) {
-                throw std::runtime_error("Error reading file: Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile");
+                errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
+                throw std::runtime_error(errorMsg);
             }
 
             ConnectionPoint jumpConnection(jumpA, jumpB);
@@ -333,34 +355,40 @@ void GameMap::readJumps(std::ifstream& mapFile) {
                 jumpPoints.push_back(jumpConnection);
             }
             else {
-                throw std::runtime_error("Error reading file: Duplicate Jump Point was read");
+                errorMsg.append("Duplicate Jump Point was read.");
+                throw std::runtime_error(errorMsg);
             }
         }
     }
-    catch (const std::invalid_argument&) {
-        throw std::runtime_error("Tried to read a number, but did not get a valid integer");
+    catch (const std::invalid_argument& e) {
+        errorMsg.append(e.what());
+        throw std::runtime_error(errorMsg);
     }
-    catch (const std::out_of_range&) {
-        throw std::out_of_range("Tried to access a jump pad tile, but the index given was out of the valid range");
+    catch (const std::out_of_range& e) {
+        errorMsg.append(e.what());
+        throw std::runtime_error(errorMsg);
     }
 }
 
 ///----------------------------------------------------------------------------
 /// readSwitches - Read the "{swtchs" section of the file.
-/// @param mapFile an ifstream of the map file to be read from
-/// @throws runtime_error if any of the numbers read are invalid
-/// @throws runtime_error if any of the tiles are 
+/// @param mapFile an ifstream of the map file to be read from already at the
+/// "{swtchs" section.
+/// @throws runtime_error if there are any problems reading the file
 ///----------------------------------------------------------------------------
 
 void GameMap::readSwitches(std::ifstream& mapFile) {
+    
     std::string line;
     std::getline(mapFile, line);
+    std::string errorMsg = "Error reading switches: ";
     line = Frost::rtrim(line, 13);
 
     // Read the header
 
     if(AdventureGamerHeadings::Switches.compare(line)) {
-        throw std::runtime_error("Error reading file. Expected \"" + AdventureGamerHeadings::Switches + "\", but got \"" + line + "\".");
+        errorMsg.append("Expected \"" + AdventureGamerHeadings::Switches + "\", but got \"" + line + "\".");
+        throw std::runtime_error(errorMsg);
     }
 
     try {
@@ -378,13 +406,12 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
             int y = std::stoi(line);
             SimplePoint connectionA(x, y);
 
-            
             unsigned int tileIndex = indexFromRowCol(y, x);
             if(!(tiles.at(tileIndex).hasSwitch())) {
-                throw std::runtime_error("Error reading file: Read switch, but no switch was found at the coordinates read.");
+                errorMsg.append("Read switch, but no switch was found at the coordinates read.");
+                throw std::runtime_error(errorMsg);
             }
             
-
             // Get the tile effected
             std::getline(mapFile, line);
             x = std::stoi(line);
@@ -395,26 +422,19 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
             
             tileIndex = indexFromRowCol(y, x);
             if(! (tiles.at(tileIndex).hasGate() || tiles.at(tileIndex).isDark()) ) {
-                throw std::runtime_error("Error reading file: Read switch, but the tile it effects is not a gate or dark space.");
+                errorMsg.append("Read switch, but the tile it effects is not a gate or dark space.");
+                throw std::runtime_error(errorMsg);
             }
 
-            /*
-            ConnectionPoint jumpConnection(jumpA, jumpB);
-            
-            if(!ifConnectionExists(jumpPoints, jumpConnection)) {
-                jumpPoints.push_back(jumpConnection);
-            }
-            else {
-                throw std::runtime_error("Error reading file: Duplicate Jump Point was read");
-            }
-            */
         }
     }
-    catch (const std::invalid_argument&) {
-        throw std::runtime_error("Tried to read a number, but did not get a valid integer");
+    catch (const std::invalid_argument& e) {
+        errorMsg.append(e.what());
+        throw std::runtime_error(errorMsg);
     }
-    catch (const std::out_of_range&) {
-        throw std::out_of_range("Tried to access a jump pad tile, but the index given was out of the valid range");
+    catch (const std::out_of_range& e) {
+        errorMsg.append(e.what());
+        throw std::out_of_range(errorMsg);
     }
 
 }

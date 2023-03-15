@@ -73,7 +73,7 @@ class GameCharacter {
             int             money;
             int             sight;
             int             type;
-            int             unused; // Seems to always be 0. Flags2?            
+            int             unused; // Seems to always be 0. Flags2?
 
             // Cached information used by the editor
             int             x;

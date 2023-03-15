@@ -34,15 +34,13 @@ class GameMap {
         void readSwitches(std::ifstream& mapFile);
 
         GameInfo gameInfo;
-        std::vector<ConnectionPoint> jumpPoints;
-        std::vector<ConnectionPoint> switchConnections;
-        std::vector<GameTile> tiles;
-        std::vector<GameCharacter> gameCharacters;
-        std::vector<GameObject> gameObjects;
         int numCols;
         int numRows;
-
-        
+        std::vector<GameTile> tiles;
+        std::vector<ConnectionPoint> jumpPoints;
+        std::vector<ConnectionPoint> switchConnections;
+        std::vector<GameObject> gameObjects;
+        std::vector<GameCharacter> gameCharacters;
 
 };
 

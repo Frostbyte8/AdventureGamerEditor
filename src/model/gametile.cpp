@@ -18,7 +18,7 @@ void GameTile::Builder::readTile(std::ifstream& mapFile, const std::string& tile
         description(tileDescription);
     }
 
-    try {
+    //try {
 
         std::string line;
         std::getline(mapFile, line);
@@ -32,7 +32,7 @@ void GameTile::Builder::readTile(std::ifstream& mapFile, const std::string& tile
             name(line);
         }
 
-    }
+    //}
 
 }
 
