@@ -31,11 +31,13 @@ class GameMap {
         void readCharacters(std::ifstream& mapFile);
         void readJumps(std::ifstream& mapFile);
         void readObjects(std::ifstream& mapFile);
+        void readStory(const std::string& storyFileName);
         void readSwitches(std::ifstream& mapFile);
 
         GameInfo gameInfo;
         int numCols;
         int numRows;
+        std::string story;
         std::vector<GameTile> tiles;
         std::vector<ConnectionPoint> jumpPoints;
         std::vector<ConnectionPoint> switchConnections;

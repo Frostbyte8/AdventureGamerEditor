@@ -69,9 +69,14 @@ const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) cons
 void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
                       const std::string& fileName) {
 
+    const std::string storyFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".STY";
+
+    readStory(storyFilePath);
+
 
     // TODO: Throwing an error right now causes the object to be in an undefined state.
     // We also need to do some better error checking.
+    // TODO: Verify correct extentions.
 
     gameInfo.readHeader(mapFile);
 
@@ -190,6 +195,80 @@ void GameMap::readCharacters(std::ifstream& mapFile) {
 }
 
 ///----------------------------------------------------------------------------
+/// readJumps - Read the "{jumps" section of the file.
+/// @param mapFile an ifstream of the map file to be read from, already at the
+/// "{jumps" section.
+/// @throws runtime_error if there are any problems reading the file.
+///----------------------------------------------------------------------------
+
+void GameMap::readJumps(std::ifstream& mapFile) {
+
+    std::string line;
+    std::getline(mapFile, line);
+    std::string errorMsg = "Error reading Jumps: ";
+    line = Frost::rtrim(line, 13);
+
+    // Read the header
+
+    if(AdventureGamerHeadings::Jumps.compare(line)) {
+        errorMsg.append("Expected \"" + AdventureGamerHeadings::Jumps + "\", but got \"" + line + "\".");
+        throw std::runtime_error(errorMsg);
+    }
+
+    try {
+
+        std::getline(mapFile, line);
+        const int numJumps = std::stoi(line);
+        jumpPoints.reserve(numJumps);
+
+        for(int i = 0; i < numJumps; i++) {
+
+            std::getline(mapFile, line);
+            int x = std::stoi(line);
+            std::getline(mapFile, line);
+            int y = std::stoi(line);
+            SimplePoint jumpA(x, y);
+
+            unsigned int tileIndex = indexFromRowCol(y, x);
+            if(!(tiles.at(tileIndex).hasJumpPad())) {
+                errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
+                throw std::runtime_error(errorMsg);
+            }
+
+            std::getline(mapFile, line);
+            x = std::stoi(line);
+            std::getline(mapFile, line);
+            y = std::stoi(line);
+            SimplePoint jumpB(x, y);
+
+            tileIndex = indexFromRowCol(y, x);
+            if(!(tiles.at(tileIndex).hasJumpPad())) {
+                errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
+                throw std::runtime_error(errorMsg);
+            }
+
+            ConnectionPoint jumpConnection(jumpA, jumpB);
+            
+            if(!ifConnectionExists(jumpPoints, jumpConnection)) {
+                jumpPoints.push_back(jumpConnection);
+            }
+            else {
+                errorMsg.append("Duplicate Jump Point was read.");
+                throw std::runtime_error(errorMsg);
+            }
+        }
+    }
+    catch (const std::invalid_argument& e) {
+        errorMsg.append(e.what());
+        throw std::runtime_error(errorMsg);
+    }
+    catch (const std::out_of_range& e) {
+        errorMsg.append(e.what());
+        throw std::runtime_error(errorMsg);
+    }
+}
+
+///----------------------------------------------------------------------------
 /// readRowDescriptions - Reads the descriptions from the file given, if it
 /// exists. If it does not, it is possible that there are no descriptions for
 /// this row.
@@ -297,77 +376,27 @@ void GameMap::readObjects(std::ifstream& mapFile) {
 }
 
 ///----------------------------------------------------------------------------
-/// readJumps - Read the "{jumps" section of the file.
-/// @param mapFile an ifstream of the map file to be read from, already at the
-/// "{jumps" section.
-/// @throws runtime_error if there are any problems reading the file.
+/// readStory - Reads the STY file.
+/// @param a string indicating the full path to the story file.
 ///----------------------------------------------------------------------------
 
-void GameMap::readJumps(std::ifstream& mapFile) {
+void GameMap::readStory(const std::string& storyFilePath) {
+	
+    std::ifstream ifs;
+	ifs.open(storyFilePath.c_str(), std::ifstream::in | std::ios::binary);
 
-    std::string line;
-    std::getline(mapFile, line);
-    std::string errorMsg = "Error reading Jumps: ";
-    line = Frost::rtrim(line, 13);
-
-    // Read the header
-
-    if(AdventureGamerHeadings::Jumps.compare(line)) {
-        errorMsg.append("Expected \"" + AdventureGamerHeadings::Jumps + "\", but got \"" + line + "\".");
-        throw std::runtime_error(errorMsg);
+	if(ifs) {
+		ifs.seekg(0, std::ios::end);
+		story.resize(ifs.tellg());
+		ifs.seekg(0, std::ios::beg);
+		ifs.read(&story[0], story.size());
+		ifs.close();
     }
-
-    try {
-
-        std::getline(mapFile, line);
-        const int numJumps = std::stoi(line);
-        jumpPoints.reserve(numJumps);
-
-        for(int i = 0; i < numJumps; i++) {
-
-            std::getline(mapFile, line);
-            int x = std::stoi(line);
-            std::getline(mapFile, line);
-            int y = std::stoi(line);
-            SimplePoint jumpA(x, y);
-
-            unsigned int tileIndex = indexFromRowCol(y, x);
-            if(!(tiles.at(tileIndex).hasJumpPad())) {
-                errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
-                throw std::runtime_error(errorMsg);
-            }
-
-            std::getline(mapFile, line);
-            x = std::stoi(line);
-            std::getline(mapFile, line);
-            y = std::stoi(line);
-            SimplePoint jumpB(x, y);
-
-            tileIndex = indexFromRowCol(y, x);
-            if(!(tiles.at(tileIndex).hasJumpPad())) {
-                errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
-                throw std::runtime_error(errorMsg);
-            }
-
-            ConnectionPoint jumpConnection(jumpA, jumpB);
-            
-            if(!ifConnectionExists(jumpPoints, jumpConnection)) {
-                jumpPoints.push_back(jumpConnection);
-            }
-            else {
-                errorMsg.append("Duplicate Jump Point was read.");
-                throw std::runtime_error(errorMsg);
-            }
-        }
-    }
-    catch (const std::invalid_argument& e) {
-        errorMsg.append(e.what());
-        throw std::runtime_error(errorMsg);
-    }
-    catch (const std::out_of_range& e) {
-        errorMsg.append(e.what());
-        throw std::runtime_error(errorMsg);
-    }
+    
+    // Story files aren't mandatory, so if they're not found, there is no
+    // error.
+    story = Frost::rtrim(Frost::ltrim(story, '"'), "\"\x0D\x0A");
+    story = story;
 }
 
 ///----------------------------------------------------------------------------

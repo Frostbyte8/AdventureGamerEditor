@@ -123,4 +123,21 @@ namespace Frost {
         return str.substr(0, lastPos+1);
     }
 
+    std::string rtrim(const std::string& str, const std::string& needle) {
+        
+        if(str.length() == 0 || needle.length() == 0) {
+            return str;
+        }
+        
+        const size_t lastPos = str.find_last_not_of(needle);
+
+        if(lastPos == std::string::npos) {
+            // No matches, so return the string un-edited.
+            return str;
+        }
+
+        return str.substr(0, lastPos);
+
+    }
+
 }

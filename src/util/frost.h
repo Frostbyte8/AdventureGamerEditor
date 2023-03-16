@@ -12,6 +12,7 @@ namespace Frost {
     std::string toUpper(const std::string& str);
     std::string ltrim(const std::string& str, const char c = ' ');
     std::string rtrim(const std::string& str, const char c = ' ');
+    std::string rtrim(const std::string& str, const std::string& needle = " ");
     inline std::string trim(const std::string& str, const char c = ' ') { return ltrim(rtrim(str, c), c); }
     inline bool isCharANSI(const wchar_t& ch) { if(ch < 32 || ch > 255) { return false; } return true; }
 }
