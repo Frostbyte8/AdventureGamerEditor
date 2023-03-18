@@ -73,12 +73,11 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     readStory(storyFilePath);
 
-
     // TODO: Throwing an error right now causes the object to be in an undefined state.
     // We also need to do some better error checking.
     // TODO: Verify correct extentions.
 
-    gameInfo.readHeader(mapFile);
+    gameInfo.readHeader(key, mapFile);
 
     std::string line;
 
@@ -134,7 +133,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     readJumps(mapFile);
     readSwitches(mapFile);    
-    gameInfo.readPlayerAttributes(mapFile);
+    gameInfo.readPlayerAttributes(key, mapFile);
     readObjects(mapFile);
     readCharacters(mapFile);
 }
@@ -396,7 +395,7 @@ void GameMap::readStory(const std::string& storyFilePath) {
     // Story files aren't mandatory, so if they're not found, there is no
     // error.
     story = Frost::rtrim(Frost::ltrim(story, '"'), "\"\x0D\x0A");
-    story = story;
+
 }
 
 ///----------------------------------------------------------------------------
@@ -466,4 +465,10 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
         throw std::out_of_range(errorMsg);
     }
 
+}
+
+
+
+void GameMap::writeMap(std::ofstream& mapFile) {
+    gameInfo.writeHeader(key, mapFile);
 }

@@ -115,3 +115,16 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
     }
 
 }
+
+///----------------------------------------------------------------------------
+/// writeHeader - Writes the header of the map to the file given
+/// @param mapFile an ofstream of the file being written to
+///----------------------------------------------------------------------------
+
+void GameInfo::writeHeader(std::ofstream& mapFile) {
+
+    mapFile.write(&gameName[0], gameName.size());
+    mapFile.write(&saveName[0], saveName.size());
+    mapFile.write(&currencyName[0], currencyName.size());
+
+}

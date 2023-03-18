@@ -21,6 +21,7 @@ class GameMap {
         const int& getHeight() const;
         const unsigned int indexFromRowCol(const int& row, const int& col) const;
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
+        void writeMap(std::ofstream& mapFile);
 
     private:
 
@@ -43,6 +44,8 @@ class GameMap {
         std::vector<ConnectionPoint> switchConnections;
         std::vector<GameObject> gameObjects;
         std::vector<GameCharacter> gameCharacters;
+
+        GameInfo::Key key;
 
 };
 
