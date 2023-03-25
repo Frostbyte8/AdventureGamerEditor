@@ -8,7 +8,7 @@
 #if defined(_MSC_VER)
 #ifdef _WIN32
 
-    #if _MSC_VER <= 1400
+    #if _MSC_VER <= 1500
 
     namespace std {
 
@@ -23,7 +23,7 @@
 
     }
 
-    #endif //_MSC_VER < 1400
+    #endif //_MSC_VER < 1500
 #endif // _WIN32
 #endif // _MSC_VER
 

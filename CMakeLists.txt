@@ -63,7 +63,7 @@ endif(MSVC)
 
 set(SOURCES
     src/main.cpp
-    src/gitinfo.h
+    #src/gitinfo.h
 )
 
 file(GLOB JSON_LIB
@@ -173,6 +173,7 @@ if(MSVC)
     set(
         WIN32_LIBS
         comctl32.lib
+		Msimg32.lib
     )
 endif()
 
@@ -184,6 +185,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(
         WIN32_LIBS
         comctl32.a
+		Msimg32.a
     )
 endif()
 

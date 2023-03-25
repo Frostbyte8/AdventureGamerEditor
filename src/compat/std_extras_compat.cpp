@@ -1,4 +1,4 @@
-#if defined(_MSC_VER) && _MSC_VER <= 1400
+#if defined(_MSC_VER) && _MSC_VER <= 1500
 
 #include "std_extras_compat.h"
 #include <stdio.h>
@@ -120,4 +120,4 @@ unsigned long std::stoul(const std::string& in) {
     return atol(in.c_str());
 }
 
-#endif //defined(_MSC_VER) && _MSC_VER <= 1400
+#endif //defined(_MSC_VER) && _MSC_VER <= 1500
