@@ -57,14 +57,23 @@ if(MSVC)
     option(NO_ALLBUILD "Remove 'All Build' from project file" NO)
 endif(MSVC)
 
+#==============================================================================
+# Misc Things
+#==============================================================================
+
+execute_process(COMMAND python updategitinfo.py WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+
 #------------------------------------------------------------------------------
 # Setup Platform independent sources and libraries
 #------------------------------------------------------------------------------
 
 set(SOURCES
     src/main.cpp
-    #src/gitinfo.h
 )
+
+if (EXISTS ${CMAKE_SOURCE_DIR}/src/gitinfo.h)
+    set(SOURCES ${SOURCES} src/gitinfo.h)
+endif()
 
 file(GLOB JSON_LIB
     src/thirdparty/simpleson/*.h
@@ -190,12 +199,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 #==============================================================================
-# Misc Things
-#==============================================================================
-
-#execute_process(COMMAND python updategitinfo.py WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
-
-#==============================================================================
 # Set compiler specific things 
 #==============================================================================
 
@@ -243,7 +246,6 @@ if(MSVC)
             # CMAKE is worse than Javascript.
             set(CMAKE_CXX_STANDARD_LIBRARIES "${CMAKE_CXX_STANDARD_LIBRARIES} ${WIN32_LIBS}")
         else()
-            
             target_link_libraries(${PROJECT_NAME} ${WIN32_LIBS})
         endif()
 
