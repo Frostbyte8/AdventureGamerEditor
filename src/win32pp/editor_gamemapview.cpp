@@ -97,6 +97,8 @@ void GameMapView::OnDraw(CDC& dc) {
 
         const int mapCols = gameWorldController->getMapWidth();
         const int mapRows = gameWorldController->getMapHeight();
+        const int width = tileWidth * fakeZoomLevel;
+        const int height = tileHeight * fakeZoomLevel;
         
         for(int k = 0; k < mapRows; k++) {
             for(int i = 0; i < mapCols; i++) {
@@ -106,10 +108,8 @@ void GameMapView::OnDraw(CDC& dc) {
 
                 const int srcX = gt.getSpriteIndex() * tileWidth;
                 const int srcY = gt.getSpriteModifier() * tileHeight;
-                const int destX = i * tileWidth * fakeZoomLevel;
-                const int destY = k * tileHeight * fakeZoomLevel;
-                const int width = tileWidth * fakeZoomLevel;
-                const int height = tileHeight * fakeZoomLevel;
+                const int destX = i * width;
+                const int destY = k * height;
 
                 backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC, 
                                         srcX, srcY, tileWidth, tileHeight, SRCCOPY);
