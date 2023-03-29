@@ -232,6 +232,12 @@ class GameTile {
 
     public:
 
+        struct DrawData {
+            int x;
+            int y;
+            int dark;
+        };
+
         // Accessors
 
         const std::string&      getDescription() const;
@@ -241,6 +247,12 @@ class GameTile {
         const std::string&      getName() const;  
 
         // Public Function
+
+        const void getDrawData(DrawData& dd) const {
+            dd.x    = base.spriteIndex;
+            dd.y    = base.spriteModifier;
+            dd.dark = base.flags & TileFlags::Dark;
+        }
         
         const bool hasAnyFeature() const;
         const bool hasJumpPad() const;

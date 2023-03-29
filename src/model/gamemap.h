@@ -22,6 +22,19 @@ class GameMap {
         const unsigned int indexFromRowCol(const int& row, const int& col) const;
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
+        const std::vector<GameTile::DrawData> getDrawData() {
+
+            GameTile::DrawData dd;
+            std::vector<GameTile::DrawData> vDD;
+            vDD.reserve(tiles.size());
+            
+            for(std::vector<GameTile>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
+                it->getDrawData(dd);
+                vDD.push_back(dd);
+            }
+
+            return vDD;
+        }
 
     private:
 

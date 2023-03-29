@@ -76,9 +76,10 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void GameMapView::OnDraw(CDC& dc) {
-    
-    const std::vector<GameTile>& gameMap = gameWorldController->getTiles();
-    if(backBufferBMP.GetHandle() && gameMap.size() != 0) {
+        
+    const std::vector<GameTile::DrawData> ddV = gameWorldController->getTilesFast();
+
+    if(backBufferBMP.GetHandle() && ddV.size() != 0) {
 
         CBitmap oldBMP;
         oldBMP = backBufferDC.SelectObject(backBufferBMP);
@@ -99,27 +100,26 @@ void GameMapView::OnDraw(CDC& dc) {
         const int mapRows = gameWorldController->getMapHeight();
         const int width = tileWidth * fakeZoomLevel;
         const int height = tileHeight * fakeZoomLevel;
-        
-        for(int k = 0; k < mapRows; k++) {
-            for(int i = 0; i < mapCols; i++) {
+       
+        for(int k = 0; k < mapRows; ++k) {
+            for(int i = 0; i < mapCols; ++i) {
 
-                size_t index = (k * mapCols) + i;
-                const GameTile gt = gameMap.at(index);
-
-                const int srcX = gt.getSpriteIndex() * tileWidth;
-                const int srcY = gt.getSpriteModifier() * tileHeight;
+                const GameTile::DrawData dd = ddV[(k * mapCols) + i];
+            
+                const int srcX = dd.x * tileWidth;
+                const int srcY = dd.y * tileHeight;
                 const int destX = i * width;
                 const int destY = k * height;
 
                 backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC, 
                                         srcX, srcY, tileWidth, tileHeight, SRCCOPY);
 
-                if(gt.getSpriteModifier() & TileFlags::Dark) {
+                if(dd.dark) {
                     AlphaBlend(backBufferDC.GetHDC(), destX, destY, width, height, alphaDC, 0, 0, 1, 1, fn);
                 }
+
             }
         }
-        
 
         backBufferDC.SelectObject(oldBMP);
         dc.SelectObject(backBufferBMP);
