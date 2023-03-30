@@ -40,6 +40,14 @@ void GameTile::Builder::readTile(std::ifstream& mapFile, const std::string& tile
 // Accessors
 //=============================================================================
 
+const GameTile::DrawInfo GameTile::getDrawInfo() const {
+    DrawInfo drawInfo;
+    drawInfo.spriteIndex    = base.drawInfo.spriteIndex;
+    drawInfo.spriteModifier = base.drawInfo.spriteModifier;
+    drawInfo.dark           = base.drawInfo.dark;
+    return drawInfo;
+}
+
 ///----------------------------------------------------------------------------
 /// getDescription - Gets the long description of the tile
 /// @return a string containing the description
@@ -74,7 +82,7 @@ const std::string& GameTile::getName() const {
 ///----------------------------------------------------------------------------
 
 const uint8_t& GameTile::getSpriteModifier() const {
-    return base.spriteModifier;
+    return base.drawInfo.spriteModifier;
 }
 
 ///----------------------------------------------------------------------------
@@ -84,7 +92,7 @@ const uint8_t& GameTile::getSpriteModifier() const {
 ///----------------------------------------------------------------------------
 
 const uint8_t& GameTile::getSpriteIndex() const {
-    return base.spriteIndex;
+    return base.drawInfo.spriteIndex;
 }
 
 //=============================================================================
@@ -98,8 +106,8 @@ const uint8_t& GameTile::getSpriteIndex() const {
 
 const bool GameTile::isCorner() const {
 
-    if(base.spriteIndex == RoadTypes::CornerNE || base.spriteIndex == RoadTypes::CornerNW ||
-       base.spriteIndex == RoadTypes::CornerSE || base.spriteIndex == RoadTypes::CornerSW) {
+    if(base.drawInfo.spriteIndex == RoadTypes::CornerNE || base.drawInfo.spriteIndex == RoadTypes::CornerNW ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerSE || base.drawInfo.spriteIndex == RoadTypes::CornerSW) {
           return true;
     }
 
@@ -113,8 +121,7 @@ const bool GameTile::isCorner() const {
 ///----------------------------------------------------------------------------
 
 const bool GameTile::isDark() const {
-
-    return (base.flags & TileFlags::Dark ? true : false);
+    return base.drawInfo.dark ? true : false;
 }
 
 ///----------------------------------------------------------------------------
@@ -124,8 +131,8 @@ const bool GameTile::isDark() const {
 
 const bool GameTile::isDeadend() const {
 
-    if(base.spriteIndex == RoadTypes::DeadEndNorth || base.spriteIndex == RoadTypes::DeadEndEast ||
-       base.spriteIndex == RoadTypes::DeadEndSouth || base.spriteIndex == RoadTypes::DeadEndWest) {
+    if(base.drawInfo.spriteIndex == RoadTypes::DeadEndNorth || base.drawInfo.spriteIndex == RoadTypes::DeadEndEast ||
+       base.drawInfo.spriteIndex == RoadTypes::DeadEndSouth || base.drawInfo.spriteIndex == RoadTypes::DeadEndWest) {
           return true;
     }
 
@@ -139,8 +146,8 @@ const bool GameTile::isDeadend() const {
 
 const bool GameTile::isStraightaway() const {
 
-    if(base.spriteIndex == RoadTypes::StraightawayHorizontal ||
-       base.spriteIndex == RoadTypes::StraightawayVertical) {
+    if(base.drawInfo.spriteIndex == RoadTypes::StraightawayHorizontal ||
+       base.drawInfo.spriteIndex == RoadTypes::StraightawayVertical) {
           return true;
     }
 
@@ -158,9 +165,9 @@ const bool GameTile::hasAnyFeature() const {
     // included) on the tile, then it is featureless, so return the inverse of
     // this.
 
-    return !(base.spriteIndex != 0 &&
-             base.spriteModifier != TileModifiers::None && 
-             base.spriteModifier != TileModifiers::DirtRoad);
+    return !(base.drawInfo.spriteIndex != 0 &&
+             base.drawInfo.spriteModifier != TileModifiers::None && 
+             base.drawInfo.spriteModifier != TileModifiers::DirtRoad);
 }
 
 ///----------------------------------------------------------------------------
@@ -170,8 +177,8 @@ const bool GameTile::hasAnyFeature() const {
 
 const bool GameTile::hasGate() const {
 
-    const bool isGate = (base.spriteModifier & TileModifiers::GateClosed) ||
-                        (base.spriteModifier & TileModifiers::GateOpen);
+    const bool isGate = (base.drawInfo.spriteModifier & TileModifiers::GateClosed) ||
+                        (base.drawInfo.spriteModifier & TileModifiers::GateOpen);
 
     return (isStraightaway() && isGate);
 }
@@ -182,7 +189,7 @@ const bool GameTile::hasGate() const {
 ///----------------------------------------------------------------------------
 
 const bool GameTile::hasJumpPad() const {
-    return (isDeadend() && base.spriteModifier & TileModifiers::JumpPad);    
+    return (isDeadend() && base.drawInfo.spriteModifier & TileModifiers::JumpPad);    
 }
 
 ///----------------------------------------------------------------------------
@@ -192,8 +199,8 @@ const bool GameTile::hasJumpPad() const {
 
 const bool GameTile::hasSwitch() const {
 
-    const bool isSwitch = (base.spriteModifier & TileModifiers::SwitchOn) ||
-                          (base.spriteModifier & TileModifiers::SwitchOff);
+    const bool isSwitch = (base.drawInfo.spriteModifier & TileModifiers::SwitchOn) ||
+                          (base.drawInfo.spriteModifier & TileModifiers::SwitchOff);
 
     return (isCorner() && isSwitch);
 }

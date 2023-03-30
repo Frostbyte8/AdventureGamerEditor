@@ -77,9 +77,9 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
 
 void GameMapView::OnDraw(CDC& dc) {
         
-    const std::vector<GameTile::DrawData> ddV = gameWorldController->getTilesFast();
+    const std::vector<GameTile::DrawInfo> drawDataVec = gameWorldController->getTileDrawData();
 
-    if(backBufferBMP.GetHandle() && ddV.size() != 0) {
+    if(backBufferBMP.GetHandle() && drawDataVec.size() != 0) {
 
         CBitmap oldBMP;
         oldBMP = backBufferDC.SelectObject(backBufferBMP);
@@ -104,17 +104,17 @@ void GameMapView::OnDraw(CDC& dc) {
         for(int k = 0; k < mapRows; ++k) {
             for(int i = 0; i < mapCols; ++i) {
 
-                const GameTile::DrawData dd = ddV[(k * mapCols) + i];
+                const GameTile::DrawInfo drawInfo = drawDataVec[(k * mapCols) + i];
             
-                const int srcX = dd.x * tileWidth;
-                const int srcY = dd.y * tileHeight;
+                const int srcX = drawInfo.spriteIndex * tileWidth;
+                const int srcY = drawInfo.spriteModifier * tileHeight;
                 const int destX = i * width;
                 const int destY = k * height;
 
                 backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC, 
                                         srcX, srcY, tileWidth, tileHeight, SRCCOPY);
 
-                if(dd.dark) {
+                if(drawInfo.dark) {
                     AlphaBlend(backBufferDC.GetHDC(), destX, destY, width, height, alphaDC, 0, 0, 1, 1, fn);
                 }
 

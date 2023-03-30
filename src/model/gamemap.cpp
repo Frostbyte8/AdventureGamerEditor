@@ -18,6 +18,23 @@ const int& GameMap::getHeight() const {
 }
 
 ///----------------------------------------------------------------------------
+/// getTileDrawData - Return tile information relevant to drawing tiles.
+/// @return a vector filled with tile drawing data.
+///----------------------------------------------------------------------------
+
+const std::vector<GameTile::DrawInfo> GameMap::getTileDrawData() {
+
+    std::vector<GameTile::DrawInfo> drawDataVec;
+    drawDataVec.reserve(tiles.size());
+
+    for(std::vector<GameTile>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
+        drawDataVec.push_back(it->getDrawInfo());
+    }
+
+    return drawDataVec;
+}
+
+///----------------------------------------------------------------------------
 /// getTiles - Return a constant reference to a vector containing the tiles
 /// data on the map.
 /// @return a constant reference to a vector filled with GameTiles

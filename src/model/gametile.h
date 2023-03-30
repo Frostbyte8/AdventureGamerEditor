@@ -92,6 +92,14 @@ namespace TileModifiers {
 
 class GameTile {
 
+    public:
+
+        struct DrawInfo {
+            uint8_t spriteIndex;
+            uint8_t spriteModifier;
+            uint8_t dark;
+        };
+
     private:
 
     //-------------------------------------------------------------------------
@@ -107,8 +115,7 @@ class GameTile {
                 std::string     description;
 
                 // Cached Information
-                uint8_t         spriteIndex;      // Sprite Sheet X Offset
-                uint8_t         spriteModifier;   // Sprite Sheet Y Offset          
+                DrawInfo        drawInfo;
         };
 
     public:
@@ -127,22 +134,26 @@ class GameTile {
                     base.flags          = 0;
                     base.name           = "";
                     base.description    = "";
-                    base.spriteIndex    = 0;
-                    base.spriteModifier = 0;
 
+                    base.drawInfo.spriteIndex    = 0;
+                    base.drawInfo.spriteModifier = 0;
+                    base.drawInfo.dark = 0;
                 }
 
                 Builder& sprite(const uint8_t& sprite) {
 
                     base.sprite         = sprite;
-                    base.spriteIndex    = sprite & 15;
-                    base.spriteModifier = (sprite & 240) >> 4;
+
+                    // Update Cache Info too
+                    base.drawInfo.spriteIndex    = sprite & 15;
+                    base.drawInfo.spriteModifier = (sprite & 240) >> 4;
                     return *this;
 
                 }
 
                 Builder& flags(const uint8_t& flags) {
                     base.flags = flags;
+                    base.drawInfo.dark = base.flags & TileFlags::Dark;
                     return *this;
                 }
 
@@ -163,12 +174,12 @@ class GameTile {
 
                 GameTile build() {
 
-                    const uint8_t modifier = (base.spriteModifier & TileModifiers::ALLMODS);
+                    const uint8_t modifier = (base.drawInfo.spriteModifier & TileModifiers::ALLMODS);
 
                     if(modifier != 0) {
 
                         bool invalidModifer = false;
-                        switch(base.spriteIndex) {
+                        switch(base.drawInfo.spriteIndex) {
 
                             case RoadTypes::Empty:
                                 if(modifier != 0) {
@@ -232,12 +243,6 @@ class GameTile {
 
     public:
 
-        struct DrawData {
-            int x;
-            int y;
-            int dark;
-        };
-
         // Accessors
 
         const std::string&      getDescription() const;
@@ -245,14 +250,9 @@ class GameTile {
         const uint8_t&          getSpriteModifier() const;
         const uint8_t&          getFlags() const;
         const std::string&      getName() const;  
+        const DrawInfo          getDrawInfo() const;
 
-        // Public Function
-
-        const void getDrawData(DrawData& dd) const {
-            dd.x    = base.spriteIndex;
-            dd.y    = base.spriteModifier;
-            dd.dark = base.flags & TileFlags::Dark;
-        }
+        // Information Functions
         
         const bool hasAnyFeature() const;
         const bool hasJumpPad() const;
@@ -271,8 +271,9 @@ class GameTile {
             base.flags          = builder.base.flags;
             base.description    = builder.base.description;
             base.sprite         = builder.base.sprite;
-            base.spriteIndex    = builder.base.spriteIndex;
-            base.spriteModifier = builder.base.spriteModifier;
+            base.drawInfo.spriteIndex    = builder.base.drawInfo.spriteIndex;
+            base.drawInfo.spriteModifier = builder.base.drawInfo.spriteModifier;
+            base.drawInfo.dark           = builder.base.drawInfo.dark;
         }
 
         //GameTile(){};

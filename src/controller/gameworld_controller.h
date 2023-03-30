@@ -14,7 +14,7 @@ class GameWorldController {
         GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {};
         bool LoadWorld(const std::string& filePath, const std::string& fileName);
         const std::vector<GameTile>& getTiles() const { return gameMap.getTiles(); }
-        const std::vector<GameTile::DrawData> getTilesFast() { return gameMap.getDrawData(); }
+        const std::vector<GameTile::DrawInfo> getTileDrawData() { return gameMap.getTileDrawData(); }
 
         const int& getMapWidth() const {return gameMap.getWidth(); }
         const int& getMapHeight() const {return gameMap.getHeight(); }
