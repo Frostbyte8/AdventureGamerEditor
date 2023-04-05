@@ -23,6 +23,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void DisplayErrorMessage(const std::string& message, const std::string& title);
 
 	protected:
+        virtual BOOL    OnCommand(WPARAM wparam, LPARAM lparam);
 		virtual int     OnCreate(CREATESTRUCT& cs);
 		virtual void    OnInitialUpdate();
 		virtual LRESULT WndProc(UINT msg, WPARAM wparam, LPARAM lparam);
@@ -30,6 +31,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 	private:
 
         void CreateMenuBar();
+        BOOL OnFileOpen();
 
         CMenu mainMenu;
         CMenu fileMenu;

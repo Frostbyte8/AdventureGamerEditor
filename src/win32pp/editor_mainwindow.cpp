@@ -77,7 +77,10 @@ void MainWindowFrame::CreateMenuBar() {
 
     LanguageMapper& languageMapper = languageController->getLanguageMapper();
 
-	CStringW caption = AtoW(languageMapper.getLangString(101).c_str(), CP_UTF8);
+	CStringW caption = AtoW(languageMapper.getLangString(102).c_str(), CP_UTF8);
+    fileMenu.AppendMenu(MF_STRING, 102, caption);
+    
+    caption = AtoW(languageMapper.getLangString(101).c_str(), CP_UTF8);
     fileMenu.AppendMenu(MF_STRING, 0, caption);
 
 
@@ -96,15 +99,6 @@ void MainWindowFrame::CreateMenuBar() {
 ///----------------------------------------------------------------------------
 
 int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
-
-	CFileDialog fileDialog(TRUE, L".SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, L"Adventure Gamer World Files (*.SG0)\0*.SGO\0\0");
-
-	if(fileDialog.DoModal() == IDOK) {
-		std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
-		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
-
-		gameWorldController->LoadWorld(filePath, fileName);
-	}
 	
 	UseThemes(FALSE);				// Don't use themes
     //m_bUseCustomDraw = FALSE;     // Don't use custom draw for menu items (?)
@@ -185,6 +179,34 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 	*/
 
 	return WndProcDefault(msg, wParam, lParam);
+}
+
+BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
+    
+    switch (LOWORD(wParam)) {
+        case 102: return OnFileOpen();
+    }
+
+    return FALSE;
+
+}
+
+BOOL MainWindowFrame::OnFileOpen() {
+
+	CFileDialog fileDialog(TRUE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
+	fileDialog.SetTitle(L"Open World File");
+
+	if(fileDialog.DoModal() == IDOK) {
+
+		std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
+		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
+
+		gameWorldController->LoadWorld(filePath, fileName);
+        return TRUE;
+
+	}
+
+    return FALSE;
 }
 
 //=============================================================================

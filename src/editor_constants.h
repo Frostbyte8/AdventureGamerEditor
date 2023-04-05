@@ -20,8 +20,12 @@ namespace EditorConstants {
 
 namespace LanguageConstants {
     enum {
-        FileMenuItem = 100,
-        ExitMenuItem
+        FileMenuItem    = 100,
+        NewMenuItem     = 101,
+        OpenMenuItem    = 102,
+        SaveMenuItem    = 103,
+        SaveAsMenuItem  = 104,
+        ExitMenuItem    = 105
     };
 }
 
@@ -71,6 +75,7 @@ namespace AdventureGamerConstants {
     const unsigned int MaxRows              = 100; // That's 0 to 99.
 	const unsigned int DefaultCols			= 10;
 	const unsigned int DefaultRows			= 10;
+	const std::string FileNameExtension     = "SG0";
 }
 
 ///----------------------------------------------------------------------------
