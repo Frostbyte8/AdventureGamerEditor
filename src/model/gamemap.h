@@ -15,10 +15,13 @@
 class GameMap {
 
     public:
+
+		GameMap();
     
         const int& getWidth() const;
         const std::vector<GameTile>& getTiles() const;
         const int& getHeight() const;
+		inline const int getNumTiles() const;
 		const std::vector<GameObject>& getGameObjects() const;
 
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;

@@ -267,16 +267,15 @@ class GameTile {
     private:
 
         GameTile(Builder& builder) {
-            base.name           = builder.base.name;
-            base.flags          = builder.base.flags;
-            base.description    = builder.base.description;
-            base.sprite         = builder.base.sprite;
+            base.name                    = builder.base.name;
+            base.flags                   = builder.base.flags;
+            base.description             = builder.base.description;
+            base.sprite                  = builder.base.sprite;
             base.drawInfo.spriteIndex    = builder.base.drawInfo.spriteIndex;
             base.drawInfo.spriteModifier = builder.base.drawInfo.spriteModifier;
             base.drawInfo.dark           = builder.base.drawInfo.dark;
         }
 
-        //GameTile(){};
         Base base;
 
 };

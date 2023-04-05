@@ -69,6 +69,8 @@ namespace AdventureGamerConstants {
     // is probably not much.
     const unsigned int MaxCols              = 100;
     const unsigned int MaxRows              = 100; // That's 0 to 99.
+	const unsigned int DefaultCols			= 10;
+	const unsigned int DefaultRows			= 10;
 }
 
 ///----------------------------------------------------------------------------

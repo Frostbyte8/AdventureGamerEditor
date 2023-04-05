@@ -5,8 +5,22 @@
 #include <algorithm>
 
 //=============================================================================
+// Constructors/Destructor
+//=============================================================================
+
+GameMap::GameMap() : numCols(AdventureGamerConstants::DefaultCols), numRows(AdventureGamerConstants::DefaultRows) {
+	GameTile::Builder builder;
+	GameTile gt = builder.build();
+	tiles.insert(tiles.begin(), getNumTiles(), gt);
+}
+
+//=============================================================================
 // Accessors
 //=============================================================================
+
+const int GameMap::getNumTiles() const {
+	return numCols * numRows;
+}
 
 ///----------------------------------------------------------------------------
 /// getHeight - Returns the height of the map
@@ -103,6 +117,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
     // TODO: Throwing an error right now causes the object to be in an undefined state.
     // We also need to do some better error checking.
     // TODO: Verify correct extentions.
+	// TODO: Reserve tiles
 
     gameInfo.readHeader(key, mapFile);
 
