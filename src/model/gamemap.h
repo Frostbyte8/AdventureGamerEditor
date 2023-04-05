@@ -19,7 +19,9 @@ class GameMap {
         const int& getWidth() const;
         const std::vector<GameTile>& getTiles() const;
         const int& getHeight() const;
-        const unsigned int indexFromRowCol(const int& row, const int& col) const;
+		const std::vector<GameObject>& getGameObjects() const;
+
+		const unsigned int indexFromRowCol(const int& row, const int& col) const;
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
         const std::vector<GameTile::DrawInfo> getTileDrawData();

@@ -53,6 +53,16 @@ const int& GameMap::getWidth() const {
     return numCols;
 }
 
+///----------------------------------------------------------------------------
+/// getGameObjects - Return a vector containing Game Objects within the current
+/// map.
+/// @return a vector containing the Game Objects.
+///----------------------------------------------------------------------------
+
+const std::vector<GameObject>& GameMap::getGameObjects() const {
+	return gameObjects;
+}
+
 //=============================================================================
 // Public Functions
 //=============================================================================

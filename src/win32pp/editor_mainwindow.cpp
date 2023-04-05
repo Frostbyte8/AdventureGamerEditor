@@ -96,7 +96,7 @@ void MainWindowFrame::CreateMenuBar() {
 int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 
-    gameWorldController->LoadWorld("D:\\dump\\ADV\\", "GATES.SG0");
+    gameWorldController->LoadWorld("C:\\dump\\ADV\\", "GATES.SG0");
 
 	UseThemes(FALSE);				// Don't use themes
     //m_bUseCustomDraw = FALSE;     // Don't use custom draw for menu items (?)
