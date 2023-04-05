@@ -62,6 +62,7 @@ class GameMapView : public CScrollView {
         const int& getTileWidth() const { return tileWidth; }
         const int& gettileHeight() const { return tileHeight; }
         //void onZoomChange();
+        void UpdateBackBuffer();
 
     protected:
         virtual int OnCreate(CREATESTRUCT& cs);

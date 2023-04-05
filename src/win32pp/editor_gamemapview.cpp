@@ -45,6 +45,19 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
     if(tempHeight - tileHeight != 0) {
         MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
     }
+    
+    CClientDC dc(*this);
+    tilesetDC = CMemDC(dc);
+    tilesetDC.SelectObject(tilesetBMP);
+    backBufferDC = CMemDC(dc);
+
+    UpdateBackBuffer();
+
+    return CScrollView::OnCreate(cs);
+
+}
+
+void GameMapView::UpdateBackBuffer() {
 
     const int mapWidth = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
     const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
@@ -53,22 +66,14 @@ int GameMapView:: OnCreate(CREATESTRUCT& cs) {
     SetScrollSizes(abc); // Otherwise it won't work.
     CBrush outofbounds(RGB(0,0,0));
     SetScrollBkgnd(outofbounds);
-
-    CClientDC dc(*this);
+    
     CBitmap oldBMP;
-
-    tilesetDC = CMemDC(dc);
-    tilesetDC.SelectObject(tilesetBMP);
-
-    backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);
-    backBufferDC = CMemDC(dc);
+    CClientDC dc(*this);
+    backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);    
 
     oldBMP = backBufferDC.SelectObject(backBufferBMP);
     backBufferDC.BitBlt(0,0,128,128,tilesetDC,0,0,SRCCOPY);
     backBufferDC.SelectObject(oldBMP);
-
-    return CScrollView::OnCreate(cs);
-
 }
 
 ///----------------------------------------------------------------------------

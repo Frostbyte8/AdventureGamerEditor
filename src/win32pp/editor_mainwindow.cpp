@@ -202,6 +202,7 @@ BOOL MainWindowFrame::OnFileOpen() {
 		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
 
 		gameWorldController->LoadWorld(filePath, fileName);
+        reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
         return TRUE;
 
 	}
