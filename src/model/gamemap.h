@@ -16,7 +16,8 @@ class GameMap {
 
     public:
 
-		GameMap();
+		GameMap() {};
+		GameMap(const int& numRows, const int& numCols);
     
         const int& getWidth() const;
         const std::vector<GameTile>& getTiles() const;

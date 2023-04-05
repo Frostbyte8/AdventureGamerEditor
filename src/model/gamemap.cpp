@@ -8,7 +8,9 @@
 // Constructors/Destructor
 //=============================================================================
 
-GameMap::GameMap() : numCols(AdventureGamerConstants::DefaultCols), numRows(AdventureGamerConstants::DefaultRows) {
+GameMap::GameMap(const int& numRows, const int& numCols) {
+	this->numCols = numCols;
+	this->numRows = numRows;
 	GameTile::Builder builder;
 	GameTile gt = builder.build();
 	tiles.insert(tiles.begin(), getNumTiles(), gt);

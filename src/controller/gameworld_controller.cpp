@@ -8,16 +8,23 @@ bool GameWorldController::LoadWorld(const std::string& filePath, const std::stri
 	std::ifstream ifs;
 	ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
     
-    std::ofstream ofs;
-    std::string tempName2 = filePath;
-    tempName2.append("DEBUG.SG0");
-    ofs.open(tempName2.c_str(), std::ofstream::out | std::ios::binary);
+    //std::ofstream ofs;
+    //std::string tempName2 = filePath;
+    //tempName2.append("DEBUG.SG0");
+    //ofs.open(tempName2.c_str(), std::ofstream::out | std::ios::binary);
 
     if(ifs) {
 
         try {
-            gameMap.readMap(ifs, filePath, fileName);
-            gameMap.writeMap(ofs);
+			GameMap* newMap = new GameMap();
+            newMap->readMap(ifs, filePath, fileName);
+			
+			if(gameMap) {
+				delete gameMap;
+				gameMap = NULL;
+			}
+
+            gameMap = newMap;
         }
         catch (const std::runtime_error& e) {
 
@@ -32,6 +39,8 @@ bool GameWorldController::LoadWorld(const std::string& filePath, const std::stri
         return false;
 
     }
+
+	
 
     return true;
 }
