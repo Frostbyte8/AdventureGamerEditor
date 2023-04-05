@@ -3,6 +3,8 @@
 #include "../model/gametile.h"
 #include <vector>
 
+#include <wxx_commondlg.h>
+
 //=============================================================================
 // Constructors / Destructor
 //=============================================================================
@@ -95,9 +97,15 @@ void MainWindowFrame::CreateMenuBar() {
 
 int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
+	CFileDialog fileDialog(TRUE, L".SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, L"Adventure Gamer World Files (*.SG0)\0*.SGO\0\0");
 
-    gameWorldController->LoadWorld("C:\\dump\\ADV\\", "GATES.SG0");
+	if(fileDialog.DoModal() == IDOK) {
+		std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
+		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
 
+		gameWorldController->LoadWorld(filePath, fileName);
+	}
+	
 	UseThemes(FALSE);				// Don't use themes
     //m_bUseCustomDraw = FALSE;     // Don't use custom draw for menu items (?)
 

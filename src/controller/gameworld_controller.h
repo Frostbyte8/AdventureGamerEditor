@@ -12,7 +12,7 @@ class GameWorldController {
     public:
 
         GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {
-			gameMap = new GameMap();
+			gameMap = new GameMap(AdventureGamerConstants::DefaultRows, AdventureGamerConstants::DefaultCols);
 		};
 
 		
