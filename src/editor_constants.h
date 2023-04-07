@@ -9,9 +9,9 @@
 ///----------------------------------------------------------------------------
 
 namespace EditorConstants {
-    const unsigned int TilesPerRow          = 16;
-    const unsigned int TilesPerCol          = 16;
-    const unsigned int DirtroadStartRow     = 8;
+    unsigned int const TilesPerRow          = 16;
+    unsigned int const TilesPerCol          = 16;
+    unsigned int const DirtroadStartRow     = 8;
 }
 
 ///----------------------------------------------------------------------------
@@ -19,14 +19,12 @@ namespace EditorConstants {
 ///----------------------------------------------------------------------------
 
 namespace LanguageConstants {
-    enum {
-        FileMenuItem    = 100,
-        NewMenuItem     = 101,
-        OpenMenuItem    = 102,
-        SaveMenuItem    = 103,
-        SaveAsMenuItem  = 104,
-        ExitMenuItem    = 105
-    };
+    int const FileMenuItem      = 100;
+    int const NewMenuItem       = 101;
+    int const OpenMenuItem      = 102;
+    int const SaveMenuItem      = 103;
+    int const SaveAsMenuItem    = 104;
+    int const ExitMenuItem      = 105;
 }
 
 // TODO: Below this line are Adventure Gamer Constants, not editor ones, so

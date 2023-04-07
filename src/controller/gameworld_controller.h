@@ -11,20 +11,13 @@ class GameWorldController {
 
     public:
 
-        GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {
-			gameMap = new GameMap(AdventureGamerConstants::DefaultRows, AdventureGamerConstants::DefaultCols);
-		};
+        GameWorldController(MainWindowInterface* inMainWindow);
+		~GameWorldController();
 
-		
-		~GameWorldController() {
-			if(gameMap) {
-				delete gameMap;
-				gameMap = NULL;
-			}
-		}
-		
+        bool newWorld();
+        bool loadWorld(const std::string& filePath, const std::string& fileName);
+        bool saveWorld(const std::string& filePath, const std::string& fileName);
 
-        bool LoadWorld(const std::string& filePath, const std::string& fileName);
         const std::vector<GameTile>& getTiles() const { return gameMap->getTiles(); }
         const std::vector<GameTile::DrawInfo> getTileDrawData() { return gameMap->getTileDrawData(); }
 

@@ -70,6 +70,9 @@ HWND MainWindowFrame::Create(HWND parent) {
 /// CreateMenuBar - Creates the menu bar.
 ///----------------------------------------------------------------------------
 
+#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.getLangString(ID).c_str(), CP_UTF8); \
+    MENUOBJ.AppendMenu(MF_STRING, ID, caption);
+
 void MainWindowFrame::CreateMenuBar() {
 
     mainMenu.CreateMenu();
@@ -77,20 +80,23 @@ void MainWindowFrame::CreateMenuBar() {
 
     LanguageMapper& languageMapper = languageController->getLanguageMapper();
 
-	CStringW caption = AtoW(languageMapper.getLangString(102).c_str(), CP_UTF8);
-    fileMenu.AppendMenu(MF_STRING, 102, caption);
-    
-    caption = AtoW(languageMapper.getLangString(101).c_str(), CP_UTF8);
-    fileMenu.AppendMenu(MF_STRING, 0, caption);
+    CStringW caption;
 
+    ADV_ADDMENUITEM(LanguageConstants::NewMenuItem, fileMenu);
+    ADV_ADDMENUITEM(LanguageConstants::OpenMenuItem, fileMenu);
+    ADV_ADDMENUITEM(LanguageConstants::SaveMenuItem, fileMenu);
+    ADV_ADDMENUITEM(LanguageConstants::SaveAsMenuItem, fileMenu);
+    ADV_ADDMENUITEM(LanguageConstants::ExitMenuItem, fileMenu);
 
-	caption = AtoW(languageMapper.getLangString(100).c_str(), CP_UTF8);
+    caption = AtoW(languageMapper.getLangString(LanguageConstants::FileMenuItem).c_str(), CP_UTF8);
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
 
     SetFrameMenu(mainMenu);
 
 }
+
+#undef ADV_ADDMENUITEM
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the frame, and create remaining child
@@ -184,11 +190,18 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
     switch (LOWORD(wParam)) {
-        case 102: return OnFileOpen();
+        case LanguageConstants::NewMenuItem: return OnFileNew();
+        case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
     return FALSE;
 
+}
+
+BOOL MainWindowFrame::OnFileNew() {
+    gameWorldController->newWorld();
+    reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+    return TRUE;
 }
 
 BOOL MainWindowFrame::OnFileOpen() {
@@ -201,13 +214,12 @@ BOOL MainWindowFrame::OnFileOpen() {
 		std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
 		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
 
-		gameWorldController->LoadWorld(filePath, fileName);
+		gameWorldController->loadWorld(filePath, fileName);
         reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
-        return TRUE;
 
 	}
 
-    return FALSE;
+    return TRUE;
 }
 
 //=============================================================================

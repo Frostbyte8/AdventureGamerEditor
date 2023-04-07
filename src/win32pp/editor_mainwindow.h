@@ -31,6 +31,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 	private:
 
         void CreateMenuBar();
+
+        BOOL OnFileNew();
         BOOL OnFileOpen();
 
         CMenu mainMenu;
