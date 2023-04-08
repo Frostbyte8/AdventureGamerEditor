@@ -187,6 +187,11 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 	return WndProcDefault(msg, wParam, lParam);
 }
 
+///----------------------------------------------------------------------------
+/// OnCommand - Processes WM_COMMAND events
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
     switch (LOWORD(wParam)) {
@@ -198,15 +203,29 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
 }
 
+///----------------------------------------------------------------------------
+/// OnFileNew - Create a new file when File > New is selected.
+/// @return Always TRUE to indicate that the message was handled.
+///----------------------------------------------------------------------------
+
 BOOL MainWindowFrame::OnFileNew() {
     gameWorldController->newWorld();
     reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
     return TRUE;
 }
 
+///----------------------------------------------------------------------------
+/// OnFileOpen - Opens a dialog box for the user to select a Adventure Gamer 
+/// SG0 file, then passes the file and it's path to the controller to try to
+/// open if one is selected.
+/// @return Always TRUE to indicate that the message was handled.
+///----------------------------------------------------------------------------
+
 BOOL MainWindowFrame::OnFileOpen() {
 
-	CFileDialog fileDialog(TRUE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
+	CFileDialog fileDialog(TRUE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
+                           L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
+
 	fileDialog.SetTitle(L"Open World File");
 
 	if(fileDialog.DoModal() == IDOK) {
@@ -224,9 +243,11 @@ BOOL MainWindowFrame::OnFileOpen() {
 
 //=============================================================================
 // Public Interface Functions
+// Refer to the interface header file for more information.
 //=============================================================================
 
-int MainWindowFrame::AskYesNoQuestion(const std::string& inQuestion, const std::string& inTitle, bool allowCancel) {
+int MainWindowFrame::AskYesNoQuestion(const std::string& inQuestion, const std::string& inTitle,
+                                      bool allowCancel) {
 
     const CString question      = AtoW(inQuestion.c_str(), CP_UTF8);
     const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
@@ -237,7 +258,8 @@ int MainWindowFrame::AskYesNoQuestion(const std::string& inQuestion, const std::
     return retVal;
 }
 
-void MainWindowFrame::DisplayErrorMessage(const std::string& inMessage, const std::string& inTitle) {
+void MainWindowFrame::DisplayErrorMessage(const std::string& inMessage,
+                                          const std::string& inTitle) {
 
     const CString message       = AtoW(inMessage.c_str(), CP_UTF8);
     const CString title         = AtoW(inTitle.c_str(), CP_UTF8);

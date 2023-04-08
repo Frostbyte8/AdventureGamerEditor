@@ -4,15 +4,31 @@
 #include <string>
 
 namespace MainWindowInterfaceResponses {
-    const int No        = 0;
-    const int Yes       = 1;
-    const int Cancel    = 2;
+    int const No        = 0;
+    int const Yes       = 1;
+    int const Cancel    = 2;
 }
 
 class MainWindowInterface {
 
     public:
-        virtual int AskYesNoQuestion(const std::string& question, const std::string& title, bool allowCancel) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the program wants to asks a Yes/No question
+        /// @param The question to ask
+        /// @param Title of the message box
+        /// @param if true, the user should have a way of canceling the operation
+        /// @return an Integer indicating what the user selected. See MainWindowInterfaceResponses
+        /// for more information
+        ///--------------------------------------------------------------------
+        virtual int AskYesNoQuestion(const std::string& question, const std::string& title,
+                                     bool allowCancel) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the program wants to display an error message
+        /// @param The error message
+        /// @param Title of the message box, if necessary.
+        ///--------------------------------------------------------------------
         virtual void DisplayErrorMessage(const std::string& message, const std::string& title) = 0;
 };
 

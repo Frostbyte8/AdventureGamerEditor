@@ -28,7 +28,7 @@ const bool GameMapView::isBMPLoaded() const {
 // Public / Protected functions
 //=============================================================================
 
-int GameMapView:: OnCreate(CREATESTRUCT& cs) {
+int GameMapView::OnCreate(CREATESTRUCT& cs) {
 
     tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 

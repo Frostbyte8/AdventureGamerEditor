@@ -25,16 +25,20 @@ GameWorldController::~GameWorldController() {
 // Public Functions
 //=============================================================================
 
-bool GameWorldController::loadWorld(const std::string& filePath, const std::string& fileName) {
+///-----------------------------------------------------------------------------
+/// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
+/// the file, it will avoid erasing the currently loaded world.
+/// @param path to the Adventure Gamer World File
+/// @param the name of the Adventure Gamer File
+/// @return true if the operation completed successfully, false if it could not
+///-----------------------------------------------------------------------------
+
+bool GameWorldController::loadWorld(const std::string& filePath,
+                                    const std::string& fileName) {
     
     std::string fileNameTemp = filePath + fileName;
 	std::ifstream ifs;
 	ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
-    
-    //std::ofstream ofs;
-    //std::string tempName2 = filePath;
-    //tempName2.append("DEBUG.SG0");
-    //ofs.open(tempName2.c_str(), std::ofstream::out | std::ios::binary);
     
     GameMap* newMap = NULL;
 
@@ -78,6 +82,12 @@ bool GameWorldController::loadWorld(const std::string& filePath, const std::stri
     return loadSuccessful;
 }
 
+///-----------------------------------------------------------------------------
+/// newWorld - Attempt to create a new Adventure Gamer World. If it cannot, it
+/// will avoid erasing the currently loaded world.
+/// @return true if the operation completed successfully, false if it could not
+///-----------------------------------------------------------------------------
+
 bool GameWorldController::newWorld() {
 
     GameMap* newMap = NULL;
@@ -97,8 +107,13 @@ bool GameWorldController::newWorld() {
         newMap = NULL;
         wasWorldCreated = true;
     }
-    catch (const std::runtime_error&) {
-        mainWindow->DisplayErrorMessage("Unable to create new world.", "New World Error");
+    catch (const std::runtime_error& e) {
+        std::string errMessage = "Unable to create a new Adventure Gamer world: ";
+        errMessage.append(e.what());
+        mainWindow->DisplayErrorMessage(errMessage, "Error creating new world.");
+    }
+    catch (const std::bad_alloc& e) {
+        mainWindow->DisplayErrorMessage(e.what(), "Out of Memory?");
     }
 
     if(!wasWorldCreated) {
@@ -108,6 +123,15 @@ bool GameWorldController::newWorld() {
 
     return wasWorldCreated;
 }
+
+///-----------------------------------------------------------------------------
+/// saveWorld - Attempts to save the currently loaded world to the file path
+/// and name given.
+/// @param Path to the file being written.
+/// @param name of the file being written to.
+/// @return true if the operation completed successfully, false if it could not
+///-----------------------------------------------------------------------------
+
 
 bool GameWorldController::saveWorld(const std::string& filePath, const std::string& fileName) {
     std::ofstream ofs;
