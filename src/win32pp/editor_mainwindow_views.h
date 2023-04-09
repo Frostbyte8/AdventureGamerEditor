@@ -26,6 +26,8 @@ class GameEntitiesView : public CWnd {
             wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
         }
 
+        void updateLists(const std::vector<GameObject>& gameObject);
+
     protected:
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);

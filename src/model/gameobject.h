@@ -293,6 +293,10 @@ class GameObject {
 
         GameObject() {} // TODO: Remove this. Used for testing
 
+        const std::string& getName() const {
+            return base.description[0];
+        }
+
     private:
 
         GameObject(Builder& builder) {

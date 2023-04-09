@@ -96,6 +96,16 @@ void GameEntitiesView::sizeGroupBox(const bool doCharacters, const CRect& dimens
 
 }
 
+void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects) {
+    objectsListBox.ClearStrings();
+
+    for(std::vector<GameObject>::const_iterator it = gameObjects.begin();
+        it != gameObjects.end(); ++it) {
+            CString objectName = AtoW(it->getName().c_str(), CP_UTF8);
+            objectsListBox.AddString(objectName);
+    }
+}
+
 LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch(msg) {
