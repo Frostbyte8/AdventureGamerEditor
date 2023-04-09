@@ -18,8 +18,8 @@ MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHe
                                      roadSelectorDocker(0), gameWorldController(0),
                                      languageController(0) {
 
-	entityView = new GameEntitiesView();
     gameWorldController = new GameWorldController(this);
+	entityView = new GameEntitiesView(this, &windowMetrics);
     languageController  = new LanguageController();
 
 }
@@ -113,6 +113,8 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
     CreateMenuBar();
 
+    CRect windowDims = GetClientRect();
+
 	// Create our Dockers
 
 	DWORD styleFlags = DS_NO_UNDOCK | DS_NO_CAPTION | DS_DEFAULT_CURSORS | DS_CLIENTEDGE;
@@ -134,7 +136,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
                                                           styleFlags | DS_DOCKED_LEFT | DS_NO_RESIZE, 0));
 
 	entitiesHereDocker = static_cast<EntitiesHereDocker*>(gameMapDocker->AddDockedChild(
-                                                          new EntitiesHereDocker(), styleFlags | DS_DOCKED_BOTTOM, 128)); 
+                                                          new EntitiesHereDocker(), styleFlags | DS_DOCKED_BOTTOM, 128));
 
 
     // The Road Selector is the Width of one tile plus the scroll bar
@@ -146,7 +148,14 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	rc.right = tileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
 	AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
 	const int newWidth = abs(rc.right - rc.left);
-	roadSelectorDocker->SetDockSize(newWidth);
+	roadSelectorDocker->SetDockSize(newWidth);   
+
+    windowDims.right -= newWidth;
+
+    const int mapSize = static_cast<int>(windowDims.right * 0.5);
+    gameMapDocker->SetDockSize(mapSize);
+
+    windowDims.right -= mapSize;
 
     return retVal;
 }

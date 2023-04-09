@@ -28,6 +28,8 @@ class GameWorldController {
         
     private:
 
+        GameWorldController() {};
+
         MainWindowInterface*            mainWindow;
 
         // Game World is composed of several other objects which I have

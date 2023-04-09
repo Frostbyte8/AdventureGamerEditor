@@ -23,7 +23,7 @@ class RoadSelectorDocker : public CDocker {
 
 		// Disable copy construction and assignment operator
 		RoadSelectorDocker(const RoadSelectorDocker&);
-		RoadSelectorDocker& operator = (const RoadSelectorDocker&);
+		RoadSelectorDocker& operator=(const RoadSelectorDocker&);
 };
 
 ///----------------------------------------------------------------------------
@@ -45,7 +45,7 @@ class GameMapDocker : public CDocker {
 
 		// Disable copy construction and assignment operator
 		GameMapDocker(const GameMapDocker&);
-		GameMapDocker& operator = (const GameMapDocker&);
+		GameMapDocker& operator=(const GameMapDocker&);
 
 };
 
@@ -68,7 +68,7 @@ class EntitiesHereDocker : public CDocker {
 
 		// Disable copy construction and assignment operator
 		EntitiesHereDocker(const EntitiesHereDocker&);
-		EntitiesHereDocker& operator = (const EntitiesHereDocker&);
+		EntitiesHereDocker& operator=(const EntitiesHereDocker&);
 
 };
 

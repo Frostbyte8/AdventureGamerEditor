@@ -5,6 +5,8 @@
 #include <wxx_docking.h>
 #include <wxx_scrollview.h>
 #include "../controller/gameworld_controller.h"
+#include "../interface/mainwindow_interface.h"
+#include "../win32/window_metrics.h"
 #include <vector>
 
 ///----------------------------------------------------------------------------
@@ -15,18 +17,41 @@
 class GameEntitiesView : public CWnd {
 
 	public:
-		GameEntitiesView() {}
+		GameEntitiesView(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics) : mainWindow(inMainWindow), windowMetrics(inWindowMetrics) {}
 		virtual ~GameEntitiesView() {}
 
+        virtual void PreRegisterClass(WNDCLASS& wc) {
+            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+            wc.lpszClassName = L"GameEntitiesView";
+            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+        }
+
+    protected:
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
 	private:
+
+        int OnSize(const WPARAM& wParam, const LPARAM& lParam);
+        void sizeGroupBox(const bool doCharacters, const CRect& dimensions, const WindowMetrics::ControlSpacing& cs, const WindowMetrics::ControlDimensions& cd);
 
 		// Disable copy construction and assignment operator
 	    GameEntitiesView(const GameEntitiesView&);
 		GameEntitiesView& operator = (const GameEntitiesView&);
+
+        MainWindowInterface*    mainWindow;
+        WindowMetrics*          windowMetrics;
+
+        CButton                 objectsGroup;
+        CButton                 charactersGroup;
+        CListBox                objectsListBox;
+        CListBox                charactersListBox;
+        CButton                 alterObjectButton[4];
+        CButton                 alterCharacterButton[4];
 };
 
 ///----------------------------------------------------------------------------
-/// RoadSelectorView - Show all the road tiles avaliable
+/// RoadSelectorView - Show all the road tiles available
 ///----------------------------------------------------------------------------
 
 class RoadSelectorView : public CWnd {
