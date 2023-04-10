@@ -1,7 +1,25 @@
 {
-    "100" : "&File",    // File Menu
-    "101" : "E&xit",    // Exit Menu Item
     
+	"100" : "&File",
+    "101" : "&New...",
+    "102" : "&Open...",
+    "103" : "&Save...",
+    "104" : "Save &As...",
+    "105" : "E&xit",
+	
+	"201" : "Add",						// Buttons in the "Objects" Groupbox
+	"202" : "Edit",
+	"203" : "Place",
+	"204" : "Delete",
+	"205" : "Add",						// Buttons in the "Characters" Groupbox
+	"206" : "Edit",
+	"207" : "Place",
+	"208" : "Delete",
+	"209" : "Objects",
+	"210" : "Characters",
+	
+	"301" : "Adventure Gamer Editor++",
+
     /*
     "100" : "Descriptions",             // Description Tab Label
     "101" : "Qualities",                // Qualities Tab Label
@@ -62,5 +80,6 @@
     "152" : "Character has it",
     "153" : "Object unlocks door at:",
     */
+	
     "32767" : ""        // Unused
 }

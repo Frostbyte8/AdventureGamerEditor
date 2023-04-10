@@ -14,19 +14,6 @@ namespace EditorConstants {
     unsigned int const DirtroadStartRow     = 8;
 }
 
-///----------------------------------------------------------------------------
-/// LanguageConstants - Used by the translation system of the editor.
-///----------------------------------------------------------------------------
-
-namespace LanguageConstants {
-    int const FileMenuItem      = 100;
-    int const NewMenuItem       = 101;
-    int const OpenMenuItem      = 102;
-    int const SaveMenuItem      = 103;
-    int const SaveAsMenuItem    = 104;
-    int const ExitMenuItem      = 105;
-}
-
 // TODO: Below this line are Adventure Gamer Constants, not editor ones, so
 // split them into their own file.
 

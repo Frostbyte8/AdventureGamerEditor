@@ -2,7 +2,7 @@
 #include "../editor_constants.h"
 #include "../model/gametile.h"
 #include <vector>
-
+#include "../util/languagemapper.h"
 #include <wxx_commondlg.h>
 
 //=============================================================================
@@ -38,13 +38,6 @@ MainWindowFrame::~MainWindowFrame() {
         gameWorldController = NULL;
     }
 
-    /*
-    if(languageController) {
-        delete languageController;
-        languageController = NULL;
-    }
-    */
-
 }
 
 //=============================================================================
@@ -69,7 +62,7 @@ HWND MainWindowFrame::Create(HWND parent) {
 /// CreateMenuBar - Creates the menu bar.
 ///----------------------------------------------------------------------------
 
-#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.getLangString(ID).c_str(), CP_UTF8); \
+#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.get(ID).c_str(), CP_UTF8); \
     MENUOBJ.AppendMenu(MF_STRING, ID, caption);
 
 void MainWindowFrame::CreateMenuBar() {
@@ -87,7 +80,7 @@ void MainWindowFrame::CreateMenuBar() {
     ADV_ADDMENUITEM(LanguageConstants::SaveAsMenuItem, fileMenu);
     ADV_ADDMENUITEM(LanguageConstants::ExitMenuItem, fileMenu);
 
-    caption = AtoW(languageMapper.getLangString(LanguageConstants::FileMenuItem).c_str(), CP_UTF8);
+    caption = AtoW(languageMapper.get(LanguageConstants::FileMenuItem).c_str(), CP_UTF8);
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
 
@@ -109,6 +102,10 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     //m_bUseCustomDraw = FALSE;     // Don't use custom draw for menu items (?)
 
 	const int retVal = CDockFrame::OnCreate(cs);
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption = AtoW(langMap.get(LanguageConstants::MainWindowCaption).c_str(), CP_UTF8);
+    SetWindowText(caption);
 
     CreateMenuBar();
 

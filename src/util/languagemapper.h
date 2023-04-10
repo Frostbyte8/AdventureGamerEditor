@@ -7,9 +7,7 @@
 #include "../compat/std_extras_compat.h"
 #include "../thirdparty/simpleson/json.h"
 
-
-// TODO: Load JSON file with default definitions
-// Locking the mapper to prevent adding invalid key
+// TODO: Deal with runtime errors
 
 class LanguageMapper {
 
@@ -20,7 +18,7 @@ class LanguageMapper {
             return mapper;
         }
 
-		std::string getLangString(const unsigned int& key) {
+		std::string get(const unsigned int& key) {
 			
 			std::string outString = "Err: String not Found";
 			
@@ -37,7 +35,7 @@ class LanguageMapper {
 
 	private:
 
-		bool addString(const unsigned int& key, const std::string& value) {
+		bool add(const unsigned int& key, const std::string& value) {
 			languageMap[key] = value;
 			return true;
 		}
@@ -62,7 +60,7 @@ class LanguageMapper {
 
 		        for(it = keyList.begin(); it != keyList.end(); ++it) {
 			        int key = std::stoi(*it);
-			        addString(key, result.get(*it));
+			        add(key, result.get(*it));
 		        }
 
                 return true;
@@ -80,5 +78,35 @@ class LanguageMapper {
         void operator=(const LanguageMapper&) {};
 		std::map<unsigned int, std::string> languageMap;
 };
+
+///----------------------------------------------------------------------------
+/// LanguageConstants - Used by the translation system of the editor.
+///----------------------------------------------------------------------------
+
+namespace LanguageConstants {
+
+    int const FileMenuItem      = 100;
+    int const NewMenuItem       = 101;
+    int const OpenMenuItem      = 102;
+    int const SaveMenuItem      = 103;
+    int const SaveAsMenuItem    = 104;
+    int const ExitMenuItem      = 105;
+
+    int const ObjectAddButton       = 201;
+    int const ObjectEditButton      = 202;
+    int const ObjectPlaceButton     = 203;
+    int const ObjectDeleteButton    = 204;
+
+    int const CharacterAddButton    = 205;
+    int const CharacterEditButton   = 206;
+    int const CharacterPlaceButton  = 207;
+    int const CharacterDeleteButton = 208;
+
+    int const ObjectGroupboxCaption     = 209;
+    int const CharacterGroupboxCaption  = 210;
+
+    int const MainWindowCaption         = 301;
+
+}
 
 #endif // __LANGUAGEMAPPER_H__

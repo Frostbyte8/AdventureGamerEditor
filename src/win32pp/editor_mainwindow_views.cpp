@@ -1,4 +1,5 @@
 #include "editor_mainwindow_views.h"
+#include "../util/languagemapper.h"
 
 //=============================================================================
 // Public / Protected Functions
@@ -9,22 +10,33 @@
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-int GameEntitiesView::OnCreate(CREATESTRUCT& css) {
+int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
 
-    const int retVal = CWnd::OnCreate(css);
+    const int retVal = CWnd::OnCreate(cs);
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    CString caption = AtoW(langMap.get(LanguageConstants::ObjectGroupboxCaption).c_str(), CP_UTF8);
 
     objectsGroup.Create(*this, 0, BS_GROUPBOX);
-    objectsGroup.SetWindowText(L"Objects");
+    objectsGroup.SetWindowText(caption);
+
+    caption = AtoW(langMap.get(LanguageConstants::CharacterGroupboxCaption).c_str(), CP_UTF8);
 
     charactersGroup.Create(*this, 0, BS_GROUPBOX);
-    charactersGroup.SetWindowText(L"Characters");
+    charactersGroup.SetWindowText(caption);
 
     objectsListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
     charactersListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
 
     for(int i = 0; i < 4; ++i) {
+
+        caption = AtoW(langMap.get(LanguageConstants::ObjectAddButton + i).c_str(), CP_UTF8);
         alterObjectButton[i].Create(*this);
+        alterObjectButton[i].SetWindowText(caption);
+
+        caption = AtoW(langMap.get(LanguageConstants::CharacterAddButton + i).c_str(), CP_UTF8);
         alterCharacterButton[i].Create(*this, 0, BS_PUSHBUTTON);
+        alterCharacterButton[i].SetWindowText(caption);
     }
 
     return retVal;
