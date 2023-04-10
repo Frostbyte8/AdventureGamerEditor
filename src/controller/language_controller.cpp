@@ -1,3 +1,4 @@
+/*
 #include "language_controller.h"
 #include "../compat/std_extras_compat.h"
 #include "../thirdparty/simpleson/json.h"
@@ -31,3 +32,4 @@ bool LanguageController::LoadLanguageFile(const std::string& filePath, const std
 
     return true;
 }
+*/

@@ -15,13 +15,11 @@
 ///----------------------------------------------------------------------------
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
-                                     roadSelectorDocker(0), gameWorldController(0),
-                                     languageController(0) {
+                                     roadSelectorDocker(0), gameWorldController(0) {
 
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
-    languageController  = new LanguageController();
-
+    LanguageMapper::getInstance();
 }
 
 ///----------------------------------------------------------------------------
@@ -40,10 +38,12 @@ MainWindowFrame::~MainWindowFrame() {
         gameWorldController = NULL;
     }
 
+    /*
     if(languageController) {
         delete languageController;
         languageController = NULL;
     }
+    */
 
 }
 
@@ -57,7 +57,6 @@ MainWindowFrame::~MainWindowFrame() {
 ///----------------------------------------------------------------------------
 
 HWND MainWindowFrame::Create(HWND parent) {
-    languageController->LoadLanguageFile("TODO", "TODO");
     SetView(*entityView);
 	return CDockFrame::Create(parent);
 }
@@ -78,7 +77,7 @@ void MainWindowFrame::CreateMenuBar() {
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
 
-    LanguageMapper& languageMapper = languageController->getLanguageMapper();
+    LanguageMapper& languageMapper = LanguageMapper::getInstance();
 
     CStringW caption;
 

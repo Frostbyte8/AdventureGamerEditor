@@ -47,7 +47,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 		RoadSelectorDocker*     roadSelectorDocker;
 		EntitiesHereDocker*     entitiesHereDocker;
 
-        LanguageController*     languageController;
+        //LanguageController*     languageController;
         GameWorldController*    gameWorldController;
 		WindowMetrics		    windowMetrics;
 
