@@ -101,6 +101,8 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	UseThemes(FALSE);				// Don't use themes
     //m_bUseCustomDraw = FALSE;     // Don't use custom draw for menu items (?)
 
+    SetStyle(GetStyle() | WS_CLIPCHILDREN);
+
 	const int retVal = CDockFrame::OnCreate(cs);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -188,6 +190,10 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
         return 0;
     }
 	*/
+
+    //switch(msg) {
+    //    case WM_ERASEBKGND: return 1;
+    //}
 
 	return WndProcDefault(msg, wParam, lParam);
 }

@@ -23,13 +23,14 @@ class GameEntitiesView : public CWnd {
 
     protected:
         virtual void PreRegisterClass(WNDCLASS& wc);
+
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
 	private:
 
         int OnSize(const WPARAM& wParam, const LPARAM& lParam);
-        void sizeGroupBox(const bool doCharacters, const CRect& dimensions, const WindowMetrics::ControlSpacing& cs, const WindowMetrics::ControlDimensions& cd);
+        void sizeGroupBox(HDWP& hDWP, const bool doCharacters, const CRect& dimensions, const WindowMetrics::ControlSpacing& cs, const WindowMetrics::ControlDimensions& cd);
 
 		// Disable copy construction and assignment operator
 	    GameEntitiesView(const GameEntitiesView&);
@@ -38,8 +39,8 @@ class GameEntitiesView : public CWnd {
         MainWindowInterface*    mainWindow;
         WindowMetrics*          windowMetrics;
 
-        CButton                 objectsGroup;
-        CButton                 charactersGroup;
+        CStatic                 objectsGroup;
+        CStatic                 charactersGroup;
         CListBox                objectsListBox;
         CListBox                charactersListBox;
         CButton                 alterObjectButton[4];

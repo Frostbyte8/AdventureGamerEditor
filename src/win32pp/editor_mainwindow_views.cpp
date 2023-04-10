@@ -13,16 +13,19 @@
 int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
 
     const int retVal = CWnd::OnCreate(cs);
+
+    SetStyle(GetStyle() | WS_CLIPCHILDREN);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     CString caption = AtoW(langMap.get(LanguageConstants::ObjectGroupboxCaption).c_str(), CP_UTF8);
 
-    objectsGroup.Create(*this, 0, BS_GROUPBOX);
+    objectsGroup.Create(*this, 0,WS_CLIPSIBLINGS);
     objectsGroup.SetWindowText(caption);
 
     caption = AtoW(langMap.get(LanguageConstants::CharacterGroupboxCaption).c_str(), CP_UTF8);
 
-    charactersGroup.Create(*this, 0, BS_GROUPBOX);
+    charactersGroup.Create(*this, 0, WS_CLIPSIBLINGS);
     charactersGroup.SetWindowText(caption);
 
     objectsListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
@@ -31,7 +34,7 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
     for(int i = 0; i < 4; ++i) {
 
         caption = AtoW(langMap.get(LanguageConstants::ObjectAddButton + i).c_str(), CP_UTF8);
-        alterObjectButton[i].Create(*this);
+        alterObjectButton[i].Create(*this, 0, BS_PUSHBUTTON);
         alterObjectButton[i].SetWindowText(caption);
 
         caption = AtoW(langMap.get(LanguageConstants::CharacterAddButton + i).c_str(), CP_UTF8);
@@ -52,6 +55,7 @@ void GameEntitiesView::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
     wc.lpszClassName = L"GameEntitiesView";
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+    wc.style = CS_HREDRAW;
 }
 
 ///----------------------------------------------------------------------------
@@ -75,8 +79,14 @@ void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects) {
 
 LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
+    WINDOWPOS* wp;
+
     switch(msg) {
         case WM_SIZE: return OnSize(wParam, lParam);
+        case WM_WINDOWPOSCHANGING:
+            wp = (WINDOWPOS*)(lParam);
+            wp->flags |= SWP_NOCOPYBITS;
+            break;
     }
 
     return WndProcDefault(msg, wParam, lParam);
@@ -105,11 +115,19 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     const CRect characterGroupRect(CPoint(xPos, objectGroupRect.bottom + cs.YRELATED_MARGIN),
                                    CSize(newWidth, newHeight - objectGroupRect.Size().cy));
 
-    objectsGroup.MoveWindow(objectGroupRect, TRUE);
-    charactersGroup.MoveWindow(characterGroupRect, TRUE);
+    HDWP hDWP = BeginDeferWindowPos(8);
 
-    sizeGroupBox(false, objectGroupRect, cs, cd);
-    sizeGroupBox(true, characterGroupRect, cs, cd);
+
+    //objectsGroup.MoveWindow(objectGroupRect, TRUE);
+    //charactersGroup.MoveWindow(characterGroupRect, FALSE);
+
+    //objectsGroup.DeferWindowPos(hDWP, 0, objectGroupRect, SWP_NOZORDER);
+    //charactersGroup.DeferWindowPos(hDWP, 0, characterGroupRect, SWP_NOZORDER);
+
+    sizeGroupBox(hDWP, false, objectGroupRect, cs, cd);
+    sizeGroupBox(hDWP, true, characterGroupRect, cs, cd);
+
+    EndDeferWindowPos(hDWP);
 
     return 0;
 }
@@ -125,7 +143,7 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 /// TODO: Function name is misleading. Fix that.
 ///----------------------------------------------------------------------------
 
-void GameEntitiesView::sizeGroupBox(const bool doCharacters, const CRect& dimensions,
+void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const CRect& dimensions,
                                     const WindowMetrics::ControlSpacing& cs, 
                                     const WindowMetrics::ControlDimensions& cd) {
 
@@ -149,7 +167,8 @@ void GameEntitiesView::sizeGroupBox(const bool doCharacters, const CRect& dimens
     
     // Start by moving the list box
     const CRect listBoxRect(xPos, yPos, right, bottom);
-    listBox->MoveWindow(listBoxRect, TRUE);
+    listBox->DeferWindowPos(hDWP, NULL, listBoxRect, SWP_NOZORDER);
+    //listBox->MoveWindow(listBoxRect, TRUE);
 
     const int width = listBoxRect.Size().cx;
     const int buttonWidth = static_cast<int>(width * 0.5);  
@@ -162,13 +181,13 @@ void GameEntitiesView::sizeGroupBox(const bool doCharacters, const CRect& dimens
     CRect rightButtonRect(bottomRight.x, bottom, 
                           bottomRight.x + (width - buttonWidth), bottom + cd.YBUTTON);
     
-    buttons[0].MoveWindow(leftButtonRect, TRUE);
-    buttons[1].MoveWindow(rightButtonRect, TRUE);
+    buttons[0].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER); //MoveWindow(leftButtonRect, TRUE);
+    buttons[1].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER);
 
     leftButtonRect.MoveToY(bottomRight.y);
     rightButtonRect.MoveToY(bottomRight.y);
 
-    buttons[2].MoveWindow(leftButtonRect, TRUE);
-    buttons[3].MoveWindow(rightButtonRect, TRUE);
+    buttons[2].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER);
+    buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER);
 
 }
