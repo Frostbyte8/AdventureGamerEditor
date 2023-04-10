@@ -19,16 +19,10 @@ class GameEntitiesView : public CWnd {
 	public:
 		GameEntitiesView(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics) : mainWindow(inMainWindow), windowMetrics(inWindowMetrics) {}
 		virtual ~GameEntitiesView() {}
-
-        virtual void PreRegisterClass(WNDCLASS& wc) {
-            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-            wc.lpszClassName = L"GameEntitiesView";
-            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-        }
-
         void updateLists(const std::vector<GameObject>& gameObject);
 
     protected:
+        virtual void PreRegisterClass(WNDCLASS& wc);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
