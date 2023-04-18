@@ -79,6 +79,15 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 	return gameObjects;
 }
 
+const GameTile* const GameMap::getTile(const int &row, const int &col) const {
+    const unsigned int index = indexFromRowCol(row, col);
+    return &(tiles.at(index));
+}
+
+///----------------------------------------------------------------------------
+/// getGameTile - Return a reference to a gameTile
+///----------------------------------------------------------------------------
+
 //=============================================================================
 // Public Functions
 //=============================================================================
@@ -94,6 +103,8 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 ///----------------------------------------------------------------------------
 
 const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) const {
+
+    // TODO: Move this to it's own function
     if(row > numRows || col > numCols || col < 0 || row < 0) {
         throw std::out_of_range("Index of of range.");
     }

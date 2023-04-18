@@ -20,9 +20,15 @@ class GameWorldController {
         bool loadWorld(const std::string& filePath, const std::string& fileName);
         bool saveWorld(const std::string& filePath, const std::string& fileName);
 
+        // Collection Accessors
+
         const std::vector<GameTile>& getTiles() const { return gameMap->getTiles(); }
         const std::vector<GameObject>& getGameObjects() const { return gameMap->getGameObjects(); }
         const std::vector<GameTile::DrawInfo> getTileDrawData() { return gameMap->getTileDrawData(); }
+
+        // Accessors
+
+        const GameTile* const getGameTile(const int& row, const int& col) const { return gameMap->getTile(row, col); }
 
         const int& getMapWidth() const {return gameMap->getWidth(); }
         const int& getMapHeight() const {return gameMap->getHeight(); }
