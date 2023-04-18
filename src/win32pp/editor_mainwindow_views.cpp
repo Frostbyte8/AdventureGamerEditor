@@ -83,10 +83,12 @@ LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch(msg) {
         case WM_SIZE: return OnSize(wParam, lParam);
+           /*
         case WM_WINDOWPOSCHANGING:
             wp = (WINDOWPOS*)(lParam);
             wp->flags |= SWP_NOCOPYBITS;
             break;
+            */
     }
 
     return WndProcDefault(msg, wParam, lParam);
@@ -115,7 +117,7 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     const CRect characterGroupRect(CPoint(xPos, objectGroupRect.bottom + cs.YRELATED_MARGIN),
                                    CSize(newWidth, newHeight - objectGroupRect.Size().cy));
 
-    HDWP hDWP = BeginDeferWindowPos(8);
+    HDWP hDWP = BeginDeferWindowPos(10);
 
 
     //objectsGroup.MoveWindow(objectGroupRect, TRUE);
@@ -167,7 +169,7 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     
     // Start by moving the list box
     const CRect listBoxRect(xPos, yPos, right, bottom);
-    listBox->DeferWindowPos(hDWP, NULL, listBoxRect, SWP_NOZORDER);
+    listBox->DeferWindowPos(hDWP, NULL, listBoxRect, SWP_NOZORDER | SWP_NOCOPYBITS);
     //listBox->MoveWindow(listBoxRect, TRUE);
 
     const int width = listBoxRect.Size().cx;
@@ -181,13 +183,13 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     CRect rightButtonRect(bottomRight.x, bottom, 
                           bottomRight.x + (width - buttonWidth), bottom + cd.YBUTTON);
     
-    buttons[0].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER); //MoveWindow(leftButtonRect, TRUE);
-    buttons[1].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER);
+    buttons[0].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS); //MoveWindow(leftButtonRect, TRUE);
+    buttons[1].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
 
     leftButtonRect.MoveToY(bottomRight.y);
     rightButtonRect.MoveToY(bottomRight.y);
 
-    buttons[2].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER);
-    buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER);
+    buttons[2].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
+    buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
 
 }

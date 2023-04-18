@@ -5,6 +5,13 @@
 
 namespace Frost {
 
+    ///------------------------------------------------------------------------
+    /// endsWidth - Checks if a string ends with the specified string
+    /// @param string to check
+    /// @param value to check for
+    /// @return true if the string ends with the value given, false otherwise
+    ///------------------------------------------------------------------------
+
     bool endsWith(const std::string& str, const std::string& val) {
 
         if(val.length() > str.length()) {
@@ -17,6 +24,13 @@ namespace Frost {
 
     }
 
+    ///------------------------------------------------------------------------
+    /// startsWith - Checks if a string ends with the specified string
+    /// @param string to check
+    /// @param value to check for
+    /// @return true if the string starts with the value given, false otherwise
+    ///------------------------------------------------------------------------
+
     bool startsWith(const std::string& str, const std::string& val) {
 
         if(val.length() > str.length()) {
@@ -28,6 +42,15 @@ namespace Frost {
 
     }
 
+    ///------------------------------------------------------------------------
+    /// split - Split the string into a collection of strings where it finds
+    /// the given delimiter.
+    /// @param string to check
+    /// @param value to split on
+    /// @param limit on how many splits to do.
+    /// @return a vector containing the tokenized strings
+    ///------------------------------------------------------------------------
+
     std::vector<std::string> split(const std::string& str, const char& delimiter,
                                    const size_t& limit) {
 
@@ -35,6 +58,14 @@ namespace Frost {
         size_t tokensParsed     = 0;
         std::vector<std::string> out;
         std::string token;
+
+        if(limit == 0) {
+            return out;  // Nothing to do here.
+        }
+
+        if(limit != -1) {
+            out.reserve(limit);
+        }
 
         while(true) {
 
@@ -71,6 +102,12 @@ namespace Frost {
         return out;
     }
 
+    ///------------------------------------------------------------------------
+    /// toLower - Lowercases a string.
+    /// @param string to lower case
+    /// @return the string in all lower case.
+    ///------------------------------------------------------------------------
+
     std::string toLower(const std::string& str) {
         std::string out;
         out.resize(str.size());
@@ -79,6 +116,12 @@ namespace Frost {
         return out;
     }
 
+    ///------------------------------------------------------------------------
+    /// toUpper - Uppercases a string.
+    /// @param string to Upper case
+    /// @return the string in all upper case.
+    ///------------------------------------------------------------------------
+
     std::string toUpper(const std::string& str) {
         std::string out;
         out.resize(str.size());
@@ -86,42 +129,36 @@ namespace Frost {
         return out;
     }
 
-    std::string ltrim(const std::string& str, const char c) {
+    ///------------------------------------------------------------------------
+    /// ltrim - Removes the string given from the start of the string given
+    /// @param string to trim
+    /// @param string to remove
+    /// @return the string trimmed of the string
+    ///------------------------------------------------------------------------
 
-        if(str.length() == 0) {
-            return str; // Nothing to trim.
-        }
-
-        const size_t firstPos = str.find_first_not_of(c);
+    std::string ltrim(const std::string& str, const std::string& needle) {
         
+        if(str.length() == 0 || needle.length() == 0) {
+            return str;
+        }
+        
+        const size_t firstPos = str.find_first_not_of(needle);
+
         if(firstPos == std::string::npos) {
-            if(str.at(0) == c) {
-                return str.substr(1, std::string::npos);
-            }
+            // No matches, so return the string un-edited.
             return str;
         }
 
-        size_t strlen = str.length();
-        return str.substr(firstPos, std::string::npos);
+        return str.substr(firstPos, str.length() - firstPos);
+
     }
 
-    std::string rtrim(const std::string& str, const char c) {
-       
-        if(str.length() == 0) {
-            return str; // Nothing to trim.
-        }
-
-        const size_t lastPos = str.find_last_not_of(c);
-
-        if(lastPos == std::string::npos) {
-            if(str.at(str.length() - 1) == c) {
-                return str.substr(0, str.length() - 1);
-            }
-            return str;
-        }
-
-        return str.substr(0, lastPos+1);
-    }
+    ///------------------------------------------------------------------------
+    /// rtrim - Removes the string given from the end of the string given
+    /// @param string to trim
+    /// @param string to remove
+    /// @return the string trimmed of the string
+    ///------------------------------------------------------------------------
 
     std::string rtrim(const std::string& str, const std::string& needle) {
         
@@ -136,7 +173,7 @@ namespace Frost {
             return str;
         }
 
-        return str.substr(0, lastPos);
+        return str.substr(0, lastPos+1);
 
     }
 
