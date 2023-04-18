@@ -11,7 +11,7 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
 
     for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
         std::getline(mapFile, line);
-        description(Frost::trim(Frost::rtrim(line, 13), '"'), i);
+        description(Frost::trim(Frost::rtrim(line, "\r"), "\""), i);
     }
 
     std::getline(mapFile, line);
@@ -33,7 +33,7 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
     uses(std::stoi(line));
 
     std::getline(mapFile, line);
-    location(Frost::trim(line, '"'));
+    location(Frost::trim(line, "\""));
 
     for(int i = 0; i < AttributeTypes::NumTypes; i++) {
         std::getline(mapFile, line);

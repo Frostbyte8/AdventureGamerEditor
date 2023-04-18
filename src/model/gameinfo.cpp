@@ -53,7 +53,7 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
 
     // Try and read the Headings for each attribute, and their values
     std::getline(mapFile, line);
-    line = Frost::rtrim(line, 13);
+    line = Frost::rtrim(line, "\r");
 
     if(AdventureGamerHeadings::Attributes.compare(line)) {
         errorMsg.append("Expected \"" + AdventureGamerHeadings::Attributes + "\", but got \"" + line + "\".");

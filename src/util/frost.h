@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <istream>
 
 namespace Frost {
 
@@ -17,6 +18,7 @@ namespace Frost {
     std::string rtrim(const std::string& str, const std::string& needle = " ");
     inline std::string trim(const std::string& str, const std::string& needle = " ") { return ltrim(rtrim(str, needle), needle); }
     inline bool isCharANSI(const wchar_t& ch) { if(ch < 32 || ch > 255) { return false; } return true; }
+    inline void getLineWindows(std::istream& is, std::string& str) { std::getline(is, str); str = rtrim(str, "\r"); }
 
 }
 

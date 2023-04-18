@@ -137,8 +137,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
         const std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
 
-        std::getline(mapFile, line);
-        line = Frost::rtrim(line, 13);
+        Frost::getLineWindows(mapFile, line);
 
         // This is only true if they're not equal.
         if(rowID.compare(line)) {
@@ -216,9 +215,8 @@ const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& conne
 void GameMap::readCharacters(std::ifstream& mapFile) {
 
     std::string line;
-    std::getline(mapFile, line);
     std::string errorMsg = "Error reading characters: ";
-    line = Frost::rtrim(line, 13);
+    Frost::getLineWindows(mapFile, line);
 
     if(AdventureGamerHeadings::Characters.compare(line)) {
         errorMsg.append("Expected \"" + AdventureGamerHeadings::Characters + "\", but got \"" + line + "\".");
@@ -247,9 +245,8 @@ void GameMap::readCharacters(std::ifstream& mapFile) {
 void GameMap::readJumps(std::ifstream& mapFile) {
 
     std::string line;
-    std::getline(mapFile, line);
     std::string errorMsg = "Error reading Jumps: ";
-    line = Frost::rtrim(line, 13);
+    Frost::getLineWindows(mapFile, line);
 
     // Read the header
 
@@ -358,9 +355,8 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
                     if(ifs.eof()) {
                         break;
                     }
-                    std::getline(ifs, line);
 
-                    line = Frost::rtrim(line, '\r');
+                    Frost::getLineWindows(ifs, line);
 
                     if(Frost::endsWith(line, "\"")) {
                         break;
@@ -397,9 +393,8 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
 void GameMap::readObjects(std::ifstream& mapFile) {
 
     std::string line;
-    std::getline(mapFile, line);
     std::string errorMsg = "Error reading objects: ";
-    line = Frost::rtrim(line, 13);
+    Frost::getLineWindows(mapFile, line);
 
     if(AdventureGamerHeadings::Objects.compare(line)) {
         errorMsg.append("Expected \"" + AdventureGamerHeadings::Objects + "\", but got \"" + line + "\".");
@@ -438,7 +433,7 @@ void GameMap::readStory(const std::string& storyFilePath) {
     
     // Story files aren't mandatory, so if they're not found, there is no
     // error.
-    story = Frost::rtrim(Frost::ltrim(story, '"'), "\"\x0D\x0A");
+    story = Frost::rtrim(Frost::ltrim(story, "\""), "\n\r");
 
 }
 
@@ -452,9 +447,8 @@ void GameMap::readStory(const std::string& storyFilePath) {
 void GameMap::readSwitches(std::ifstream& mapFile) {
     
     std::string line;
-    std::getline(mapFile, line);
     std::string errorMsg = "Error reading switches: ";
-    line = Frost::rtrim(line, 13);
+    Frost::getLineWindows(mapFile, line);
 
     // Read the header
 
