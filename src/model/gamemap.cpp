@@ -79,9 +79,10 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 	return gameObjects;
 }
 
-const GameTile* const GameMap::getTile(const int &row, const int &col) const {
+GameTile GameMap::getTile(const int &row, const int &col) const {
     const unsigned int index = indexFromRowCol(row, col);
-    return &(tiles.at(index));
+    GameTile::Builder builder(tiles.at(index));
+    return builder.build();
 }
 
 ///----------------------------------------------------------------------------

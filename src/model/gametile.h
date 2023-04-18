@@ -140,6 +140,18 @@ class GameTile {
                     base.drawInfo.dark = 0;
                 }
 
+                Builder(const GameTile& gameTile) {
+
+                    base.name                    = gameTile.base.name;
+                    base.flags                   = gameTile.base.flags;
+                    base.description             = gameTile.base.description;
+                    base.sprite                  = gameTile.base.sprite;
+                    base.drawInfo.spriteIndex    = gameTile.base.drawInfo.spriteIndex;
+                    base.drawInfo.spriteModifier = gameTile.base.drawInfo.spriteModifier;
+                    base.drawInfo.dark           = gameTile.base.drawInfo.dark;
+
+                }
+
                 Builder& sprite(const uint8_t& sprite) {
 
                     base.sprite         = sprite;

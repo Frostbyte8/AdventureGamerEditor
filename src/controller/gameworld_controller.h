@@ -28,7 +28,7 @@ class GameWorldController {
 
         // Accessors
 
-        const GameTile* const getGameTile(const int& row, const int& col) const { return gameMap->getTile(row, col); }
+        GameTile getTile(const int& row, const int& col) const { return gameMap->getTile(row, col); }
 
         const int& getMapWidth() const {return gameMap->getWidth(); }
         const int& getMapHeight() const {return gameMap->getHeight(); }
