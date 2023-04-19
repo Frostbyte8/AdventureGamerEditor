@@ -79,10 +79,20 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 	return gameObjects;
 }
 
+///----------------------------------------------------------------------------
+/// getTile - Get a copy of the tile at the specified row/col. 
+/// @param row of the tile get
+/// @param column of the tile to get
+/// @throws tiles vector can throw an out_of_range exception
+/// @return a copy of the tile requested.
+///----------------------------------------------------------------------------
+
 GameTile GameMap::getTile(const int &row, const int &col) const {
+
     const unsigned int index = indexFromRowCol(row, col);
     GameTile::Builder builder(tiles.at(index));
     return builder.build();
+
 }
 
 ///----------------------------------------------------------------------------
@@ -98,18 +108,30 @@ GameTile GameMap::getTile(const int &row, const int &col) const {
 /// current map being edited.
 /// @param integer specifying the row the tile is on
 /// @param integer specifying the column the tile is on
-/// @throws out_of_range if the row or column is outside the boundries of the
-/// map
 /// @return the index of the tile specified
 ///----------------------------------------------------------------------------
 
 const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) const {
-
-    // TODO: Move this to it's own function
-    if(row > numRows || col > numCols || col < 0 || row < 0) {
-        throw std::out_of_range("Index of of range.");
-    }
     return (row * numCols) + col;
+}
+
+///----------------------------------------------------------------------------
+/// isRowColInMapBounds - Check if a given row and column are with in the
+/// bounderies of the map.
+/// @param row to check
+/// @param col to check
+/// @return true if it is with map boundries, false if it is not.
+///----------------------------------------------------------------------------
+
+bool GameMap::isTileIndexInMapBounds(const int& row, const int& col) const {
+    
+    if(row > numRows - 1 || col > numCols - 1 || col < 0 || row < 0 || 
+        indexFromRowCol(row, col) > tiles.size()) {
+        return false;
+    }
+
+    return true;
+
 }
 
 ///----------------------------------------------------------------------------
@@ -144,6 +166,8 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     std::getline(mapFile, line);
     numRows = std::stoi(line) + 1;
+
+    tiles.reserve((numCols * numRows));
 
     for(int row = 0; row < numRows; row++) {
 
@@ -185,7 +209,6 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
         }
 
     }
-
     readJumps(mapFile);
     readSwitches(mapFile);    
     gameInfo.readPlayerAttributes(key, mapFile);
@@ -281,8 +304,13 @@ void GameMap::readJumps(std::ifstream& mapFile) {
             int y = std::stoi(line);
             SimplePoint jumpA(x, y);
 
+            if(!isTileIndexInMapBounds(y, x)) {
+                errorMsg.append("Tile index was out of bounds");
+                throw std::out_of_range(errorMsg);
+            }
+
             unsigned int tileIndex = indexFromRowCol(y, x);
-            if(!(tiles.at(tileIndex).hasJumpPad())) {
+            if(!(tiles[tileIndex].hasJumpPad())) {
                 errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
                 throw std::runtime_error(errorMsg);
             }
@@ -293,8 +321,15 @@ void GameMap::readJumps(std::ifstream& mapFile) {
             y = std::stoi(line);
             SimplePoint jumpB(x, y);
 
+            if(!isTileIndexInMapBounds(y, x)) {
+                errorMsg.append("Tile index was out of bounds");
+                throw std::out_of_range(errorMsg);
+            }
+
             tileIndex = indexFromRowCol(y, x);
-            if(!(tiles.at(tileIndex).hasJumpPad())) {
+
+
+            if(!(tiles[tileIndex].hasJumpPad())) {
                 errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
                 throw std::runtime_error(errorMsg);
             }
@@ -484,8 +519,14 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
             int y = std::stoi(line);
             SimplePoint connectionA(x, y);
 
+            if(!isTileIndexInMapBounds(y, x)) {
+                errorMsg.append("Tile index was out of bounds");
+                throw std::out_of_range(errorMsg);
+            }
+
             unsigned int tileIndex = indexFromRowCol(y, x);
-            if(!(tiles.at(tileIndex).hasSwitch())) {
+
+            if(!(tiles[tileIndex].hasSwitch())) {
                 errorMsg.append("Read switch, but no switch was found at the coordinates read.");
                 throw std::runtime_error(errorMsg);
             }
@@ -497,9 +538,14 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
             y = std::stoi(line);
             SimplePoint connectionB(x, y);
 
-            
+            if(!isTileIndexInMapBounds(y, x)) {
+                errorMsg.append("Tile index was out of bounds");
+                throw std::out_of_range(errorMsg);
+            }
+
             tileIndex = indexFromRowCol(y, x);
-            if(! (tiles.at(tileIndex).hasGate() || tiles.at(tileIndex).isDark()) ) {
+
+            if(! (tiles[tileIndex].hasGate() || tiles[tileIndex].isDark()) ) {
                 errorMsg.append("Read switch, but the tile it effects is not a gate or dark space.");
                 throw std::runtime_error(errorMsg);
             }
