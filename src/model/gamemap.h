@@ -19,20 +19,27 @@ class GameMap {
 		GameMap() {};
 		GameMap(const int& numRows, const int& numCols);
     
+        // Accessors
         const int& getWidth() const;
-        const std::vector<GameTile>& getTiles() const;
         const int& getHeight() const;
 		inline const int getNumTiles() const;
+
+        // Collection Accessors
+        const std::vector<GameTile>& getTiles() const;
 		const std::vector<GameObject>& getGameObjects() const;
+        const std::vector<GameTile::DrawInfo> getTileDrawData();
 
+        // Information Functions
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
-        bool isTileIndexInMapBounds(const int& row, const int& col) const;
+        bool isTileIndexInMapBounds(const int& row, const int& col) const;        
 
+        // Try Functions
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
+        bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
 
+        // File IO
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
-        const std::vector<GameTile::DrawInfo> getTileDrawData();
 
     private:
 

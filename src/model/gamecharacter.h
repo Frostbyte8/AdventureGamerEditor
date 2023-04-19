@@ -113,6 +113,27 @@ class GameCharacter {
 
                 }
 
+                Builder(const GameCharacter& gc) {
+
+                    for(int i = 0; i < AttributeTypes::NumTypesForCharacters ; i++) {
+                        base.attribute[i] = gc.base.attribute[i];
+                    }
+
+                    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; i++) {
+                        base.description[i] = gc.base.description[i];
+                    }
+
+                    base.flags      = gc.base.flags;
+                    base.ID         = gc.base.ID;
+                    base.location   = gc.base.location;
+                    base.money      = gc.base.money;
+                    base.sight      = gc.base.sight;
+                    base.type       = gc.base.type;
+                    base.unused     = gc.base.unused;
+                    base.x          = gc.base.x;
+                    base.y          = gc.base.y;
+                }
+
                 Builder& attribute(const int& amount, const AttributeTypes& type) {
                     assert(type != AttributeTypes::TorchLife());
                     base.attribute[type.asInt()] = amount;
@@ -201,7 +222,11 @@ class GameCharacter {
 
     public:
 
-        GameCharacter() {} // TODO: Remove this. Used for testing
+        //GameCharacter() {} // TODO: Remove this. Used for testing
+
+        // TODO: Accessors
+
+        const int getID() const { return base.ID; }
 
     private:
 

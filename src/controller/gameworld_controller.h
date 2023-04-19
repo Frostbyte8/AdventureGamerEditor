@@ -29,6 +29,7 @@ class GameWorldController {
         // Accessors
 
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const { return gameMap->tryGetTileCopy(row, col, outTile); }
+        bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID) { return gameMap->tryPlaceCharacterAtTile(row, col, charID); }
 
         const int& getMapWidth() const {return gameMap->getWidth(); }
         const int& getMapHeight() const {return gameMap->getHeight(); }
