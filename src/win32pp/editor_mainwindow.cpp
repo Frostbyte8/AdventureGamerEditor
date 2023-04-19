@@ -210,10 +210,12 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
-    GameTile gt = gameWorldController->getTile(0, 0);
-    CStringW caption = AtoW(gt.getDescription().c_str(), CP_UTF8);
+    GameTile::Builder builder;
+    GameTile gameTile(builder.build());
+    gameWorldController->tryGetTileCopy(0, 0, gameTile);
+
+    CStringW caption = AtoW(gameTile.getDescription().c_str(), CP_UTF8);
     MessageBox(caption.c_str(), L"Test", MB_OK);
-    
 
     return FALSE;
 

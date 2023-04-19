@@ -28,7 +28,7 @@ class GameMap {
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
         bool isTileIndexInMapBounds(const int& row, const int& col) const;
 
-        GameTile getTile(const int& row, const int& col) const;
+        bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
 
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
