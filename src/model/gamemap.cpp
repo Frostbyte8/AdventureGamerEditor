@@ -92,33 +92,6 @@ const std::vector<GameCharacter>& GameMap::getGameCharacters() const {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// tryPlaceCharacterAtTile - Attempts to move a character to the given row
-/// and column
-/// @param integer specifying the row
-/// @param integer specifying the column
-/// @param the ID (not index) of the Character
-/// @return true if the operation was successful, false if it was not
-///----------------------------------------------------------------------------
-
-bool GameMap::tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID) {
-    
-    if(isTileIndexInMapBounds(row, col)) {
-        for(std::vector<GameCharacter>::iterator it = gameCharacters.begin(); it != gameCharacters.end(); ++it) {
-            if(it->getID() == charID) {
-                GameCharacter::Builder charBuilder(*it);
-                std::string newLocation = std::to_string(col) + "," + std::to_string(row);
-                charBuilder.location(newLocation);
-                *it = charBuilder.build();
-                return true;
-            }
-        }
-    }
-
-    return false;
-
-}
-
-///----------------------------------------------------------------------------
 /// indexFromRowCol - Converts the given row and column to an index for the
 /// current map being edited.
 /// @param integer specifying the row the tile is on

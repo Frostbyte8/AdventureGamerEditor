@@ -35,12 +35,13 @@ class GameMap {
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
         bool isTileIndexInMapBounds(const int& row, const int& col) const;        
 
-        // Try Functions
-        bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
-
         // File IO
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
+
+        void replaceCharacter(const size_t& index, const GameCharacter& gameChar) {
+            gameCharacters[index] = gameChar;
+        }
 
     private:
 

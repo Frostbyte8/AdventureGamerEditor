@@ -1,6 +1,7 @@
 #include "gameworld_controller.h"
 #include <fstream>
 #include <stdexcept>
+#include "../compat/std_extras_compat.h"
 
 //=============================================================================
 // Constructors / Destructors
@@ -178,6 +179,38 @@ bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTil
         GameTile::Builder builder(gameMap->getTile(index));
         outTile = builder.build();
         return true;
+    }
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// tryPlaceCharacterAtTile - Attempts to move a character to the given row
+/// and column
+/// @param integer specifying the row
+/// @param integer specifying the column
+/// @param the ID (not index) of the Character
+/// @return true if the operation was successful, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID) {
+    
+    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+
+    if(gameMap->isTileIndexInMapBounds(row, col)) {
+
+        for(size_t i = 0; i != gameCharacters.size(); ++i) {
+
+            if(gameCharacters[i].getID() == charID) {
+
+                GameCharacter::Builder charBuilder(gameCharacters[i]);
+                std::string newLocation = std::to_string(col) + "," + std::to_string(row);
+                charBuilder.location(newLocation);
+                gameMap->replaceCharacter(i, charBuilder.build());
+                return true;
+
+            }
+        }
     }
 
     return false;
