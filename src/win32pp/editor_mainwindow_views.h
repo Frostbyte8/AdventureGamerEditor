@@ -39,8 +39,8 @@ class GameEntitiesView : public CWnd {
         MainWindowInterface*    mainWindow;
         WindowMetrics*          windowMetrics;
 
-        CStatic                 objectsGroup;
-        CStatic                 charactersGroup;
+        CButton                 objectsGroup;
+        CButton                 charactersGroup;
         CListBox                objectsListBox;
         CListBox                charactersListBox;
         CButton                 alterObjectButton[4];

@@ -14,18 +14,16 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
 
     const int retVal = CWnd::OnCreate(cs);
 
-    SetStyle(GetStyle() | WS_CLIPCHILDREN);
-
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     CString caption = AtoW(langMap.get(LanguageConstants::ObjectGroupboxCaption).c_str(), CP_UTF8);
 
-    objectsGroup.Create(*this, 0,WS_CLIPSIBLINGS);
+    objectsGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
     objectsGroup.SetWindowText(caption);
 
     caption = AtoW(langMap.get(LanguageConstants::CharacterGroupboxCaption).c_str(), CP_UTF8);
 
-    charactersGroup.Create(*this, 0, WS_CLIPSIBLINGS);
+    charactersGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
     charactersGroup.SetWindowText(caption);
 
     objectsListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
@@ -123,8 +121,8 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     //objectsGroup.MoveWindow(objectGroupRect, TRUE);
     //charactersGroup.MoveWindow(characterGroupRect, FALSE);
 
-    //objectsGroup.DeferWindowPos(hDWP, 0, objectGroupRect, SWP_NOZORDER);
-    //charactersGroup.DeferWindowPos(hDWP, 0, characterGroupRect, SWP_NOZORDER);
+    objectsGroup.DeferWindowPos(hDWP, 0, objectGroupRect, SWP_NOZORDER);
+    charactersGroup.DeferWindowPos(hDWP, 0, characterGroupRect, SWP_NOZORDER);
 
     sizeGroupBox(hDWP, false, objectGroupRect, cs, cd);
     sizeGroupBox(hDWP, true, characterGroupRect, cs, cd);
