@@ -149,3 +149,36 @@ bool GameWorldController::saveWorld(const std::string& filePath, const std::stri
 
     return true;
 }
+
+
+bool GameWorldController::doesCharacterExist(const int& charID) const {
+    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+
+    for(std::vector<GameCharacter>::const_iterator it = gameCharacters.begin();
+        it != gameCharacters.end(); ++it) {
+            if( it->getID() == charID) {
+                return true;
+            }
+    }
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// tryGetTileCopy - tries to get a copy of the tile at the specified row/col.
+/// @param row of the tile get
+/// @param column of the tile to get
+/// @returns true if it was able to get a copy, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const {
+
+    if(gameMap->isTileIndexInMapBounds(row, col)) {
+        const unsigned int index = gameMap->indexFromRowCol(row, col);
+        GameTile::Builder builder(gameMap->getTile(index));
+        outTile = builder.build();
+        return true;
+    }
+
+    return false;
+}

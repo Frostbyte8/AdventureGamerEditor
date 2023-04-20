@@ -79,24 +79,8 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 	return gameObjects;
 }
 
-///----------------------------------------------------------------------------
-/// tryGetTileCopy - tries to get a copy of the tile at the specified row/col.
-/// You must delete this copy yourself.
-/// @param row of the tile get
-/// @param column of the tile to get
-/// @returns true if it was able to get a copy, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameMap::tryGetTileCopy(const int &row, const int &col, GameTile& outTile) const {
-
-    if(isTileIndexInMapBounds(row, col)) {
-        const unsigned int index = indexFromRowCol(row, col);
-        GameTile::Builder builder(tiles[index]);
-        outTile = builder.build();
-        return true;
-    }
-
-    return false;
+const std::vector<GameCharacter>& GameMap::getGameCharacters() const {
+	return gameCharacters;
 }
 
 ///----------------------------------------------------------------------------

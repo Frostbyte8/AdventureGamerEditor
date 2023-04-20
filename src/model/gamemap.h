@@ -23,10 +23,12 @@ class GameMap {
         const int& getWidth() const;
         const int& getHeight() const;
 		inline const int getNumTiles() const;
+        const GameTile& getTile(const int& index) const { return tiles[index]; }
 
         // Collection Accessors
         const std::vector<GameTile>& getTiles() const;
 		const std::vector<GameObject>& getGameObjects() const;
+        const std::vector<GameCharacter>& getGameCharacters() const;
         const std::vector<GameTile::DrawInfo> getTileDrawData();
 
         // Information Functions
@@ -34,7 +36,6 @@ class GameMap {
         bool isTileIndexInMapBounds(const int& row, const int& col) const;        
 
         // Try Functions
-        bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
 
         // File IO
