@@ -30,11 +30,8 @@ class GameWorldController {
         const int& getMapHeight() const {return gameMap->getHeight(); }
 
         bool doesCharacterExist(const int& charID) const;
-
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
-
-
         
     private:
 

@@ -39,6 +39,7 @@ class GameMap {
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
 
+        // Mutators
         void replaceCharacter(const size_t& index, const GameCharacter& gameChar) {
             gameCharacters[index] = gameChar;
         }
@@ -56,8 +57,10 @@ class GameMap {
         void readSwitches(std::ifstream& mapFile);
 
         GameInfo gameInfo;
+        
         int numCols;
         int numRows;
+
         std::string story;
         std::vector<GameTile> tiles;
         std::vector<ConnectionPoint> jumpPoints;

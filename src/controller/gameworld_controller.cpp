@@ -133,7 +133,6 @@ bool GameWorldController::newWorld() {
 /// @return true if the operation completed successfully, false if it could not
 ///-----------------------------------------------------------------------------
 
-
 bool GameWorldController::saveWorld(const std::string& filePath, const std::string& fileName) {
     std::ofstream ofs;
     std::string fileNameTemp = filePath;
@@ -150,6 +149,12 @@ bool GameWorldController::saveWorld(const std::string& filePath, const std::stri
 
     return true;
 }
+
+///----------------------------------------------------------------------------
+/// doesCharacterExist - Checks if a character exists via it's ID.
+/// @param ID of the character to search for
+/// @returns true if the character exists and false if it does not
+///----------------------------------------------------------------------------
 
 
 bool GameWorldController::doesCharacterExist(const int& charID) const {
