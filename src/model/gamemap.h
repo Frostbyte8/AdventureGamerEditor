@@ -45,7 +45,7 @@ class GameMap {
         }
 
         void deleteCharacter(const size_t& index) {
-            gameCharacters.erase(gameCharacters.begin() + index));
+            gameCharacters.erase(gameCharacters.begin() + index);
         }
 
     private:
