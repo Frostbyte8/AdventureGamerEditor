@@ -44,6 +44,10 @@ class GameMap {
             gameCharacters[index] = gameChar;
         }
 
+        void deleteCharacter(const size_t& index) {
+            gameCharacters.erase(gameCharacters.begin() + index));
+        }
+
     private:
 
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
