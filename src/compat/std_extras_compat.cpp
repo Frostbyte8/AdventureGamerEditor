@@ -5,7 +5,7 @@
 
 // At some point, I'll make these work better, but this should be enough for now.
 
-void IsValidInteger(const std::string& in) {
+bool IsValidInteger(const std::string& in) {
 
     bool signFound = false;
     for(size_t i = 0; i < in.length(); i++) {
@@ -25,20 +25,17 @@ void IsValidInteger(const std::string& in) {
 
         // Number, Plus, or Minus sign are the only valid characters
         if((in[i] < 48 || in[i] > 57)) {
-            throw std::invalid_argument("The argument \"" + in + "\" is not a valid integer.");
+            return false;
         }
         else {
-            return;
+            return true;
         }
     }
 
-    // No numbers found, so it can't possibly be valid.
-    throw std::invalid_argument("The argument \"" + in + "\" is not a valid integer.");
+    return false;
 }
 
 bool IsIntegerWithinRange(const std::string& in, const std::string& MIN_INT_STR, const std::string& MAX_INT_STR) {
-
-    IsValidInteger(in);
 
     const size_t MAX_WITH_SIGN      = MIN_INT_STR.length();
     const size_t MAX_WITHOUT_SIGN   = MAX_INT_STR.length();
@@ -89,8 +86,12 @@ int std::stoi(const std::string& in) {
     const std::string MIN_STR = "-2147483648";
     const std::string MAX_STR = "2147483647";
 
+    if(!IsValidInteger(in)) {
+        throw std::invalid_argument("Invalid integer given");
+    }
+
     if(!IsIntegerWithinRange(in, MIN_STR, MAX_STR)) {
-        throw std::out_of_range("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
+        throw std::out_of_range("Integer out of range: Value must be between " + MIN_STR + " and " + MAX_STR + ".");
     }
 
     return atoi(in.c_str());

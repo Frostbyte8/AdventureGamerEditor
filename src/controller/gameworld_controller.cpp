@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdexcept>
 #include "../compat/std_extras_compat.h"
+#include "../util/languagemapper.h"
 
 //=============================================================================
 // Constructors / Destructors
@@ -64,7 +65,11 @@ bool GameWorldController::loadWorld(const std::string& filePath,
 
         }
         catch (const std::runtime_error& e) {
-            mainWindow->DisplayErrorMessage(e.what(), "Error reading file");
+
+            std::string fileReadError = LanguageMapper::getInstance().get(LanguageConstants::FileReadError) + " ";
+            fileReadError.append(e.what());
+
+            mainWindow->DisplayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get(LanguageConstants::FileReadErrorCaption));
         }
     }
     else {
@@ -184,6 +189,10 @@ bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTil
         GameTile::Builder builder(gameMap->getTile(index));
         outTile = builder.build();
         return true;
+    }
+    else {
+        mainWindow->DisplayErrorMessage(LanguageMapper::getInstance().get(LanguageConstants::TileGetError),
+                                        LanguageMapper::getInstance().get(LanguageConstants::TileGetErrorCaption));
     }
 
     return false;

@@ -107,6 +107,13 @@ namespace LanguageConstants {
 
     int const MainWindowCaption         = 301;
 
+    // Error Messages
+
+    int const TileGetError              = 10001;
+    int const TileGetErrorCaption       = 10002;
+    int const FileReadError             = 10003;
+    int const FileReadErrorCaption      = 10004;
+
 }
 
 #endif // __LANGUAGEMAPPER_H__

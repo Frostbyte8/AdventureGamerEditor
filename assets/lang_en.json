@@ -81,5 +81,10 @@
     "153" : "Object unlocks door at:",
     */
 	
+	"10001" : "Unable to get tile: Invalid row or column was given.",
+	"10002" : "Error getting tile",
+	"10003" : "Unable to read Adventure Gamer File:",
+	"10004" : "Error reading file",
+	
     "32767" : ""        // Unused
 }

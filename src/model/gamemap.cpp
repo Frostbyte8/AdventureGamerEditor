@@ -149,11 +149,21 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     // Whatever the value read is, it is always one more than it says.
 
-    std::getline(mapFile, line);
-    numCols = std::stoi(line) + 1;
+    try {
 
-    std::getline(mapFile, line);
-    numRows = std::stoi(line) + 1;
+        std::getline(mapFile, line);
+        numCols = std::stoi(line) + 1;
+
+        std::getline(mapFile, line);
+        numRows = std::stoi(line) + 1;
+
+    }
+    catch (const std::invalid_argument& e) {
+        throw std::runtime_error(e.what());
+    }
+    catch (const std::out_of_range& e) {
+        throw std::runtime_error(e.what());
+    }
 
     tiles.reserve((numCols * numRows));
 
