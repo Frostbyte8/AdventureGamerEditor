@@ -8,6 +8,7 @@
 #include "../interface/mainwindow_interface.h"
 #include "../controller/gameworld_controller.h"
 #include "../win32/window_metrics.h"
+#include "editor_editobjectdialog.h"
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
@@ -48,6 +49,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         GameWorldController*    gameWorldController;
 		WindowMetrics		    windowMetrics;
+
+        EditObjectDialog*       eod;
 
 		// Disable copy construction and assignment operator
 		MainWindowFrame(const MainWindowFrame&);

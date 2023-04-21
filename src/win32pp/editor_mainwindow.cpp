@@ -38,6 +38,9 @@ MainWindowFrame::~MainWindowFrame() {
         gameWorldController = NULL;
     }
 
+    delete eod;
+    eod = NULL;
+
 }
 
 //=============================================================================
@@ -51,6 +54,10 @@ MainWindowFrame::~MainWindowFrame() {
 
 HWND MainWindowFrame::Create(HWND parent) {
     SetView(*entityView);
+    eod = new EditObjectDialog(NULL, &windowMetrics);
+    eod->Create(0);
+    eod->MoveWindow(0, 0, 128,128, TRUE);
+    eod->ShowWindow(SW_SHOW);
 	return CDockFrame::Create(parent);
 }
 

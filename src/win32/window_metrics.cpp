@@ -4,6 +4,7 @@
 // DPI Scaling, if necessary
 // An option to change the font
 // An option to specfiy a differnt font on creation
+// InitWindowMetrics should be update window metrics
 
 WindowMetrics::WindowMetrics() : fontHDC(NULL), currentFont(NULL), 
                                  oldFont(NULL), avgCharWidth(0),
@@ -188,7 +189,7 @@ HFONT WindowMetrics::GetCurrentFont() const {
 /// @return int number of pixels
 ///----------------------------------------------------------------------------
 
-int WindowMetrics::CalculateStringWidth(const std::wstring& str) const {
+LONG WindowMetrics::CalculateStringWidth(const std::wstring& str) const {
     SIZE size;
     GetTextExtentPoint32(fontHDC, str.c_str(), str.length(), &size);
     return size.cx;

@@ -88,7 +88,7 @@ class WindowMetrics {
         WindowMetrics();
         ~WindowMetrics();
 		
-        int CalculateStringWidth(const std::wstring& str) const;
+        LONG CalculateStringWidth(const std::wstring& str) const;
         const ControlSpacing GetControlSpacing() const;
         const ControlDimensions GetControlDimensions() const;
         HFONT GetCurrentFont() const;
