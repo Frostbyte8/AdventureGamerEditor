@@ -4,8 +4,11 @@
 #include <string>
 #include <fstream>
 #include <assert.h>
+#include <vector>
 #include "../util/enumflags.h"
+#include "../util/frost.h"
 #include "../compat/stdint_compat.h"
+#include "../compat/std_extras_compat.h"
 #include "../editor_constants.h"
 
 //-----------------------------------------------------------------------------
@@ -30,6 +33,8 @@ namespace GameObjectConstants {
     const int LocatedOnGround       = 0;
     const int LocatedOnPlayer       = 1;
     const int LocatedOnCharacter    = 2;
+
+    const std::string DefaultLocation = "0,0";
 
 }
 
@@ -136,7 +141,7 @@ class GameObject {
                         base.description[i] = "";
                     }
 
-                    base.creatureID     = 0;
+                    base.creatureID     = GameObjectConstants::NotOnCreature;
                     base.doorColumn     = 0;
                     base.doorRow        = 0;
                     //base.flags1         = GameObjectFlags1::None;
@@ -154,6 +159,35 @@ class GameObject {
 
                 }
 
+                Builder(const GameObject& gObj) {
+
+                    for(int i = 0; i < AttributeTypes::NumTypes; i++) {
+                        base.attributeBase[i] = gObj.base.attributeBase[i];
+                        base.attributeRandom[i] = gObj.base.attributeRandom[i];
+                    }
+
+                    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
+                        base.description[i] = gObj.base.description[i];
+                    }
+
+                    base.creatureID     = gObj.base.creatureID;
+                    base.doorColumn     = gObj.base.doorColumn;
+                    base.doorRow        = gObj.base.doorRow;
+                    base.flags1         = gObj.base.flags1;
+                    base.flags2         = gObj.base.flags2;
+                    base.ID             = gObj.base.ID;
+                    base.isLocated      = gObj.base.isLocated;
+                    base.location       = gObj.base.location;
+                    base.makesSight     = gObj.base.makesSight;
+                    base.makesHearing   = gObj.base.makesHearing;
+                    base.monetaryWorth  = gObj.base.monetaryWorth;
+                    base.uses           = gObj.base.uses;
+                    base.usedWithID     = gObj.base.usedWithID;
+                    base.x              = gObj.base.x;
+                    base.y              = gObj.base.y;
+
+                }
+
                 Builder& attributeBase(const int& amount, const AttributeTypes& type) {
                     base.attributeBase[type.asInt()] = amount;
                     return *this;
@@ -164,10 +198,12 @@ class GameObject {
                     return *this;
                 }
 
+                /*
                 Builder& creatureID(const int& creatureID) {
                     base.creatureID = creatureID;
                     return *this;
                 }
+                */
 
                 Builder& description(const std::string& description, const unsigned int& which) {
                     base.description[which] = description;
@@ -199,15 +235,30 @@ class GameObject {
                     return *this;
                 }
 
+                /*
                 Builder& isLocated(const int& isLocated) {
                     base.isLocated = isLocated;
                     return *this;
                 }
+                */
 
                 Builder& location(const std::string& location) {
-                    // TODO: Location also sets X, Y, and IsLocated
-                    // for editor use.
+
                     base.location = location;
+
+                    std::vector<std::string> tokens = Frost::split(location, ',');
+                    
+                    // TODO: verify tokens
+                    // TODO: Set X/Y
+                    // TODO: Player
+                    
+                    if(tokens.size() > 1) {
+                        if(Frost::endsWith(tokens[1], "Creature\"\r")) {
+                            base.isLocated  = GameObjectConstants::LocatedOnCharacter;
+                            base.creatureID = std::stoi(tokens[0]);
+                        }
+                    }
+
                     return *this;
                 }
 
@@ -236,6 +287,7 @@ class GameObject {
                     return *this;
                 }
 
+                /*
                 Builder& x(const int& x) {
                     base.x = x;
                     return *this;
@@ -245,6 +297,7 @@ class GameObject {
                     base.y = y;
                     return *this;
                 }
+                */
 
                 void readObject(std::ifstream& mapFile);
 
@@ -293,9 +346,9 @@ class GameObject {
 
         GameObject() {} // TODO: Remove this. Used for testing
 
-        const std::string& getName() const {
-            return base.description[0];
-        }
+        const std::string& getName() const { return base.description[0];}
+        const int& getCreatureID() const { return base.creatureID; }
+        const int& getID() const { return base.ID; }
 
     private:
 

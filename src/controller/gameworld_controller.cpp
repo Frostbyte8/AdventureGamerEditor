@@ -229,3 +229,70 @@ bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col
 
     return false;
 }
+
+///----------------------------------------------------------------------------
+/// tryRemoveCharacter - Attempts to remove a character. It also alters the
+/// location property of objects that are attached to it by setting their
+/// location to "0,0".
+/// @param the ID (not index) of the Character to remove
+/// @return true if the operation was successful, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryRemoveCharacter(const int& charID) {
+
+    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+
+    // TODO: if this is 0, it runs when it shouldn't
+    for(size_t i = 0; i < gameCharacters.size(); ++i) {
+
+        if(gameCharacters[i].getID() == charID) {
+
+            // Check if the character has any objects in it's inventory
+
+            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+            std::vector<size_t> objectIndices;
+            std::vector<std::string> objectNames;
+
+            objectIndices.reserve(4);
+            objectNames.reserve(4);
+
+            for(size_t k = 0; k < gameObjects.size(); ++k) {
+
+                if(gameObjects[k].getCreatureID() == charID) {
+                    objectIndices.push_back(gameObjects[k].getID());
+                    objectNames.push_back(gameObjects[k].getName());
+                }
+            }
+
+            if(objectIndices.size()) {
+                
+                std::string message = "The following objects will be placed at 0,0 if this object is deleted:\n";
+                
+                for(size_t j = 0; j < objectNames.size(); ++j) {
+                    message.append("\n" + objectNames[j]);
+                }
+
+                message.append("\n\nDo you still wish to delete this Character?");
+
+                if(mainWindow->AskYesNoQuestion(message, "Remove Character?", true) != MainWindowInterfaceResponses::Yes) {
+                    return false;
+                }
+
+                for(size_t m = 0; m < objectIndices.size(); ++m) {
+
+                    GameObject::Builder movedObject(gameObjects[objectIndices[m]]);
+                    movedObject.location(GameObjectConstants::DefaultLocation);
+                    gameMap->replaceObject(objectIndices[m], movedObject.build());
+
+                }
+                
+
+            }
+
+            gameMap->deleteCharacter(i);
+            return true;
+        }
+    }
+
+    return false;
+}

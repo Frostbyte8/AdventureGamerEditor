@@ -44,6 +44,10 @@ class GameMap {
             gameCharacters[index] = gameChar;
         }
 
+        void replaceObject(const size_t& index, const GameObject& gameObject) {
+            gameObjects[index] = gameObject;
+        }
+
         void deleteCharacter(const size_t& index) {
             gameCharacters.erase(gameCharacters.begin() + index);
         }

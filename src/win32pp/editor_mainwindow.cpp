@@ -38,8 +38,8 @@ MainWindowFrame::~MainWindowFrame() {
         gameWorldController = NULL;
     }
 
-    delete eod;
-    eod = NULL;
+    //delete eod;
+    //eod = NULL;
 
 }
 
@@ -54,10 +54,12 @@ MainWindowFrame::~MainWindowFrame() {
 
 HWND MainWindowFrame::Create(HWND parent) {
     SetView(*entityView);
+    /*
     eod = new EditObjectDialog(NULL, &windowMetrics);
     eod->Create(0);
     eod->MoveWindow(0, 0, 128,128, TRUE);
     eod->ShowWindow(SW_SHOW);
+    */
 	return CDockFrame::Create(parent);
 }
 
@@ -199,8 +201,9 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 	*/
 
     //switch(msg) {
-    //    case WM_ERASEBKGND: return 1;
+    //    case WM_ERASEBKGND: return TRUE;
     //}
+
 
 	return WndProcDefault(msg, wParam, lParam);
 }
@@ -212,10 +215,14 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
+    static int i = 0;
     switch (LOWORD(wParam)) {
         case LanguageConstants::NewMenuItem: return OnFileNew();
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
+
+    gameWorldController->tryRemoveCharacter(i);
+    i++;
 
     return FALSE;
 
