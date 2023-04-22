@@ -23,7 +23,7 @@ class GameWorldController {
         // Collection Accessors
 
         const std::vector<GameTile>& getTiles() const { return gameMap->getTiles(); }
-        const std::vector<GameObject>& getGameObjects() const { return gameMap->getGameObjects(); }
+        const std::vector<GameObject>& getGameObjects() const;
         const std::vector<GameTile::DrawInfo> getTileDrawData() { return gameMap->getTileDrawData(); }
 
         const int& getMapWidth() const {return gameMap->getWidth(); }
@@ -39,15 +39,35 @@ class GameWorldController {
 
         GameWorldController() {};
 
+        void readCharacters(std::ifstream& mapFile);
+        void replaceCharacter(const size_t& index, const GameCharacter& gameChar) {
+            gameCharacters[index] = gameChar;
+        }
+
+        void deleteCharacter(const size_t& index) {
+            gameCharacters.erase(gameCharacters.begin() + index);
+        }
+
+        const size_t getCharacterIndexFromID(const int charID) {
+             
+            for(size_t i = 0; i < gameCharacters.size(); ++i) {
+                
+                if(gameCharacters[i].getID() == charID) {
+                    return i;
+                }
+            }
+
+            return (size_t)-1;
+        }
+
         MainWindowInterface*            mainWindow;
 
         // Game World is composed of several other objects which I have
-        // split up here to make doing undo/redo operations easier.
-
-        
+        // split up here to make doing undo/redo operations easier.       
 
         GameInfo                        gameInfo;
         GameMap*                        gameMap;
+        std::vector<GameCharacter>      gameCharacters;
 
 };
 

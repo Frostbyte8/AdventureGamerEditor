@@ -79,9 +79,11 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 	return gameObjects;
 }
 
+/*
 const std::vector<GameCharacter>& GameMap::getGameCharacters() const {
 	return gameCharacters;
 }
+*/
 
 ///----------------------------------------------------------------------------
 /// getGameTile - Return a reference to a gameTile
@@ -211,7 +213,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
     readSwitches(mapFile);    
     gameInfo.readPlayerAttributes(key, mapFile);
     readObjects(mapFile);
-    readCharacters(mapFile);
+    //readCharacters(mapFile);
 }
 
 //=============================================================================
@@ -244,7 +246,7 @@ const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& conne
 /// "{cretr" section
 /// @throws runtime_error if there is a problem reading the file.
 ///----------------------------------------------------------------------------
-
+/*
 void GameMap::readCharacters(std::ifstream& mapFile) {
 
     std::string line;
@@ -267,6 +269,7 @@ void GameMap::readCharacters(std::ifstream& mapFile) {
         gameCharacters.push_back(gameCharacter);
     }
 }
+*/
 
 ///----------------------------------------------------------------------------
 /// readJumps - Read the "{jumps" section of the file.

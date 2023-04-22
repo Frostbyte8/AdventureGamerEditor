@@ -8,9 +8,17 @@
 // Constructors / Destructors
 //=============================================================================
 
+///----------------------------------------------------------------------------
+/// Constructors
+///----------------------------------------------------------------------------
+
 GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {
     gameMap = new GameMap(AdventureGamerConstants::DefaultRows, AdventureGamerConstants::DefaultCols);
 }
+
+///----------------------------------------------------------------------------
+/// Destructor
+///----------------------------------------------------------------------------
 
 GameWorldController::~GameWorldController() {
 	if(gameMap) {
@@ -22,6 +30,14 @@ GameWorldController::~GameWorldController() {
 //=============================================================================
 // Accessors
 //=============================================================================
+
+//=============================================================================
+// Collection Accessors
+//=============================================================================
+
+const std::vector<GameObject>& GameWorldController::getGameObjects() const {
+     return gameMap->getGameObjects();
+}
 
 //=============================================================================
 // Public Functions
@@ -61,6 +77,7 @@ bool GameWorldController::loadWorld(const std::string& filePath,
             gameMap = newMap;
             newMap = NULL;
 
+            readCharacters(ifs);
             loadSuccessful = true;
 
         }
@@ -111,6 +128,7 @@ bool GameWorldController::newWorld() {
 
         gameMap = newMap;
         newMap = NULL;
+        gameCharacters.clear();
         wasWorldCreated = true;
     }
     catch (const std::runtime_error& e) {
@@ -161,9 +179,9 @@ bool GameWorldController::saveWorld(const std::string& filePath, const std::stri
 /// @returns true if the character exists and false if it does not
 ///----------------------------------------------------------------------------
 
-
 bool GameWorldController::doesCharacterExist(const int& charID) const {
-    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+
+    //const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
 
     for(std::vector<GameCharacter>::const_iterator it = gameCharacters.begin();
         it != gameCharacters.end(); ++it) {
@@ -209,18 +227,16 @@ bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTil
 
 bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID) {
     
-    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
-
     if(gameMap->isTileIndexInMapBounds(row, col)) {
 
-        const size_t charIndex = gameMap->getCharacterIndexFromID(charID);
+        const size_t charIndex = getCharacterIndexFromID(charID);
 
         if(charIndex != (size_t)-1) {
 
             GameCharacter::Builder charBuilder(gameCharacters[charIndex]);
             std::string newLocation = std::to_string(col) + "," + std::to_string(row);
             charBuilder.location(newLocation);
-            gameMap->replaceCharacter(charIndex, charBuilder.build());
+            replaceCharacter(charIndex, charBuilder.build());
             return true;
 
         }
@@ -240,12 +256,12 @@ bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col
 
 bool GameWorldController::tryRemoveCharacter(const int& charID) {
 
-    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+    //const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
 
     // So first, we'll loop through and find the character we are looking for.
     // TODO: make this a seperate function
 
-    const size_t charIndex = gameMap->getCharacterIndexFromID(charID);
+    const size_t charIndex = getCharacterIndexFromID(charID);
 
     if(charIndex != (size_t)-1) {
 
@@ -290,17 +306,52 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
                 gameMap->replaceObject(objectIndices[m], movedObject.build());
 
             }
-            
 
         }
 
         // Now to finally delete the Character
 
-        gameMap->deleteCharacter(charIndex);
+        deleteCharacter(charIndex);
         return true;
 
 
     }
 
     return false;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// readCharacters - Reads the "{cretr" section of the map file
+/// @param mapFile an ifstream of the map file to be read from already at the
+/// "{cretr" section
+/// @throws runtime_error if there is a problem reading the file.
+///----------------------------------------------------------------------------
+
+void GameWorldController::readCharacters(std::ifstream& mapFile) {
+
+    std::string line;
+    std::string errorMsg = "Error reading characters: ";
+    Frost::getLineWindows(mapFile, line);
+
+    if(AdventureGamerHeadings::Characters.compare(line)) {
+        errorMsg.append("Expected \"" + AdventureGamerHeadings::Characters + "\", but got \"" + line + "\".");
+        throw std::runtime_error(errorMsg);
+    }
+
+    std::getline(mapFile, line);
+    const int numChars = std::stoi(line);
+    gameCharacters.clear();
+    gameCharacters.reserve(numChars);
+
+    for(int i = 0; i < numChars; i++) {
+        GameCharacter::Builder characterBuilder;
+        characterBuilder.readCharacter(mapFile);
+        GameCharacter gameCharacter = characterBuilder.build();
+        gameCharacters.push_back(gameCharacter);
+    }
+
 }

@@ -28,21 +28,7 @@ class GameMap {
         // Collection Accessors
         const std::vector<GameTile>& getTiles() const;
 		const std::vector<GameObject>& getGameObjects() const;
-        const std::vector<GameCharacter>& getGameCharacters() const;
         const std::vector<GameTile::DrawInfo> getTileDrawData();
-
-        const size_t getCharacterIndexFromID(const int charID) {
-            
-             
-            for(size_t i = 0; i < gameCharacters.size(); ++i) {
-                
-                if(gameCharacters[i].getID() == charID) {
-                    return i;
-                }
-            }
-
-            return (size_t)-1;
-        }
 
         // Information Functions
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
@@ -51,18 +37,8 @@ class GameMap {
         // File IO
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
-
-        // Mutators
-        void replaceCharacter(const size_t& index, const GameCharacter& gameChar) {
-            gameCharacters[index] = gameChar;
-        }
-
         void replaceObject(const size_t& index, const GameObject& gameObject) {
             gameObjects[index] = gameObject;
-        }
-
-        void deleteCharacter(const size_t& index) {
-            gameCharacters.erase(gameCharacters.begin() + index);
         }
 
     private:
@@ -70,8 +46,7 @@ class GameMap {
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
         std::map<unsigned int, std::string> readRowDescriptions(const std::string& rowFileName);
 
-        //void reaadTiles(std::ifstream& mapFile);
-        void readCharacters(std::ifstream& mapFile);
+        
         void readJumps(std::ifstream& mapFile);
         void readObjects(std::ifstream& mapFile);
         void readStory(const std::string& storyFileName);
@@ -87,7 +62,6 @@ class GameMap {
         std::vector<ConnectionPoint> jumpPoints;
         std::vector<ConnectionPoint> switchConnections;
         std::vector<GameObject> gameObjects;
-        std::vector<GameCharacter> gameCharacters;
 
         GameInfo::Key key;
 
