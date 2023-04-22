@@ -38,12 +38,12 @@ const int& GameMap::getHeight() const {
 /// @return a vector filled with tile drawing data.
 ///----------------------------------------------------------------------------
 
-const std::vector<GameTile::DrawInfo> GameMap::getTileDrawData() {
+const std::vector<GameTile::DrawInfo> GameMap::getTileDrawData() const {
 
     std::vector<GameTile::DrawInfo> drawDataVec;
     drawDataVec.reserve(tiles.size());
 
-    for(std::vector<GameTile>::iterator it = tiles.begin(); it != tiles.end(); ++it) {
+    for(std::vector<GameTile>::const_iterator it = tiles.begin(); it != tiles.end(); ++it) {
         drawDataVec.push_back(it->getDrawInfo());
     }
 
@@ -78,6 +78,12 @@ const int& GameMap::getWidth() const {
 const std::vector<GameObject>& GameMap::getGameObjects() const {
 	return gameObjects;
 }
+
+///----------------------------------------------------------------------------
+/// getGameCharacters - Return a vector containing Game Characters within the
+/// current map.
+/// @return a vector containing the Game Objects.
+///----------------------------------------------------------------------------
 
 const std::vector<GameCharacter>& GameMap::getGameCharacters() const {
 	return gameCharacters;

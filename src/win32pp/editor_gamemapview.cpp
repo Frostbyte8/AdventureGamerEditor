@@ -81,8 +81,10 @@ void GameMapView::UpdateBackBuffer() {
 ///----------------------------------------------------------------------------
 
 void GameMapView::OnDraw(CDC& dc) {
-        
-    const std::vector<GameTile::DrawInfo> drawDataVec = gameWorldController->getTileDrawData();
+    
+    const GameMap* gameMap = gameWorldController->getGameMap();
+
+    const std::vector<GameTile::DrawInfo> drawDataVec = gameMap->getTileDrawData();
 
     if(backBufferBMP.GetHandle() && drawDataVec.size() != 0) {
 
@@ -101,8 +103,8 @@ void GameMapView::OnDraw(CDC& dc) {
         // TODO: it might be better to return a reference to the entire gamemap
         // object as well   
 
-        const int mapCols = gameWorldController->getMapWidth();
-        const int mapRows = gameWorldController->getMapHeight();
+        const int mapCols = gameMap->getWidth();
+        const int mapRows = gameMap->getHeight();
         const int width = tileWidth * fakeZoomLevel;
         const int height = tileHeight * fakeZoomLevel;
        

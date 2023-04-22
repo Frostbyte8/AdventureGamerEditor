@@ -260,7 +260,7 @@ BOOL MainWindowFrame::OnFileOpen() {
 
 		gameWorldController->loadWorld(filePath, fileName);
         reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
-        entityView->updateLists(gameWorldController->getGameObjects());
+        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects());
 	}
 
     return TRUE;

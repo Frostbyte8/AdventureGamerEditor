@@ -29,7 +29,7 @@ class GameMap {
         const std::vector<GameTile>& getTiles() const;
 		const std::vector<GameObject>& getGameObjects() const;
         const std::vector<GameCharacter>& getGameCharacters() const;
-        const std::vector<GameTile::DrawInfo> getTileDrawData();
+        const std::vector<GameTile::DrawInfo> getTileDrawData() const;
 
         const size_t getCharacterIndexFromID(const int charID) {
             
@@ -70,7 +70,6 @@ class GameMap {
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
         std::map<unsigned int, std::string> readRowDescriptions(const std::string& rowFileName);
 
-        //void reaadTiles(std::ifstream& mapFile);
         void readCharacters(std::ifstream& mapFile);
         void readJumps(std::ifstream& mapFile);
         void readObjects(std::ifstream& mapFile);
