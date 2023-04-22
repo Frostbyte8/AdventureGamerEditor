@@ -31,6 +31,19 @@ class GameMap {
         const std::vector<GameCharacter>& getGameCharacters() const;
         const std::vector<GameTile::DrawInfo> getTileDrawData();
 
+        const size_t getCharacterIndexFromID(const int charID) {
+            
+             
+            for(size_t i = 0; i < gameCharacters.size(); ++i) {
+                
+                if(gameCharacters[i].getID() == charID) {
+                    return i;
+                }
+            }
+
+            return (size_t)-1;
+        }
+
         // Information Functions
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
         bool isTileIndexInMapBounds(const int& row, const int& col) const;        

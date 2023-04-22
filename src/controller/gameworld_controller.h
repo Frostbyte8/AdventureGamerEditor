@@ -33,6 +33,7 @@ class GameWorldController {
         bool tryRemoveCharacter(const int& charID);
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
+        bool getCharacterFromID(const int& ID, GameCharacter* outChar);
         
     private:
 
@@ -42,6 +43,8 @@ class GameWorldController {
 
         // Game World is composed of several other objects which I have
         // split up here to make doing undo/redo operations easier.
+
+        
 
         GameInfo                        gameInfo;
         GameMap*                        gameMap;
