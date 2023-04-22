@@ -184,7 +184,7 @@ bool GameWorldController::doesCharacterExist(const int& charID) const {
 
 bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const {
 
-    if(gameMap->isTileIndexInMapBounds(row, col)) {
+    if(gameMap->isRowColInMapBounds(row, col)) {
         const unsigned int index = gameMap->indexFromRowCol(row, col);
         GameTile::Builder builder(gameMap->getTile(index));
         outTile = builder.build();
@@ -211,16 +211,16 @@ bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col
     
     const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
 
-    if(gameMap->isTileIndexInMapBounds(row, col)) {
+    if(gameMap->isRowColInMapBounds(row, col)) {
 
-        const size_t charIndex = gameMap->getCharacterIndexFromID(charID);
+        const size_t charIndex = gameMap->characterIndexFromID(charID);
 
         if(charIndex != (size_t)-1) {
 
             GameCharacter::Builder charBuilder(gameCharacters[charIndex]);
             std::string newLocation = std::to_string(col) + "," + std::to_string(row);
             charBuilder.location(newLocation);
-            gameMap->replaceCharacter(charIndex, charBuilder.build());
+            gameMap->replaceCharacter(gmKey, charIndex, charBuilder.build());
             return true;
 
         }
@@ -240,41 +240,21 @@ bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col
 
 bool GameWorldController::tryRemoveCharacter(const int& charID) {
 
-    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
-
-    // So first, we'll loop through and find the character we are looking for.
-    // TODO: make this a seperate function
-
-    const size_t charIndex = gameMap->getCharacterIndexFromID(charID);
+    //const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+    const size_t charIndex = gameMap->characterIndexFromID(charID);
 
     if(charIndex != (size_t)-1) {
 
-        // Check if any of the objects indicate that this Character/Creature
-        // is in possession of them, then cache their index, and name.
-
-        const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
-        std::vector<size_t> objectIndices;
-        std::vector<std::string> objectNames;
-        objectIndices.reserve(4);
-        objectNames.reserve(4);
-
-        for(size_t k = 0; k < gameObjects.size(); ++k) {
-
-            if(gameObjects[k].getCreatureID() == charID) {
-                objectIndices.push_back(gameObjects[k].getID());
-                objectNames.push_back(gameObjects[k].getName());
-            }
-        }
-
-        // If any objects were found, we need to ask the user if they
-        // still wish to remove the object.
-
+        const std::vector<size_t> objectIndices = gameMap->getCharacterInventory(charID);
+        
         if(objectIndices.size()) {
-            
+
+            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+
             std::string message = "The following objects will be placed at 0,0 if this object is deleted:\n";
             
-            for(size_t j = 0; j < objectNames.size(); ++j) {
-                message.append("\n" + objectNames[j]);
+            for(size_t i = 0; i < objectIndices.size(); ++i) {
+                message.append("\n" + gameObjects[i].getName());
             }
 
             message.append("\n\nDo you still wish to delete this Character?");
@@ -283,24 +263,19 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
                 return false;
             }
 
-            for(size_t m = 0; m < objectIndices.size(); ++m) {
+            for(size_t k = 0; k < objectIndices.size(); ++k) {
 
-                GameObject::Builder movedObject(gameObjects[objectIndices[m]]);
+                GameObject::Builder movedObject(gameObjects[objectIndices[k]]);
                 movedObject.location(GameObjectConstants::DefaultLocation);
-                gameMap->replaceObject(objectIndices[m], movedObject.build());
+                gameMap->replaceObject(gmKey, objectIndices[k], movedObject.build());
 
             }
-            
 
         }
 
-        // Now to finally delete the Character
-
-        gameMap->deleteCharacter(charIndex);
+        gameMap->deleteCharacter(gmKey, charIndex);
         return true;
-
-
-    }
+    }  
 
     return false;
 }

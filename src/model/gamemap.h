@@ -16,6 +16,15 @@ class GameMap {
 
     public:
 
+        // This makes it so only certain classes
+        // can use some of the public functions.
+        
+        class GMKey {
+            friend class GameWorldController;
+            GMKey() {};
+            GMKey(GMKey &t) {};
+        };
+
 		GameMap() {};
 		GameMap(const int& numRows, const int& numCols);
     
@@ -26,44 +35,24 @@ class GameMap {
         const GameTile& getTile(const int& index) const { return tiles[index]; }
 
         // Collection Accessors
-        const std::vector<GameTile>& getTiles() const;
+        const std::vector<size_t> getCharacterInventory(const size_t& index) const;
 		const std::vector<GameObject>& getGameObjects() const;
         const std::vector<GameCharacter>& getGameCharacters() const;
         const std::vector<GameTile::DrawInfo> getTileDrawData() const;
-
-        const size_t getCharacterIndexFromID(const int charID) {
-            
-             
-            for(size_t i = 0; i < gameCharacters.size(); ++i) {
-                
-                if(gameCharacters[i].getID() == charID) {
-                    return i;
-                }
-            }
-
-            return (size_t)-1;
-        }
-
-        // Information Functions
-		const unsigned int indexFromRowCol(const int& row, const int& col) const;
-        bool isTileIndexInMapBounds(const int& row, const int& col) const;        
-
-        // File IO
-        void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
-        void writeMap(std::ofstream& mapFile);
+        const std::vector<GameTile>& getTiles() const;
 
         // Mutators
-        void replaceCharacter(const size_t& index, const GameCharacter& gameChar) {
-            gameCharacters[index] = gameChar;
-        }
+        void deleteCharacter(GMKey, const size_t& index);
+        void replaceCharacter(GMKey, const size_t& index, const GameCharacter& gameChar);
+        void replaceObject(GMKey, const size_t& index, const GameObject& gameObject);
 
-        void replaceObject(const size_t& index, const GameObject& gameObject) {
-            gameObjects[index] = gameObject;
-        }
+        // Public Functions
+        const size_t characterIndexFromID(const int charID) const;
+		const unsigned int indexFromRowCol(const int& row, const int& col) const;
+        bool isRowColInMapBounds(const int& row, const int& col) const;        
 
-        void deleteCharacter(const size_t& index) {
-            gameCharacters.erase(gameCharacters.begin() + index);
-        }
+        void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
+        void writeMap(std::ofstream& mapFile);
 
     private:
 

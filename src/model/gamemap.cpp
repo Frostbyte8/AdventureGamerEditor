@@ -20,8 +20,46 @@ GameMap::GameMap(const int& numRows, const int& numCols) {
 // Accessors
 //=============================================================================
 
-const int GameMap::getNumTiles() const {
-	return numCols * numRows;
+///----------------------------------------------------------------------------
+/// getCharacterInventory - Fills a vector with each of the objects in the
+/// character's inventory, given the character's ID.
+/// @param ID of the Character
+/// @return a vector containing indices of each object.
+///---------------------------------------------------------------------------
+
+const std::vector<size_t> GameMap::getCharacterInventory(const size_t& charID) const {
+    
+    std::vector<size_t> objectIndices;
+    objectIndices.reserve(4);
+
+    for(size_t i = 0; i < gameObjects.size(); ++i) {
+
+        if(gameObjects[i].getCreatureID() == charID) {
+            objectIndices.push_back(i);
+        }
+    }
+
+    return objectIndices;
+}
+
+///----------------------------------------------------------------------------
+/// getGameCharacters - Return a vector containing Game Characters within the
+/// current map.
+/// @return a vector containing the Game Objects.
+///----------------------------------------------------------------------------
+
+const std::vector<GameCharacter>& GameMap::getGameCharacters() const {
+	return gameCharacters;
+}
+
+///----------------------------------------------------------------------------
+/// getGameObjects - Return a vector containing Game Objects within the current
+/// map.
+/// @return a vector containing the Game Objects.
+///----------------------------------------------------------------------------
+
+const std::vector<GameObject>& GameMap::getGameObjects() const {
+	return gameObjects;
 }
 
 ///----------------------------------------------------------------------------
@@ -48,6 +86,7 @@ const std::vector<GameTile::DrawInfo> GameMap::getTileDrawData() const {
     }
 
     return drawDataVec;
+
 }
 
 ///----------------------------------------------------------------------------
@@ -61,6 +100,16 @@ const std::vector<GameTile>& GameMap::getTiles() const {
 }
 
 ///----------------------------------------------------------------------------
+/// getHeight - Returns the total number of tiles on the map
+/// @return an interger indicating the total number of tiles on the map.
+///----------------------------------------------------------------------------
+
+const int GameMap::getNumTiles() const {
+	return numCols * numRows;
+}
+
+
+///----------------------------------------------------------------------------
 /// getWidth - Returns the width of the map
 /// @return an interger indicating the width of the map
 ///----------------------------------------------------------------------------
@@ -69,33 +118,66 @@ const int& GameMap::getWidth() const {
     return numCols;
 }
 
+//=============================================================================
+// Mutators
+//=============================================================================
+
 ///----------------------------------------------------------------------------
-/// getGameObjects - Return a vector containing Game Objects within the current
-/// map.
-/// @return a vector containing the Game Objects.
+/// deleteCharacter - Removes the character from the game world.
+/// @param GMKey used to restrict access of this function.
+/// @param index of the character to delete.
 ///----------------------------------------------------------------------------
 
-const std::vector<GameObject>& GameMap::getGameObjects() const {
-	return gameObjects;
+void GameMap::deleteCharacter(GMKey, const size_t& index) {   
+    gameCharacters.erase(gameCharacters.begin() + index);
 }
 
 ///----------------------------------------------------------------------------
-/// getGameCharacters - Return a vector containing Game Characters within the
-/// current map.
-/// @return a vector containing the Game Objects.
+/// replaceCharacter - Replace a character at the given index.
+/// @param GMKey used to restrict access of this function.
+/// @param index of the character being replaced,
+/// @param new character data to be replaced with.
 ///----------------------------------------------------------------------------
 
-const std::vector<GameCharacter>& GameMap::getGameCharacters() const {
-	return gameCharacters;
+void GameMap::replaceCharacter(GMKey, const size_t& index, const GameCharacter& gameChar) {
+    gameCharacters[index] = gameChar;
 }
 
 ///----------------------------------------------------------------------------
-/// getGameTile - Return a reference to a gameTile
+/// replaceObject - Replace a character at the given index.
+/// @param GMKey used to restrict access of this function.
+/// @param index of the object being replaced,
+/// @param new object data to be replaced with.
 ///----------------------------------------------------------------------------
+
+void GameMap::replaceObject(GMKey, const size_t& index, const GameObject& gameObject) {
+    gameObjects[index] = gameObject;
+}
 
 //=============================================================================
 // Public Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// characterIndexFromID - Search for a character via it's ID, then return
+/// its index in the gameCharacter vector if it is found.
+/// @param character ID to search for.
+/// @returns the index in the game character vector of the character if found,
+/// (size_t)-1 if it was not.
+///----------------------------------------------------------------------------
+
+const size_t GameMap::characterIndexFromID(const int charID) const {
+
+    for(size_t i = 0; i < gameCharacters.size(); ++i) {
+        
+        if(gameCharacters[i].getID() == charID) {
+            return i;
+        }
+    }
+
+    return (size_t)-1;
+
+}
 
 ///----------------------------------------------------------------------------
 /// indexFromRowCol - Converts the given row and column to an index for the
@@ -117,7 +199,7 @@ const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) cons
 /// @return true if it is with map boundries, false if it is not.
 ///----------------------------------------------------------------------------
 
-bool GameMap::isTileIndexInMapBounds(const int& row, const int& col) const {
+bool GameMap::isRowColInMapBounds(const int& row, const int& col) const {
     
     if(row > numRows - 1 || col > numCols - 1 || col < 0 || row < 0 || 
         indexFromRowCol(row, col) > tiles.size()) {
@@ -308,7 +390,7 @@ void GameMap::readJumps(std::ifstream& mapFile) {
             int y = std::stoi(line);
             SimplePoint jumpA(x, y);
 
-            if(!isTileIndexInMapBounds(y, x)) {
+            if(!isRowColInMapBounds(y, x)) {
                 errorMsg.append("Tile index was out of bounds");
                 throw std::out_of_range(errorMsg);
             }
@@ -325,7 +407,7 @@ void GameMap::readJumps(std::ifstream& mapFile) {
             y = std::stoi(line);
             SimplePoint jumpB(x, y);
 
-            if(!isTileIndexInMapBounds(y, x)) {
+            if(!isRowColInMapBounds(y, x)) {
                 errorMsg.append("Tile index was out of bounds");
                 throw std::out_of_range(errorMsg);
             }
@@ -523,7 +605,7 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
             int y = std::stoi(line);
             SimplePoint connectionA(x, y);
 
-            if(!isTileIndexInMapBounds(y, x)) {
+            if(!isRowColInMapBounds(y, x)) {
                 errorMsg.append("Tile index was out of bounds");
                 throw std::out_of_range(errorMsg);
             }
@@ -542,7 +624,7 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
             y = std::stoi(line);
             SimplePoint connectionB(x, y);
 
-            if(!isTileIndexInMapBounds(y, x)) {
+            if(!isRowColInMapBounds(y, x)) {
                 errorMsg.append("Tile index was out of bounds");
                 throw std::out_of_range(errorMsg);
             }

@@ -14,11 +14,13 @@ class GameInfo {
         GameInfo();
 
         // Only allow certain classes to use these functions
+        
         class Key {
             friend class GameMap;
             Key() {};
             Key(Key &t) {};
         };
+        
 
         inline void readHeader(Key, std::ifstream& mapFile) { readHeader(mapFile); }
         inline void readPlayerAttributes(Key, std::ifstream& mapFile) { readPlayerAttributes(mapFile); }

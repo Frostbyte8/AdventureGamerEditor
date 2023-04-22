@@ -20,12 +20,6 @@ class GameWorldController {
         bool loadWorld(const std::string& filePath, const std::string& fileName);
         bool saveWorld(const std::string& filePath, const std::string& fileName);
 
-        // Collection Accessors
-
-        //const std::vector<GameTile>& getTiles() const { return gameMap->getTiles(); }
-        //const std::vector<GameObject>& getGameObjects() const { return gameMap->getGameObjects(); }
-        //const std::vector<GameTile::DrawInfo> getTileDrawData() { return gameMap->getTileDrawData(); }
-
         const GameMap* getGameMap() const { return gameMap; }
         const int& getMapWidth() const {return gameMap->getWidth(); }
         const int& getMapHeight() const {return gameMap->getHeight(); }
@@ -49,6 +43,9 @@ class GameWorldController {
 
         GameInfo                        gameInfo;
         GameMap*                        gameMap;
+
+        // TODO: Make this constant?
+        GameMap::GMKey                  gmKey;
 
 };
 
