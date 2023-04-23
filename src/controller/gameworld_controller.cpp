@@ -274,6 +274,52 @@ bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, c
 }
 
 ///----------------------------------------------------------------------------
+/// tryAddCharacter - Attempts to add a Character.
+/// @param A reference to a Character Builder object that will get finalized
+/// before being added.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddCharacter(GameCharacter::Builder& gameCharacter) {
+
+    // Find out if Adventuer Gamer has a hard limit on the number of Characters.
+    // TODO: Reuse unused IDs first.
+    const int nextID = gameMap->getLastCharacterID() + 1;
+    gameCharacter.ID(nextID);
+    try {
+        gameMap->addCharacter(gmKey, gameCharacter.build());
+    }
+    catch (const std::bad_alloc&) {
+        mainWindow->DisplayErrorMessage("Could not add character: Out of memory.", "Out of Memory");
+        return false;
+    }
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// tryAddObject - Attempts to add an Object.
+/// @param A reference to a Object Builder object that will get finalized
+/// before being added.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
+
+    // Find out if Adventuer Gamer has a hard limit on the number of Characters.
+    // TODO: Reuse unused IDs first.
+    const int nextID = gameMap->getLastObjectID() + 1;
+    gameObject.ID(nextID);
+    try {
+        gameMap->addObject(gmKey, gameObject.build());
+    }
+    catch (const std::bad_alloc&) {
+        mainWindow->DisplayErrorMessage("Could not add object: Out of memory.", "Out of Memory");
+        return false;
+    }
+    return true;
+}
+
+///----------------------------------------------------------------------------
 /// tryRemoveCharacter - Attempts to remove a character. It also alters the
 /// location property of objects that are attached to it by setting their
 /// location to "0,0".

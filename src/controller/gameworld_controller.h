@@ -27,8 +27,8 @@ class GameWorldController {
         bool doesCharacterExist(const int& charID) const;
         // bool doesObjectExist(const int& objectID) const;
 
-        // bool tryAddCharacter(GameCharacter::Builder& GameCharacter);
-        // bool tryAddObject(GameObject::Builder& objectBuilder);
+        bool tryAddCharacter(GameCharacter::Builder& GameCharacter);
+        bool tryAddObject(GameObject::Builder& objectBuilder);
 
         bool tryRemoveCharacter(const int& charID);
         bool tryRemoveObject(const int& charID);

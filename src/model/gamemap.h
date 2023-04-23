@@ -45,6 +45,8 @@ class GameMap {
         const std::vector<GameTile>& getTiles() const;
 
         // Mutators
+        void addCharacter(GMKey, GameCharacter& gameCharacter);
+        void addObject(GMKey, GameObject& gameObject);
         void deleteCharacter(GMKey, const size_t& index);
         void deleteObject(GMKey, const size_t& index);
         void replaceCharacter(GMKey, const size_t& index, const GameCharacter& gameChar);
@@ -76,6 +78,8 @@ class GameMap {
         int numRows;
         int lastObjectID;
         int lastCharacterID;
+        int lastUnusedObjectID;
+        int lastUnusedCharacterID;
 
         std::string story;
         std::vector<GameTile> tiles;

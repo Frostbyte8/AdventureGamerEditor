@@ -169,6 +169,34 @@ const int& GameMap::getWidth() const {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// addCharacter - Adds a character to the game world.
+/// @param GMKey used to restrict access of this function.
+/// @param GameCharacter to add
+///----------------------------------------------------------------------------
+
+void GameMap::addCharacter(GMKey, GameCharacter& gameCharacter) {
+    gameCharacters.push_back(gameCharacter);
+    
+    if(gameCharacter.getID() > lastCharacterID) {
+        lastCharacterID = gameCharacter.getID();
+    }
+}
+
+///----------------------------------------------------------------------------
+/// addObject - Adds a object to the game world.
+/// @param GMKey used to restrict access of this function.
+/// @param GameObject to add
+///----------------------------------------------------------------------------
+
+void GameMap::addObject(GMKey, GameObject& gameObject) {
+    gameObjects.push_back(gameObject);
+
+    if(gameObject.getID() > lastObjectID) {
+        lastObjectID = gameObject.getID();
+    }
+}
+
+///----------------------------------------------------------------------------
 /// deleteCharacter - Removes the character from the game world.
 /// @param GMKey used to restrict access of this function.
 /// @param index of the character to delete.
