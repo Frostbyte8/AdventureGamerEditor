@@ -200,13 +200,6 @@ class GameObject {
                     return *this;
                 }
 
-                /*
-                Builder& creatureID(const int& creatureID) {
-                    base.creatureID = creatureID;
-                    return *this;
-                }
-                */
-
                 Builder& description(const std::string& description, const unsigned int& which) {
                     base.description[which] = description;
                     return *this;
@@ -237,50 +230,55 @@ class GameObject {
                     return *this;
                 }
 
-                /*
-                Builder& isLocated(const int& isLocated) {
-                    base.isLocated = isLocated;
+                // On Ground
+
+                Builder& location(const int& x, const int y) {
+                    
+                    base.location = std::to_string(x) + "," + std::to_string(y);
+
+                    // Update cached location information
+
+                    base.x = x;
+                    base.y = y;
+                    base.isLocated = GameObjectConstants::LocatedOnGround;
+                    base.creatureID = GameObjectConstants::NotOnCreature;
+                    
                     return *this;
+
                 }
-                */
 
-                Builder& location(const std::string& location) {
+                // On Character
 
-                    base.location = location;
-
-                    std::vector<std::string> tokens = Frost::split(location, ',');
+                Builder& location(const int& charID) {
                     
-                    // TODO: verify tokens
-                    // TODO: Set X/Y
-                    // TODO: Player
+                    base.location = std::to_string(charID) + "," + GameObjectConstants::OnCharacterString;
                     
-                    if(tokens.size() == 2) {
-                        if(Frost::endsWith(tokens[1], GameObjectConstants::OnCharacterString)) {
-                            base.isLocated  = GameObjectConstants::LocatedOnCharacter;
-                            base.creatureID = std::stoi(tokens[0]);
-                        }
-                        else {
-                            base.x          = std::stoi(tokens[0]);
-                            base.y          = std::stoi(tokens[1]);
-                            base.creatureID = GameObjectConstants::NotOnCreature;
-                        }
-                    }
-                    else if(tokens.size() == 1) {
-                        
-                        if(Frost::startsWith(tokens[0], GameObjectConstants::OnPlayerString)) {
-                            base.isLocated = GameObjectConstants::LocatedOnCharacter;
-                            base.creatureID = GameObjectConstants::NotOnCreature;
-                        }
-                        else {
-                            // throw invalid arugment
-                        }
-
-                    }
-                    else {
-                        // throw invalid_argument
-                    }
-
+                    // Update cached location information
+                    
+                    base.x = -1;
+                    base.y = -1;
+                    base.isLocated = GameObjectConstants::LocatedOnCharacter;
+                    base.creatureID = charID;
+                    
                     return *this;
+
+                }
+
+                // On Player
+
+                Builder& location() {
+                    
+                    base.location = GameObjectConstants::OnPlayerString;
+
+                    // Update cached location information
+
+                    base.x = -1;
+                    base.y = -1;
+                    base.isLocated = GameObjectConstants::LocatedOnPlayer;
+                    base.creatureID = GameObjectConstants::NotOnCreature;
+                    
+                    return *this;
+
                 }
 
                 Builder& makesSight(const SightTypes& makesSight) {
@@ -307,18 +305,6 @@ class GameObject {
                     base.usedWithID = usedWithID;
                     return *this;
                 }
-
-                /*
-                Builder& x(const int& x) {
-                    base.x = x;
-                    return *this;
-                }
-
-                Builder& y(const int& y) {
-                    base.y = y;
-                    return *this;
-                }
-                */
 
                 void readObject(std::ifstream& mapFile);
 

@@ -10,8 +10,10 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
     ID(std::stoi(line));
 
     for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
-        std::getline(mapFile, line);
-        description(Frost::trim(Frost::rtrim(line, "\r"), "\""), i);
+        //std::getline(mapFile, line);
+        Frost::getVBString(mapFile, line);
+        //description(Frost::trim(Frost::rtrim(line, "\r"), "\""), i);
+        description(line, i);
     }
 
     Frost::getLineWindows(mapFile, line);
@@ -32,8 +34,29 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
     Frost::getLineWindows(mapFile, line);
     uses(std::stoi(line));
 
-    Frost::getLineWindows(mapFile, line);
-    location(Frost::trim(line, "\""));
+    Frost::getVBString(mapFile, line);
+
+    std::vector<std::string> tokens = Frost::split(line, ',');
+
+    if(tokens.size() == 2) {
+        if(Frost::endsWith(tokens[1], GameObjectConstants::OnCharacterString)) {
+            location(std::stoi(tokens[0]));
+        }
+        else {
+            location(std::stoi(tokens[0]), std::stoi(tokens[1]));
+        }
+    }
+    else if(tokens.size() == 1) {
+        if(Frost::startsWith(tokens[0], GameObjectConstants::OnPlayerString)) {
+            location(); 
+        }
+        else {
+            // Throw
+        }
+    }
+    else {
+        // Throw
+    }
 
     for(int i = 0; i < AttributeTypes::NumTypes; i++) {
         Frost::getLineWindows(mapFile, line);

@@ -268,7 +268,7 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
             for(size_t k = 0; k < objectIndicesSize; ++k) {
 
                 GameObject::Builder movedObject(gameObjects[objectIndices[k]]);
-                movedObject.location(GameObjectConstants::DefaultLocation);
+                movedObject.location(0, 0);
                 gameMap->replaceObject(gmKey, objectIndices[k], movedObject.build());
 
             }
