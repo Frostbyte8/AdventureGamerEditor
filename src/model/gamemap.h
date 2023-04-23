@@ -32,10 +32,11 @@ class GameMap {
         const int& getWidth() const;
         const int& getHeight() const;
 		inline const int getNumTiles() const;
-        const GameTile& getTile(const int& index) const { return tiles[index]; }
+        inline const GameTile& getTile(const int& index) const { return tiles[index]; }
 
         // Collection Accessors
-        const std::vector<size_t> getCharacterInventory(const size_t& index) const;
+        const std::vector<size_t> getCharacterInventory(const size_t& charID) const;
+        const std::vector<size_t> getReliantObjectsFromID(const size_t& objectID) const;
 		const std::vector<GameObject>& getGameObjects() const;
         const std::vector<GameCharacter>& getGameCharacters() const;
         const std::vector<GameTile::DrawInfo> getTileDrawData() const;
@@ -43,11 +44,13 @@ class GameMap {
 
         // Mutators
         void deleteCharacter(GMKey, const size_t& index);
+        void deleteObject(GMKey, const size_t& index);
         void replaceCharacter(GMKey, const size_t& index, const GameCharacter& gameChar);
         void replaceObject(GMKey, const size_t& index, const GameObject& gameObject);
 
         // Public Functions
         const size_t characterIndexFromID(const int charID) const;
+        const size_t objectIndexFromID(const int& objectID) const;
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
         bool isRowColInMapBounds(const int& row, const int& col) const;        
 

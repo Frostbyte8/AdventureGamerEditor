@@ -240,7 +240,6 @@ bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col
 
 bool GameWorldController::tryRemoveCharacter(const int& charID) {
 
-    //const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
     const size_t charIndex = gameMap->characterIndexFromID(charID);
 
     if(charIndex != (size_t)-1) {
@@ -256,7 +255,7 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
             std::string message = "The following objects will be placed at 0,0 if this object is deleted:\n";
             
             for(size_t i = 0; i < objectIndicesSize; ++i) {
-                message.append("\n" + gameObjects[i].getName());
+                message.append("\n" + gameObjects[objectIndices[i]].getName());
             }
 
             message.append("\n\nDo you still wish to delete this Character?");
@@ -278,6 +277,54 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
         gameMap->deleteCharacter(gmKey, charIndex);
         return true;
     }  
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// tryRemoveObject - Attempts to remove an object. If it finds that this
+/// object is required by another object, it will ask the user if it wants
+/// to update that object before continuing.
+/// @param the ID (not index) of the Object to remove
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryRemoveObject(const int& objectID) {
+
+    const size_t objectIndex = gameMap->objectIndexFromID(objectID);
+
+    if(objectIndex != (size_t)-1) {
+        const std::vector<size_t> objectIndices = gameMap->getReliantObjectsFromID(objectID);
+
+        if(!objectIndices.empty()) {
+
+            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+            const size_t objectIndicesSize = objectIndices.size(); 
+
+            std::string message = "The following objects rely on this object, and will be updated to no longer require it:\n";
+            
+            for(size_t i = 0; i < objectIndicesSize; ++i) {
+                message.append("\n" + gameObjects[objectIndices[i]].getName());
+            }
+
+            message.append("\n\nDo you still wish to delete this Object?");
+
+            if(mainWindow->AskYesNoQuestion(message, "Remove Object?", true) != MainWindowInterfaceResponses::Yes) {
+                return false;
+            }
+
+            for(size_t k = 0; k < objectIndicesSize; ++k) {
+
+                GameObject::Builder updatedObject(gameObjects[objectIndices[k]]);
+                updatedObject.usedWithID(GameObjectConstants::UsedAlone);
+                gameMap->replaceObject(gmKey, objectIndices[k], updatedObject.build());
+
+            }
+
+        }
+
+        gameMap->deleteObject(gmKey, objectIndex);
+    }
 
     return false;
 }

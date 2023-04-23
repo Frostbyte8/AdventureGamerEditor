@@ -10,9 +10,7 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
     ID(std::stoi(line));
 
     for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
-        //std::getline(mapFile, line);
         Frost::getVBString(mapFile, line);
-        //description(Frost::trim(Frost::rtrim(line, "\r"), "\""), i);
         description(line, i);
     }
 
@@ -51,11 +49,11 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
             location(); 
         }
         else {
-            // Throw
+            throw std::invalid_argument("Tried to read invalid location type");
         }
     }
     else {
-        // Throw
+        throw std::invalid_argument("Too many tokens for location type");
     }
 
     for(int i = 0; i < AttributeTypes::NumTypes; i++) {

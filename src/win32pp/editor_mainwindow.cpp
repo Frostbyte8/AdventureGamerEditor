@@ -221,7 +221,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
-    gameWorldController->tryRemoveCharacter(i);
+    gameWorldController->tryRemoveObject(i);
     i++;
 
     return FALSE;

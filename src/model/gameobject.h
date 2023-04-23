@@ -17,6 +17,7 @@
 
 namespace GameObjectConstants {
     const int NoID              = -1;
+    const int UsedAlone         = 0;
 
     const int NotOnCreature     = 0;
     const int MaxMonetaryValue  = 10000;
@@ -155,7 +156,7 @@ class GameObject {
                     base.makesHearing   = HearingTypes::NoChange().asInt();
                     base.monetaryWorth  = GameObjectConstants::MinMonetaryValue;
                     base.uses           = GameObjectConstants::MinNumUses;
-                    base.usedWithID     = GameObjectConstants::NoID;
+                    base.usedWithID     = GameObjectConstants::UsedAlone;
                     base.x              = 0;
                     base.y              = 0;
 
@@ -356,6 +357,7 @@ class GameObject {
         const std::string& getName() const { return base.description[0];}
         const int& getCreatureID() const { return base.creatureID; }
         const int& getID() const { return base.ID; }
+        const int& getUsedWithID() const { return base.usedWithID; }
 
     private:
 

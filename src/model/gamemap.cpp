@@ -25,14 +25,16 @@ GameMap::GameMap(const int& numRows, const int& numCols) {
 /// character's inventory, given the character's ID.
 /// @param ID of the Character
 /// @return a vector containing indices of each object.
-///---------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 
 const std::vector<size_t> GameMap::getCharacterInventory(const size_t& charID) const {
     
     std::vector<size_t> objectIndices;
     objectIndices.reserve(4);
 
-    for(size_t i = 0; i < gameObjects.size(); ++i) {
+    const size_t goSize = gameObjects.size();
+
+    for(size_t i = 0; i < goSize; ++i) {
 
         if(gameObjects[i].getCreatureID() == charID) {
             objectIndices.push_back(i);
@@ -69,6 +71,30 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 
 const int& GameMap::getHeight() const {
     return numRows;
+}
+
+///----------------------------------------------------------------------------
+/// getReliantObjectsFromID - Fills a vector with each the indices of the
+/// objects that rely on the objectID to be used.
+/// @param ID of the Object
+/// @return a vector containing indices of objects
+///----------------------------------------------------------------------------
+
+const std::vector<size_t> GameMap::getReliantObjectsFromID(const size_t& objectID) const {
+    
+    std::vector<size_t> objectIndices;
+    objectIndices.reserve(4);
+
+    const size_t goSize = gameObjects.size();
+
+    for(size_t i = 0; i < goSize; ++i) {
+
+        if(gameObjects[i].getUsedWithID() == objectID) {
+            objectIndices.push_back(i);
+        }
+    }
+
+    return objectIndices;
 }
 
 ///----------------------------------------------------------------------------
@@ -133,6 +159,16 @@ void GameMap::deleteCharacter(GMKey, const size_t& index) {
 }
 
 ///----------------------------------------------------------------------------
+/// deleteObject - Removes the object from the game world.
+/// @param GMKey used to restrict access of this function.
+/// @param index of the object to delete.
+///----------------------------------------------------------------------------
+
+void GameMap::deleteObject(GMKey, const size_t& index) {
+    gameObjects.erase(gameObjects.begin() + index);
+}
+
+///----------------------------------------------------------------------------
 /// replaceCharacter - Replace a character at the given index.
 /// @param GMKey used to restrict access of this function.
 /// @param index of the character being replaced,
@@ -168,9 +204,34 @@ void GameMap::replaceObject(GMKey, const size_t& index, const GameObject& gameOb
 
 const size_t GameMap::characterIndexFromID(const int charID) const {
 
-    for(size_t i = 0; i < gameCharacters.size(); ++i) {
+    const size_t gcSize = gameCharacters.size();
+
+    for(size_t i = 0; i < gcSize; ++i) {
         
         if(gameCharacters[i].getID() == charID) {
+            return i;
+        }
+    }
+
+    return (size_t)-1;
+
+}
+
+///----------------------------------------------------------------------------
+/// objectIndexFromID - Search for an object via it's ID, then return its index
+/// in the gameCharacter vector if it is found.
+/// @param object ID to search for.
+/// @returns the index in the game object vector of the object if found,
+/// (size_t)-1 if it was not.
+///----------------------------------------------------------------------------
+
+const size_t GameMap::objectIndexFromID(const int& objectID) const {
+
+    const size_t goSize = gameObjects.size();
+
+    for(size_t i = 0; i < goSize; ++i) {
+        
+        if(gameObjects[i].getID() == objectID) {
             return i;
         }
     }
