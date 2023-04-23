@@ -35,6 +35,8 @@ namespace GameObjectConstants {
     const int LocatedOnCharacter    = 2;
 
     const std::string DefaultLocation = "0,0";
+    const std::string OnCharacterString = "Creature";
+    const std::string OnPlayerString = "Me";
 
 }
 
@@ -252,11 +254,30 @@ class GameObject {
                     // TODO: Set X/Y
                     // TODO: Player
                     
-                    if(tokens.size() > 1) {
-                        if(Frost::endsWith(tokens[1], "Creature\"\r")) {
+                    if(tokens.size() == 2) {
+                        if(Frost::endsWith(tokens[1], GameObjectConstants::OnCharacterString)) {
                             base.isLocated  = GameObjectConstants::LocatedOnCharacter;
                             base.creatureID = std::stoi(tokens[0]);
                         }
+                        else {
+                            base.x          = std::stoi(tokens[0]);
+                            base.y          = std::stoi(tokens[1]);
+                            base.creatureID = GameObjectConstants::NotOnCreature;
+                        }
+                    }
+                    else if(tokens.size() == 1) {
+                        
+                        if(Frost::startsWith(tokens[0], GameObjectConstants::OnPlayerString)) {
+                            base.isLocated = GameObjectConstants::LocatedOnCharacter;
+                            base.creatureID = GameObjectConstants::NotOnCreature;
+                        }
+                        else {
+                            // throw invalid arugment
+                        }
+
+                    }
+                    else {
+                        // throw invalid_argument
                     }
 
                     return *this;

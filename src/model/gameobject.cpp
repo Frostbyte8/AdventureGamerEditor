@@ -6,7 +6,7 @@
 void GameObject::Builder::readObject(std::ifstream& mapFile) {
     
     std::string line;
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     ID(std::stoi(line));
 
     for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
@@ -14,50 +14,48 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
         description(Frost::trim(Frost::rtrim(line, "\r"), "\""), i);
     }
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     doorColumn(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     doorRow(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     flags1(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     flags2(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     monetaryWorth(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     uses(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     location(Frost::trim(line, "\""));
 
     for(int i = 0; i < AttributeTypes::NumTypes; i++) {
-        std::getline(mapFile, line);
+        Frost::getLineWindows(mapFile, line);
         attributeBase(std::stoi(line), i);
 
-        std::getline(mapFile, line);
+        Frost::getLineWindows(mapFile, line);
         attributeRandom(std::stoi(line), i);
     }
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     makesSight(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     makesHearing(std::stoi(line));
 
-    // TODO: Enum Class the remaining enums
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     description(line, 4);
 
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     description(line, 5);
 
-
-    std::getline(mapFile, line);
+    Frost::getLineWindows(mapFile, line);
     usedWithID(std::stoi(line));
 
 }

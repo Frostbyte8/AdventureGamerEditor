@@ -39,8 +39,6 @@ class GameWorldController {
         // Game World is composed of several other objects which I have
         // split up here to make doing undo/redo operations easier.
 
-        
-
         GameInfo                        gameInfo;
         GameMap*                        gameMap;
 

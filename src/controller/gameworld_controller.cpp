@@ -247,13 +247,15 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
 
         const std::vector<size_t> objectIndices = gameMap->getCharacterInventory(charID);
         
-        if(objectIndices.size()) {
+        if(!objectIndices.empty()) {
 
             const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
 
+            const size_t objectIndicesSize = objectIndices.size(); 
+
             std::string message = "The following objects will be placed at 0,0 if this object is deleted:\n";
             
-            for(size_t i = 0; i < objectIndices.size(); ++i) {
+            for(size_t i = 0; i < objectIndicesSize; ++i) {
                 message.append("\n" + gameObjects[i].getName());
             }
 
@@ -263,7 +265,7 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
                 return false;
             }
 
-            for(size_t k = 0; k < objectIndices.size(); ++k) {
+            for(size_t k = 0; k < objectIndicesSize; ++k) {
 
                 GameObject::Builder movedObject(gameObjects[objectIndices[k]]);
                 movedObject.location(GameObjectConstants::DefaultLocation);
