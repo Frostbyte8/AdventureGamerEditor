@@ -209,18 +209,61 @@ bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTil
 
 bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID) {
     
-    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
-
     if(gameMap->isRowColInMapBounds(row, col)) {
 
         const size_t charIndex = gameMap->characterIndexFromID(charID);
 
         if(charIndex != (size_t)-1) {
-
+            
+            const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
             GameCharacter::Builder charBuilder(gameCharacters[charIndex]);
             std::string newLocation = std::to_string(col) + "," + std::to_string(row);
             charBuilder.location(newLocation);
             gameMap->replaceCharacter(gmKey, charIndex, charBuilder.build());
+            return true;
+
+        }
+
+    }
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// tryPlaceObjectAtTile - Attempts to move an object to the given row and
+/// column
+/// @param integer specifying the row
+/// @param integer specifying the column
+/// @param the ID (not index) of the Object to move
+/// @return true if the operation was successful, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, const int& objectID) {
+    
+    if(gameMap->isRowColInMapBounds(row, col)) {
+
+        const size_t objectIndex = gameMap->objectIndexFromID(objectID);
+
+        if(objectIndex != (size_t)-1) {
+           
+            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+
+            if(gameObjects[objectIndex].getIsLocated() == GameObjectConstants::LocatedOnCharacter) {
+                
+                const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+                const size_t charIndex = gameMap->characterIndexFromID(gameObjects[objectIndex].getCreatureID());
+                const std::string characterName = gameCharacters[charIndex].getName();
+
+                if(!mainWindow->AskYesNoQuestion("The object is currently held by " + characterName + ". Do you still want to place it on the ground?", "Place Object?", true) == MainWindowInterfaceResponses::Yes) {
+                    return false;
+                }
+
+            }
+
+            GameObject::Builder objectBuilder(gameObjects[objectIndex]);          
+            objectBuilder.location(col, row);
+            gameMap->replaceObject(gmKey, objectIndex, objectBuilder.build());
+
             return true;
 
         }

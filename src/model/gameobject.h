@@ -358,6 +358,7 @@ class GameObject {
         const int& getCreatureID() const { return base.creatureID; }
         const int& getID() const { return base.ID; }
         const int& getUsedWithID() const { return base.usedWithID; }
+        const int& getIsLocated() const { return base.isLocated; }
 
     private:
 

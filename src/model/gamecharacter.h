@@ -226,7 +226,8 @@ class GameCharacter {
 
         // TODO: Accessors
 
-        const int getID() const { return base.ID; }
+        const int& getID() const { return base.ID; }
+        const std::string& getName() const { return base.description[0]; }
 
     private:
 

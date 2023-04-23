@@ -25,9 +25,15 @@ class GameWorldController {
         const int& getMapHeight() const {return gameMap->getHeight(); }
 
         bool doesCharacterExist(const int& charID) const;
+        // bool doesObjectExist(const int& objectID) const;
+
+        // bool tryAddCharacter(GameCharacter::Builder& GameCharacter);
+        // bool tryAddObject(GameObject::Builder& objectBuilder);
+
         bool tryRemoveCharacter(const int& charID);
         bool tryRemoveObject(const int& charID);
 
+        bool tryPlaceObjectAtTile(const int& row, const int& col, const int& objectID);
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
 
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
