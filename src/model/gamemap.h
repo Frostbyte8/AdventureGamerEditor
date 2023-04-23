@@ -31,6 +31,8 @@ class GameMap {
         // Accessors
         const int& getWidth() const;
         const int& getHeight() const;
+        const int& getLastCharacterID() const;
+        const int& getLastObjectID() const;
 		inline const int getNumTiles() const;
         inline const GameTile& getTile(const int& index) const { return tiles[index]; }
 
@@ -72,6 +74,8 @@ class GameMap {
         
         int numCols;
         int numRows;
+        int lastObjectID;
+        int lastCharacterID;
 
         std::string story;
         std::vector<GameTile> tiles;

@@ -14,6 +14,8 @@ GameMap::GameMap(const int& numRows, const int& numCols) {
 	GameTile::Builder builder;
 	GameTile gt = builder.build();
 	tiles.insert(tiles.begin(), getNumTiles(), gt);
+    lastCharacterID = 0;
+    lastObjectID = 0;
 }
 
 //=============================================================================
@@ -71,6 +73,24 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 
 const int& GameMap::getHeight() const {
     return numRows;
+}
+
+///----------------------------------------------------------------------------
+/// getLastCharacterID - Returns the last ID used on a character
+/// @return an interger indicating the the last ID used on a character
+///----------------------------------------------------------------------------
+
+const int& GameMap::getLastCharacterID() const {
+    return lastCharacterID;
+}
+
+///----------------------------------------------------------------------------
+/// getLastObjectID - Returns the last ID used on an object
+/// @return an interger indicating the the last ID used on an object
+///----------------------------------------------------------------------------
+
+const int& GameMap::getLastObjectID() const {
+    return lastObjectID;
 }
 
 ///----------------------------------------------------------------------------
@@ -283,6 +303,9 @@ bool GameMap::isRowColInMapBounds(const int& row, const int& col) const {
 void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
                       const std::string& fileName) {
 
+    lastCharacterID = 0;
+    lastObjectID = 0;
+
     const std::string storyFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".STY";
 
     readStory(storyFilePath);
@@ -414,6 +437,11 @@ void GameMap::readCharacters(std::ifstream& mapFile) {
         characterBuilder.readCharacter(mapFile);
         GameCharacter gameCharacter = characterBuilder.build();
         gameCharacters.push_back(gameCharacter);
+
+        if(gameCharacter.getID() > lastCharacterID) {
+            lastCharacterID = gameCharacter.getID();
+        }
+
     }
 }
 
@@ -604,6 +632,11 @@ void GameMap::readObjects(std::ifstream& mapFile) {
         objectBuilder.readObject(mapFile);
         GameObject gameObject = objectBuilder.build();
         gameObjects.push_back(gameObject);
+        
+        if(gameObject.getID() > lastCharacterID) {
+            lastCharacterID = gameObject.getID();
+        }
+
     }
 }
 

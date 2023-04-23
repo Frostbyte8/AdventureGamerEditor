@@ -27,7 +27,9 @@ class GameWorldController {
         bool doesCharacterExist(const int& charID) const;
         bool tryRemoveCharacter(const int& charID);
         bool tryRemoveObject(const int& charID);
+
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
+
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         bool getCharacterFromID(const int& ID, GameCharacter* outChar);
         
