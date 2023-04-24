@@ -57,7 +57,7 @@ HWND MainWindowFrame::Create(HWND parent) {
     
     eod = new EditObjectDialog(NULL, &windowMetrics);
     eod->Create(0);
-    eod->MoveWindow(0, 0, 128,128, TRUE);
+    eod->MoveWindow(0, 0, 256,256, TRUE);
     eod->ShowWindow(SW_SHOW);
     
 	return CDockFrame::Create(parent);

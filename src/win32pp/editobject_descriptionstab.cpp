@@ -20,7 +20,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     //EOD_SETWIDGETTEXT(LanguageConstants::DescriptionGroupCaption, grpDescriptions);
 
     for(int i = 0; i < 6; i++) {
-        lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
+        lblDescriptions[i].Create(*this, 0, SS_SIMPLE | WS_BORDER);
         txtDescriptions[i].Create(*this, WS_EX_CLIENTEDGE, ES_AUTOHSCROLL);
         EOD_SETWIDGETTEXT(LanguageConstants::NameLabel+i, lblDescriptions[i]);
     }
@@ -52,5 +52,26 @@ void EditObjectDescriptionsTab::calculatePageWidth() {
     for(int i = 0; i < 6; i++) {
         pageWidth = std::max(windowMetrics->CalculateStringWidth(lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
     }
+
+    const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
+    pageWidth += (cs.XGROUPBOX_MARGIN * 2);
     
+}
+
+///----------------------------------------------------------------------------
+/// moveControls - Move the controls to their desired positions
+///----------------------------------------------------------------------------
+
+void EditObjectDescriptionsTab::moveControls() {
+    
+    const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlDimensions cd = windowMetrics->GetControlDimensions();
+    
+    const int maxRowWidth = GetClientRect().right - (cs.XGROUPBOX_MARGIN * 2);
+
+    CPoint cPos(cs.XGROUPBOX_MARGIN, cs.YFIRST_GROUPBOX_MARGIN);
+    CSize cSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
+
+    lblDescriptions[0].MoveWindow(cPos.x, cPos.y, cSize.cx, cSize.cy, FALSE);    
+
 }

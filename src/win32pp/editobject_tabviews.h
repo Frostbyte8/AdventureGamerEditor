@@ -17,7 +17,7 @@ class EOTabViewBase : public CWnd {
         //virtual bool ValidateFields();        // Validate Fields
         //virtual void PopulateFields();        // Populate Fields
         
-        //virtual void MoveControls(const int& maxWidth);
+        virtual void moveControls() = 0;
         virtual void calculatePageWidth() = 0;
         LONG pageWidth;
 };
@@ -27,10 +27,12 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
     public:
         EditObjectDescriptionsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) { }
         virtual int OnCreate(CREATESTRUCT& cs);
-
+        virtual void moveControls();
+        virtual void calculatePageWidth();
     private:
 
-        virtual void calculatePageWidth();
+        
+        
 
         CButton                 grpDescriptions;
         CStatic                 lblDescriptions[6];

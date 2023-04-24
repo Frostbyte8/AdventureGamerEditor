@@ -8,8 +8,12 @@ void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
 
 int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     tabControl.Create(*this);
-    tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions", 101);
-    tabControl.MoveWindow(0, 0, 128, 128, TRUE);
+    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions", 101));
+    tabControl.MoveWindow(0, 0, 200, 200, TRUE);
+
+    // TODO: Figure out tab width
+    descriptionsTab->moveControls(tabControl.GetClientRect().right - tabControl.GetClientRect().left);
+
     return CWnd::OnCreate(cs);
 }
 
