@@ -1,4 +1,4 @@
-#include "editor_editobjectdialog.h"
+#include "editobject_dialog.h"
 
 void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
@@ -28,6 +28,7 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 
+    /*
     const WORD newWidth = LOWORD(lParam);
     const WORD newHeight = HIWORD(lParam);
 
@@ -71,6 +72,7 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
     else {
         ShowScrollBar(SB_BOTH, FALSE);
     }
+    */
 
     return 0;
 
@@ -79,16 +81,3 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 //
 //
 //
-
-int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
-    const int retVal = CWnd::OnCreate(cs);
-
-    grpDescriptions.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
-    grpDescriptions.SetWindowText(L"Descriptions");
-
-    lblDescriptions.Create(*this, 0, SS_SIMPLE);
-    lblDescriptions.SetWindowText(L"Name");
-    txtDescriptions.Create(*this, WS_EX_CLIENTEDGE, ES_AUTOHSCROLL);
-
-    return retVal;
-}

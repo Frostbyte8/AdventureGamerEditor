@@ -14,8 +14,6 @@ class GameWorldController {
         GameWorldController(MainWindowInterface* inMainWindow);
 		~GameWorldController();
 
-        // TODO: these should be "try" functions to make it clear that they
-        // try to do the action, but could fail.
         bool newWorld();
         bool loadWorld(const std::string& filePath, const std::string& fileName);
         bool saveWorld(const std::string& filePath, const std::string& fileName);

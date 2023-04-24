@@ -8,7 +8,7 @@
 #include "../interface/mainwindow_interface.h"
 #include "../controller/gameworld_controller.h"
 #include "../win32/window_metrics.h"
-#include "editor_editobjectdialog.h"
+#include "editobject_dialog.h"
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 

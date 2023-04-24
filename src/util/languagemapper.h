@@ -107,6 +107,21 @@ namespace LanguageConstants {
 
     int const MainWindowCaption         = 301;
 
+    // Edit Object Dialog
+
+    int const DescriptionTab            = 400;
+    int const QualitiesTab              = 401;
+    int const EffectsTab                = 402;
+    int const LocationsTab              = 403;
+
+    int const NameLabel                 = 405;
+    int const SightLabel                = 406;
+    int const UseLabel                  = 407;
+    int const LastUseLabel              = 408;
+    int const IconLabel                 = 409;
+    int const SoundLabel                = 410;
+    int const BrowseButton              = 411;
+
     // Error Messages
 
     int const TileGetError              = 10001;

@@ -771,8 +771,6 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
 
 }
 
-
-
 void GameMap::writeMap(std::ofstream& mapFile) {
     gameInfo.writeHeader(key, mapFile);
 }
