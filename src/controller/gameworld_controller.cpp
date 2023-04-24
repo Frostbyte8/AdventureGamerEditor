@@ -156,26 +156,6 @@ bool GameWorldController::saveWorld(const std::string& filePath, const std::stri
 }
 
 ///----------------------------------------------------------------------------
-/// doesCharacterExist - Checks if a character exists via it's ID.
-/// @param ID of the character to search for
-/// @returns true if the character exists and false if it does not
-///----------------------------------------------------------------------------
-
-
-bool GameWorldController::doesCharacterExist(const int& charID) const {
-    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
-
-    for(std::vector<GameCharacter>::const_iterator it = gameCharacters.begin();
-        it != gameCharacters.end(); ++it) {
-            if( it->getID() == charID) {
-                return true;
-            }
-    }
-
-    return false;
-}
-
-///----------------------------------------------------------------------------
 /// tryGetTileCopy - tries to get a copy of the tile at the specified row/col.
 /// @param row of the tile get
 /// @param column of the tile to get
@@ -305,7 +285,7 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& gameCharacter)
 
 bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 
-    // Find out if Adventuer Gamer has a hard limit on the number of Characters.
+    // Find out if Adventuer Gamer has a hard limit on the number of Objects.
     // TODO: Reuse unused IDs first.
     const int nextID = gameMap->getLastObjectID() + 1;
     gameObject.ID(nextID);

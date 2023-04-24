@@ -24,9 +24,6 @@ class GameWorldController {
         const int& getMapWidth() const {return gameMap->getWidth(); }
         const int& getMapHeight() const {return gameMap->getHeight(); }
 
-        bool doesCharacterExist(const int& charID) const;
-        // bool doesObjectExist(const int& objectID) const;
-
         bool tryAddCharacter(GameCharacter::Builder& GameCharacter);
         bool tryAddObject(GameObject::Builder& objectBuilder);
 

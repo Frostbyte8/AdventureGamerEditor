@@ -56,7 +56,7 @@ class GameMap {
         const size_t characterIndexFromID(const int charID) const;
         const size_t objectIndexFromID(const int& objectID) const;
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
-        bool isRowColInMapBounds(const int& row, const int& col) const;        
+        bool isRowColInMapBounds(const int& row, const int& col) const;
 
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
