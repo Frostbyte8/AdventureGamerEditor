@@ -19,7 +19,9 @@ class EOTabViewBase : public CWnd {
         
         virtual void moveControls() = 0;
         virtual void calculatePageWidth() = 0;
+        virtual void calculatePageHeight() = 0;
         LONG pageWidth;
+        LONG pageHeight;
 };
 
 class EditObjectDescriptionsTab : public EOTabViewBase {
@@ -29,11 +31,9 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void moveControls();
         virtual void calculatePageWidth();
+        virtual void calculatePageHeight();
+
     private:
-
-        
-        
-
         CButton                 grpDescriptions;
         CStatic                 lblDescriptions[6];
         CAnsiEdit               txtDescriptions[6];
