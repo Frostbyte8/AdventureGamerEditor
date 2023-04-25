@@ -1,18 +1,6 @@
 #include "editobject_tabviews.h"
 #include "../model/gameobject.h"
-#include "../util/languagemapper.h"
 #include <algorithm>
-
-inline void EOD_SetWindowText(const unsigned int& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
-    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
-    widget.SetWindowTextW(caption);
-}
-
-inline void EOD_SetWindowText(const std::string& str, CWnd& widget, CString& caption) {
-    caption = AtoW(str.c_str(), CP_UTF8);
-    widget.SetWindowTextW(caption);
-}
-
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
