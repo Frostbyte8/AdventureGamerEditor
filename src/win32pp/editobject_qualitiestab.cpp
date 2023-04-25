@@ -12,8 +12,8 @@
 int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     
     const int retVal = CWnd::OnCreate(cs);
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    CString caption;
+    //LanguageMapper& langMap = LanguageMapper::getInstance();
+    //CString caption;
     calculatePageWidth();
 
     return retVal;

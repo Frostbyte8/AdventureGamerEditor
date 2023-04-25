@@ -11,8 +11,13 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     const WindowMetrics::ControlSpacing ctrlSpace = windowMetrics->GetControlSpacing();
 
     tabControl.Create(*this);
-    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions", 101));
+    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
+    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics), L"Qualities"));
     tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 450, 480, TRUE);
+
+    //
+    // TEST DATA
+    //
 
     GameObject::Builder bd;
     bd.description("Thing", 0);
@@ -22,12 +27,19 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     bd.description("thing.ico", 4);
     bd.description("hello.wav", 5);
     descriptionsTab->populateFields(bd.build());
+    tabControl.SelectPage(0);
+    //
+    // TEST DATA END
+    //
 
 
     // TODO: Figure out tab width
-    descriptionsTab->moveControls();
     HFONT dialogFont = windowMetrics->GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetFontTest), (LPARAM)dialogFont);
+    descriptionsTab->moveControls();
+    qualitiesTab->moveControls();
+
+
     return CWnd::OnCreate(cs);
 }
 

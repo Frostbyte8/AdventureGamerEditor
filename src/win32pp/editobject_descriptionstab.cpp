@@ -95,12 +95,12 @@ void EditObjectDescriptionsTab::moveControls() {
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
 
-        lblDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy, FALSE);
+        lblDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
         cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
-        txtDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultEditSize.cx, defaultEditSize.cy, FALSE);
+        txtDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultEditSize.cx, defaultEditSize.cy);
         cPos.Offset(0, defaultEditSize.cy + cs.YRELATED_MARGIN);
 
-        if(i > GameObjectDescriptions::NumDescriptions -1) {
+        if(i > GameObjectDescriptions::NumDescriptions - 1) {
             btnBrowse[i - GameObjectDescriptions::NumDescriptions].MoveWindow(cPos.x, cPos.y, cd.XBUTTON, cd.YBUTTON);
 
             if(i != 5) {
@@ -116,6 +116,7 @@ void EditObjectDescriptionsTab::moveControls() {
 
     grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YRELATED_MARGIN,
                                maxGroupBoxWidth, cPos.y);
+    grpDescriptions.BringWindowToTop();
 
 }
 
