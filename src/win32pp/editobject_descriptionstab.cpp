@@ -20,8 +20,9 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     grpDescriptions.SetWindowTextW(L"Descriptions");
 
     for(int i = 0; i < 6; i++) {
-        lblDescriptions[i].Create(*this, 0, SS_SIMPLE | WS_BORDER);
-        txtDescriptions[i].Create(*this, WS_EX_CLIENTEDGE, ES_AUTOHSCROLL | WS_BORDER);
+        lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
+        txtDescriptions[i].Create(*this, WS_EX_CLIENTEDGE, ES_AUTOHSCROLL);
+        txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
         EOD_SETWIDGETTEXT(LanguageConstants::NameLabel+i, lblDescriptions[i]);
     }
 
@@ -37,6 +38,16 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 }
 
 #undef EODIALOG_SETWINDOWTEXT
+
+///----------------------------------------------------------------------------
+/// PreRegisterClass - Override defaults for tab page
+///----------------------------------------------------------------------------
+
+void EditObjectDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
+    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = L"EditObjectDescriptionsTabPage";
+    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+}
 
 ///----------------------------------------------------------------------------
 /// calculatePageWidth - Finds how wide the tab page needs to be display the
@@ -80,7 +91,7 @@ void EditObjectDescriptionsTab::moveControls() {
     
     const int maxRowWidth = (GetClientRect().right - (cs.XGROUPBOX_MARGIN * 2)) - (cs.XWINDOW_MARGIN * 2);
 
-    CPoint cPos(cs.XGROUPBOX_MARGIN + cs.XRELATED_MARGIN, 
+    CPoint cPos(cs.XGROUPBOX_MARGIN + cs.XWINDOW_MARGIN, 
                 cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN);
 
     const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
@@ -103,7 +114,7 @@ void EditObjectDescriptionsTab::moveControls() {
     }
 
     cPos.Offset(0, (-(cs.YRELATED_MARGIN) + cs.YLAST_GROUPBOX_MARGIN));
-    grpDescriptions.MoveWindow(cs.XRELATED_MARGIN, cs.YRELATED_MARGIN, maxRowWidth + (cs.XGROUPBOX_MARGIN * 2), cPos.y);
+    grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YRELATED_MARGIN, maxRowWidth + cs.XWINDOW_MARGIN + cs.XGROUPBOX_MARGIN, cPos.y);
 
 
 

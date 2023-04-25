@@ -20,65 +20,66 @@
 	
 	"301" : "Adventure Gamer Editor++",
 
-    /*
-    "100" : "Descriptions",             // Description Tab Label
-    "101" : "Qualities",                // Qualities Tab Label
-    "102" : "Effects",                  // Effects Tab Label
-    "103" : "Locations",                // Locations Tab Label
+    "400" : "Descriptions",             // Description Tab Label
+    "401" : "Qualities",                // Qualities Tab Label
+    "402" : "Effects",                  // Effects Tab Label
+    "403" : "Locations",                // Locations Tab Label
 
-    "105" : "Name",                     // Name Label
-    "106" : "Description on Sight",
-    "107" : "Description on Use",
-    "108" : "Description on Last Use",
-    "109" : "Icon File",
-    "110" : "Browse...",
+    "405" : "Name",                     // Name Label
+    "406" : "Description on Sight",
+    "407" : "Description on Use",
+    "408" : "Description on Last Use",
+    "409" : "Icon File",
+	"410" : "Sound File (Unused)",
+    "411" : "Browse...",
     
-    "111" : "Flags",                    // Flags Groupbox Label
-    "112" : "Is Master Key",
-    "113" : "Is Invisible, and can only been seen with infrared vision",
-    "114" : "Can be used to climb obstacles",            
-    "115" : "Protects player from invisible hazards",
-    "116" : "Is Torch, or similar object",
-    "117" : "Is Worn, and its use is continuous",
-    "118" : "Cannot be moved from its location",
-    "119" : "Is Money, and can only be used to buy other objects",
+	/*
+    "411" : "Flags",                    // Flags Groupbox Label
+    "412" : "Is Master Key",
+    "413" : "Is Invisible, and can only been seen with infrared vision",
+    "414" : "Can be used to climb obstacles",            
+    "415" : "Protects player from invisible hazards",
+    "416" : "Is Torch, or similar object",
+    "417" : "Is Worn, and its use is continuous",
+    "418" : "Cannot be moved from its location",
+    "419" : "Is Money, and can only be used to buy other objects",
     
-    "120" : "Properties",                               // Properties Groupbox Label
-    "121" : "Monetary Value",
-    "122" : "Number of Uses",
-    "123" : "Can only be used when this object is held",
+    "420" : "Properties",                               // Properties Groupbox Label
+    "421" : "Monetary Value",
+    "422" : "Number of Uses",
+    "423" : "Can only be used when this object is held",
     
-    "124" : "Effects on Player Attributes",             // Effects Groupbox Label
-    "125" : "Consumptive effect on each use",
-    "126" : "Effects are reversed after use",
-    "127" : "Attributes",                               // Attribtues Groupbox Label
-    "128" : "Base (0 - 12)",
-    "129" : "Random (0 - 12)",
-    "130" : "+",
-    "131" : "-",
-    "132" : "Energy",                                   // Energy Label
-    "133" : "Skill",
-    "134" : "Willpower",
-    "135" : "Luck",
-    "136" : "Torch Life",
-    "137" : "Makes Player's Sight",
-    "138" : "No Effect",                                // No Effect option in Sight Combo Box
-    "139" : "Blind",
-    "140" : "Normal",
-    "141" : "Infrared",
-    "142" : "Make's Player's Hearing",
-    "143" : "No Effect",                                // No Effect option in Hearing Combo Box
-    "144" : "Deaf",
-    "145" : "Normal",
-    "146" : "Ultra-Sonic",
+    "424" : "Effects on Player Attributes",             // Effects Groupbox Label
+    "425" : "Consumptive effect on each use",
+    "426" : "Effects are reversed after use",
+    "427" : "Attributes",                               // Attribtues Groupbox Label
+    "428" : "Base (0 - 12)",
+    "429" : "Random (0 - 12)",
+    "430" : "+",
+    "431" : "-",
+    "432" : "Energy",                                   // Energy Label
+    "433" : "Skill",
+    "434" : "Willpower",
+    "435" : "Luck",
+    "436" : "Torch Life",
+    "437" : "Makes Player's Sight",
+    "438" : "No Effect",                                // No Effect option in Sight Combo Box
+    "439" : "Blind",
+    "440" : "Normal",
+    "441" : "Infrared",
+    "442" : "Make's Player's Hearing",
+    "443" : "No Effect",                                // No Effect option in Hearing Combo Box
+    "444" : "Deaf",
+    "445" : "Normal",
+    "446" : "Ultra-Sonic",
     
-    "147" : "Locations",                                // Locations Groupbox Label
-    "148" : "On Ground At:",
-    "149" : "X",                                        // X-Coordinate Label
-    "150" : "Y",                                        // Y-Coordinate Label
-    "151" : "Player starts with it",
-    "152" : "Character has it",
-    "153" : "Object unlocks door at:",
+    "447" : "Locations",                                // Locations Groupbox Label
+    "448" : "On Ground At:",
+    "449" : "X",                                        // X-Coordinate Label
+    "450" : "Y",                                        // Y-Coordinate Label
+    "451" : "Player starts with it",
+    "452" : "Character has it",
+    "453" : "Object unlocks door at:",
     */
 	
 	"10001" : "Unable to get tile: Invalid row or column was given.",

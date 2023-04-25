@@ -7,13 +7,17 @@ void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
 }
 
 int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
+
+    const WindowMetrics::ControlSpacing ctrlSpace = windowMetrics->GetControlSpacing();
+
     tabControl.Create(*this);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions", 101));
-    tabControl.MoveWindow(0, 0, 450, 450, TRUE);
+    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 450, 480, TRUE);
 
     // TODO: Figure out tab width
     descriptionsTab->moveControls();
-
+    HFONT dialogFont = windowMetrics->GetCurrentFont();
+    EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetFontTest), (LPARAM)dialogFont);
     return CWnd::OnCreate(cs);
 }
 
@@ -24,6 +28,11 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     }
 
     return WndProcDefault(msg, wParam, lParam);
+}
+
+bool CALLBACK EditObjectDialog::SetFontTest(HWND child, LPARAM font) {
+    ::SendMessage(child, WM_SETFONT, font, true);
+    return true;
 }
 
 ///----------------------------------------------------------------------------

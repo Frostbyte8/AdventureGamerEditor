@@ -29,11 +29,13 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
     public:
         EditObjectDescriptionsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) { }
         virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
         virtual void calculatePageWidth();
         virtual void calculatePageHeight();
 
     private:
+
         CButton                 grpDescriptions;
         CStatic                 lblDescriptions[6];
         CAnsiEdit               txtDescriptions[6];
