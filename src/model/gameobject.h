@@ -103,7 +103,7 @@ class GameObject {
         struct Base {
             int             attributeBase[AttributeTypes::NumTypes];
             int             attributeRandom[AttributeTypes::NumTypes];
-            std::string     description[6];
+            std::string     description[GameObjectDescriptions::NumAllDescriptions];
             int             doorColumn;
             int             doorRow;
             GameObjectFlags1_T         flags1;
@@ -135,13 +135,13 @@ class GameObject {
             public:
                 Builder() {
 
-                    for(int i = 0; i < AttributeTypes::NumTypes; i++) {
+                    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
                         base.attributeBase[i] = 0;
                         base.attributeRandom[i] = 0;
                     } 
 
-                    for(int i = 0; i < AttributeTypes::NumTypes; i++) {
-                        base.description[i] = "";
+                    for(int k = 0; k < GameObjectDescriptions::NumAllDescriptions; ++k) {
+                        base.description[k] = "";
                     }
 
                     base.creatureID     = GameObjectConstants::NotOnCreature;
@@ -164,13 +164,13 @@ class GameObject {
 
                 Builder(const GameObject& gObj) {
 
-                    for(int i = 0; i < AttributeTypes::NumTypes; i++) {
+                    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
                         base.attributeBase[i] = gObj.base.attributeBase[i];
                         base.attributeRandom[i] = gObj.base.attributeRandom[i];
                     }
 
-                    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
-                        base.description[i] = gObj.base.description[i];
+                    for(int k = 0; k < GameObjectDescriptions::NumAllDescriptions; ++k) {
+                        base.description[k] = gObj.base.description[k];
                     }
 
                     base.creatureID     = gObj.base.creatureID;
@@ -359,18 +359,19 @@ class GameObject {
         const int& getID() const { return base.ID; }
         const int& getUsedWithID() const { return base.usedWithID; }
         const int& getIsLocated() const { return base.isLocated; }
+        const std::string& getDescription(const unsigned int which) const { return base.description[which]; }
 
     private:
 
         GameObject(Builder& builder) {
 
-            for(int i = 0; i < AttributeTypes::NumTypes; i++) {
+            for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
                 base.attributeBase[i] = builder.base.attributeBase[i];
                 base.attributeRandom[i] = builder.base.attributeRandom[i];
             }
 
-            for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
-                base.description[i] = builder.base.description[i];
+            for(int k = 0; k < GameObjectDescriptions::NumAllDescriptions; ++k) {
+                base.description[k] = builder.base.description[k];
             }
 
             base.creatureID     = builder.base.creatureID;

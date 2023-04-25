@@ -5,6 +5,7 @@
 #include <wxx_stdcontrols.h>
 #include <wxx_imagelist.h> // Needed for wxx_tab
 #include <wxx_tab.h>
+#include "../model/gameobject.h"
 #include "editobject_tabviews.h"
 #include "../win32/window_metrics.h"
 #include "../interface/mainwindow_interface.h"

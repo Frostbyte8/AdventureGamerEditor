@@ -18,11 +18,11 @@ class LanguageMapper {
             return mapper;
         }
 
-		std::string get(const unsigned int& key) {
+		std::string get(const unsigned int& key) const {
 			
 			std::string outString = "Err: String not Found";
 			
-			std::map<unsigned int, std::string>::iterator it;
+			std::map<unsigned int, std::string>::const_iterator it;
 			
 			it = languageMap.find(key);
 			

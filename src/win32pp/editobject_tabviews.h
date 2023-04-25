@@ -5,6 +5,7 @@
 #include <wxx_stdcontrols.h>
 #include "../util/win32pp_extras.h"
 #include "../win32/window_metrics.h"
+#include "../model/gameobject.h"
 
 class EOTabViewBase : public CWnd {
 
@@ -13,9 +14,9 @@ class EOTabViewBase : public CWnd {
         //virtual CSize getContentMaxSizes();   // Calculate the Max Width and Height of the page
         //virtual int getLongestControl();
 
-        //virtual void CalculatePageHeight() = 0;       
-        //virtual bool ValidateFields();        // Validate Fields
-        //virtual void PopulateFields();        // Populate Fields
+        //UpdateWindowMetrics(); // Window Metrics has changed
+        //virtual int ValidateFields();        // Validate Fields
+        virtual void populateFields(const GameObject& gameObject) = 0; // Populate Fields
         
         virtual void moveControls() = 0;
         virtual void calculatePageWidth() = 0;
@@ -27,22 +28,19 @@ class EOTabViewBase : public CWnd {
 class EditObjectDescriptionsTab : public EOTabViewBase {
 
     public:
+        
         EditObjectDescriptionsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) { }
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
         virtual void calculatePageWidth();
         virtual void calculatePageHeight();
+        virtual void populateFields(const GameObject& gameObject);
 
     protected:
-        virtual BOOL PreTranslateMessage(MSG &msg) {
-            if(IsDialogMessage(msg)) {
-                return TRUE;
-            }
-            else {
-                return CWnd::PreTranslateMessage(msg);
-            }
-        }
+        
+        
+        virtual BOOL PreTranslateMessage(MSG &msg);
 
     private:
 

@@ -14,6 +14,16 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions", 101));
     tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 450, 480, TRUE);
 
+    GameObject::Builder bd;
+    bd.description("Thing", 0);
+    bd.description("Looks pretty cool", 1);
+    bd.description("You hold it high above your head. Nothing Happens.", 2);
+    bd.description("The object for no reason at all ceases to exist suddenly.", 3);
+    bd.description("thing.ico", 4);
+    bd.description("hello.wav", 5);
+    descriptionsTab->populateFields(bd.build());
+
+
     // TODO: Figure out tab width
     descriptionsTab->moveControls();
     HFONT dialogFont = windowMetrics->GetCurrentFont();
