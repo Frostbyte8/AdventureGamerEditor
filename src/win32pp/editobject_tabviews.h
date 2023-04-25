@@ -34,6 +34,16 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         virtual void calculatePageWidth();
         virtual void calculatePageHeight();
 
+    protected:
+        virtual BOOL PreTranslateMessage(MSG &msg) {
+            if(IsDialogMessage(msg)) {
+                return TRUE;
+            }
+            else {
+                return CWnd::PreTranslateMessage(msg);
+            }
+        }
+
     private:
 
         CButton                 grpDescriptions;

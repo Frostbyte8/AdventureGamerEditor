@@ -21,15 +21,17 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 6; i++) {
         lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
-        txtDescriptions[i].Create(*this, WS_EX_CLIENTEDGE, ES_AUTOHSCROLL);
+        txtDescriptions[i].Create(*this, WS_EX_CLIENTEDGE, WS_TABSTOP | ES_AUTOHSCROLL);
         txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
         EOD_SETWIDGETTEXT(LanguageConstants::NameLabel+i, lblDescriptions[i]);
+        if(i > 3) {
+            btnBrowse[i-4].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
+            EOD_SETWIDGETTEXT(LanguageConstants::BrowseButton, btnBrowse[i-4]);
+        }
     }
 
-    for(int k = 0; k < 2; k++) {
-        btnBrowse[k].Create(*this, 0, BS_PUSHBUTTON);
-        EOD_SETWIDGETTEXT(LanguageConstants::BrowseButton, btnBrowse[k]);
-    }
+    txtDescriptions[4].EnableWindow(FALSE);
+    txtDescriptions[5].EnableWindow(FALSE);
 
     calculatePageWidth();
 
@@ -86,36 +88,38 @@ void EditObjectDescriptionsTab::calculatePageHeight() {
 
 void EditObjectDescriptionsTab::moveControls() {
     
-    const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions cd = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing cs      = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlDimensions cd   = windowMetrics->GetControlDimensions();
     
-    const int maxRowWidth = (GetClientRect().right - (cs.XGROUPBOX_MARGIN * 2)) - (cs.XWINDOW_MARGIN * 2);
+    // The max width of a row is the size of the tab page, less the margins of the
+    // Group Box and the window.
+
+    const int maxGroupBoxWidth  = GetClientRect().right - (cs.XWINDOW_MARGIN * 2);
+    const int maxRowWidth       = maxGroupBoxWidth - (cs.XGROUPBOX_MARGIN * 2);
+    const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
+    const CSize defaultEditSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
+
 
     CPoint cPos(cs.XGROUPBOX_MARGIN + cs.XWINDOW_MARGIN, 
                 cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN);
 
-    const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
-    const CSize defaultEditSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
-
-    for(int i = 0; i < 4; ++i) {
+    for(int i = 0; i < 6; ++i) {
         lblDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy, FALSE);
         cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
         txtDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultEditSize.cx, defaultEditSize.cy, FALSE);
         cPos.Offset(0, defaultEditSize.cy + cs.YRELATED_MARGIN);
+        if(i > 3) {
+            btnBrowse[i-4].MoveWindow(cPos.x, cPos.y, cd.XBUTTON, cd.YBUTTON);
+
+            if(i != 5) {
+                cPos.Offset(0, cd.YBUTTON + cs.YRELATED_MARGIN);
+            }
+            else {
+                cPos.Offset(0, cd.YBUTTON + cs.YLAST_GROUPBOX_MARGIN);
+            }
+        }
     }
 
-    for(int k = 4; k < 6; ++k) {
-        lblDescriptions[k].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy, FALSE);
-        cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
-        txtDescriptions[k].MoveWindow(cPos.x, cPos.y, defaultEditSize.cx, defaultEditSize.cy, FALSE);
-        cPos.Offset(0, defaultEditSize.cy + cs.YRELATED_MARGIN);
-        btnBrowse[k-4].MoveWindow(cPos.x, cPos.y, cd.XBUTTON, cd.YBUTTON);
-        cPos.Offset(0, cd.YBUTTON + cs.YRELATED_MARGIN);
-    }
-
-    cPos.Offset(0, (-(cs.YRELATED_MARGIN) + cs.YLAST_GROUPBOX_MARGIN));
-    grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YRELATED_MARGIN, maxRowWidth + cs.XWINDOW_MARGIN + cs.XGROUPBOX_MARGIN, cPos.y);
-
-
+    grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YRELATED_MARGIN, maxGroupBoxWidth, cPos.y);
 
 }
