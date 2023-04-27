@@ -19,9 +19,9 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     grpFlags.Create(*this, 0, BS_GROUPBOX);
     grpFlags.SetWindowTextW(L"Flags");
 
-    for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
-        btnFlags[i].Create(*this, 0, BS_CHECKBOX);
-        EOD_SetWindowText(101 + i, btnFlags[i], caption, langMap);
+    for(int k = 0; k < GameObjectFlags1::NumFlags; ++k) {
+        btnFlags[k].Create(*this, 0, BS_CHECKBOX);
+        EOD_SetWindowText(101 + k, btnFlags[k], caption, langMap);
     }
 
     for(int i = 0; i < 2; ++i) {
@@ -54,7 +54,26 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void EditObjectQualitiesTab::calculatePageWidth() {
-    pageWidth = 0;    
+    
+    pageWidth = 0;
+
+    std::vector<CWnd *> controlList;
+    
+    for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
+        controlList.push_back(&btnFlags[i]);
+    }
+    
+    for(int k = 0; k < 2; ++k) {
+        controlList.push_back(&lblProperties[k]);
+    }
+
+    const size_t clSize = controlList.size();
+    
+    for(size_t j = 0; j < clSize; ++j) {
+        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+                             controlList[j]->GetWindowTextW().c_str()), pageWidth);
+    }
+
 }
 
 ///----------------------------------------------------------------------------
@@ -63,7 +82,9 @@ void EditObjectQualitiesTab::calculatePageWidth() {
 ///----------------------------------------------------------------------------
 
 void EditObjectQualitiesTab::calculatePageHeight() {
-    pageHeight = 0;
+    
+    // The bottom of the groupbox is exactly how tall the page is.
+    pageHeight = grpProperties.GetClientRect().bottom;
 }
 
 ///----------------------------------------------------------------------------
@@ -91,7 +112,8 @@ void EditObjectQualitiesTab::moveControls() {
     // First deal with all the Flags
 
     for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
-        btnFlags[i].MoveWindow(cPos.x, cPos.y, defaultCheckboxSize.cx, defaultCheckboxSize.cy);
+        btnFlags[i].MoveWindow(cPos.x, cPos.y, 
+                               defaultCheckboxSize.cx, defaultCheckboxSize.cy);
 
         if(i == GameObjectFlags1::NumFlags - 1) {
             cPos.Offset(0, defaultCheckboxSize.cy);
@@ -109,16 +131,25 @@ void EditObjectQualitiesTab::moveControls() {
     cPos.Offset(0, cs.YUNRELATED_MARGIN + cs.YFIRST_GROUPBOX_MARGIN);
     
     for(int i = 0; i < 2; i++) {
-        lblProperties[i].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
+        lblProperties[i].MoveWindow(cPos.x, cPos.y, 
+                                    defaultLabelSize.cx, defaultLabelSize.cy);
+
         cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
-        txtProperties[i].MoveWindow(cPos.x, cPos.y, defaultTextSize.cx, defaultTextSize.cy);
+
+        txtProperties[i].MoveWindow(cPos.x, cPos.y,
+                                    defaultTextSize.cx, defaultTextSize.cy);
+
         spnProperties[i].SetBuddy(txtProperties[i]);
         cPos.Offset(0, defaultTextSize.cy + cs.YRELATED_MARGIN);
     }
 
-    lblProperties[2].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
+    lblProperties[2].MoveWindow(cPos.x, cPos.y,
+                                defaultLabelSize.cx, defaultLabelSize.cy);
+
     cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
-    cbxUsedWith.MoveWindow(cPos.x, cPos.y, defaultTextSize.cx, cd.YDROPDOWN + (cd.YTEXTBOX_ONE_LINE_ALONE * 3));
+
+    cbxUsedWith.MoveWindow(cPos.x, cPos.y, defaultTextSize.cx,
+                           cd.YDROPDOWN + (cd.YTEXTBOX_ONE_LINE_ALONE * 3));
 
     cPos.Offset(0, cd.YDROPDOWN);
 

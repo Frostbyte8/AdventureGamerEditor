@@ -54,7 +54,8 @@ void EditObjectDescriptionsTab::calculatePageWidth() {
     // one of the labels, so we will loop through that.
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
-        pageWidth = std::max(windowMetrics->CalculateStringWidth(lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
+        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+                             lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
     }
 
     const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
@@ -101,7 +102,8 @@ void EditObjectDescriptionsTab::moveControls() {
         cPos.Offset(0, defaultEditSize.cy + cs.YRELATED_MARGIN);
 
         if(i > GameObjectDescriptions::NumDescriptions - 1) {
-            btnBrowse[i - GameObjectDescriptions::NumDescriptions].MoveWindow(cPos.x, cPos.y, cd.XBUTTON, cd.YBUTTON);
+            btnBrowse[i - GameObjectDescriptions::NumDescriptions].MoveWindow(cPos.x, cPos.y, 
+                                                                              cd.XBUTTON, cd.YBUTTON);
 
             if(i != 5) {
                 cPos.Offset(0, cd.YBUTTON + cs.YRELATED_MARGIN);
