@@ -82,7 +82,13 @@ class EditObjectQualitiesTab : public EOTabViewBase {
 
     private:
         WindowMetrics*          windowMetrics;
-        //CSize                   contentSize;
+        CButton                 grpFlags;
+        CButton                 grpProperties;
+        CButton                 btnFlags[8];
+        CStatic                 lblProperties[3];
+        CEdit                   txtProperties[2];
+        CSpinButton             spnProperties[2];
+        CComboBox               cbxUsedWith;
 };
 
 #endif // __EDITOBJECT_TABVIEWS_H__

@@ -13,7 +13,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     tabControl.Create(*this);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics), L"Qualities"));
-    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 450, 480, TRUE);
+    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 450, 500, TRUE);
 
     //
     // TEST DATA

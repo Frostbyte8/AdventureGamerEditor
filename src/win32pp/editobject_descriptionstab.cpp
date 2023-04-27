@@ -19,7 +19,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
         
         lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
-        txtDescriptions[i].Create(*this, WS_EX_CLIENTEDGE, WS_TABSTOP | ES_AUTOHSCROLL);
+        txtDescriptions[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
         
         EOD_SetWindowText(LanguageConstants::NameLabel+i, lblDescriptions[i], caption, langMap);
@@ -107,16 +107,16 @@ void EditObjectDescriptionsTab::moveControls() {
                 cPos.Offset(0, cd.YBUTTON + cs.YRELATED_MARGIN);
             }
             else {
-                cPos.Offset(0, cd.YBUTTON + cs.YLAST_GROUPBOX_MARGIN);
+                cPos.Offset(0, cd.YBUTTON);
             }
 
         }
 
     }
 
-    grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YRELATED_MARGIN,
+    grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YWINDOW_MARGIN,
                                maxGroupBoxWidth, cPos.y);
-    grpDescriptions.BringWindowToTop();
+    
 
 }
 

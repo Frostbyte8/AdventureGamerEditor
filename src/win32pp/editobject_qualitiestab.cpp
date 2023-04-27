@@ -12,10 +12,38 @@
 int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     
     const int retVal = CWnd::OnCreate(cs);
-    //LanguageMapper& langMap = LanguageMapper::getInstance();
-    //CString caption;
-    calculatePageWidth();
+    
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
 
+    grpFlags.Create(*this, 0, BS_GROUPBOX);
+    grpFlags.SetWindowTextW(L"Flags");
+
+    for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
+        btnFlags[i].Create(*this, 0, BS_CHECKBOX);
+        EOD_SetWindowText(101 + i, btnFlags[i], caption, langMap);
+    }
+
+    for(int i = 0; i < 2; ++i) {
+        lblProperties[i].Create(*this, 0, SS_SIMPLE);
+        txtProperties[i].Create(*this, 0, ES_AUTOHSCROLL);
+        txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
+        lblProperties[i].SetWindowTextW(L"Label");
+
+        // TODO: Why does WS_VISBLE have to be set? Possible bug?
+        spnProperties[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
+                                UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
+       
+    }
+
+    grpProperties.Create(*this, 0, BS_GROUPBOX);
+    grpProperties.SetWindowTextW(L"Properties");
+
+    lblProperties[2].Create(*this, 0, SS_SIMPLE);
+    lblProperties[2].SetWindowTextW(L"Label");
+    cbxUsedWith.Create(*this, 0, CBS_DROPDOWN);
+    
+    calculatePageWidth();
     return retVal;
 
 }
@@ -26,9 +54,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void EditObjectQualitiesTab::calculatePageWidth() {
-    
-    pageWidth = 0;
-    
+    pageWidth = 0;    
 }
 
 ///----------------------------------------------------------------------------
@@ -54,6 +80,52 @@ void EditObjectQualitiesTab::moveControls() {
 
     const int maxGroupBoxWidth  = GetClientRect().right - (cs.XWINDOW_MARGIN * 2);
     const int maxRowWidth       = maxGroupBoxWidth - (cs.XGROUPBOX_MARGIN * 2);
+
+    const CSize defaultCheckboxSize(maxRowWidth, cd.YCHECKBOX);
+    const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
+    const CSize defaultTextSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
+
+    CPoint cPos(cs.XBUTTON_MARGIN + cs.XWINDOW_MARGIN,
+        cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN + cs.YWINDOW_MARGIN);
+
+    // First deal with all the Flags
+
+    for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
+        btnFlags[i].MoveWindow(cPos.x, cPos.y, defaultCheckboxSize.cx, defaultCheckboxSize.cy);
+
+        if(i == GameObjectFlags1::NumFlags - 1) {
+            cPos.Offset(0, defaultCheckboxSize.cy);
+        }
+        else {
+            cPos.Offset(0, defaultCheckboxSize.cy + cs.YRELATED_MARGIN);
+        }
+    }
+
+    grpFlags.MoveWindow(cs.XWINDOW_MARGIN, cs.YWINDOW_MARGIN,
+                        maxGroupBoxWidth, cPos.y);
+
+    // Now deal with things like money and uses
+
+    cPos.Offset(0, cs.YUNRELATED_MARGIN + cs.YFIRST_GROUPBOX_MARGIN);
+    
+    for(int i = 0; i < 2; i++) {
+        lblProperties[i].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
+        cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
+        txtProperties[i].MoveWindow(cPos.x, cPos.y, defaultTextSize.cx, defaultTextSize.cy);
+        spnProperties[i].SetBuddy(txtProperties[i]);
+        cPos.Offset(0, defaultTextSize.cy + cs.YRELATED_MARGIN);
+    }
+
+    lblProperties[2].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
+    cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
+    cbxUsedWith.MoveWindow(cPos.x, cPos.y, defaultTextSize.cx, cd.YDROPDOWN + (cd.YTEXTBOX_ONE_LINE_ALONE * 3));
+
+    cPos.Offset(0, cd.YDROPDOWN);
+
+    grpProperties.MoveWindow(cs.XWINDOW_MARGIN, grpFlags.GetClientRect().Height() + cs.YUNRELATED_MARGIN,
+                             maxGroupBoxWidth, cPos.y - grpFlags.GetClientRect().Height());
+
+
 
 }
 
