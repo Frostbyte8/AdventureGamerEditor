@@ -114,7 +114,6 @@ void EditObjectEffectsTab::calculatePageWidth() {
     }
 
     pageWidth = std::max(singleLineWidth, totalAttribWidth);
-    pageWidth = pageWidth;
     
 }
 

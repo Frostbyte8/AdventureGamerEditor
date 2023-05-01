@@ -125,4 +125,39 @@ class EditObjectEffectsTab : public EOTabViewBase {
 
 };
 
+class EditObjectLocationsTab : public EOTabViewBase {
+
+    public:
+
+        EditObjectLocationsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
+        virtual void moveControls();
+        virtual void calculatePageWidth();
+        virtual void calculatePageHeight();
+        virtual void populateFields(const GameObject& gameObject); // Populate Fields
+    
+    protected:
+
+        virtual BOOL PreTranslateMessage(MSG& msg);
+        
+    private:
+
+        WindowMetrics*          windowMetrics;
+
+        CButton                 grpLocations;
+
+        CButton                 btnLocatedAt[3];
+
+        CStatic                 lblGroundCoord[2];
+        CEdit                   txtGroundCoord[2];
+
+        CComboBox               cbxWhichCharacter;
+
+        CButton                 btnUnlocksDoor;
+        CStatic                 lblDoorCoord[2];
+        CEdit                   txtDoorCoord[2];
+
+};
+
 #endif // __EDITOBJECT_TABVIEWS_H__

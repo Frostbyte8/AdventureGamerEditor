@@ -38,6 +38,7 @@ class EditObjectDialog : public CWnd {
         EditObjectDescriptionsTab* descriptionsTab;
         EditObjectQualitiesTab* qualitiesTab;
         EditObjectEffectsTab*    effectsTab;
+        EditObjectLocationsTab* locationsTab;
 
         CButton                 dialogButtons[3];
         CTab                    tabControl;
