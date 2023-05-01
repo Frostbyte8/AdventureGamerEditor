@@ -51,7 +51,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
     protected:
         
         
-        virtual BOOL PreTranslateMessage(MSG &msg);
+        virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 
@@ -78,7 +78,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
     
     protected:
                 
-        virtual BOOL PreTranslateMessage(MSG &msg);
+        virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
         WindowMetrics*          windowMetrics;
@@ -89,6 +89,40 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         CEdit                   txtProperties[2];
         CSpinButton             spnProperties[2];
         CComboBox               cbxUsedWith;
+};
+
+class EditObjectEffectsTab : public EOTabViewBase {
+
+    public:
+
+        EditObjectEffectsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
+        virtual void moveControls();
+        virtual void calculatePageWidth();
+        virtual void calculatePageHeight();
+        virtual void populateFields(const GameObject& gameObject); // Populate Fields
+    
+    protected:
+        virtual BOOL PreTranslateMessage(MSG& msg);
+        
+    private:
+        WindowMetrics*          windowMetrics;
+
+        CButton                 grpEffects;
+        CButton                 btnEffect[2];
+
+        CButton                 grpAttrib;
+
+        CStatic                 lblAttribType[5];
+        CStatic                 lblAttribHeading[2];
+        CButton                 btnAttribPolarity[10];
+        CEdit                   txtAttribAmount[10];
+        CSpinButton             spnAttribAmount[10];
+
+        CStatic                 lblSenses[2];
+        CComboBox               cbxSenses[2];
+
 };
 
 #endif // __EDITOBJECT_TABVIEWS_H__

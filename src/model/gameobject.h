@@ -359,6 +359,7 @@ class GameObject {
         const int& getID() const { return base.ID; }
         const int& getUsedWithID() const { return base.usedWithID; }
         const int& getIsLocated() const { return base.isLocated; }
+        const int& getMonetaryWorth() const { return base.monetaryWorth; }
         const std::string& getDescription(const unsigned int which) const { return base.description[which]; }
 
     private:

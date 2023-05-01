@@ -167,6 +167,9 @@ void EditObjectQualitiesTab::moveControls() {
 ///----------------------------------------------------------------------------
 
 void EditObjectQualitiesTab::populateFields(const GameObject &gameObject) {
+    spnProperties[0].SetRange(0,10000);
+    CString windowText = AtoW(std::to_string(gameObject.getMonetaryWorth()).c_str());
+    txtProperties[0].SetWindowText(windowText);
 }
 
 ///----------------------------------------------------------------------------

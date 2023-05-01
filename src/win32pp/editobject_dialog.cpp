@@ -13,7 +13,8 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     tabControl.Create(*this);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics), L"Qualities"));
-    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 450, 500, TRUE);
+    effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(windowMetrics), L"Effects"));
+    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 451, 500, TRUE);
 
     //
     // TEST DATA
@@ -26,7 +27,13 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     bd.description("The object for no reason at all ceases to exist suddenly.", 3);
     bd.description("thing.ico", 4);
     bd.description("hello.wav", 5);
-    descriptionsTab->populateFields(bd.build());
+
+    bd.monetaryWorth(1234);
+
+    // TODO: I'm not sure why, but until you do this, the tabs are invisible. It might be because of
+    // how the window is created so it might go away after this window is an actual modal window.
+    tabControl.SelectPage(2);
+    tabControl.SelectPage(1);
     tabControl.SelectPage(0);
     //
     // TEST DATA END
@@ -38,7 +45,11 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetFontTest), (LPARAM)dialogFont);
     descriptionsTab->moveControls();
     qualitiesTab->moveControls();
+    effectsTab->moveControls();
 
+
+    descriptionsTab->populateFields(bd.build());
+    qualitiesTab->populateFields(bd.build());
 
     return CWnd::OnCreate(cs);
 }
