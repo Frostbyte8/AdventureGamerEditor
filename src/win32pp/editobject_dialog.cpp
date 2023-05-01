@@ -14,7 +14,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics), L"Qualities"));
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(windowMetrics), L"Effects"));
-    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 451, 500, TRUE);
+    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 350, 550, TRUE);
 
     //
     // TEST DATA

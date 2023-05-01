@@ -16,29 +16,31 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     grpEffects.Create(*this, 0, BS_GROUPBOX);
     grpEffects.SetWindowText(L"Effects on Player Attributes");
 
-    for(int i = 0; i < 2; ++i) {
-        btnEffect[i].Create(*this, 0, BS_RADIOBUTTON);
-        EOD_SetWindowText(LanguageConstants::NameLabel+i, btnEffect[i], caption, langMap);
-    }
+    btnEffect[0].Create(*this, 0, BS_AUTORADIOBUTTON | WS_GROUP);
+    btnEffect[1].Create(*this, 0, BS_AUTORADIOBUTTON);
+    EOD_SetWindowText(LanguageConstants::NameLabel+1, btnEffect[0], caption, langMap);
+    EOD_SetWindowText(LanguageConstants::NameLabel+2, btnEffect[1], caption, langMap);
 
     grpAttrib.Create(*this, 0, BS_GROUPBOX);
     grpAttrib.SetWindowText(L"Attributes");
 
     for(int k = 0; k < 5; ++k) {
-        lblAttribType[k].Create(*this, 0, SS_SIMPLE);
-        btnAttribPolarity[(k*2)].Create(*this, 0, BS_RADIOBUTTON | WS_GROUP);
+        lblAttribType[k].Create(*this, 0, SS_CENTER);
+        btnAttribPolarity[(k*2)].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
         btnAttribPolarity[(k*2)].SetWindowText(L"+");
-        btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_RADIOBUTTON);
+        btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_AUTORADIOBUTTON);
         btnAttribPolarity[(k*2)+1].SetWindowText(L"-");
     }
 
-    lblAttribHeading[0].Create(*this, 0, SS_SIMPLE);
-    lblAttribHeading[1].Create(*this, 0, SS_SIMPLE);
+    lblAttribHeading[0].Create(*this, 0, SS_CENTER);
+    lblAttribHeading[1].Create(*this, 0, SS_CENTER);
 
     for(int l = 0; l < 10; ++l) {
         txtAttribAmount[l].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER);
         spnAttribAmount[l].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
+
+        txtAttribAmount[l].SetExStyle(WS_EX_CLIENTEDGE);
 
     }
 
@@ -57,30 +59,8 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     lblAttribType[2].SetWindowText(L"Willpower");
     lblAttribType[3].SetWindowText(L"Luck");
     lblAttribType[4].SetWindowText(L"Torch Life");
-
-    /*
-    grpDescriptions.Create(*this, 0, BS_GROUPBOX);
-    grpDescriptions.SetWindowTextW(L"Descriptions");
-
-    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
-        
-        lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
-        txtDescriptions[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
-        txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
-        
-        EOD_SetWindowText(LanguageConstants::NameLabel+i, lblDescriptions[i], caption, langMap);
-
-        // For the last two fields, we need browse buttons
-        if(i > GameObjectDescriptions::NumDescriptions - 1) {
-            btnBrowse[i - GameObjectDescriptions::NumDescriptions].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
-            EOD_SetWindowText(LanguageConstants::BrowseButton, btnBrowse[i - GameObjectDescriptions::NumDescriptions], caption, langMap);
-        }
-
-    }
-
-    txtDescriptions[GameObjectDescriptions::Icon].EnableWindow(FALSE);
-    txtDescriptions[GameObjectDescriptions::Sound].EnableWindow(FALSE);
-    */
+    lblSenses[0].SetWindowText(L"Hearing");
+    lblSenses[1].SetWindowText(L"Sight");
 
     calculatePageWidth();
 
@@ -153,21 +133,90 @@ void EditObjectEffectsTab::calculatePageHeight() {
 
 void EditObjectEffectsTab::moveControls() {
     
-    const WindowMetrics::ControlSpacing cs      = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions cd   = windowMetrics->GetControlDimensions();
-    
+    const WindowMetrics::ControlSpacing CS = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
+
     // The max width of a row is the size of the tab page, less the margins of the
     // Group Box and the window.
 
-    const int maxGroupBoxWidth  = GetClientRect().right - (cs.XWINDOW_MARGIN * 2);
-    const int maxRowWidth       = maxGroupBoxWidth - (cs.XGROUPBOX_MARGIN * 2);
-    const int columnWidth       = maxGroupBoxWidth / 3;
-    
-    const int firstColumnWidth = (columnWidth * 3 == maxGroupBoxWidth) ? columnWidth : maxGroupBoxWidth - (columnWidth * 2); 
-   
+    const int maxGroupBoxWidth  = GetClientRect().right - (CS.XWINDOW_MARGIN * 2);
+    const int maxRowWidth       = maxGroupBoxWidth - (CS.XGROUPBOX_MARGIN * 2);
 
-    const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
-    const CSize defaultEditSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
+    const CSize defaultLabelSize(maxRowWidth, CD.YLABEL);
+    const CSize defaultRadioSize(maxRowWidth, CD.YRADIOBUTTON);
+
+    CPoint cPos(CS.XBUTTON_MARGIN + CS.XWINDOW_MARGIN,
+                CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
+    
+    // We'll move the first two radio buttons that effect how the object works first
+
+    for(int i = 0; i < 2; ++i) {
+
+        btnEffect[i].MoveWindow(cPos.x, cPos.y, maxRowWidth, CD.YRADIOBUTTON);
+
+        cPos.Offset(0, CD.YRADIOBUTTON);
+
+        if(i != 1) {
+            cPos.Offset(0, CS.YRELATED_MARGIN);
+        }
+
+    } 
+
+    grpEffects.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, maxGroupBoxWidth, cPos.y);
+
+    // Now for the grid of controls
+
+    const int columnWidth       = maxRowWidth / 3;
+    const int firstColumnWidth = (columnWidth * 3 == maxRowWidth) ? columnWidth : maxRowWidth - (columnWidth * 2); 
+
+    cPos.Offset(0, CS.YUNRELATED_MARGIN + CS.YFIRST_GROUPBOX_MARGIN);
+
+    for(int k = 0; k < 5; ++k) {
+
+        lblAttribType[k].MoveWindow(cPos.x, cPos.y, firstColumnWidth, CD.YLABEL);
+
+        if(k == 0) {
+
+            CPoint headerPos(cPos);
+            headerPos.Offset(firstColumnWidth, 0);
+            lblAttribHeading[0].MoveWindow(headerPos.x, headerPos.y, columnWidth, CD.YLABEL);
+            headerPos.Offset(columnWidth, 0 );
+            lblAttribHeading[1].MoveWindow(headerPos.x, headerPos.y, columnWidth, CD.YLABEL);
+        }
+
+        cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
+        CPoint polarPos(cPos);
+
+        for(int l = 0; l < 2; ++l) {
+            btnAttribPolarity[(k*2)+l].MoveWindow(polarPos.x, polarPos.y, firstColumnWidth / 2, CD.YRADIOBUTTON);
+            polarPos.Offset(firstColumnWidth - (firstColumnWidth / 2), 0);
+        }
+
+        polarPos = cPos;
+        polarPos.Offset(firstColumnWidth, 0);
+
+        for(int m = 0; m < 2; ++m) {
+            txtAttribAmount[(k*2)+m].MoveWindow(polarPos.x, polarPos.y, columnWidth, CD.YTEXTBOX_ON_BUTTON_ROW);
+            spnAttribAmount[(k*2)+m].SetBuddy(txtAttribAmount[(k*2)+m].GetHwnd());
+            polarPos.Offset(columnWidth, 0);
+        }
+
+        cPos.Offset(0, CD.YTEXTBOX_ON_BUTTON_ROW);
+    }
+
+    for(int n = 0; n < 2; n++) {
+        cPos.Offset(0, CS.YRELATED_MARGIN);
+        lblSenses[n].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
+        cPos.Offset(0, defaultLabelSize.cy + CS.YRELATED_MARGIN);
+        cbxSenses[n].MoveWindow(cPos.x, cPos.y, maxRowWidth, CD.YCOMBOBOX);
+        cPos.Offset(0, CD.YCOMBOBOX);
+    }
+
+    cPos.Offset(0, CS.YLAST_GROUPBOX_MARGIN);
+    const int yPos = grpEffects.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
+
+
+    grpAttrib.MoveWindow(CS.XWINDOW_MARGIN, yPos, maxGroupBoxWidth, cPos.y - yPos);
 
 }
 
