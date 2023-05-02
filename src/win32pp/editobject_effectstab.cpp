@@ -60,7 +60,6 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     for(int n = 0; n < 4; ++n) {
         EOD_AddString(LanguageConstants::SightNoEffectOption+n, cbxSenses[0], caption, langMap);
         EOD_AddString(LanguageConstants::HearingNoEffectOption+n, cbxSenses[1], caption, langMap);
-        
     }
 
     EOD_SetWindowText(LanguageConstants::MakesPlayersSightLabel, lblSenses[0], caption, langMap);

@@ -1,6 +1,6 @@
 {
     
-	"100" : "&File",
+	"100" : "&File",                    // Menu Items
     "101" : "&New...",
     "102" : "&Open...",
     "103" : "&Save...",
@@ -11,14 +11,18 @@
 	"202" : "Edit",
 	"203" : "Place",
 	"204" : "Delete",
+
 	"205" : "Add",						// Buttons in the "Characters" Groupbox
 	"206" : "Edit",
 	"207" : "Place",
 	"208" : "Delete",
-	"209" : "Objects",
+
+	"209" : "Objects",                  // Objects and Characters Group Box
 	"210" : "Characters",
 	
 	"301" : "Adventure Gamer Editor++",
+
+    // Edit Object Dialog
 
     "400" : "Descriptions",             // Description Tab Label
     "401" : "Qualities",                // Qualities Tab Label
@@ -77,20 +81,26 @@
     "446" : "Normal",
     "447" : "Ultra-Sonic",
     
-    /*
-    "447" : "Locations",                                // Locations Groupbox Label
-    "448" : "On Ground At:",
-    "449" : "X",                                        // X-Coordinate Label
-    "450" : "Y",                                        // Y-Coordinate Label
-    "451" : "Player starts with it",
-    "452" : "Character has it",
-    "453" : "Object unlocks door at:",
-    */
-	
+    "448" : "Locations",                                // Locations Groupbox Label
+    "449" : "On Ground At:",
+    "450" : "Player starts with it",
+    "451" : "Character has it",
+    "452" : "Object unlocks door at:",
+
+    // Generic Labels/Captions
+
+    "801" : "X",                                        // X-Coordinate Label
+    "802" : "Y",                                        // Y-Coordinate Label
+    "803" : "OK",
+    "804" : "Cancel",
+    "805" : "Apply",
+
+    // Error Messages
+    
 	"10001" : "Unable to get tile: Invalid row or column was given.",
 	"10002" : "Error getting tile",
 	"10003" : "Unable to read Adventure Gamer File:",
 	"10004" : "Error reading file",
 	
-    "32767" : ""        // Unused
+    "32767" : "Err: String not Found"        // String was not found
 }

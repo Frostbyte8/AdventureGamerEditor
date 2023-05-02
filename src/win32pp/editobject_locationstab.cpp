@@ -14,16 +14,19 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpLocations.Create(*this, 0, BS_GROUPBOX);
+    EOD_SetWindowText(LanguageConstants::LocationGroupLabel, grpLocations, caption, langMap);
 
     for(int i = 0; i < 3; ++i) {
         DWORD style = BS_AUTORADIOBUTTON | (i == 0 ? WS_GROUP : 0);
         btnLocatedAt[i].Create(*this, 0, style);
+        EOD_SetWindowText(LanguageConstants::OnGroundAtLabel+i, btnLocatedAt[i], caption, langMap);
     }
 
     for(int k = 0; k < 2; ++k) {
         txtGroundCoord[k].Create(*this, 0, ES_AUTOHSCROLL);
         txtDoorCoord[k].Create(*this, 0, ES_AUTOHSCROLL);
         lblGroundCoord[k].Create(*this, 0, SS_SIMPLE);
+        EOD_SetWindowText(LanguageConstants::XCoordLabel+k, lblGroundCoord[k], caption, langMap);
         lblDoorCoord[k].Create(*this, 0, SS_SIMPLE);
         txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtDoorCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
@@ -31,6 +34,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWN);
     btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX);
+    EOD_SetWindowText(LanguageConstants::UnlocksDoorAtLabel, btnUnlocksDoor, caption, langMap);
 
     calculatePageWidth();
 
