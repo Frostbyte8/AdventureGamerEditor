@@ -31,7 +31,11 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     bd.description("thing.ico", 4);
     bd.description("hello.wav", 5);
 
+    bd.flags1(64);
+
     bd.monetaryWorth(1234);
+    bd.uses(123);
+    bd.usedWithID(2);
 
     // TODO: I'm not sure why, but until you do this, the tabs are invisible. It might be because of
     // how the window is created so it might go away after this window is an actual modal window.

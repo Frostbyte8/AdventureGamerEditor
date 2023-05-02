@@ -40,6 +40,9 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     lblProperties[2].Create(*this, 0, SS_SIMPLE);
     EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2], caption, langMap);
     cbxUsedWith.Create(*this, 0, CBS_DROPDOWN);
+
+    spnProperties[0].SetRange(0, 10000);
+    spnProperties[1].SetRange(1, 10000);
     
     return retVal;
 
@@ -159,9 +162,13 @@ void EditObjectQualitiesTab::moveControls() {
 ///----------------------------------------------------------------------------
 
 void EditObjectQualitiesTab::populateFields(const GameObject &gameObject) {
-    spnProperties[0].SetRange(0,10000);
+    //spnProperties[0].SetRange(0,10000);
+
     CString windowText = AtoW(std::to_string(gameObject.getMonetaryWorth()).c_str());
     txtProperties[0].SetWindowText(windowText);
+
+    windowText = AtoW(std::to_string(gameObject.getUses()).c_str());
+    txtProperties[1].SetWindowText(windowText);
 }
 
 ///----------------------------------------------------------------------------
