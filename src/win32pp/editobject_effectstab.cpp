@@ -14,26 +14,34 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpEffects.Create(*this, 0, BS_GROUPBOX);
-    grpEffects.SetWindowText(L"Effects on Player Attributes");
+    EOD_SetWindowText(LanguageConstants::EffectsOnAttribGroup, grpEffects, caption, langMap);
 
     btnEffect[0].Create(*this, 0, BS_AUTORADIOBUTTON | WS_GROUP);
     btnEffect[1].Create(*this, 0, BS_AUTORADIOBUTTON);
-    EOD_SetWindowText(LanguageConstants::NameLabel+1, btnEffect[0], caption, langMap);
-    EOD_SetWindowText(LanguageConstants::NameLabel+2, btnEffect[1], caption, langMap);
 
-    grpAttrib.Create(*this, 0, BS_GROUPBOX);
-    grpAttrib.SetWindowText(L"Attributes");
-
-    for(int k = 0; k < 5; ++k) {
-        lblAttribType[k].Create(*this, 0, SS_CENTER);
-        btnAttribPolarity[(k*2)].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
-        btnAttribPolarity[(k*2)].SetWindowText(L"+");
-        btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_AUTORADIOBUTTON);
-        btnAttribPolarity[(k*2)+1].SetWindowText(L"-");
+    for(int i = 0; i < 2; ++i) {
+        EOD_SetWindowText(LanguageConstants::ConsumpativeLabel+i, btnEffect[i], caption, langMap);
     }
 
-    lblAttribHeading[0].Create(*this, 0, SS_CENTER);
-    lblAttribHeading[1].Create(*this, 0, SS_CENTER);
+    grpAttrib.Create(*this, 0, BS_GROUPBOX);
+    EOD_SetWindowText(LanguageConstants::ObjectAttributesGroup, grpAttrib, caption, langMap);
+
+    for(int k = 0; k < 5; ++k) {
+
+        lblAttribType[k].Create(*this, 0, SS_CENTER);
+        EOD_SetWindowText(LanguageConstants::ObjectEnergyLabel+k, lblAttribType[k], caption, langMap);
+        btnAttribPolarity[(k*2)].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
+        btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_AUTORADIOBUTTON);
+
+        EOD_SetWindowText(LanguageConstants::PositiveSignLabel, btnAttribPolarity[k*2], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::NegativeSignLabel, btnAttribPolarity[(k*2)+1], caption, langMap);
+
+    }
+
+    for(int i = 0; i < 2; ++i) {
+        lblAttribHeading[i].Create(*this, 0, SS_CENTER);
+        EOD_SetWindowText(LanguageConstants::ObjectBaseAmountLabel+i, lblAttribHeading[i], caption, langMap);
+    }
 
     for(int l = 0; l < 10; ++l) {
         txtAttribAmount[l].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER);
@@ -49,18 +57,14 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         cbxSenses[m].Create(*this, 0, CBS_DROPDOWN);
     }
 
-    // This is just for debugging the width caclulation
+    for(int n = 0; n < 4; ++n) {
+        EOD_AddString(LanguageConstants::SightNoEffectOption+n, cbxSenses[0], caption, langMap);
+        EOD_AddString(LanguageConstants::HearingNoEffectOption+n, cbxSenses[1], caption, langMap);
+        
+    }
 
-    lblAttribHeading[0].SetWindowText(L"Minimum (0 - 12)");
-    lblAttribHeading[1].SetWindowText(L"Maximum (0 - 12)");
-
-    lblAttribType[0].SetWindowText(L"Energy");
-    lblAttribType[1].SetWindowText(L"Skill");
-    lblAttribType[2].SetWindowText(L"Willpower");
-    lblAttribType[3].SetWindowText(L"Luck");
-    lblAttribType[4].SetWindowText(L"Torch Life");
-    lblSenses[0].SetWindowText(L"Hearing");
-    lblSenses[1].SetWindowText(L"Sight");
+    EOD_SetWindowText(LanguageConstants::MakesPlayersSightLabel, lblSenses[0], caption, langMap);
+    EOD_SetWindowText(LanguageConstants::MakesPlayersHearingLabel, lblSenses[1], caption, langMap);
 
     calculatePageWidth();
 
@@ -207,8 +211,8 @@ void EditObjectEffectsTab::moveControls() {
         cPos.Offset(0, CS.YRELATED_MARGIN);
         lblSenses[n].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
         cPos.Offset(0, defaultLabelSize.cy + CS.YRELATED_MARGIN);
-        cbxSenses[n].MoveWindow(cPos.x, cPos.y, maxRowWidth, CD.YCOMBOBOX);
-        cPos.Offset(0, CD.YCOMBOBOX);
+        cbxSenses[n].MoveWindow(cPos.x, cPos.y, maxRowWidth, CD.YDROPDOWN + (CD.YTEXTBOX_ONE_LINE_ALONE * 3));
+        cPos.Offset(0, CD.YDROPDOWN);
     }
 
     cPos.Offset(0, CS.YLAST_GROUPBOX_MARGIN);

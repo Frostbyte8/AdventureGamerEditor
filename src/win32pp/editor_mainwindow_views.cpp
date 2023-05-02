@@ -77,7 +77,7 @@ void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects) {
 
 LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    WINDOWPOS* wp;
+    //WINDOWPOS* wp;
 
     switch(msg) {
         case WM_SIZE: return OnSize(wParam, lParam);

@@ -25,6 +25,7 @@
     "402" : "Effects",                  // Effects Tab Label
     "403" : "Locations",                // Locations Tab Label
 
+    "404" : "Descriptions",
     "405" : "Name",                     // Name Label
     "406" : "Description on Sight",
     "407" : "Description on Use",
@@ -32,47 +33,51 @@
     "409" : "Icon File",
 	"410" : "Sound File (Unused)",
     "411" : "Browse...",
+	
+    "412" : "Flags",                    // Flags Groupbox Label
+
+    "413" : "Is Master Key",
+    "414" : "Is Invisible, and can only been seen with infrared vision",
+    "415" : "Can be used to climb obstacles",            
+    "416" : "Protects player from invisible hazards",
+    "417" : "Is Torch, or similar object",
+    "418" : "Is Worn, and its use is continuous",
+    "419" : "Cannot be moved from its location",
+    "420" : "Is Money, and can only be used to buy other objects",
     
-	/*
-    "411" : "Flags",                    // Flags Groupbox Label
-    "412" : "Is Master Key",
-    "413" : "Is Invisible, and can only been seen with infrared vision",
-    "414" : "Can be used to climb obstacles",            
-    "415" : "Protects player from invisible hazards",
-    "416" : "Is Torch, or similar object",
-    "417" : "Is Worn, and its use is continuous",
-    "418" : "Cannot be moved from its location",
-    "419" : "Is Money, and can only be used to buy other objects",
+    "421" : "Properties",                               // Properties Groupbox Label
+    "422" : "Monetary Value",
+    "423" : "Number of Uses",
+    "424" : "Can only be used when this object is held",
     
-    "420" : "Properties",                               // Properties Groupbox Label
-    "421" : "Monetary Value",
-    "422" : "Number of Uses",
-    "423" : "Can only be used when this object is held",
+    "425" : "Effects on Player Attributes",             // Effects Groupbox Label
+    "426" : "Consumptive effect on each use",
+    "427" : "Effects are reversed after use",
+
+    "428" : "Attributes",                               // Attribtues Groupbox Label
+    "429" : "Base (0 - 12)",
+    "430" : "Random (0 - 12)",
+    "431" : "+",
+    "432" : "-",
+    "433" : "Energy",                                   // Energy Label
+    "434" : "Skill",
+    "435" : "Willpower",
+    "436" : "Luck",
+    "437" : "Torch Life",
+
+    "438" : "Makes Player's Sight",
+    "439" : "No Effect",                                // No Effect option in Sight Combo Box
+    "440" : "Blind",
+    "441" : "Normal",
+    "442" : "Infrared",
+
+    "443" : "Make's Player's Hearing",
+    "444" : "No Effect",                                // No Effect option in Hearing Combo Box
+    "445" : "Deaf",
+    "446" : "Normal",
+    "447" : "Ultra-Sonic",
     
-    "424" : "Effects on Player Attributes",             // Effects Groupbox Label
-    "425" : "Consumptive effect on each use",
-    "426" : "Effects are reversed after use",
-    "427" : "Attributes",                               // Attribtues Groupbox Label
-    "428" : "Base (0 - 12)",
-    "429" : "Random (0 - 12)",
-    "430" : "+",
-    "431" : "-",
-    "432" : "Energy",                                   // Energy Label
-    "433" : "Skill",
-    "434" : "Willpower",
-    "435" : "Luck",
-    "436" : "Torch Life",
-    "437" : "Makes Player's Sight",
-    "438" : "No Effect",                                // No Effect option in Sight Combo Box
-    "439" : "Blind",
-    "440" : "Normal",
-    "441" : "Infrared",
-    "442" : "Make's Player's Hearing",
-    "443" : "No Effect",                                // No Effect option in Hearing Combo Box
-    "444" : "Deaf",
-    "445" : "Normal",
-    "446" : "Ultra-Sonic",
-    
+    /*
     "447" : "Locations",                                // Locations Groupbox Label
     "448" : "On Ground At:",
     "449" : "X",                                        // X-Coordinate Label

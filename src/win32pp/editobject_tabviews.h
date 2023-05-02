@@ -18,6 +18,11 @@ inline void EOD_SetWindowText(const std::string& str, CWnd& widget, CString& cap
     widget.SetWindowTextW(caption);
 }
 
+inline void EOD_AddString(const unsigned int& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
+    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
+    widget.AddString(caption);
+}
+
 class EOTabViewBase : public CWnd {
 
     public:

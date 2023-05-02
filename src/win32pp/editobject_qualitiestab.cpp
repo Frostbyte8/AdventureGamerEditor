@@ -17,18 +17,18 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     grpFlags.Create(*this, 0, BS_GROUPBOX);
-    grpFlags.SetWindowTextW(L"Flags");
+    EOD_SetWindowText(LanguageConstants::FlagsGroupLabel, grpFlags, caption, langMap);
 
     for(int k = 0; k < GameObjectFlags1::NumFlags; ++k) {
-        btnFlags[k].Create(*this, 0, BS_CHECKBOX);
-        EOD_SetWindowText(101 + k, btnFlags[k], caption, langMap);
+        btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX);
+        EOD_SetWindowText(LanguageConstants::MasterKeyFlag+k, btnFlags[k], caption, langMap);
     }
 
     for(int i = 0; i < 2; ++i) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
         txtProperties[i].Create(*this, 0, ES_AUTOHSCROLL);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
-        lblProperties[i].SetWindowTextW(L"Label");
+        EOD_SetWindowText(LanguageConstants::MonetaryLabel+i, lblProperties[i], caption, langMap);
 
         // TODO: Why does WS_VISBLE have to be set? Possible bug?
         spnProperties[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
@@ -40,7 +40,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     grpProperties.SetWindowTextW(L"Properties");
 
     lblProperties[2].Create(*this, 0, SS_SIMPLE);
-    lblProperties[2].SetWindowTextW(L"Label");
+    EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2], caption, langMap);
     cbxUsedWith.Create(*this, 0, CBS_DROPDOWN);
     
     calculatePageWidth();
@@ -105,6 +105,8 @@ void EditObjectQualitiesTab::moveControls() {
     const CSize defaultCheckboxSize(maxRowWidth, cd.YCHECKBOX);
     const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
     const CSize defaultTextSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
+
+    // TODO: XBUTTON_MARGIN is probably wrog
 
     CPoint cPos(cs.XBUTTON_MARGIN + cs.XWINDOW_MARGIN,
         cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN + cs.YWINDOW_MARGIN);
