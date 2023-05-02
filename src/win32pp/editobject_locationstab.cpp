@@ -30,6 +30,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         lblDoorCoord[k].Create(*this, 0, SS_SIMPLE);
         txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtDoorCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
+        EOD_SetWindowText(LanguageConstants::XCoordLabel+k, lblDoorCoord[k], caption, langMap);
     }
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWN);
@@ -94,7 +95,15 @@ void EditObjectLocationsTab::moveControls() {
 
     cPos.Offset(0, defaultRadioSize.cy + CS.YRELATED_MARGIN);
 
-    txtGroundCoord[0].MoveWindow(cPos.x, cPos.y, 32, CD.YTEXTBOX_ONE_LINE_ALONE);
+    const int lblCoordWidths = windowMetrics->XDLU2PIX(12);
+    const int txtCoordWidths = windowMetrics->XDLU2PIX(24);
+    const int lblYOffset = (CD.YTEXTBOX_ONE_LINE_ALONE / 2) - (CD.YLABEL / 2);
+    
+    lblGroundCoord[0].MoveWindow(cPos.x, cPos.y + lblYOffset, lblCoordWidths, CD.YLABEL);
+    txtGroundCoord[0].MoveWindow(cPos.x + lblCoordWidths, cPos.y, txtCoordWidths, CD.YTEXTBOX_ONE_LINE_ALONE);
+
+    lblGroundCoord[1].MoveWindow(cPos.x + lblCoordWidths + txtCoordWidths + CS.XRELATED_MARGIN, cPos.y + lblYOffset, lblCoordWidths, CD.YLABEL);
+    txtGroundCoord[1].MoveWindow(cPos.x + (lblCoordWidths * 2) + txtCoordWidths, cPos.y, txtCoordWidths, CD.YTEXTBOX_ONE_LINE_ALONE);
 
     cPos.Offset(0, CD.YTEXTBOX_ONE_LINE_ALONE + CS.YRELATED_MARGIN);
 
@@ -114,7 +123,11 @@ void EditObjectLocationsTab::moveControls() {
 
     cPos.Offset(0, CD.YCHECKBOX + CS.YRELATED_MARGIN);
 
-    txtDoorCoord[0].MoveWindow(cPos.x, cPos.y, 32, CD.YTEXTBOX_ONE_LINE_ALONE);
+    lblDoorCoord[0].MoveWindow(cPos.x, cPos.y + lblYOffset, lblCoordWidths, CD.YLABEL);
+    txtDoorCoord[0].MoveWindow(cPos.x + lblCoordWidths, cPos.y, txtCoordWidths, CD.YTEXTBOX_ONE_LINE_ALONE);
+
+    lblDoorCoord[1].MoveWindow(cPos.x + lblCoordWidths + txtCoordWidths + CS.XRELATED_MARGIN, cPos.y + lblYOffset, lblCoordWidths, CD.YLABEL);
+    txtDoorCoord[1].MoveWindow(cPos.x + (lblCoordWidths * 2) + txtCoordWidths, cPos.y, txtCoordWidths, CD.YTEXTBOX_ONE_LINE_ALONE);
 
     cPos.Offset(0, CD.YTEXTBOX_ONE_LINE_ALONE);
 
