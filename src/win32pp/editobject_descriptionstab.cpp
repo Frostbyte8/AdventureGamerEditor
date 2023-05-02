@@ -118,7 +118,6 @@ void EditObjectDescriptionsTab::moveControls() {
 
     grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YWINDOW_MARGIN,
                                maxGroupBoxWidth, cPos.y);
-    
 
 }
 

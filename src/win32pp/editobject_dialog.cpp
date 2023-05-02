@@ -9,13 +9,15 @@ void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
 int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     const WindowMetrics::ControlSpacing ctrlSpace = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
 
     tabControl.Create(*this);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics), L"Qualities"));
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(windowMetrics), L"Effects"));
     locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(windowMetrics), L"Locations"));
-    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, 350, 550, TRUE);
+
+    std::vector<LONG> pageWidths;
 
     //
     // TEST DATA
@@ -33,10 +35,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     // TODO: I'm not sure why, but until you do this, the tabs are invisible. It might be because of
     // how the window is created so it might go away after this window is an actual modal window.
-    tabControl.SelectPage(3);
-    tabControl.SelectPage(2);
-    tabControl.SelectPage(1);
-    tabControl.SelectPage(0);
+
     //
     // TEST DATA END
     //
@@ -45,11 +44,37 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     // TODO: Figure out tab width
     HFONT dialogFont = windowMetrics->GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetFontTest), (LPARAM)dialogFont);
+
+    descriptionsTab->calculatePageWidth();
+    qualitiesTab->calculatePageWidth();
+    effectsTab->calculatePageWidth();
+    locationsTab->calculatePageWidth();
+
+    pageWidths.push_back(descriptionsTab->getPageWidth());
+    pageWidths.push_back(qualitiesTab->getPageWidth());
+    pageWidths.push_back(effectsTab->getPageWidth());
+    pageWidths.push_back(locationsTab->getPageWidth());
+
+    const size_t numTabs = pageWidths.size();
+    LONG widestTab = 0;
+
+    for(size_t i = 0; i < numTabs; ++i) {
+        widestTab = std::max(pageWidths[i], widestTab);
+    }
+
+    widestTab += ((ctrlSpace.XWINDOW_MARGIN * 2) + ctrlSpace.XGROUPBOX_MARGIN);
+
+    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, 550, TRUE);
+
+    tabControl.SelectPage(3);
+    tabControl.SelectPage(2);
+    tabControl.SelectPage(1);
+    tabControl.SelectPage(0);
+
     descriptionsTab->moveControls();
     qualitiesTab->moveControls();
     effectsTab->moveControls();
-    locationsTab->moveControls();
-
+    locationsTab->moveControls();   
 
     descriptionsTab->populateFields(bd.build());
     qualitiesTab->populateFields(bd.build());

@@ -1,6 +1,4 @@
 #include "editobject_tabviews.h"
-
-#include "editobject_tabviews.h"
 #include "../model/gameobject.h"
 #include "../util/languagemapper.h"
 #include <algorithm>
@@ -85,6 +83,7 @@ void EditObjectQualitiesTab::calculatePageHeight() {
     
     // The bottom of the groupbox is exactly how tall the page is.
     pageHeight = grpProperties.GetClientRect().bottom;
+
 }
 
 ///----------------------------------------------------------------------------

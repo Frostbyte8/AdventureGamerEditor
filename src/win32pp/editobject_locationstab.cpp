@@ -49,6 +49,25 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditObjectLocationsTab::calculatePageWidth() {
     pageWidth = 0;
+
+    std::vector<CWnd *> controlList;
+    
+    for(int i = 0; i < 3; ++i) {
+        controlList.push_back(&btnLocatedAt[i]);
+    }
+    
+    const size_t clSize = controlList.size();
+    
+    for(size_t j = 0; j < clSize; ++j) {
+        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+                             controlList[j]->GetWindowTextW().c_str()), pageWidth);
+    }
+
+    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
+    LONG buttonWidth = windowMetrics->CalculateStringWidth(btnUnlocksDoor.GetWindowTextW().c_str());
+    buttonWidth += CD.XCHECKBOX + CD.XCHECKBOX_GAP; 
+
+    pageWidth = std::max(buttonWidth, pageWidth);
 }
 
 ///----------------------------------------------------------------------------

@@ -36,6 +36,7 @@ class EOTabViewBase : public CWnd {
         virtual void moveControls() = 0;
         virtual void calculatePageWidth() = 0;
         virtual void calculatePageHeight() = 0;
+        LONG& getPageWidth() { return pageWidth; }
 
         LONG pageWidth;
         LONG pageHeight;
