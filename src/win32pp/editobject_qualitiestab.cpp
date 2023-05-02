@@ -41,7 +41,6 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2], caption, langMap);
     cbxUsedWith.Create(*this, 0, CBS_DROPDOWN);
     
-    calculatePageWidth();
     return retVal;
 
 }
@@ -55,34 +54,28 @@ void EditObjectQualitiesTab::calculatePageWidth() {
     
     pageWidth = 0;
 
-    std::vector<CWnd *> controlList;
+    const WindowMetrics::ControlSpacing CS      = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics->GetControlDimensions();
+
+    const LONG checkboxWidth = CD.XCHECKBOX + CD.XCHECKBOX_GAP;
     
     for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
-        controlList.push_back(&btnFlags[i]);
+        pageWidth = std::max(windowMetrics->CalculateStringWidth(btnFlags[i].GetWindowTextW().c_str()) + checkboxWidth, pageWidth);
     }
-    
+
+    std::vector<CWnd *> controlList;
+    controlList.reserve(2);
+        
     for(int k = 0; k < 2; ++k) {
         controlList.push_back(&lblProperties[k]);
     }
-
+    
     const size_t clSize = controlList.size();
     
     for(size_t j = 0; j < clSize; ++j) {
         pageWidth = std::max(windowMetrics->CalculateStringWidth(
                              controlList[j]->GetWindowTextW().c_str()), pageWidth);
     }
-
-}
-
-///----------------------------------------------------------------------------
-/// calculatePageHeight - Finds how tall the tab page needs to be to display
-/// the controls
-///----------------------------------------------------------------------------
-
-void EditObjectQualitiesTab::calculatePageHeight() {
-    
-    // The bottom of the groupbox is exactly how tall the page is.
-    pageHeight = grpProperties.GetClientRect().bottom;
 
 }
 
@@ -156,7 +149,7 @@ void EditObjectQualitiesTab::moveControls() {
                              maxGroupBoxWidth, cPos.y - grpFlags.GetClientRect().Height());
 
 
-
+    pageHeight = cPos.y + cs.YUNRELATED_MARGIN;
 }
 
 ///----------------------------------------------------------------------------

@@ -64,16 +64,6 @@ void EditObjectDescriptionsTab::calculatePageWidth() {
 }
 
 ///----------------------------------------------------------------------------
-/// calculatePageHeight - Finds how tall the tab page needs to be to display
-/// the controls
-///----------------------------------------------------------------------------
-
-void EditObjectDescriptionsTab::calculatePageHeight() {
-    // The bottom of the groupbox is exactly how tall the page is.
-    pageHeight = grpDescriptions.GetClientRect().bottom;
-}
-
-///----------------------------------------------------------------------------
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 
@@ -118,6 +108,9 @@ void EditObjectDescriptionsTab::moveControls() {
 
     grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YWINDOW_MARGIN,
                                maxGroupBoxWidth, cPos.y);
+
+
+    pageHeight = grpDescriptions.GetClientRect().Height() + cs.YUNRELATED_MARGIN;
 
 }
 

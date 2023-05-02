@@ -35,8 +35,8 @@ class EOTabViewBase : public CWnd {
         virtual void populateFields(const GameObject& gameObject) = 0; // Populate Fields
         virtual void moveControls() = 0;
         virtual void calculatePageWidth() = 0;
-        virtual void calculatePageHeight() = 0;
         LONG& getPageWidth() { return pageWidth; }
+        LONG& getPageHeight() { return pageHeight; }
 
         LONG pageWidth;
         LONG pageHeight;
@@ -51,11 +51,9 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
         virtual void calculatePageWidth();
-        virtual void calculatePageHeight();
         virtual void populateFields(const GameObject& gameObject);
 
     protected:
-        
         
         virtual BOOL PreTranslateMessage(MSG& msg);
 
@@ -68,7 +66,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         CStatic                 picIcon;
         
         WindowMetrics*          windowMetrics;
-        //CSize                   contentSize;
+        
 };
 
 class EditObjectQualitiesTab : public EOTabViewBase {
@@ -79,7 +77,6 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
         virtual void calculatePageWidth();
-        virtual void calculatePageHeight();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
     
     protected:
@@ -106,7 +103,6 @@ class EditObjectEffectsTab : public EOTabViewBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
         virtual void calculatePageWidth();
-        virtual void calculatePageHeight();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
     
     protected:
@@ -140,7 +136,6 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
         virtual void calculatePageWidth();
-        virtual void calculatePageHeight();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
     
     protected:

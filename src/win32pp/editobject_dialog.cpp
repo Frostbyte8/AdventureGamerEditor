@@ -56,15 +56,22 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     pageWidths.push_back(locationsTab->getPageWidth());
 
     const size_t numTabs = pageWidths.size();
+    
     LONG widestTab = 0;
 
     for(size_t i = 0; i < numTabs; ++i) {
         widestTab = std::max(pageWidths[i], widestTab);
     }
 
-    widestTab += ((ctrlSpace.XWINDOW_MARGIN * 2) + ctrlSpace.XGROUPBOX_MARGIN);
+    // TODO: Verify that this is correct.
+    // The 3rd margin is for the tab control, the other 2 are for inside the groupbox, I think.
+    widestTab += ((ctrlSpace.XWINDOW_MARGIN * 3) + (ctrlSpace.XGROUPBOX_MARGIN * 2));
 
-    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, 550, TRUE);
+    LONG dialogButtonSize = (CD.XBUTTON * 3) + (ctrlSpace.XBUTTON_MARGIN * 2) + (ctrlSpace.XWINDOW_MARGIN);
+
+    widestTab = std::max(widestTab, dialogButtonSize);
+    
+    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, 0, FALSE);
 
     tabControl.SelectPage(3);
     tabControl.SelectPage(2);
@@ -75,6 +82,11 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     qualitiesTab->moveControls();
     effectsTab->moveControls();
     locationsTab->moveControls();   
+    
+    LONG tallestTab = effectsTab->getPageHeight() + (ctrlSpace.YWINDOW_MARGIN * 2); // This tab is always the tallest.
+    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, tallestTab, FALSE);
+
+    // TODO: OK, CANCEL, APPLY buttons
 
     descriptionsTab->populateFields(bd.build());
     qualitiesTab->populateFields(bd.build());

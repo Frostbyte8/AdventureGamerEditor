@@ -121,15 +121,6 @@ void EditObjectEffectsTab::calculatePageWidth() {
 }
 
 ///----------------------------------------------------------------------------
-/// calculatePageHeight - Finds how tall the tab page needs to be to display
-/// the controls
-///----------------------------------------------------------------------------
-
-void EditObjectEffectsTab::calculatePageHeight() {
-    pageHeight = 0;
-}
-
-///----------------------------------------------------------------------------
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 
@@ -217,9 +208,9 @@ void EditObjectEffectsTab::moveControls() {
     cPos.Offset(0, CS.YLAST_GROUPBOX_MARGIN);
     const int yPos = grpEffects.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
 
-
     grpAttrib.MoveWindow(CS.XWINDOW_MARGIN, yPos, maxGroupBoxWidth, cPos.y - yPos);
 
+    pageHeight = cPos.y + CS.YUNRELATED_MARGIN;
 }
 
 ///----------------------------------------------------------------------------
