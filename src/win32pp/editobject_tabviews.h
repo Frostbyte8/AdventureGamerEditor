@@ -26,7 +26,7 @@ inline void EOD_AddString(const unsigned int& ID, CComboBox& widget, CString& ca
 class EOTabViewBase : public CWnd {
 
     public:
-        //virtual void MoveControls(CSize);     // Move/Resize controls
+
         //virtual CSize getContentMaxSizes();   // Calculate the Max Width and Height of the page
         //virtual int getLongestControl();
 

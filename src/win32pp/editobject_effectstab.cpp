@@ -147,7 +147,7 @@ void EditObjectEffectsTab::moveControls() {
     const CSize defaultLabelSize(maxRowWidth, CD.YLABEL);
     const CSize defaultRadioSize(maxRowWidth, CD.YRADIOBUTTON);
 
-    CPoint cPos(CS.XBUTTON_MARGIN + CS.XWINDOW_MARGIN,
+    CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN,
                 CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
     
     // We'll move the first two radio buttons that effect how the object works first

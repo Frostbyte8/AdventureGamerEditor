@@ -92,7 +92,7 @@ void EditObjectDescriptionsTab::moveControls() {
     const CSize defaultEditSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
 
     CPoint cPos(cs.XGROUPBOX_MARGIN + cs.XWINDOW_MARGIN, 
-                cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN);
+                cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN + cs.YWINDOW_MARGIN);
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
 

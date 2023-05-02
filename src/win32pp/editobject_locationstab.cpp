@@ -77,7 +77,7 @@ void EditObjectLocationsTab::moveControls() {
     
     const CSize defaultRadioSize(maxRowWidth, CD.YRADIOBUTTON);
     
-    CPoint cPos(CS.XWINDOW_MARGIN + CS.XRELATED_MARGIN,
+    CPoint cPos(CS.XWINDOW_MARGIN + CS.XGROUPBOX_MARGIN,
                 CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
 
     btnLocatedAt[0].MoveWindow(cPos.x, cPos.y, defaultRadioSize.cx, defaultRadioSize.cy);

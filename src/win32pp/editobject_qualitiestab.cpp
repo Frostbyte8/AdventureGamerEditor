@@ -106,9 +106,7 @@ void EditObjectQualitiesTab::moveControls() {
     const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
     const CSize defaultTextSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
 
-    // TODO: XBUTTON_MARGIN is probably wrog
-
-    CPoint cPos(cs.XBUTTON_MARGIN + cs.XWINDOW_MARGIN,
+    CPoint cPos(cs.XGROUPBOX_MARGIN + cs.XWINDOW_MARGIN,
         cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN + cs.YWINDOW_MARGIN);
 
     // First deal with all the Flags
