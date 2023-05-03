@@ -25,6 +25,9 @@ namespace GameObjectConstants {
     const int MaxNumUses        = 1;
     const int MinNumUses        = 10000;
 
+    const int MinAttributeValue = 0;
+    const int MaxAttributeValue = 12;
+
     // The original game has no apparent limit, so we'll make a
     // sensible one up.
 
@@ -313,10 +316,7 @@ class GameObject {
                     // TOOD: Any additional error checking that must occur, we may also
                     return (*this);
                 }
-                
-
-            private:
-
+              
                 // These ones should only be accessed via the read function
                 Builder& attributeBase(const int& amount, const unsigned int& type) {
                     assert(type < AttributeTypes::NumTypes);
@@ -329,6 +329,8 @@ class GameObject {
                     base.attributeRandom[type] = amount;
                     return *this;
                 }
+
+            private:
 
                 Builder& makesSight(const int& makesSight) {
                     assert(makesSight < SightTypes::NumTypes);
@@ -361,6 +363,15 @@ class GameObject {
         const int& getIsLocated() const { return base.isLocated; }
         const int& getMonetaryWorth() const { return base.monetaryWorth; }
         const int& getUses() const { return base.uses; }
+        
+        const int& getAttributeBase(const int& which) const {
+            return base.attributeBase[which];
+        }
+
+        const int& getAttributeRandom(const int& which) const {
+            return base.attributeRandom[which];
+        }
+
         const std::string& getDescription(const unsigned int which) const { return base.description[which]; }
 
     private:

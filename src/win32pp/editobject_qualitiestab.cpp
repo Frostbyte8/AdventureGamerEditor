@@ -41,8 +41,11 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2], caption, langMap);
     cbxUsedWith.Create(*this, 0, CBS_DROPDOWN);
 
-    spnProperties[0].SetRange(0, 10000);
-    spnProperties[1].SetRange(1, 10000);
+    spnProperties[0].SetRange(GameObjectConstants::MinMonetaryValue,
+                              GameObjectConstants::MaxMonetaryValue);
+
+    spnProperties[1].SetRange(GameObjectConstants::MinNumUses,
+                              GameObjectConstants::MaxNumUses);
     
     return retVal;
 

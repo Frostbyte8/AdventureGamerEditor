@@ -30,6 +30,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     bd.description("The object for no reason at all ceases to exist suddenly.", 3);
     bd.description("thing.ico", 4);
     bd.description("hello.wav", 5);
+    bd.attributeBase(-1, 0);
+    bd.attributeRandom(-2, 0);
+    bd.attributeBase(3, 1);
+    bd.attributeRandom(4, 1);
 
     bd.flags1(64);
 
@@ -94,6 +98,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     descriptionsTab->populateFields(bd.build());
     qualitiesTab->populateFields(bd.build());
+    effectsTab->populateFields(bd.build());
 
     return CWnd::OnCreate(cs);
 }

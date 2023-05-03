@@ -50,6 +50,8 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
         txtAttribAmount[l].SetExStyle(WS_EX_CLIENTEDGE);
 
+        spnAttribAmount[l].SetRange(GameObjectConstants::MinAttributeValue,
+                                    GameObjectConstants::MaxAttributeValue);
     }
 
     for(int m = 0; m < 2; ++m) {
@@ -221,6 +223,19 @@ void EditObjectEffectsTab::moveControls() {
 
 void EditObjectEffectsTab::populateFields(const GameObject& gameObject) {
 
+    for(int i = 0; i < 5; ++i) {
+
+        int baseAmount      = gameObject.getAttributeBase(i);
+        int randomAmount    = gameObject.getAttributeRandom(i);
+        int polarAmount     = (baseAmount < 0 ? 1 : 0);
+
+        btnAttribPolarity[(i*2)+polarAmount].SetCheck(BST_CHECKED);
+
+        CString caption = AtoW(std::to_string(abs(baseAmount)).c_str());
+        txtAttribAmount[(i*2)].SetWindowText(caption);
+        caption = AtoW(std::to_string(abs(randomAmount)).c_str());
+        txtAttribAmount[(i*2)+1].SetWindowText(caption);
+    }
 }
 
 ///----------------------------------------------------------------------------
