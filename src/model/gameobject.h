@@ -233,8 +233,29 @@ class GameObject {
                 }
 
                 Builder& flags1(const uint8_t& flags1) {
-                    //base.flags1.from_uint(flags1);
-                    base.flags1 = flags1;
+
+                    // Filter out incompatible flags that may be set that crash
+                    // the game if they're set together
+
+                    if(flags1 & GameObjectFlags1::FixedLocation) {
+                        // Fixed location cannot have any other flag set.
+                        base.flags1 = GameObjectFlags1::FixedLocation;
+                    }
+                    else if(flags1 & GameObjectFlags1::Money) {
+
+                        // Money can be invisible for some reason, but nothing
+                        // else.
+                        base.flags1 = GameObjectFlags1::Money;
+
+                        if(flags1 & GameObjectFlags1::Invisible) {
+                            base.flags1 |= GameObjectFlags1::Invisible;
+                        }
+                        
+                    }
+                    else {
+                        base.flags1 = flags1;
+                    }
+
                     return *this;
                 }
 
@@ -273,8 +294,8 @@ class GameObject {
                     
                     // Update cached location information
                     
-                    base.x = -1;
-                    base.y = -1;
+                    base.x = 0;
+                    base.y = 0;
                     base.isLocated = GameObjectConstants::LocatedOnCharacter;
                     base.creatureID = charID;
                     
@@ -290,8 +311,8 @@ class GameObject {
 
                     // Update cached location information
 
-                    base.x = -1;
-                    base.y = -1;
+                    base.x = 0;
+                    base.y = 0;
                     base.isLocated = GameObjectConstants::LocatedOnPlayer;
                     base.creatureID = GameObjectConstants::NotOnCreature;
                     

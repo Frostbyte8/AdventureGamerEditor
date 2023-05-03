@@ -36,7 +36,9 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     bd.attributeRandom(4, 1);
 
     bd.flags1(64);
+    bd.flags2(1);
 
+    bd.location();
     bd.monetaryWorth(1234);
     bd.uses(123);
     bd.usedWithID(2);

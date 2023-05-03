@@ -186,6 +186,10 @@ void EditObjectQualitiesTab::populateFields(const GameObject &gameObject) {
     for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
         if(flags & (1<<i)) {
             btnFlags[i].SetCheck(BST_CHECKED);
+            if((flags & (1<<i)) == GameObjectFlags1::Money ||
+               (flags & (1<<i)) == GameObjectFlags1::FixedLocation) {
+                flagsChanged(ControlIDs::MasterKey+i, BN_CLICKED);
+            }
         }
     }
 
@@ -264,7 +268,8 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
     // TODO: It also cannot be in a character's inventory.
 
     // If an object is Money, the only other thing it can be is invisible, it
-    // also cannot be used, but does have monetary value.
+    // also cannot be used, but does have monetary value, and it cannot be used
+    // with another object.
 
     if(ctrlID == ControlIDs::Fixed) {
 
@@ -286,6 +291,7 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
         }
 
         txtProperties[1].EnableWindow(!isChecked);
+        cbxUsedWith.EnableWindow(!isChecked);
 
     }
 

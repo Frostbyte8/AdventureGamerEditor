@@ -146,7 +146,8 @@ class EditObjectLocationsTab : public EOTabViewBase {
 
     private:
 
-        void LocatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction);
+        inline void locatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction);
+        inline void toggleUnlocksDoor(const BOOL& doesUnlock);
 
         WindowMetrics*          windowMetrics;
 

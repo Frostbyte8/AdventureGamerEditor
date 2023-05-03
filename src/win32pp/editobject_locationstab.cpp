@@ -47,6 +47,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX);
     EOD_SetWindowText(LanguageConstants::UnlocksDoorAtLabel, btnUnlocksDoor, caption, langMap);
+    btnUnlocksDoor.SetDlgCtrlID(ControlIDs::UnlocksDoor);
 
     calculatePageWidth();
 
@@ -154,15 +155,22 @@ void EditObjectLocationsTab::moveControls() {
 ///----------------------------------------------------------------------------
 
 void EditObjectLocationsTab::populateFields(const GameObject& gameObject) {
+
     const int isLocated = gameObject.getIsLocated();
 
     btnLocatedAt[isLocated].SetCheck(BST_CHECKED); 
+    locatedAtChanged(isLocated + ControlIDs::OnGround, BN_CLICKED); 
 
     txtGroundCoord[0].SetWindowText(AtoW(std::to_string(gameObject.getX()).c_str()));
     txtGroundCoord[1].SetWindowText(AtoW(std::to_string(gameObject.getY()).c_str()));
 
     txtDoorCoord[0].SetWindowText(AtoW(std::to_string(gameObject.getDoorColumn()).c_str()));
     txtDoorCoord[1].SetWindowText(AtoW(std::to_string(gameObject.getDoorRow()).c_str()));
+
+    const BOOL unlocksDoor = gameObject.getFlags2() & GameObjectFlags2::Key ? TRUE : FALSE;
+
+    toggleUnlocksDoor(unlocksDoor);
+    btnUnlocksDoor.SetCheck(unlocksDoor);
 
 }
 
@@ -206,13 +214,26 @@ BOOL EditObjectLocationsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD ctrlAction = HIWORD(wParam);
 
     if(ctrlID >= ControlIDs::OnGround && ctrlID <= ControlIDs::OnCharacter) {
-        LocatedAtChanged(ctrlID, ctrlAction);
+        locatedAtChanged(ctrlID, ctrlAction);
+    }
+    else if (ctrlID == ControlIDs::UnlocksDoor) {
+        toggleUnlocksDoor(btnUnlocksDoor.GetCheck() == BST_CHECKED ? TRUE : FALSE);
+    }
+    else {
+        return FALSE;
     }
 
     return TRUE;
 }
 
-void EditObjectLocationsTab::LocatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction) {
+///----------------------------------------------------------------------------
+/// locatedAtChanged - Change what is able to be set after the location of the
+/// object has been changed.
+/// @param an integer referring to the control ID of the option that was chosen.
+/// @param an integer that indicated the control's notification code
+///----------------------------------------------------------------------------
+
+void EditObjectLocationsTab::locatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction) {
 
     const int which = ctrlID - ControlIDs::OnGround;
     const bool isChecked = btnLocatedAt[which].GetCheck() == BST_CHECKED ? true : false; 
@@ -233,4 +254,15 @@ void EditObjectLocationsTab::LocatedAtChanged(const WORD& ctrlID, const WORD& ct
         cbxWhichCharacter.EnableWindow(FALSE);
     }
 
+}
+
+///----------------------------------------------------------------------------
+/// toggleUnlockDoor - Change whether the unlock door textboxes are enabled
+/// or not based on the state of the unlocks door checkbox
+/// @param a bool indicating whether or not the object unlocks a door.
+///----------------------------------------------------------------------------
+
+void EditObjectLocationsTab::toggleUnlocksDoor(const BOOL& doesUnlock) {
+    txtDoorCoord[0].EnableWindow(doesUnlock);
+    txtDoorCoord[1].EnableWindow(doesUnlock);
 }
