@@ -2,6 +2,13 @@
 #include "../model/gameobject.h"
 #include <algorithm>
 
+namespace ControlIDs {
+    const WORD OnGround         = 101;
+    const WORD OnPlayer         = 102;
+    const WORD OnCharacter      = 103;
+    const WORD UnlocksDoor      = 104;
+}
+
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
 ///----------------------------------------------------------------------------
@@ -19,6 +26,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
     for(int i = 0; i < 3; ++i) {
         DWORD style = BS_AUTORADIOBUTTON | (i == 0 ? WS_GROUP : 0);
         btnLocatedAt[i].Create(*this, 0, style);
+        btnLocatedAt[i].SetDlgCtrlID(ControlIDs::OnGround+i);
         EOD_SetWindowText(LanguageConstants::OnGroundAtLabel+i, btnLocatedAt[i], caption, langMap);
     }
 
@@ -180,5 +188,49 @@ BOOL EditObjectLocationsTab::PreTranslateMessage(MSG &msg) {
     }
     
     return CWnd::PreTranslateMessage(msg);
+
+}
+
+///----------------------------------------------------------------------------
+/// OnCommand - Process the WM_COMMAND message. Refer to to the Win32++
+/// documentation for more details.
+///----------------------------------------------------------------------------
+
+BOOL EditObjectLocationsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(!lParam) {
+        return FALSE;
+    }
+
+    const WORD ctrlID = LOWORD(wParam);
+    const WORD ctrlAction = HIWORD(wParam);
+
+    if(ctrlID >= ControlIDs::OnGround && ctrlID <= ControlIDs::OnCharacter) {
+        LocatedAtChanged(ctrlID, ctrlAction);
+    }
+
+    return TRUE;
+}
+
+void EditObjectLocationsTab::LocatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction) {
+
+    const int which = ctrlID - ControlIDs::OnGround;
+    const bool isChecked = btnLocatedAt[which].GetCheck() == BST_CHECKED ? true : false; 
+
+    if(ctrlID == ControlIDs::OnGround && isChecked) {
+        txtGroundCoord[0].EnableWindow(TRUE);
+        txtGroundCoord[1].EnableWindow(TRUE);
+    }
+    else {
+        txtGroundCoord[0].EnableWindow(FALSE);
+        txtGroundCoord[1].EnableWindow(FALSE);
+    }
+
+    if(ctrlID == ControlIDs::OnCharacter && isChecked) {
+        cbxWhichCharacter.EnableWindow(TRUE);
+    }
+    else {
+        cbxWhichCharacter.EnableWindow(FALSE);
+    }
 
 }

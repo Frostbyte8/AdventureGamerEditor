@@ -141,9 +141,12 @@ class EditObjectLocationsTab : public EOTabViewBase {
     
     protected:
 
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual BOOL PreTranslateMessage(MSG& msg);
-        
+
     private:
+
+        void LocatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction);
 
         WindowMetrics*          windowMetrics;
 
