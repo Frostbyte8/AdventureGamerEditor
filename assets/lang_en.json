@@ -87,6 +87,9 @@
     "451" : "Character has it",
     "452" : "Object unlocks door at:",
 
+    "453" : "(No Object)",
+    "454" : "(No Character)",
+
     // Generic Labels/Captions
 
     "801" : "X",                                        // X-Coordinate Label
