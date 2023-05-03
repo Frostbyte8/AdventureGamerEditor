@@ -49,6 +49,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
         txtAttribAmount[l].SetExStyle(WS_EX_CLIENTEDGE);
+        txtAttribAmount[l].LimitText(2);
 
         spnAttribAmount[l].SetRange(GameObjectConstants::MinAttributeValue,
                                     GameObjectConstants::MaxAttributeValue);

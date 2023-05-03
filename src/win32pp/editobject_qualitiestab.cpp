@@ -38,10 +38,11 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
         txtProperties[i].Create(*this, 0, ES_AUTOHSCROLL);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
+        txtProperties[i].LimitText(5);
         EOD_SetWindowText(LanguageConstants::MonetaryLabel+i, lblProperties[i], caption, langMap);
 
         // TODO: Why does WS_VISBLE have to be set? Possible bug?
-        spnProperties[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
+        spnProperties[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
        
     }
@@ -56,11 +57,10 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     EOD_AddString(LanguageConstants::NoObjectSelected, cbxUsedWith, caption, langMap);
     cbxUsedWith.SetCurSel(0);
 
-    spnProperties[0].SetRange(GameObjectConstants::MinMonetaryValue,
-                              GameObjectConstants::MaxMonetaryValue);
+    spnProperties[0].SetRange(GameObjectConstants::MaxMonetaryValue, GameObjectConstants::MinMonetaryValue);
+                              
 
-    spnProperties[1].SetRange(GameObjectConstants::MinNumUses,
-                              GameObjectConstants::MaxNumUses);
+    spnProperties[1].SetRange(GameObjectConstants::MaxNumUses, GameObjectConstants::MinNumUses);
     
     return retVal;
 

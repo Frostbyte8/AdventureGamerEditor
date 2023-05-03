@@ -39,6 +39,8 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtDoorCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         EOD_SetWindowText(LanguageConstants::XCoordLabel+k, lblDoorCoord[k], caption, langMap);
+        txtDoorCoord[k].LimitText(2); // 0 to 99
+        txtDoorCoord[k].LimitText(2);
     }
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL);

@@ -21,6 +21,13 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
         lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
         txtDescriptions[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
+
+        if(i == 0) {
+            txtDescriptions[i].LimitText(GameObjectConstants::MaxNameLength);
+        }
+        else {
+            txtDescriptions[i].LimitText(GameObjectConstants::MaxDescriptionLength);
+        }
         
         EOD_SetWindowText(LanguageConstants::NameLabel+i, lblDescriptions[i], caption, langMap);
 
