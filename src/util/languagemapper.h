@@ -118,6 +118,10 @@ namespace LanguageConstants {
     int const CharacterHasItLabel           = 451;
     int const UnlocksDoorAtLabel            = 452;
 
+    // Combo Box Values
+    int const NoObjectSelected              = 453;
+    int const NoCharacterSelected           = 454;
+
     // Generic Labels/Captions
     
     int const XCoordLabel                   = 801;

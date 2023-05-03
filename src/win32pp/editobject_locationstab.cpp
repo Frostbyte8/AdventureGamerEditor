@@ -33,7 +33,10 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         EOD_SetWindowText(LanguageConstants::XCoordLabel+k, lblDoorCoord[k], caption, langMap);
     }
 
-    cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWN);
+    cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL);
+    EOD_AddString(LanguageConstants::NoCharacterSelected, cbxWhichCharacter, caption, langMap);
+    cbxWhichCharacter.SetCurSel(0);
+
     btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX);
     EOD_SetWindowText(LanguageConstants::UnlocksDoorAtLabel, btnUnlocksDoor, caption, langMap);
 

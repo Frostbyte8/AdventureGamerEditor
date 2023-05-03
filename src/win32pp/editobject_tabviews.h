@@ -68,6 +68,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
 class EditObjectQualitiesTab : public EOTabViewBase {
 
     public:
+
         EditObjectQualitiesTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) { }
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
@@ -77,9 +78,13 @@ class EditObjectQualitiesTab : public EOTabViewBase {
     
     protected:
                 
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
+
+        void flagsChanged(const WORD& ctrlID, const WORD& ctrlAction);
+
         WindowMetrics*          windowMetrics;
         CButton                 grpFlags;
         CButton                 grpProperties;

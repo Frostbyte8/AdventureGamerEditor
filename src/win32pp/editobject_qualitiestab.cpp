@@ -3,6 +3,17 @@
 #include "../util/languagemapper.h"
 #include <algorithm>
 
+namespace ControlIDs {
+    const WORD MasterKey    = 101;
+    const WORD Invisible    = 102;
+    const WORD Climber      = 103;
+    const WORD Protection   = 104;
+    const WORD Torch        = 105;
+    const WORD Worn         = 106;
+    const WORD Fixed        = 107;
+    const WORD Money        = 108;
+}
+
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
 ///----------------------------------------------------------------------------
@@ -19,6 +30,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     for(int k = 0; k < GameObjectFlags1::NumFlags; ++k) {
         btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX);
+        btnFlags[k].SetDlgCtrlID(ControlIDs::MasterKey + k);
         EOD_SetWindowText(LanguageConstants::MasterKeyFlag+k, btnFlags[k], caption, langMap);
     }
 
@@ -39,7 +51,10 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     lblProperties[2].Create(*this, 0, SS_SIMPLE);
     EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2], caption, langMap);
-    cbxUsedWith.Create(*this, 0, CBS_DROPDOWN);
+
+    cbxUsedWith.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL);
+    EOD_AddString(LanguageConstants::NoObjectSelected, cbxUsedWith, caption, langMap);
+    cbxUsedWith.SetCurSel(0);
 
     spnProperties[0].SetRange(GameObjectConstants::MinMonetaryValue,
                               GameObjectConstants::MaxMonetaryValue);
@@ -203,5 +218,75 @@ BOOL EditObjectQualitiesTab::PreTranslateMessage(MSG &msg) {
     }
     
     return CWnd::PreTranslateMessage(msg);
+
+}
+
+//=============================================================================
+// Events
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCommand - Process the WM_COMMAND message. Refer to to the Win32++
+/// documentation for more details.
+///----------------------------------------------------------------------------
+
+BOOL EditObjectQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(!lParam) {
+        return FALSE;
+    }
+
+    const WORD ctrlID = LOWORD(wParam);
+    const WORD ctrlAction = HIWORD(wParam);
+
+    if(ctrlID >= ControlIDs::MasterKey && ctrlID <= ControlIDs::Money) {
+        flagsChanged(ctrlID, ctrlAction); 
+    }
+
+
+    return TRUE;
+}
+
+///----------------------------------------------------------------------------
+/// flagsChanged - Updates the check boxes when one of the flags is selected,
+/// as well as toggling the two textboxes if necessary.
+/// @param an integer containing the control ID of the control being processed
+/// @param an integer indicating the notification code the control sent
+///----------------------------------------------------------------------------
+
+void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAction) {
+
+    const int which = ctrlID - ControlIDs::MasterKey;
+    const bool isChecked = btnFlags[which].GetCheck() == BST_CHECKED ? true : false; 
+
+    // If an object is at a fixed location, it can't have any other flag
+    // set. You also can't sell it.
+    // TODO: It also cannot be in a character's inventory.
+
+    // If an object is Money, the only other thing it can be is invisible, it
+    // also cannot be used, but does have monetary value.
+
+    if(ctrlID == ControlIDs::Fixed) {
+
+        for(int i = 0; i < 8; ++i) {
+            if(i != which) {
+                btnFlags[i].EnableWindow(!isChecked);
+            }
+        }
+
+        txtProperties[0].EnableWindow(!isChecked);
+        
+    }
+    else if(ctrlID == ControlIDs::Money) {
+
+        for(int i = 0; i < 8; ++i) {
+            if(i != which && i != ControlIDs::Invisible - ControlIDs::MasterKey) {
+                btnFlags[i].EnableWindow(!isChecked);
+            }
+        }
+
+        txtProperties[1].EnableWindow(!isChecked);
+
+    }
 
 }
