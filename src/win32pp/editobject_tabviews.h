@@ -27,10 +27,6 @@ class EOTabViewBase : public CWnd {
 
     public:
 
-        //virtual CSize getContentMaxSizes();   // Calculate the Max Width and Height of the page
-        //virtual int getLongestControl();
-
-        //UpdateWindowMetrics(); // Window Metrics has changed
         //virtual int ValidateFields();        // Validate Fields
         virtual void populateFields(const GameObject& gameObject) = 0; // Populate Fields
         virtual void moveControls() = 0;

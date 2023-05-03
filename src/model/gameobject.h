@@ -66,6 +66,7 @@ namespace GameObjectDescriptions {
 
 namespace GameObjectFlags1 {
 
+    /*
     enum flags {
         MasterKey         = 0x01,
         Invisible         = 0x02,
@@ -77,9 +78,21 @@ namespace GameObjectFlags1 {
         Money             = 0x80,
         NumFlags          = 8
     };
+    */
+    const uint8_t None              = 0x00;
+    const uint8_t MasterKey         = 0x01;
+    const uint8_t Invisible         = 0x02;
+    const uint8_t Ladder            = 0x04;
+    const uint8_t Protection        = 0x08;
+    const uint8_t Torch             = 0x10;
+    const uint8_t Worn              = 0x20;
+    const uint8_t FixedLocation     = 0x40;
+    const uint8_t Money             = 0x80;
+    const uint8_t NumFlags          = 8;
+ 
 }
 
-typedef EnumFlags<enum GameObjectFlags1::flags, GameObjectFlags1::NumFlags> GameObjectFlags1_T;
+//typedef EnumFlags<enum GameObjectFlags1::flags, GameObjectFlags1::NumFlags> GameObjectFlags1_T;
 
 //-----------------------------------------------------------------------------
 // GameObjectFlags2 - Second set of flags used by objects
@@ -109,12 +122,12 @@ class GameObject {
             std::string     description[GameObjectDescriptions::NumAllDescriptions];
             int             doorColumn;
             int             doorRow;
-            GameObjectFlags1_T         flags1;
+            uint8_t         flags1;
             uint8_t         flags2;
             int             ID;
             std::string     location;
-            unsigned int    makesSight;
-            unsigned int    makesHearing;
+            int             makesSight;
+            int             makesHearing;
             int             monetaryWorth;
             int             uses;
             int             usedWithID;
@@ -150,7 +163,7 @@ class GameObject {
                     base.creatureID     = GameObjectConstants::NotOnCreature;
                     base.doorColumn     = 0;
                     base.doorRow        = 0;
-                    //base.flags1         = GameObjectFlags1::None;
+                    base.flags1         = GameObjectFlags1::None;
                     base.flags2         = GameObjectFlags2::None;
                     base.ID             = GameObjectConstants::NoID;
                     base.isLocated      = GameObjectConstants::LocatedOnGround;
@@ -220,7 +233,8 @@ class GameObject {
                 }
 
                 Builder& flags1(const uint8_t& flags1) {
-                    base.flags1.from_uint(flags1);
+                    //base.flags1.from_uint(flags1);
+                    base.flags1 = flags1;
                     return *this;
                 }
 
@@ -363,6 +377,14 @@ class GameObject {
         const int& getIsLocated() const { return base.isLocated; }
         const int& getMonetaryWorth() const { return base.monetaryWorth; }
         const int& getUses() const { return base.uses; }
+        const int& getMakesHearing() const { return base.makesHearing; }
+        const int& getMakesSight() const { return base.makesSight; }
+        const uint8_t& getFlags1() const { return base.flags1; }
+        const uint8_t& getFlags2() const { return base.flags2; }
+        const int& getDoorColumn() const { return base.doorColumn; }
+        const int& getDoorRow() const { return base.doorRow; }
+        const int& getX() const { return base.x; }
+        const int& getY() const { return base.y; }
         
         const int& getAttributeBase(const int& which) const {
             return base.attributeBase[which];

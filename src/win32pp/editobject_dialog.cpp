@@ -41,6 +41,9 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     bd.uses(123);
     bd.usedWithID(2);
 
+    bd.makesHearing(HearingTypes::Normal());
+    bd.makesSight(SightTypes::Blind());
+
     // TODO: I'm not sure why, but until you do this, the tabs are invisible. It might be because of
     // how the window is created so it might go away after this window is an actual modal window.
 
@@ -99,6 +102,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     descriptionsTab->populateFields(bd.build());
     qualitiesTab->populateFields(bd.build());
     effectsTab->populateFields(bd.build());
+    locationsTab->populateFields(bd.build());
 
     return CWnd::OnCreate(cs);
 }

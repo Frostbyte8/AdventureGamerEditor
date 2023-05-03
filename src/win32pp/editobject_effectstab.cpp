@@ -223,6 +223,13 @@ void EditObjectEffectsTab::moveControls() {
 
 void EditObjectEffectsTab::populateFields(const GameObject& gameObject) {
 
+    if(gameObject.getFlags2() & GameObjectFlags2::EffectsTemporary) {
+        btnEffect[1].SetCheck(BST_CHECKED);
+    }
+    else {
+        btnEffect[0].SetCheck(BST_CHECKED);
+    }
+
     for(int i = 0; i < 5; ++i) {
 
         int baseAmount      = gameObject.getAttributeBase(i);
@@ -235,7 +242,11 @@ void EditObjectEffectsTab::populateFields(const GameObject& gameObject) {
         txtAttribAmount[(i*2)].SetWindowText(caption);
         caption = AtoW(std::to_string(abs(randomAmount)).c_str());
         txtAttribAmount[(i*2)+1].SetWindowText(caption);
+
     }
+
+    cbxSenses[0].SetCurSel(gameObject.getMakesSight());
+    cbxSenses[1].SetCurSel(gameObject.getMakesHearing());
 }
 
 ///----------------------------------------------------------------------------

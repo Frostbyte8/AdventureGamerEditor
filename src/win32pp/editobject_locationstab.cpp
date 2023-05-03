@@ -143,6 +143,15 @@ void EditObjectLocationsTab::moveControls() {
 ///----------------------------------------------------------------------------
 
 void EditObjectLocationsTab::populateFields(const GameObject& gameObject) {
+    const int isLocated = gameObject.getIsLocated();
+
+    btnLocatedAt[isLocated].SetCheck(BST_CHECKED); 
+
+    txtGroundCoord[0].SetWindowText(AtoW(std::to_string(gameObject.getX()).c_str()));
+    txtGroundCoord[1].SetWindowText(AtoW(std::to_string(gameObject.getY()).c_str()));
+
+    txtDoorCoord[0].SetWindowText(AtoW(std::to_string(gameObject.getDoorColumn()).c_str()));
+    txtDoorCoord[1].SetWindowText(AtoW(std::to_string(gameObject.getDoorRow()).c_str()));
 
 }
 

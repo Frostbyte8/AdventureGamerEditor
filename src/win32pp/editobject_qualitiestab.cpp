@@ -165,7 +165,14 @@ void EditObjectQualitiesTab::moveControls() {
 ///----------------------------------------------------------------------------
 
 void EditObjectQualitiesTab::populateFields(const GameObject &gameObject) {
-    //spnProperties[0].SetRange(0,10000);
+
+    const uint8_t flags = gameObject.getFlags1();
+    
+    for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
+        if(flags & (1<<i)) {
+            btnFlags[i].SetCheck(BST_CHECKED);
+        }
+    }
 
     CString windowText = AtoW(std::to_string(gameObject.getMonetaryWorth()).c_str());
     txtProperties[0].SetWindowText(windowText);
