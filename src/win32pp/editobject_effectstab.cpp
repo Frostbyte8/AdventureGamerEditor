@@ -320,3 +320,21 @@ void EditObjectEffectsTab::updateAttributeValue(const WORD& ctrlID) {
     spnAttribAmount[ctrlIndex].SetPos(newValue);
 
 }
+
+void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
+
+    if(btnEffect[1].GetCheck() == BST_CHECKED) {
+        builder.flags2(builder.getFlags2() | GameObjectFlags2::EffectsTemporary);
+    }
+
+    for(int i = 0; i < 5; ++i) {
+        int baseAmount = std::stoi(WtoA(txtAttribAmount[i*2].GetWindowText()).c_str());
+        int randAmount = std::stoi(WtoA(txtAttribAmount[(i*2)+1].GetWindowText()).c_str());
+        builder.attributeBase(baseAmount, i);
+        builder.attributeRandom(randAmount, i);
+    } 
+
+    builder.makesSight(cbxSenses[0].GetCurSel());
+    builder.makesHearing(cbxSenses[1].GetCurSel());
+
+}

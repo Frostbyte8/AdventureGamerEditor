@@ -186,8 +186,20 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 void EditObjectDialog::OnClose() {
 
     WORD retVal = qualitiesTab->validateFields(); 
+    getGameObjectBuilder();
 
     if(retVal == 0) {
         CWnd::OnClose();
     }
+
+    
+}
+
+GameObject::Builder EditObjectDialog::getGameObjectBuilder() {
+
+    GameObject::Builder bd;
+    descriptionsTab->insertData(bd);
+    qualitiesTab->insertData(bd);
+    effectsTab->insertData(bd);
+    return bd;
 }

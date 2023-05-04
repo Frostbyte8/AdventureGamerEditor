@@ -268,3 +268,9 @@ void EditObjectLocationsTab::toggleUnlocksDoor(const BOOL& doesUnlock) {
     txtDoorCoord[0].EnableWindow(doesUnlock);
     txtDoorCoord[1].EnableWindow(doesUnlock);
 }
+
+
+WORD EditObjectLocationsTab::validateFields() {
+    // TODO: Make sure coordinates, if set, are within map bounds.
+    return 0;
+}

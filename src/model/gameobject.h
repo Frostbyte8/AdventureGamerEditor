@@ -365,7 +365,11 @@ class GameObject {
                     return *this;
                 }
 
-            private:
+                const uint8_t getFlags2() const  {
+                    return base.flags2;
+                }
+
+            //private:
 
                 Builder& makesSight(const int& makesSight) {
                     assert(makesSight < SightTypes::NumTypes);

@@ -23,11 +23,19 @@ inline void EOD_AddString(const unsigned int& ID, CComboBox& widget, CString& ca
     widget.AddString(caption);
 }
 
+/*
+struct EditObjectDialogInfo {
+    const GameMap* gameMap;
+    std::vector<GameObject> gameObjects;
+    std::vector<GameCharacter> gameCharacters;
+}
+*/
+
 class EOTabViewBase : public CWnd {
 
     public:
 
-        //virtual void insertData(GameObject::Builder& builder) = 0;
+        virtual void insertData(GameObject::Builder& builder) = 0;
         virtual WORD validateFields() = 0;
         virtual void populateFields(const GameObject& gameObject) = 0; // Populate Fields
         virtual void moveControls() = 0;
@@ -50,6 +58,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject);
         virtual WORD validateFields() { return 0; }
+        virtual void insertData(GameObject::Builder& builder);
 
     protected:
         
@@ -78,6 +87,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
         virtual WORD validateFields();
+        virtual void insertData(GameObject::Builder& builder);
 
     protected:
                 
@@ -110,6 +120,7 @@ class EditObjectEffectsTab : public EOTabViewBase {
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
         virtual WORD validateFields() { return 0; }
+        virtual void insertData(GameObject::Builder& builder);
 
     protected:
 
@@ -148,7 +159,8 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual void moveControls();
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
-        virtual WORD validateFields() { return 0; }
+        virtual WORD validateFields();
+        virtual void insertData(GameObject::Builder& builder) {}
 
     protected:
 

@@ -18,9 +18,13 @@
 class EditObjectDialog : public CWnd {
 
     public:
+
         EditObjectDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics) : mainWindow(inMainWindow), windowMetrics(inWindowMetrics) {
             contentSize.SetSize(32,32);
         }
+
+        
+        GameObject::Builder getGameObjectBuilder();
 
     protected:
         virtual void PreRegisterClass(WNDCLASS& wc);

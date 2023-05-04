@@ -160,3 +160,18 @@ BOOL EditObjectDescriptionsTab::PreTranslateMessage(MSG &msg) {
     return CWnd::PreTranslateMessage(msg);
 
 }
+
+void EditObjectDescriptionsTab::insertData(GameObject::Builder& builder) {
+
+    // TODO: For the controller version of this, send the text and let the controller
+    // do the string capping.
+
+    CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameObjectConstants::MaxNameLength);
+    builder.description(WtoA(wideDesc).c_str(), 0);  
+
+    for(int i = 1; i < 6; ++i) {
+        wideDesc = txtDescriptions[i].GetWindowText().Left(GameObjectConstants::MaxDescriptionLength);
+        builder.description(WtoA(wideDesc).c_str(), i);
+    }
+
+}

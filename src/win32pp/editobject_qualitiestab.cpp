@@ -315,10 +315,12 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
 
 WORD EditObjectQualitiesTab::validateFields() {
 
+    // TODO: Pretty sure this is wrong.
+
     // Check to see if the object is in a fixed position.
     if(btnFlags[6].IsWindowEnabled() && btnFlags[6].GetCheck() != BST_CHECKED) {
     
-        const int numUses = spnProperties[0].GetPos();
+        const int numUses = spnProperties[1].GetPos();
         if(numUses < GameObjectConstants::MinNumUses || 
            numUses > GameObjectConstants::MaxNumUses) {
             MessageBox(L"Number of uses must be between 1 and 10000 uses.", L"Validation Error", MB_OK | MB_ICONERROR);
@@ -331,7 +333,7 @@ WORD EditObjectQualitiesTab::validateFields() {
     // Check to see if the object is money
     if(btnFlags[7].IsWindowEnabled() && btnFlags[7].GetCheck() != BST_CHECKED) {
 
-        const int monetaryValue = spnProperties[1].GetPos();
+        const int monetaryValue = spnProperties[0].GetPos();
         if(monetaryValue < GameObjectConstants::MinMonetaryValue ||
            monetaryValue > GameObjectConstants::MaxMonetaryValue) {
             MessageBox(L"Value must be between 0 and 10000.", L"Validation Error", MB_OK | MB_ICONERROR);
@@ -347,12 +349,47 @@ WORD EditObjectQualitiesTab::validateFields() {
 /// updatePropertyValue - Caps the uses and monetary worth text boxes.
 ///----------------------------------------------------------------------------
 
-
 void EditObjectQualitiesTab::updatePropertyValue(const WORD& ctrlID) {
 
     const int ctrlIndex = ctrlID - ControlIDs::UsesBox;
 
     int newValue = std::stoi(WtoA(txtProperties[ctrlIndex].GetWindowText()).c_str());
     spnProperties[ctrlIndex].SetPos(newValue);
+
+}
+
+void EditObjectQualitiesTab::insertData(GameObject::Builder& builder) {
+
+    // Figure out if the object is in a fixed location or is money, and then
+    // handle those special cases, otherwise, just find out what flags need
+    // to be set.
+
+    uint8_t newFlags = 0;
+
+    if(btnFlags[6].IsWindowEnabled() && btnFlags[6].GetCheck() == BST_CHECKED) {
+        newFlags = GameObjectFlags1::FixedLocation;
+    }
+    else if(btnFlags[7].IsWindowEnabled() && btnFlags[7].GetCheck() == BST_CHECKED) {
+        newFlags = GameObjectFlags1::Money;
+
+        if(btnFlags[1].GetCheck() == BST_CHECKED) {
+            newFlags |= GameObjectFlags1::Invisible;
+        }
+    }
+    else {
+
+        for(int i = 0; i < 6; ++i) {
+            if(btnFlags[i].GetCheck() == BST_CHECKED) {
+                newFlags += (1<<i);
+            }
+        }
+
+    }
+
+    builder.flags1(newFlags);
+    builder.monetaryWorth(spnProperties[0].GetPos());
+    builder.uses(spnProperties[1].GetPos());
+
+    // TODO: Figure out used with ID by getting the selected index and mapping it to the ID.
 
 }
