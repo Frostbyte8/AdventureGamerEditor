@@ -160,7 +160,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
         virtual WORD validateFields();
-        virtual void insertData(GameObject::Builder& builder) {}
+        virtual void insertData(GameObject::Builder& builder);
 
     protected:
 

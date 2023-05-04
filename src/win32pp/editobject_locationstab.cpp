@@ -274,3 +274,41 @@ WORD EditObjectLocationsTab::validateFields() {
     // TODO: Make sure coordinates, if set, are within map bounds.
     return 0;
 }
+
+void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
+    
+    if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
+        int groundX = std::stoi(WtoA(txtGroundCoord[0].GetWindowText()).c_str());
+        int groundY = std::stoi(WtoA(txtGroundCoord[1].GetWindowText()).c_str());
+        builder.location(groundX, groundY);
+    }
+    else if(btnLocatedAt[1].GetCheck() == BST_CHECKED) {
+        builder.location();
+    }
+    else {
+
+        const int charIndex = cbxWhichCharacter.GetCurSel();
+
+        if(charIndex == 0) {
+            // Default to on the ground at 0, 0
+            builder.loaction(0, 0);
+        }
+        else {
+            // Map Index to ID
+            // charID = gameMap->characterIndexToID(charIndex);
+        }
+    }
+
+    if(btnUnlocksDoor.GetCheck() == BST_CHECKED) {
+
+        builder.flags2(builder.getFlags2() | GameObjectFlags2::Key);
+
+        int doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
+        int doorY = std::stoi(WtoA(txtDoorCoord[1].GetWindowText()).c_str());   
+
+        builder.doorColumn(doorX);
+        builder.doorRow(doorY);
+
+    }
+
+}

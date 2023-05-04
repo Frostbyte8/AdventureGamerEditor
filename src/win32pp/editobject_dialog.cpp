@@ -201,5 +201,6 @@ GameObject::Builder EditObjectDialog::getGameObjectBuilder() {
     descriptionsTab->insertData(bd);
     qualitiesTab->insertData(bd);
     effectsTab->insertData(bd);
+    locationsTab->insertData(bd);
     return bd;
 }

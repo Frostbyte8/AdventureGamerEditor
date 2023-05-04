@@ -296,6 +296,7 @@ class GameObject {
                     
                     base.x = 0;
                     base.y = 0;
+                    base.flags2 |= GameObjectFlags2::NotOnGround; // Set this if it isn't set already
                     base.isLocated = GameObjectConstants::LocatedOnCharacter;
                     base.creatureID = charID;
                     
@@ -313,6 +314,7 @@ class GameObject {
 
                     base.x = 0;
                     base.y = 0;
+                    base.flags2 |= GameObjectFlags2::NotOnGround; // Set this if it isn't set already
                     base.isLocated = GameObjectConstants::LocatedOnPlayer;
                     base.creatureID = GameObjectConstants::NotOnCreature;
                     
