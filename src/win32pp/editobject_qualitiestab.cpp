@@ -46,6 +46,8 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         // TODO: Why does WS_VISBLE have to be set? Possible bug?
         spnProperties[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
+
+        txtProperties[i].SetDlgCtrlID(ControlIDs::UsesBox+i);
        
     }
 
@@ -248,6 +250,11 @@ BOOL EditObjectQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
     if(ctrlID >= ControlIDs::MasterKey && ctrlID <= ControlIDs::Money) {
         flagsChanged(ctrlID, ctrlAction); 
     }
+    else if(ctrlID == ControlIDs::UsesBox || ctrlID == ControlIDs::MoneyBox) {
+        if(ctrlAction == EN_KILLFOCUS) {
+            updatePropertyValue(ctrlID);
+        }
+    }
 
 
     return TRUE;
@@ -300,7 +307,10 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
 }
 
 ///----------------------------------------------------------------------------
-/// validateFields - Checks that the data entered is valid.
+/// validateFields - Checks that the data entered is valid, and that the user
+/// didn't try to do something to get an invalid value entered.
+/// @return 0 if no errors occurred, otherwise ID of the control that caused
+/// the validation error.
 ///----------------------------------------------------------------------------
 
 WORD EditObjectQualitiesTab::validateFields() {
@@ -308,7 +318,7 @@ WORD EditObjectQualitiesTab::validateFields() {
     // Check to see if the object is in a fixed position.
     if(btnFlags[6].IsWindowEnabled() && btnFlags[6].GetCheck() != BST_CHECKED) {
     
-        const int numUses = spnProperties[1].GetPos();
+        const int numUses = spnProperties[0].GetPos();
         if(numUses < GameObjectConstants::MinNumUses || 
            numUses > GameObjectConstants::MaxNumUses) {
             MessageBox(L"Number of uses must be between 1 and 10000 uses.", L"Validation Error", MB_OK | MB_ICONERROR);
@@ -321,14 +331,28 @@ WORD EditObjectQualitiesTab::validateFields() {
     // Check to see if the object is money
     if(btnFlags[7].IsWindowEnabled() && btnFlags[7].GetCheck() != BST_CHECKED) {
 
-        const int monetaryValue = spnProperties[2].GetPos();
+        const int monetaryValue = spnProperties[1].GetPos();
         if(monetaryValue < GameObjectConstants::MinMonetaryValue ||
-           monetaryValue < GameObjectConstants::MaxMonetaryValue) {
-            MessageBox(L"Number of uses must be between 1 and 10000 uses.", L"Validation Error", MB_OK | MB_ICONERROR);
+           monetaryValue > GameObjectConstants::MaxMonetaryValue) {
+            MessageBox(L"Value must be between 0 and 10000.", L"Validation Error", MB_OK | MB_ICONERROR);
             return ControlIDs::MoneyBox;
         }
     }
 
     return 0;
+
+}
+
+///----------------------------------------------------------------------------
+/// updatePropertyValue - Caps the uses and monetary worth text boxes.
+///----------------------------------------------------------------------------
+
+
+void EditObjectQualitiesTab::updatePropertyValue(const WORD& ctrlID) {
+
+    const int ctrlIndex = ctrlID - ControlIDs::UsesBox;
+
+    int newValue = std::stoi(WtoA(txtProperties[ctrlIndex].GetWindowText()).c_str());
+    spnProperties[ctrlIndex].SetPos(newValue);
 
 }

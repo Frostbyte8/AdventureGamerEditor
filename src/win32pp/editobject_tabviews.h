@@ -87,6 +87,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
     private:
 
         void flagsChanged(const WORD& ctrlID, const WORD& ctrlAction);
+        void updatePropertyValue(const WORD& ctrlID);
 
         WindowMetrics*          windowMetrics;
         CButton                 grpFlags;
