@@ -2,6 +2,19 @@
 #include "../model/gameobject.h"
 #include <algorithm>
 
+namespace ControlIDs {
+    WORD EnergyBase            = 101;
+    WORD EnergyRandom          = 102;
+    WORD SkillBase             = 103;
+    WORD SkillRandom           = 104;
+    WORD WillpowerBase         = 105;
+    WORD WillpowerRandom       = 106;
+    WORD LuckBase              = 107;
+    WORD LuckRandom            = 108;
+    WORD TorchLifeBase         = 109;
+    WORD TorchLifeRandom       = 110;
+}
+
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
 ///----------------------------------------------------------------------------
@@ -53,6 +66,8 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
         spnAttribAmount[l].SetRange(GameObjectConstants::MinAttributeValue,
                                     GameObjectConstants::MaxAttributeValue);
+
+        txtAttribAmount[l].SetDlgCtrlID(ControlIDs::EnergyBase+l);
     }
 
     for(int m = 0; m < 2; ++m) {
@@ -251,6 +266,28 @@ void EditObjectEffectsTab::populateFields(const GameObject& gameObject) {
 }
 
 ///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL EditObjectEffectsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if(ctrlID >= ControlIDs::EnergyBase && ctrlID <= ControlIDs::TorchLifeRandom) {
+            if(notifyCode == EN_KILLFOCUS) {
+                updateAttributeValue(ctrlID);
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+///----------------------------------------------------------------------------
 /// PreRegisterClass - Override defaults for tab page
 ///----------------------------------------------------------------------------
 
@@ -272,5 +309,14 @@ BOOL EditObjectEffectsTab::PreTranslateMessage(MSG &msg) {
     }
     
     return CWnd::PreTranslateMessage(msg);
+
+}
+
+void EditObjectEffectsTab::updateAttributeValue(const WORD& ctrlID) {
+
+    const int ctrlIndex = ctrlID - ControlIDs::EnergyBase; 
+
+    int newValue = std::stoi(WtoA(txtAttribAmount[ctrlIndex].GetWindowText()).c_str());
+    spnAttribAmount[ctrlIndex].SetPos(newValue);
 
 }

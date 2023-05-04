@@ -182,3 +182,12 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 //
 //
 //
+
+void EditObjectDialog::OnClose() {
+
+    WORD retVal = qualitiesTab->validateFields(); 
+
+    if(retVal == 0) {
+        CWnd::OnClose();
+    }
+}

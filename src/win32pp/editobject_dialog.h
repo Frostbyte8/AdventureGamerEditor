@@ -26,7 +26,7 @@ class EditObjectDialog : public CWnd {
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
-        
+        virtual void OnClose(); 
 
     private:
         static bool CALLBACK SetFontTest(HWND child, LPARAM font);

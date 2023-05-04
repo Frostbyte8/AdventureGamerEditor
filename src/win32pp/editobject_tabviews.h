@@ -27,7 +27,8 @@ class EOTabViewBase : public CWnd {
 
     public:
 
-        //virtual int ValidateFields();        // Validate Fields
+        //virtual void insertData(GameObject::Builder& builder) = 0;
+        virtual WORD validateFields() = 0;
         virtual void populateFields(const GameObject& gameObject) = 0; // Populate Fields
         virtual void moveControls() = 0;
         virtual void calculatePageWidth() = 0;
@@ -48,6 +49,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         virtual void moveControls();
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject);
+        virtual WORD validateFields() { return 0; }
 
     protected:
         
@@ -75,7 +77,8 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         virtual void moveControls();
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
-    
+        virtual WORD validateFields();
+
     protected:
                 
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
@@ -105,11 +108,17 @@ class EditObjectEffectsTab : public EOTabViewBase {
         virtual void moveControls();
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
-    
+        virtual WORD validateFields() { return 0; }
+
     protected:
+
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual BOOL PreTranslateMessage(MSG& msg);
         
     private:
+
+        void updateAttributeValue(const WORD& ctrlID);
+
         WindowMetrics*          windowMetrics;
 
         CButton                 grpEffects;
@@ -138,7 +147,8 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual void moveControls();
         virtual void calculatePageWidth();
         virtual void populateFields(const GameObject& gameObject); // Populate Fields
-    
+        virtual WORD validateFields() { return 0; }
+
     protected:
 
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);

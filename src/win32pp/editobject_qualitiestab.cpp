@@ -12,6 +12,8 @@ namespace ControlIDs {
     const WORD Worn         = 106;
     const WORD Fixed        = 107;
     const WORD Money        = 108;
+    const WORD UsesBox      = 109;
+    const WORD MoneyBox     = 110;
 }
 
 ///----------------------------------------------------------------------------
@@ -36,7 +38,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 2; ++i) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
-        txtProperties[i].Create(*this, 0, ES_AUTOHSCROLL);
+        txtProperties[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtProperties[i].LimitText(5);
         EOD_SetWindowText(LanguageConstants::MonetaryLabel+i, lblProperties[i], caption, langMap);
@@ -261,7 +263,7 @@ BOOL EditObjectQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAction) {
 
     const int which = ctrlID - ControlIDs::MasterKey;
-    const bool isChecked = btnFlags[which].GetCheck() == BST_CHECKED ? true : false; 
+    const bool isChecked = btnFlags[which].GetCheck() == BST_CHECKED ? TRUE : FALSE; 
 
     // If an object is at a fixed location, it can't have any other flag
     // set. You also can't sell it.
@@ -294,5 +296,39 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
         cbxUsedWith.EnableWindow(!isChecked);
 
     }
+
+}
+
+///----------------------------------------------------------------------------
+/// validateFields - Checks that the data entered is valid.
+///----------------------------------------------------------------------------
+
+WORD EditObjectQualitiesTab::validateFields() {
+
+    // Check to see if the object is in a fixed position.
+    if(btnFlags[6].IsWindowEnabled() && btnFlags[6].GetCheck() != BST_CHECKED) {
+    
+        const int numUses = spnProperties[1].GetPos();
+        if(numUses < GameObjectConstants::MinNumUses || 
+           numUses > GameObjectConstants::MaxNumUses) {
+            MessageBox(L"Number of uses must be between 1 and 10000 uses.", L"Validation Error", MB_OK | MB_ICONERROR);
+            return ControlIDs::UsesBox;
+        }
+
+    }
+
+
+    // Check to see if the object is money
+    if(btnFlags[7].IsWindowEnabled() && btnFlags[7].GetCheck() != BST_CHECKED) {
+
+        const int monetaryValue = spnProperties[2].GetPos();
+        if(monetaryValue < GameObjectConstants::MinMonetaryValue ||
+           monetaryValue < GameObjectConstants::MaxMonetaryValue) {
+            MessageBox(L"Number of uses must be between 1 and 10000 uses.", L"Validation Error", MB_OK | MB_ICONERROR);
+            return ControlIDs::MoneyBox;
+        }
+    }
+
+    return 0;
 
 }
