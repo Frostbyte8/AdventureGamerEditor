@@ -53,8 +53,9 @@ class GameMap {
         void replaceObject(GMKey, const size_t& index, const GameObject& gameObject);
 
         // Public Functions
-        const size_t characterIndexFromID(const int charID) const;
+        const size_t characterIndexFromID(const int& charID) const;
         const size_t objectIndexFromID(const int& objectID) const;
+        const int& objectIDFromIndex(const size_t& objectIndex) const;
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
         bool isRowColInMapBounds(const int& row, const int& col) const;
 

@@ -250,7 +250,7 @@ void GameMap::replaceObject(GMKey, const size_t& index, const GameObject& gameOb
 /// (size_t)-1 if it was not.
 ///----------------------------------------------------------------------------
 
-const size_t GameMap::characterIndexFromID(const int charID) const {
+const size_t GameMap::characterIndexFromID(const int& charID) const {
 
     const size_t gcSize = gameCharacters.size();
 
@@ -285,6 +285,25 @@ const size_t GameMap::objectIndexFromID(const int& objectID) const {
     }
 
     return (size_t)-1;
+
+}
+
+///----------------------------------------------------------------------------
+/// objectIDFromIndex - If found, returns the ID of the object with the given
+/// index
+/// @param object index to search for.
+/// @returns the ID of the object if found, GameObjectConstants::NoID if not.
+///----------------------------------------------------------------------------
+
+const int& GameMap::objectIDFromIndex(const size_t& objectIndex) const {
+
+    const size_t goSize = gameObjects.size();
+
+    if(objectIndex > goSize) {
+        return GameObjectConstants::NoID;
+    }
+
+    return gameObjects[objectIndex].getID();
 
 }
 
