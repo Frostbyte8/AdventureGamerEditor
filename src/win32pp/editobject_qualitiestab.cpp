@@ -59,6 +59,16 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     cbxUsedWith.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL);
     EOD_AddString(LanguageConstants::NoObjectSelected, cbxUsedWith, caption, langMap);
+
+    const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+    const size_t numObjects = gameObjects.size();
+
+    for(size_t j = 0; j < numObjects; ++j) {
+        caption = AtoW((std::to_string(gameObjects[j].getID()) + ". ").c_str()); 
+        caption += AtoW(gameObjects[j].getName().c_str());
+        cbxUsedWith.AddString(caption);
+    }
+
     cbxUsedWith.SetCurSel(0);
 
     spnProperties[0].SetRange(GameObjectConstants::MaxMonetaryValue, GameObjectConstants::MinMonetaryValue);

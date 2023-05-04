@@ -13,7 +13,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     tabControl.Create(*this);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
-    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics), L"Qualities"));
+    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics, gameMap), L"Qualities"));
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(windowMetrics), L"Effects"));
     locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(windowMetrics), L"Locations"));
 

@@ -331,7 +331,7 @@ void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
         int baseAmount = std::stoi(WtoA(txtAttribAmount[i*2].GetWindowText()).c_str());
         int randAmount = std::stoi(WtoA(txtAttribAmount[(i*2)+1].GetWindowText()).c_str());
 
-        if(btnAttribPolarity[i*2].GetCheck() 1= BST_CHECKED) {
+        if(btnAttribPolarity[i*2].GetCheck() == BST_CHECKED) {
             baseAmount *= -1;
             randAmount *= -1;
         }

@@ -291,7 +291,7 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
 
         if(charIndex == 0) {
             // Default to on the ground at 0, 0
-            builder.loaction(0, 0);
+            builder.location(0, 0);
         }
         else {
             // Map Index to ID

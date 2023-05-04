@@ -55,10 +55,6 @@ MainWindowFrame::~MainWindowFrame() {
 HWND MainWindowFrame::Create(HWND parent) {
     SetView(*entityView);
     
-    eod = new EditObjectDialog(NULL, &windowMetrics);
-    eod->Create(0);
-    eod->MoveWindow(0, 0, 256,256, TRUE);
-    eod->ShowWindow(SW_SHOW);
     
 	return CDockFrame::Create(parent);
 }
@@ -221,8 +217,11 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
-    gameWorldController->tryRemoveObject(i);
-    i++;
+    eod = new EditObjectDialog(NULL, &windowMetrics, gameWorldController->getGameMap());
+    eod->Create(0);
+    eod->MoveWindow(0, 0, 256,256, TRUE);
+    eod->ShowWindow(SW_SHOW);
+
 
     return FALSE;
 

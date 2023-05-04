@@ -3,10 +3,14 @@
 
 #include <wxx_wincore.h>
 #include <wxx_stdcontrols.h>
+
 #include "../util/languagemapper.h"
 #include "../util/win32pp_extras.h"
 #include "../win32/window_metrics.h"
+
 #include "../model/gameobject.h"
+#include "../model/gamecharacter.h"
+#include "../model/gamemap.h"
 
 inline void EOD_SetWindowText(const unsigned int& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
     caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
@@ -22,14 +26,6 @@ inline void EOD_AddString(const unsigned int& ID, CComboBox& widget, CString& ca
     caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
     widget.AddString(caption);
 }
-
-/*
-struct EditObjectDialogInfo {
-    const GameMap* gameMap;
-    std::vector<GameObject> gameObjects;
-    std::vector<GameCharacter> gameCharacters;
-}
-*/
 
 class EOTabViewBase : public CWnd {
 
@@ -80,7 +76,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
 
     public:
 
-        EditObjectQualitiesTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) { }
+        EditObjectQualitiesTab(WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : windowMetrics(inWindowMetrics), gameMap(inGameMap) { }
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
@@ -99,6 +95,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         void flagsChanged(const WORD& ctrlID, const WORD& ctrlAction);
         void updatePropertyValue(const WORD& ctrlID);
 
+        const GameMap*          gameMap;
         WindowMetrics*          windowMetrics;
         CButton                 grpFlags;
         CButton                 grpProperties;
