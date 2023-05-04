@@ -150,7 +150,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
 
     public:
 
-        EditObjectLocationsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
+        EditObjectLocationsTab(WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : windowMetrics(inWindowMetrics), gameMap(inGameMap) {}
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual void moveControls();
@@ -169,6 +169,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
         inline void locatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction);
         inline void toggleUnlocksDoor(const BOOL& doesUnlock);
 
+        const GameMap*          gameMap;
         WindowMetrics*          windowMetrics;
 
         CButton                 grpLocations;

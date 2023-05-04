@@ -15,7 +15,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics, gameMap), L"Qualities"));
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(windowMetrics), L"Effects"));
-    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(windowMetrics), L"Locations"));
+    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(windowMetrics, gameMap), L"Locations"));
 
     std::vector<LONG> pageWidths;
 
@@ -186,6 +186,7 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 void EditObjectDialog::OnClose() {
 
     WORD retVal = qualitiesTab->validateFields(); 
+    retVal = locationsTab->validateFields();
     getGameObjectBuilder();
 
     if(retVal == 0) {

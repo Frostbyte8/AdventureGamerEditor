@@ -45,6 +45,16 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL);
     EOD_AddString(LanguageConstants::NoCharacterSelected, cbxWhichCharacter, caption, langMap);
+
+    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+    const size_t numCharacters = gameCharacters.size();
+
+    for(size_t j = 0; j < numCharacters; ++j) {
+        caption = AtoW((std::to_string(gameCharacters[j].getID()) + ". ").c_str()); 
+        caption += AtoW(gameCharacters[j].getName().c_str());
+        cbxWhichCharacter.AddString(caption);
+    }
+
     cbxWhichCharacter.SetCurSel(0);
 
     btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX);
@@ -129,8 +139,9 @@ void EditObjectLocationsTab::moveControls() {
 
     cPos.Offset(0, defaultRadioSize.cy + CS.YRELATED_MARGIN);
 
-    cbxWhichCharacter.MoveWindow(cPos.x, cPos.y, maxRowWidth, CD.YCOMBOBOX);
-    
+    cbxWhichCharacter.MoveWindow(cPos.x, cPos.y, maxRowWidth, 
+                                 CD.YDROPDOWN + (CD.YTEXTBOX_ONE_LINE_ALONE * 3));
+
     cPos.Offset(0, CD.YCOMBOBOX + CS.YRELATED_MARGIN);
 
     btnUnlocksDoor.MoveWindow(cPos.x, cPos.y, maxRowWidth, CD.YCHECKBOX);
@@ -271,7 +282,38 @@ void EditObjectLocationsTab::toggleUnlocksDoor(const BOOL& doesUnlock) {
 
 
 WORD EditObjectLocationsTab::validateFields() {
-    // TODO: Make sure coordinates, if set, are within map bounds.
+
+
+    const int mapWidth = gameMap->getWidth() - 1;
+    const int mapHeight = gameMap->getHeight() - 1;
+
+    if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
+
+        const int groundX = std::stoi(WtoA(txtGroundCoord[0].GetWindowText()).c_str());
+        const int groundY = std::stoi(WtoA(txtGroundCoord[1].GetWindowText()).c_str());
+
+        if(groundX < 0 || groundX > mapWidth || groundY < 0 || groundY > mapHeight) {
+            MessageBox(L"Object cannot be placed outside of map bounds", L"Validation Error", MB_OK | MB_ICONERROR);
+            return 1;
+        }
+
+    }
+
+    if(btnUnlocksDoor.GetCheck() == BST_CHECKED) {
+
+        const int doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
+        const int doorY = std::stoi(WtoA(txtDoorCoord[1].GetWindowText()).c_str());
+
+        if(doorX < 0 || doorX > mapWidth || doorY < 0 || doorY > mapHeight) {
+            MessageBox(L"Object cannot be told to unlock a door outside the map bounds", L"Validation Error", MB_OK | MB_ICONERROR);
+            return 1;
+        }
+
+        // TODO: Check if a door exists at the given coordinates, and if none exists, ask the user if this is correct.
+
+    }
+
+
     return 0;
 }
 
@@ -301,13 +343,15 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
 
     if(btnUnlocksDoor.GetCheck() == BST_CHECKED) {
 
-        builder.flags2(builder.getFlags2() | GameObjectFlags2::Key);
-
         int doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
         int doorY = std::stoi(WtoA(txtDoorCoord[1].GetWindowText()).c_str());   
 
-        builder.doorColumn(doorX);
-        builder.doorRow(doorY);
+        // Only set this if the value is valid
+        if((doorX > -1 && doorX <= gameMap->getWidth()) && (doorY > -1 && doorY <= gameMap->getHeight())) {
+            builder.flags2(builder.getFlags2() | GameObjectFlags2::Key);
+            builder.doorColumn(doorX);
+            builder.doorRow(doorY);
+        }
 
     }
 
