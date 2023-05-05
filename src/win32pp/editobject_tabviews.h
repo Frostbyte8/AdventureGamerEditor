@@ -109,12 +109,15 @@ class EditObjectQualitiesTab : public EOTabViewBase {
 
         const GameMap*          gameMap;
         WindowMetrics*          windowMetrics;
+
         CButton                 grpFlags;
         CButton                 grpProperties;
         CButton                 btnFlags[8];
+
         CStatic                 lblProperties[3];
         CEdit                   txtProperties[2];
         CSpinButton             spnProperties[2];
+
         CComboBox               cbxUsedWith;
 };
 

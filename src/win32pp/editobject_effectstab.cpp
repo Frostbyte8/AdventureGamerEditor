@@ -5,16 +5,16 @@
 #include "shared_functions.h"
 
 namespace ControlIDs {
-    WORD EnergyBase            = 101;
-    WORD EnergyRandom          = 102;
-    WORD SkillBase             = 103;
-    WORD SkillRandom           = 104;
-    WORD WillpowerBase         = 105;
-    WORD WillpowerRandom       = 106;
-    WORD LuckBase              = 107;
-    WORD LuckRandom            = 108;
-    WORD TorchLifeBase         = 109;
-    WORD TorchLifeRandom       = 110;
+    const WORD EnergyBase            = 101;
+    const WORD EnergyRandom          = 102;
+    const WORD SkillBase             = 103;
+    const WORD SkillRandom           = 104;
+    const WORD WillpowerBase         = 105;
+    const WORD WillpowerRandom       = 106;
+    const WORD LuckBase              = 107;
+    const WORD LuckRandom            = 108;
+    const WORD TorchLifeBase         = 109;
+    const WORD TorchLifeRandom       = 110;
 }
 
 //=============================================================================

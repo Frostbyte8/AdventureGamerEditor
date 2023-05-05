@@ -4,6 +4,10 @@
 
 #include "shared_functions.h"
 
+//=============================================================================
+// Win32++ Functions
+//=============================================================================
+
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
 ///----------------------------------------------------------------------------
@@ -31,12 +35,17 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
             txtDescriptions[i].LimitText(GameObjectConstants::MaxDescriptionLength);
         }
         
-        EOD_SetWindowText(LanguageConstants::NameLabel+i, lblDescriptions[i], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::NameLabel+i, lblDescriptions[i],
+                          caption, langMap);
 
         // For the last two fields, we need browse buttons
         if(i > GameObjectDescriptions::NumDescriptions - 1) {
+
             btnBrowse[i - GameObjectDescriptions::NumDescriptions].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
-            EOD_SetWindowText(LanguageConstants::BrowseButton, btnBrowse[i - GameObjectDescriptions::NumDescriptions], caption, langMap);
+
+            EOD_SetWindowText(LanguageConstants::BrowseButton,
+                              btnBrowse[i - GameObjectDescriptions::NumDescriptions],
+                              caption, langMap);
         }
 
     }
