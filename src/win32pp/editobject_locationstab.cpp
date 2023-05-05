@@ -427,6 +427,8 @@ void EditObjectLocationsTab::locatedAtChanged(const WORD& ctrlID, const WORD& ct
 ///----------------------------------------------------------------------------
 
 void EditObjectLocationsTab::toggleUnlocksDoor(const BOOL& doesUnlock) {
+
     txtDoorCoord[0].EnableWindow(doesUnlock);
     txtDoorCoord[1].EnableWindow(doesUnlock);
+
 }

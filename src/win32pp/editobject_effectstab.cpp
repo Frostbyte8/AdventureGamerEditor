@@ -22,6 +22,31 @@ namespace ControlIDs {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL EditObjectEffectsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if(ctrlID >= ControlIDs::EnergyBase &&
+           ctrlID <= ControlIDs::TorchLifeRandom) {
+
+            if(notifyCode == EN_KILLFOCUS) {
+                updateAttributeValue(ctrlID);
+            }
+
+        }
+    }
+
+    return FALSE;
+}
+
+///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
 ///----------------------------------------------------------------------------
 
@@ -33,33 +58,42 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpEffects.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::EffectsOnAttribGroup, grpEffects, caption, langMap);
+    EOD_SetWindowText(LanguageConstants::EffectsOnAttribGroup, grpEffects,
+                      caption, langMap);
 
     btnEffect[0].Create(*this, 0, BS_AUTORADIOBUTTON | WS_GROUP);
     btnEffect[1].Create(*this, 0, BS_AUTORADIOBUTTON);
 
     for(int i = 0; i < 2; ++i) {
-        EOD_SetWindowText(LanguageConstants::ConsumpativeLabel+i, btnEffect[i], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::ConsumpativeLabel+i, btnEffect[i],
+                          caption, langMap);
     }
 
     grpAttrib.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::ObjectAttributesGroup, grpAttrib, caption, langMap);
+    EOD_SetWindowText(LanguageConstants::ObjectAttributesGroup, grpAttrib,
+                      caption, langMap);
 
     for(int k = 0; k < 5; ++k) {
 
         lblAttribType[k].Create(*this, 0, SS_CENTER);
-        EOD_SetWindowText(LanguageConstants::ObjectEnergyLabel+k, lblAttribType[k], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::ObjectEnergyLabel+k,
+                          lblAttribType[k], caption, langMap);
+
         btnAttribPolarity[(k*2)].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
         btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_AUTORADIOBUTTON);
 
-        EOD_SetWindowText(LanguageConstants::PositiveSignLabel, btnAttribPolarity[k*2], caption, langMap);
-        EOD_SetWindowText(LanguageConstants::NegativeSignLabel, btnAttribPolarity[(k*2)+1], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::PositiveSignLabel,
+                          btnAttribPolarity[k*2], caption, langMap);
+
+        EOD_SetWindowText(LanguageConstants::NegativeSignLabel,
+                          btnAttribPolarity[(k*2)+1], caption, langMap);
 
     }
 
     for(int i = 0; i < 2; ++i) {
         lblAttribHeading[i].Create(*this, 0, SS_CENTER);
-        EOD_SetWindowText(LanguageConstants::ObjectBaseAmountLabel+i, lblAttribHeading[i], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::ObjectBaseAmountLabel+i,
+                          lblAttribHeading[i], caption, langMap);
     }
 
     for(int l = 0; l < 10; ++l) {
@@ -82,18 +116,53 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     for(int n = 0; n < 4; ++n) {
-        EOD_AddString(LanguageConstants::SightNoEffectOption+n, cbxSenses[0], caption, langMap);
-        EOD_AddString(LanguageConstants::HearingNoEffectOption+n, cbxSenses[1], caption, langMap);
+        EOD_AddString(LanguageConstants::SightNoEffectOption+n, cbxSenses[0],
+                      caption, langMap);
+
+        EOD_AddString(LanguageConstants::HearingNoEffectOption+n, cbxSenses[1],
+                      caption, langMap);
     }
 
-    EOD_SetWindowText(LanguageConstants::MakesPlayersSightLabel, lblSenses[0], caption, langMap);
-    EOD_SetWindowText(LanguageConstants::MakesPlayersHearingLabel, lblSenses[1], caption, langMap);
+    EOD_SetWindowText(LanguageConstants::MakesPlayersSightLabel, lblSenses[0],
+                      caption, langMap);
+    
+    EOD_SetWindowText(LanguageConstants::MakesPlayersHearingLabel,
+                      lblSenses[1], caption, langMap);
 
     calculatePageWidth();
 
     return retVal;
 
 }
+
+///----------------------------------------------------------------------------
+/// PreRegisterClass - Override defaults for tab page
+///----------------------------------------------------------------------------
+
+void EditObjectEffectsTab::PreRegisterClass(WNDCLASS& wc) {
+    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = L"EditObjectEffectsTabPage";
+    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+}
+
+///----------------------------------------------------------------------------
+/// PreTranslateMessage - Intercept messages, and check if the tab needs
+/// to process them.
+///----------------------------------------------------------------------------
+
+BOOL EditObjectEffectsTab::PreTranslateMessage(MSG &msg) {
+
+    if(IsDialogMessage(msg)) {
+        return TRUE;
+    }
+    
+    return CWnd::PreTranslateMessage(msg);
+
+}
+
+//=============================================================================
+// Public Functions
+//=============================================================================
 
 ///----------------------------------------------------------------------------
 /// calculatePageWidth - Finds how wide the tab page needs to be display the
@@ -145,6 +214,35 @@ void EditObjectEffectsTab::calculatePageWidth() {
 }
 
 ///----------------------------------------------------------------------------
+/// insertData - Takes the data given by the user, and inputs it into the
+/// builder object.
+///----------------------------------------------------------------------------
+
+void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
+
+    if(btnEffect[1].GetCheck() == BST_CHECKED) {
+        builder.flags2(builder.getFlags2() | GameObjectFlags2::EffectsTemporary);
+    }
+
+    for(int i = 0; i < 5; ++i) {
+        int baseAmount = std::stoi(WtoA(txtAttribAmount[i*2].GetWindowText()).c_str());
+        int randAmount = std::stoi(WtoA(txtAttribAmount[(i*2)+1].GetWindowText()).c_str());
+
+        if(btnAttribPolarity[i*2].GetCheck() == BST_CHECKED) {
+            baseAmount *= -1;
+            randAmount *= -1;
+        }
+
+        builder.attributeBase(baseAmount, i);
+        builder.attributeRandom(randAmount, i);
+    } 
+
+    builder.makesSight(cbxSenses[0].GetCurSel());
+    builder.makesHearing(cbxSenses[1].GetCurSel());
+
+}
+
+///----------------------------------------------------------------------------
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 
@@ -184,55 +282,77 @@ void EditObjectEffectsTab::moveControls() {
     // Now for the grid of controls
 
     const int columnWidth       = maxRowWidth / 3;
-    const int firstColumnWidth = (columnWidth * 3 == maxRowWidth) ? columnWidth : maxRowWidth - (columnWidth * 2); 
+
+    const int firstColumnWidth  = (columnWidth * 3 == maxRowWidth) 
+                                  ? columnWidth 
+                                  : maxRowWidth - (columnWidth * 2); 
 
     cPos.Offset(0, CS.YUNRELATED_MARGIN + CS.YFIRST_GROUPBOX_MARGIN);
 
     for(int k = 0; k < 5; ++k) {
 
-        lblAttribType[k].MoveWindow(cPos.x, cPos.y, firstColumnWidth, CD.YLABEL);
+        lblAttribType[k].MoveWindow(cPos.x, cPos.y,
+                                    firstColumnWidth, CD.YLABEL);
 
         if(k == 0) {
 
             CPoint headerPos(cPos);
             headerPos.Offset(firstColumnWidth, 0);
-            lblAttribHeading[0].MoveWindow(headerPos.x, headerPos.y, columnWidth, CD.YLABEL);
+            lblAttribHeading[0].MoveWindow(headerPos.x, headerPos.y,
+                                           columnWidth, CD.YLABEL);
+            
             headerPos.Offset(columnWidth, 0 );
-            lblAttribHeading[1].MoveWindow(headerPos.x, headerPos.y, columnWidth, CD.YLABEL);
+            lblAttribHeading[1].MoveWindow(headerPos.x, headerPos.y,
+                                           columnWidth, CD.YLABEL);
         }
 
         cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
         CPoint polarPos(cPos);
 
         for(int l = 0; l < 2; ++l) {
-            btnAttribPolarity[(k*2)+l].MoveWindow(polarPos.x, polarPos.y, firstColumnWidth / 2, CD.YRADIOBUTTON);
+
+            btnAttribPolarity[(k*2)+l].MoveWindow(polarPos.x, polarPos.y,
+                                                  firstColumnWidth / 2, CD.YRADIOBUTTON);
+
             polarPos.Offset(firstColumnWidth - (firstColumnWidth / 2), 0);
+
         }
 
         polarPos = cPos;
         polarPos.Offset(firstColumnWidth, 0);
 
         for(int m = 0; m < 2; ++m) {
-            txtAttribAmount[(k*2)+m].MoveWindow(polarPos.x, polarPos.y, columnWidth, CD.YTEXTBOX_ON_BUTTON_ROW);
+
+            txtAttribAmount[(k*2)+m].MoveWindow(polarPos.x, polarPos.y,
+                                                columnWidth, CD.YTEXTBOX_ON_BUTTON_ROW);
+
             spnAttribAmount[(k*2)+m].SetBuddy(txtAttribAmount[(k*2)+m].GetHwnd());
             polarPos.Offset(columnWidth, 0);
+
         }
 
         cPos.Offset(0, CD.YTEXTBOX_ON_BUTTON_ROW);
     }
 
     for(int n = 0; n < 2; n++) {
+
         cPos.Offset(0, CS.YRELATED_MARGIN);
-        lblSenses[n].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
+        lblSenses[n].MoveWindow(cPos.x, cPos.y,
+                                defaultLabelSize.cx, defaultLabelSize.cy);
+
         cPos.Offset(0, defaultLabelSize.cy + CS.YRELATED_MARGIN);
-        cbxSenses[n].MoveWindow(cPos.x, cPos.y, maxRowWidth, CD.YDROPDOWN + (CD.YTEXTBOX_ONE_LINE_ALONE * 3));
+        cbxSenses[n].MoveWindow(cPos.x, cPos.y, maxRowWidth,
+                                CD.YDROPDOWN + (CD.YTEXTBOX_ONE_LINE_ALONE * 3));
+
         cPos.Offset(0, CD.YDROPDOWN);
+
     }
 
     cPos.Offset(0, CS.YLAST_GROUPBOX_MARGIN);
     const int yPos = grpEffects.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
 
-    grpAttrib.MoveWindow(CS.XWINDOW_MARGIN, yPos, maxGroupBoxWidth, cPos.y - yPos);
+    grpAttrib.MoveWindow(CS.XWINDOW_MARGIN, yPos,
+                         maxGroupBoxWidth, cPos.y - yPos);
 
     pageHeight = cPos.y + CS.YUNRELATED_MARGIN;
 }
@@ -271,82 +391,27 @@ void EditObjectEffectsTab::populateFields(const GameObject& gameObject) {
     cbxSenses[1].SetCurSel(gameObject.getMakesHearing());
 }
 
-///----------------------------------------------------------------------------
-/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
-/// for more information
-///----------------------------------------------------------------------------
-
-BOOL EditObjectEffectsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
-
-    if(lParam) {
-
-        const WORD ctrlID = LOWORD(wParam);
-        const WORD notifyCode = HIWORD(wParam);
-
-        if(ctrlID >= ControlIDs::EnergyBase && ctrlID <= ControlIDs::TorchLifeRandom) {
-            if(notifyCode == EN_KILLFOCUS) {
-                updateAttributeValue(ctrlID);
-            }
-        }
-    }
-
-    return FALSE;
-}
+//=============================================================================
+// Private Functions
+//=============================================================================
 
 ///----------------------------------------------------------------------------
-/// PreRegisterClass - Override defaults for tab page
+/// updateAttributeValue - Update the spinner control to match the value in
+/// the textbox. Note that the spinner control will auto-cap the value if it
+/// exceeds the valid range.
+/// @param ID of the textbox control that is associated with the spinner
+/// control to be updated
 ///----------------------------------------------------------------------------
-
-void EditObjectEffectsTab::PreRegisterClass(WNDCLASS& wc) {
-    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditObjectEffectsTabPage";
-    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-}
-
-///----------------------------------------------------------------------------
-/// PreTranslateMessage - Intercept messages, and check if the tab needs
-/// to process them.
-///----------------------------------------------------------------------------
-
-BOOL EditObjectEffectsTab::PreTranslateMessage(MSG &msg) {
-
-    if(IsDialogMessage(msg)) {
-        return TRUE;
-    }
-    
-    return CWnd::PreTranslateMessage(msg);
-
-}
 
 void EditObjectEffectsTab::updateAttributeValue(const WORD& ctrlID) {
 
     const int ctrlIndex = ctrlID - ControlIDs::EnergyBase; 
 
-    int newValue = std::stoi(WtoA(txtAttribAmount[ctrlIndex].GetWindowText()).c_str());
+    int newValue = std::stoi(WtoA(
+                   txtAttribAmount[ctrlIndex].GetWindowText()).c_str());
+
     spnAttribAmount[ctrlIndex].SetPos(newValue);
 
 }
 
-void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
 
-    if(btnEffect[1].GetCheck() == BST_CHECKED) {
-        builder.flags2(builder.getFlags2() | GameObjectFlags2::EffectsTemporary);
-    }
-
-    for(int i = 0; i < 5; ++i) {
-        int baseAmount = std::stoi(WtoA(txtAttribAmount[i*2].GetWindowText()).c_str());
-        int randAmount = std::stoi(WtoA(txtAttribAmount[(i*2)+1].GetWindowText()).c_str());
-
-        if(btnAttribPolarity[i*2].GetCheck() == BST_CHECKED) {
-            baseAmount *= -1;
-            randAmount *= -1;
-        }
-
-        builder.attributeBase(baseAmount, i);
-        builder.attributeRandom(randAmount, i);
-    } 
-
-    builder.makesSight(cbxSenses[0].GetCurSel());
-    builder.makesHearing(cbxSenses[1].GetCurSel());
-
-}
