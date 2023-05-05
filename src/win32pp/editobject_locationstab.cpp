@@ -69,24 +69,23 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     for(int k = 0; k < 2; ++k) {
 
-        txtGroundCoord[k].Create(*this, 0, ES_AUTOHSCROLL);
-        txtDoorCoord[k].Create(*this, 0, ES_AUTOHSCROLL);
         lblGroundCoord[k].Create(*this, 0, SS_SIMPLE);
         EOD_SetWindowText(LanguageConstants::XCoordLabel+k, lblGroundCoord[k],
                           caption, langMap);
 
         lblDoorCoord[k].Create(*this, 0, SS_SIMPLE);
-        txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
-        txtDoorCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         EOD_SetWindowText(LanguageConstants::XCoordLabel+k, lblDoorCoord[k],
                           caption, langMap);
 
-        txtDoorCoord[k].LimitText(2); // 0 to 99
-        txtDoorCoord[k].LimitText(2);
-
     }
 
-    cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL);
+    for(int k = 0; k < 2; ++k) {
+        txtGroundCoord[k].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
+        txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
+        txtGroundCoord[k].LimitText(2); // 0 to 99
+    }
+
+    cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     EOD_AddString(LanguageConstants::NoCharacterSelected, cbxWhichCharacter, caption, langMap);
 
     const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
@@ -100,9 +99,15 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     cbxWhichCharacter.SetCurSel(0);
 
-    btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX);
+    btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
     EOD_SetWindowText(LanguageConstants::UnlocksDoorAtLabel, btnUnlocksDoor, caption, langMap);
     btnUnlocksDoor.SetDlgCtrlID(ControlIDs::UnlocksDoor);
+
+    for(int k = 0; k < 2; ++k) {
+        txtDoorCoord[k].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
+        txtDoorCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
+        txtDoorCoord[k].LimitText(2);
+    }
 
     calculatePageWidth();
 

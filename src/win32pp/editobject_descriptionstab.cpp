@@ -200,8 +200,11 @@ void EditObjectDescriptionsTab::moveControls() {
 void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject) {
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
+
         CString caption;
-        EOD_SetWindowText(gameObject.getDescription(i), txtDescriptions[i], caption);
+
+        EOD_SetWindowText(gameObject.getDescription(i),
+                          txtDescriptions[i], caption);
     }
 
 }

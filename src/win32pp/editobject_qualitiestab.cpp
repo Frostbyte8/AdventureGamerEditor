@@ -68,7 +68,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     for(int k = 0; k < GameObjectFlags1::NumFlags; ++k) {
 
-        btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX);
+        btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
         btnFlags[k].SetDlgCtrlID(ControlIDs::MasterKey + k);
         EOD_SetWindowText(LanguageConstants::MasterKeyFlag+k, btnFlags[k],
                           caption, langMap);
@@ -78,7 +78,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     for(int i = 0; i < 2; ++i) {
 
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
-        txtProperties[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER);
+        txtProperties[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtProperties[i].LimitText(5);
 
@@ -100,7 +100,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2],
                       caption, langMap);
 
-    cbxUsedWith.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL);
+    cbxUsedWith.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     EOD_AddString(LanguageConstants::NoObjectSelected, cbxUsedWith,
                   caption, langMap);
 

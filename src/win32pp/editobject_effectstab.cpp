@@ -88,6 +88,19 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         EOD_SetWindowText(LanguageConstants::NegativeSignLabel,
                           btnAttribPolarity[(k*2)+1], caption, langMap);
 
+        for(int l = 0; l < 2; ++l) {
+            txtAttribAmount[(k*2)+l].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
+            spnAttribAmount[(k*2)+l].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
+                                    UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
+
+            txtAttribAmount[(k*2)+l].SetExStyle(WS_EX_CLIENTEDGE);
+            txtAttribAmount[(k*2)+l].LimitText(2);
+
+            spnAttribAmount[(k*2)+l].SetRange(GameObjectConstants::MinAttributeValue,
+                                        GameObjectConstants::MaxAttributeValue);
+
+            txtAttribAmount[(k*2)+l].SetDlgCtrlID(ControlIDs::EnergyBase+((k*2)+l));
+        }
     }
 
     for(int i = 0; i < 2; ++i) {
@@ -96,23 +109,9 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
                           lblAttribHeading[i], caption, langMap);
     }
 
-    for(int l = 0; l < 10; ++l) {
-        txtAttribAmount[l].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER);
-        spnAttribAmount[l].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
-                                UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
-
-        txtAttribAmount[l].SetExStyle(WS_EX_CLIENTEDGE);
-        txtAttribAmount[l].LimitText(2);
-
-        spnAttribAmount[l].SetRange(GameObjectConstants::MinAttributeValue,
-                                    GameObjectConstants::MaxAttributeValue);
-
-        txtAttribAmount[l].SetDlgCtrlID(ControlIDs::EnergyBase+l);
-    }
-
     for(int m = 0; m < 2; ++m) {
         lblSenses[m].Create(*this, 0, SS_SIMPLE);
-        cbxSenses[m].Create(*this, 0, CBS_DROPDOWN);
+        cbxSenses[m].Create(*this, 0, CBS_DROPDOWNLIST | WS_TABSTOP);
     }
 
     for(int n = 0; n < 4; ++n) {

@@ -1,8 +1,8 @@
 #ifndef __SHARED_FUNCTIONS_H__
 #define __SHARED_FUNCTIONS_H__
 
-// TODO: Maybe Helper functions would be a better name for this?
-// TODO: EOD isn't needed as all windows could benefit from these functions.
+// TODO: Maybe Helper functions would be a better name for this? Maybe shared_win32pp_functions.h
+// TODO: EOD isn't needed as all windows could benefit from these functions, not just the dialog.
 
 #include <wxx_wincore.h>
 #include <wxx_stdcontrols.h>
