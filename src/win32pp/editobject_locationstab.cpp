@@ -2,6 +2,8 @@
 #include "../model/gameobject.h"
 #include <algorithm>
 
+#include "shared_functions.h"
+
 namespace ControlIDs {
     const WORD OnGround         = 101;
     const WORD OnPlayer         = 102;
@@ -282,7 +284,6 @@ void EditObjectLocationsTab::toggleUnlocksDoor(const BOOL& doesUnlock) {
 
 
 WORD EditObjectLocationsTab::validateFields() {
-
 
     const int mapWidth = gameMap->getWidth() - 1;
     const int mapHeight = gameMap->getHeight() - 1;

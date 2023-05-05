@@ -3,6 +3,8 @@
 #include "../util/languagemapper.h"
 #include <algorithm>
 
+#include "shared_functions.h"
+
 namespace ControlIDs {
     const WORD MasterKey    = 101;
     const WORD Invisible    = 102;

@@ -2,6 +2,8 @@
 #include "../model/gameobject.h"
 #include <algorithm>
 
+#include "shared_functions.h"
+
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
 ///----------------------------------------------------------------------------

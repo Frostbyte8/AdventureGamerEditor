@@ -2,6 +2,8 @@
 #include "../model/gameobject.h"
 #include <algorithm>
 
+#include "shared_functions.h"
+
 namespace ControlIDs {
     WORD EnergyBase            = 101;
     WORD EnergyRandom          = 102;

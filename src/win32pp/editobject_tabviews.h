@@ -12,52 +12,55 @@
 #include "../model/gamecharacter.h"
 #include "../model/gamemap.h"
 
-inline void EOD_SetWindowText(const unsigned int& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
-    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
-    widget.SetWindowTextW(caption);
-}
-
-inline void EOD_SetWindowText(const std::string& str, CWnd& widget, CString& caption) {
-    caption = AtoW(str.c_str(), CP_UTF8);
-    widget.SetWindowTextW(caption);
-}
-
-inline void EOD_AddString(const unsigned int& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
-    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
-    widget.AddString(caption);
-}
+//=============================================================================
+// EOTabViewBase - The base class for all tab pages within the Edit Object 
+// Dialog Window.
+//=============================================================================
 
 class EOTabViewBase : public CWnd {
 
     public:
 
-        virtual void insertData(GameObject::Builder& builder) = 0;
-        virtual WORD validateFields() = 0;
-        virtual void populateFields(const GameObject& gameObject) = 0; // Populate Fields
-        virtual void moveControls() = 0;
+        // Accessors
+        const LONG& getPageWidth() const { return pageWidth; }
+        const LONG& getPageHeight() const { return pageHeight; }
+
+        // Pure Virtual Functions
         virtual void calculatePageWidth() = 0;
-        LONG& getPageWidth() { return pageWidth; }
-        LONG& getPageHeight() { return pageHeight; }
+        virtual void insertData(GameObject::Builder& builder) = 0;
+        virtual void populateFields(const GameObject& gameObject) = 0;
+        virtual void moveControls() = 0;
+        virtual WORD validateFields() = 0;
+
+    protected:
 
         LONG pageWidth;
         LONG pageHeight;
 };
 
+//=============================================================================
+// EditObjectDescriptionsTab - Contains the descriptions associated with the
+// object, as well what icon to use, and what (unused) sound to play.
+//=============================================================================
+
 class EditObjectDescriptionsTab : public EOTabViewBase {
 
     public:
         
+        // Constructor
         EditObjectDescriptionsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) { }
-        virtual int OnCreate(CREATESTRUCT& cs);
-        virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual void moveControls();
+
+        // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth();
-        virtual void populateFields(const GameObject& gameObject);
-        virtual WORD validateFields() { return 0; }
         virtual void insertData(GameObject::Builder& builder);
+        virtual void populateFields(const GameObject& gameObject);
+        virtual void moveControls();
+        virtual WORD validateFields() { return 0; }
 
     protected:
         
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
         virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
@@ -72,22 +75,29 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         
 };
 
+//=============================================================================
+// EditObjectQualitiesTab - Contains Flags/Properties that make up the object. 
+//=============================================================================
+
 class EditObjectQualitiesTab : public EOTabViewBase {
 
     public:
 
+        // Constuctor
         EditObjectQualitiesTab(WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : windowMetrics(inWindowMetrics), gameMap(inGameMap) { }
-        virtual int OnCreate(CREATESTRUCT& cs);
-        virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual void moveControls();
+
+        // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth();
-        virtual void populateFields(const GameObject& gameObject); // Populate Fields
-        virtual WORD validateFields();
         virtual void insertData(GameObject::Builder& builder);
+        virtual void populateFields(const GameObject& gameObject); 
+        virtual void moveControls();
+        virtual WORD validateFields();
 
     protected:
                 
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
         virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
@@ -106,22 +116,30 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         CComboBox               cbxUsedWith;
 };
 
+//=============================================================================
+// EditObjectEffectsTab - Contains options for how the object effects the
+// player when the object is used, as well as how the object is used.
+//=============================================================================
+
 class EditObjectEffectsTab : public EOTabViewBase {
 
     public:
 
+        // Constructor
         EditObjectEffectsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
-        virtual int OnCreate(CREATESTRUCT& cs);
-        virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual void moveControls();
+
+        // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth();
-        virtual void populateFields(const GameObject& gameObject); // Populate Fields
-        virtual WORD validateFields() { return 0; }
         virtual void insertData(GameObject::Builder& builder);
+        virtual void populateFields(const GameObject& gameObject); 
+        virtual void moveControls();
+        virtual WORD validateFields() { return 0; }
 
     protected:
 
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
         virtual BOOL PreTranslateMessage(MSG& msg);
         
     private:
@@ -146,22 +164,31 @@ class EditObjectEffectsTab : public EOTabViewBase {
 
 };
 
+//=============================================================================
+// EditObjectEffectsTab - Contains options for where the object is positioned,
+// if it unlocks a door, and where that door might be.
+//=============================================================================
+
 class EditObjectLocationsTab : public EOTabViewBase {
 
     public:
 
+        // Constructor
         EditObjectLocationsTab(WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : windowMetrics(inWindowMetrics), gameMap(inGameMap) {}
-        virtual int OnCreate(CREATESTRUCT& cs);
-        virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual void moveControls();
+
+        // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth();
-        virtual void populateFields(const GameObject& gameObject); // Populate Fields
-        virtual WORD validateFields();
         virtual void insertData(GameObject::Builder& builder);
+        virtual void populateFields(const GameObject& gameObject); 
+        virtual void moveControls();
+        virtual WORD validateFields();
+
 
     protected:
 
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
         virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
