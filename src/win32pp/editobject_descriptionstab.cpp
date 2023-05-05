@@ -41,11 +41,13 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
         // For the last two fields, we need browse buttons
         if(i > GameObjectDescriptions::NumDescriptions - 1) {
 
-            btnBrowse[i - GameObjectDescriptions::NumDescriptions].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
+            const int currentButton = i - GameObjectDescriptions::NumDescriptions;
+
+            btnBrowse[currentButton].Create(*this, 0,
+                                            WS_TABSTOP | BS_PUSHBUTTON);
 
             EOD_SetWindowText(LanguageConstants::BrowseButton,
-                              btnBrowse[i - GameObjectDescriptions::NumDescriptions],
-                              caption, langMap);
+                              btnBrowse[currentButton], caption, langMap);
         }
 
     }
@@ -56,94 +58,6 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     calculatePageWidth();
 
     return retVal;
-
-}
-
-///----------------------------------------------------------------------------
-/// calculatePageWidth - Finds how wide the tab page needs to be display the
-/// controls
-///----------------------------------------------------------------------------
-
-void EditObjectDescriptionsTab::calculatePageWidth() {
-    
-    pageWidth = 0;
-
-    // The Width will be the size of the widest control, in this case, it will be
-    // one of the labels, so we will loop through that.
-
-    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
-        pageWidth = std::max(windowMetrics->CalculateStringWidth(
-                             lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
-    }
-
-    const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
-    pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
-    
-}
-
-///----------------------------------------------------------------------------
-/// moveControls - Move the controls to their desired positions
-///----------------------------------------------------------------------------
-
-void EditObjectDescriptionsTab::moveControls() {
-    
-    const WindowMetrics::ControlSpacing cs      = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions cd   = windowMetrics->GetControlDimensions();
-    
-    // The max width of a row is the size of the tab page, less the margins of the
-    // Group Box and the window.
-
-    const int maxGroupBoxWidth  = GetClientRect().right - (cs.XWINDOW_MARGIN * 2);
-    const int maxRowWidth       = maxGroupBoxWidth - (cs.XGROUPBOX_MARGIN * 2);
-
-    const CSize defaultLabelSize(maxRowWidth, cd.YLABEL);
-    const CSize defaultEditSize(maxRowWidth, cd.YTEXTBOX_ONE_LINE_ALONE);
-
-    CPoint cPos(cs.XGROUPBOX_MARGIN + cs.XWINDOW_MARGIN, 
-                cs.YFIRST_GROUPBOX_MARGIN + cs.YRELATED_MARGIN + cs.YWINDOW_MARGIN);
-
-    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
-
-        lblDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
-        cPos.Offset(0, defaultLabelSize.cy + cs.YLABELASSOC_MARGIN);
-        txtDescriptions[i].MoveWindow(cPos.x, cPos.y, defaultEditSize.cx, defaultEditSize.cy);
-        cPos.Offset(0, defaultEditSize.cy + cs.YRELATED_MARGIN);
-
-        if(i > GameObjectDescriptions::NumDescriptions - 1) {
-            btnBrowse[i - GameObjectDescriptions::NumDescriptions].MoveWindow(cPos.x, cPos.y, 
-                                                                              cd.XBUTTON, cd.YBUTTON);
-
-            if(i != 5) {
-                cPos.Offset(0, cd.YBUTTON + cs.YRELATED_MARGIN);
-            }
-            else {
-                cPos.Offset(0, cd.YBUTTON);
-            }
-
-        }
-
-    }
-
-    grpDescriptions.MoveWindow(cs.XWINDOW_MARGIN, cs.YWINDOW_MARGIN,
-                               maxGroupBoxWidth, cPos.y);
-
-
-    pageHeight = grpDescriptions.GetClientRect().Height() + cs.YUNRELATED_MARGIN;
-
-}
-
-///----------------------------------------------------------------------------
-/// populateFields - Take the data from the GameObject and fill in the fields
-/// on the tab page.
-/// @param a constant reference to GameObject object
-///----------------------------------------------------------------------------
-
-void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject) {
-
-    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
-        CString caption;
-        EOD_SetWindowText(gameObject.getDescription(i), txtDescriptions[i], caption);
-    }
 
 }
 
@@ -172,6 +86,37 @@ BOOL EditObjectDescriptionsTab::PreTranslateMessage(MSG &msg) {
 
 }
 
+//=============================================================================
+// Public Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// calculatePageWidth - Finds how wide the tab page needs to be display the
+/// controls
+///----------------------------------------------------------------------------
+
+void EditObjectDescriptionsTab::calculatePageWidth() {
+    
+    pageWidth = 0;
+
+    // The Width will be the size of the widest control, in this case, it will be
+    // one of the labels, so we will loop through that.
+
+    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
+        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+                             lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
+    }
+
+    const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
+    pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
+    
+}
+
+///----------------------------------------------------------------------------
+/// insertData - Takes the data given by the user, and inputs it into the
+/// builder object.
+///----------------------------------------------------------------------------
+
 void EditObjectDescriptionsTab::insertData(GameObject::Builder& builder) {
 
     // TODO: For the controller version of this, send the text and let the controller
@@ -183,6 +128,80 @@ void EditObjectDescriptionsTab::insertData(GameObject::Builder& builder) {
     for(int i = 1; i < 6; ++i) {
         wideDesc = txtDescriptions[i].GetWindowText().Left(GameObjectConstants::MaxDescriptionLength);
         builder.description(WtoA(wideDesc).c_str(), i);
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// moveControls - Move the controls to their desired positions
+///----------------------------------------------------------------------------
+
+void EditObjectDescriptionsTab::moveControls() {
+    
+    const WindowMetrics::ControlSpacing CS      = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics->GetControlDimensions();
+    
+    // The max width of a row is the size of the tab page, less the margins of the
+    // Group Box and the window.
+
+    const int maxGroupBoxWidth  = GetClientRect().right - (CS.XWINDOW_MARGIN * 2);
+    const int maxRowWidth       = maxGroupBoxWidth - (CS.XGROUPBOX_MARGIN * 2);
+
+    const CSize defaultLabelSize(maxRowWidth, CD.YLABEL);
+    const CSize defaultEditSize(maxRowWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
+
+    CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN, 
+                CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
+
+    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
+
+        lblDescriptions[i].MoveWindow(cPos.x, cPos.y,
+                                      defaultLabelSize.cx, defaultLabelSize.cy);
+
+        cPos.Offset(0, defaultLabelSize.cy + CS.YLABELASSOC_MARGIN);
+
+        txtDescriptions[i].MoveWindow(cPos.x, cPos.y,
+                                      defaultEditSize.cx, defaultEditSize.cy);
+
+        cPos.Offset(0, defaultEditSize.cy + CS.YRELATED_MARGIN);
+
+        if(i > GameObjectDescriptions::NumDescriptions - 1) {
+
+            const int currentButton = i - GameObjectDescriptions::NumDescriptions;
+
+            btnBrowse[currentButton].MoveWindow(cPos.x, cPos.y, 
+                                                CD.XBUTTON, CD.YBUTTON);
+
+            if(i != 5) {
+                cPos.Offset(0, CD.YBUTTON + CS.YRELATED_MARGIN);
+            }
+            else {
+                cPos.Offset(0, CD.YBUTTON);
+            }
+
+        }
+
+    }
+
+    grpDescriptions.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                               maxGroupBoxWidth, cPos.y);
+
+
+    pageHeight = grpDescriptions.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
+
+}
+
+///----------------------------------------------------------------------------
+/// populateFields - Take the data from the GameObject and fill in the fields
+/// on the tab page.
+/// @param a constant reference to GameObject object
+///----------------------------------------------------------------------------
+
+void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject) {
+
+    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
+        CString caption;
+        EOD_SetWindowText(gameObject.getDescription(i), txtDescriptions[i], caption);
     }
 
 }
