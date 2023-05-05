@@ -26,6 +26,8 @@ class EOTabViewBase : public CWnd {
         const LONG& getPageHeight() const { return pageHeight; }
 
         // Pure Virtual Functions
+        // TODO: Give moveControls a WindowMetrics object so it's consistent with
+        // the DPI settings of the monitor it is on.
         virtual void calculatePageWidth() = 0;
         virtual void insertData(GameObject::Builder& builder) = 0;
         virtual void populateFields(const GameObject& gameObject) = 0;
