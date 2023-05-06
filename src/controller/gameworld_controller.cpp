@@ -69,12 +69,12 @@ bool GameWorldController::loadWorld(const std::string& filePath,
             std::string fileReadError = LanguageMapper::getInstance().get(LanguageConstants::FileReadError) + " ";
             fileReadError.append(e.what());
 
-            mainWindow->DisplayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get(LanguageConstants::FileReadErrorCaption));
+            mainWindow->displayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get(LanguageConstants::FileReadErrorCaption));
         }
     }
     else {
 
-        mainWindow->DisplayErrorMessage("Unable to open file.", "File not found");
+        mainWindow->displayErrorMessage("Unable to open file.", "File not found");
 
     }
 
@@ -116,10 +116,10 @@ bool GameWorldController::newWorld() {
     catch (const std::runtime_error& e) {
         std::string errMessage = "Unable to create a new Adventure Gamer world: ";
         errMessage.append(e.what());
-        mainWindow->DisplayErrorMessage(errMessage, "Error creating new world.");
+        mainWindow->displayErrorMessage(errMessage, "Error creating new world.");
     }
     catch (const std::bad_alloc& e) {
-        mainWindow->DisplayErrorMessage(e.what(), "Out of Memory?");
+        mainWindow->displayErrorMessage(e.what(), "Out of Memory?");
     }
 
     if(!wasWorldCreated) {
@@ -148,7 +148,7 @@ bool GameWorldController::saveWorld(const std::string& filePath, const std::stri
 
     }
     else {
-        mainWindow->DisplayErrorMessage("Unable to write file.", "File Write Error");
+        mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");
         return false;
     }
 
@@ -171,7 +171,7 @@ bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTil
         return true;
     }
     else {
-        mainWindow->DisplayErrorMessage(LanguageMapper::getInstance().get(LanguageConstants::TileGetError),
+        mainWindow->displayErrorMessage(LanguageMapper::getInstance().get(LanguageConstants::TileGetError),
                                         LanguageMapper::getInstance().get(LanguageConstants::TileGetErrorCaption));
     }
 
@@ -234,7 +234,7 @@ bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, c
                 const size_t charIndex = gameMap->characterIndexFromID(gameObjects[objectIndex].getCreatureID());
                 const std::string characterName = gameCharacters[charIndex].getName();
 
-                if(!mainWindow->AskYesNoQuestion("The object is currently held by " + characterName + ". Do you still want to place it on the ground?", "Place Object?", true) == MainWindowInterfaceResponses::Yes) {
+                if(!mainWindow->askYesNoQuestion("The object is currently held by " + characterName + ". Do you still want to place it on the ground?", "Place Object?", true) == MainWindowInterfaceResponses::Yes) {
                     return false;
                 }
 
@@ -270,7 +270,7 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& gameCharacter)
         gameMap->addCharacter(gmKey, gameCharacter.build());
     }
     catch (const std::bad_alloc&) {
-        mainWindow->DisplayErrorMessage("Could not add character: Out of memory.", "Out of Memory");
+        mainWindow->displayErrorMessage("Could not add character: Out of memory.", "Out of Memory");
         return false;
     }
     return true;
@@ -293,7 +293,7 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
         gameMap->addObject(gmKey, gameObject.build());
     }
     catch (const std::bad_alloc&) {
-        mainWindow->DisplayErrorMessage("Could not add object: Out of memory.", "Out of Memory");
+        mainWindow->displayErrorMessage("Could not add object: Out of memory.", "Out of Memory");
         return false;
     }
     return true;
@@ -329,7 +329,7 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
 
             message.append("\n\nDo you still wish to delete this Character?");
 
-            if(mainWindow->AskYesNoQuestion(message, "Remove Character?", true) != MainWindowInterfaceResponses::Yes) {
+            if(mainWindow->askYesNoQuestion(message, "Remove Character?", true) != MainWindowInterfaceResponses::Yes) {
                 return false;
             }
 
@@ -378,7 +378,7 @@ bool GameWorldController::tryRemoveObject(const int& objectID) {
 
             message.append("\n\nDo you still wish to delete this Object?");
 
-            if(mainWindow->AskYesNoQuestion(message, "Remove Object?", true) != MainWindowInterfaceResponses::Yes) {
+            if(mainWindow->askYesNoQuestion(message, "Remove Object?", true) != MainWindowInterfaceResponses::Yes) {
                 return false;
             }
 

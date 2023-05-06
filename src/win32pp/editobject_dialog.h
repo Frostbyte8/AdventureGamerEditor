@@ -31,6 +31,14 @@ class EditObjectDialog : public CWnd {
 
         GameObject::Builder getAlteredObject();
 
+        void SetParentWindow(const HWND hWnd) {
+            parentWindow = hWnd;
+        }
+
+        void DoStuff() {
+            ::EnableWindow(parentWindow, FALSE);
+        }
+
     protected:
 
         virtual void OnClose(); 
@@ -57,6 +65,8 @@ class EditObjectDialog : public CWnd {
         CButton                         btnDialogControl[3];
         CTab                            tabControl;
         CSize                           contentSize;
+
+        HWND                            parentWindow;
 
 };
 

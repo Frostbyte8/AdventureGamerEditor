@@ -219,9 +219,11 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
-    eod = new EditObjectDialog(NULL, &windowMetrics, gameWorldController->getGameMap());
+    eod = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap());
     eod->Create(0);
+    eod->SetParentWindow(GetHwnd());
     eod->MoveWindow(0, 0, 256,256, TRUE);
+    eod->DoStuff();
     eod->ShowWindow(SW_SHOW);
 
 
@@ -272,7 +274,7 @@ BOOL MainWindowFrame::OnFileOpen() {
 // Refer to the interface header file for more information.
 //=============================================================================
 
-int MainWindowFrame::AskYesNoQuestion(const std::string& inQuestion, const std::string& inTitle,
+int MainWindowFrame::askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle,
                                       bool allowCancel) {
 
     const CString question      = AtoW(inQuestion.c_str(), CP_UTF8);
@@ -284,7 +286,7 @@ int MainWindowFrame::AskYesNoQuestion(const std::string& inQuestion, const std::
     return retVal;
 }
 
-void MainWindowFrame::DisplayErrorMessage(const std::string& inMessage,
+void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
                                           const std::string& inTitle) {
 
     const CString message       = AtoW(inMessage.c_str(), CP_UTF8);
@@ -293,4 +295,8 @@ void MainWindowFrame::DisplayErrorMessage(const std::string& inMessage,
 
     MessageBox(message, title, messageBoxFlags);
 
+}
+
+void MainWindowFrame::finishedEditObjectDialog() {
+    MessageBox(L"Editing done.", L"", MB_OK);
 }

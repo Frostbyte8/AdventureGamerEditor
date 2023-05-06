@@ -21,7 +21,7 @@ class MainWindowInterface {
         /// @return an Integer indicating what the user selected. See MainWindowInterfaceResponses
         /// for more information
         ///--------------------------------------------------------------------
-        virtual int AskYesNoQuestion(const std::string& question, const std::string& title,
+        virtual int askYesNoQuestion(const std::string& question, const std::string& title,
                                      bool allowCancel) = 0;
 
         ///--------------------------------------------------------------------
@@ -29,7 +29,13 @@ class MainWindowInterface {
         /// @param The error message
         /// @param Title of the message box, if necessary.
         ///--------------------------------------------------------------------
-        virtual void DisplayErrorMessage(const std::string& message, const std::string& title) = 0;
+        virtual void displayErrorMessage(const std::string& message, const std::string& title) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit Object Dialog Window is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedEditObjectDialog() = 0;
+
 };
 
 #endif // __MAINWINDOW_INTERFACE_H__

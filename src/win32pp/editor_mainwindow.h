@@ -19,10 +19,12 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 		virtual HWND Create(HWND parent = 0);
 
         // Public Interface Functions
-        virtual int AskYesNoQuestion(const std::string& question, const std::string& title,
+        virtual int askYesNoQuestion(const std::string& question, const std::string& title,
                                      bool allowCancel = true);
 
-        virtual void DisplayErrorMessage(const std::string& message, const std::string& title);
+        virtual void displayErrorMessage(const std::string& message, const std::string& title);
+
+        virtual void finishedEditObjectDialog();
 
 	protected:
 

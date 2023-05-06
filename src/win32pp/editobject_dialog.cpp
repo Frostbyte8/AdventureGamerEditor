@@ -13,8 +13,9 @@
 
 void EditObjectDialog::OnClose() {
     
+    ::EnableWindow(parentWindow, TRUE);
     CWnd::OnClose();
-
+    mainWindow->finishedEditObjectDialog();
 }
 
 ///----------------------------------------------------------------------------
