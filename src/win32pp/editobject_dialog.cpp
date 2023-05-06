@@ -186,6 +186,7 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 void EditObjectDialog::OnClose() {
 
     WORD retVal = qualitiesTab->validateFields(); 
+    retVal = descriptionsTab->validateFields();
     retVal = locationsTab->validateFields();
     getGameObjectBuilder();
 

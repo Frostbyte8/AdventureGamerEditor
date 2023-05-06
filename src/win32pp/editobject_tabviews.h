@@ -57,7 +57,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject);
         virtual void moveControls();
-        virtual WORD validateFields() { return 0; }
+        virtual WORD validateFields();
 
     protected:
         

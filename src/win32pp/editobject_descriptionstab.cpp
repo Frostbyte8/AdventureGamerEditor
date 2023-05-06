@@ -240,6 +240,44 @@ void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject) {
 
 }
 
+///----------------------------------------------------------------------------
+/// validateFields - Ensures that the data given by the user is valid, and if
+/// is not, gives the user a chance to correct it.
+/// @return 0 if no errors are found, and if an error is found, returns the ID
+/// of the control that caused the validation error.
+///----------------------------------------------------------------------------
+
+WORD EditObjectDescriptionsTab::validateFields() {
+   
+    if(txtDescriptions[4].GetWindowTextLength() > 12 ) {
+        MessageBox(L"File names cannot exceed 8 characters plus 3 for the extension", L"Validation Error", MB_OK | MB_ICONERROR);
+        return ControlIDs::BrowseIcon;
+    }
+    
+    if(txtDescriptions[5].GetWindowTextLength() > 12 ) {
+        MessageBox(L"File names cannot exceed 8 characters plus 3 for the extension", L"Validation Error", MB_OK | MB_ICONERROR);
+        return ControlIDs::BrowseIcon;
+    }
+    
+    CString field = txtDescriptions[4].GetWindowText().Right(4);
+    field.MakeUpper();
+
+    if(field.Compare(L".ICO") && field.Compare(L".BMP")) {
+        MessageBox(L"Image must be an .ICO or a .BMP.", L"Validation Error", MB_OK | MB_ICONERROR);
+        return ControlIDs::BrowseIcon;
+    }
+
+    field = txtDescriptions[5].GetWindowText().Right(4);
+    field.MakeUpper();
+
+    if(field.Compare(L".WAV")) {
+        MessageBox(L"Sound file must be a .WAV", L"Validation Error", MB_OK | MB_ICONERROR);
+        return ControlIDs::BrowseSound;
+    }
+
+    return 0;
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================
@@ -264,8 +302,18 @@ BOOL EditObjectDescriptionsTab::onBrowseForMedia(const bool findIcon) {
     }
 
 	if(fileDialog.DoModal() == IDOK) {
-        txtDescriptions[(findIcon ? 4 : 5)].SetWindowTextW(fileDialog.GetFileName());
+
+        CString fileName;
+        const long strLength = GetShortPathName(fileDialog.GetPathName(), NULL, 0);
+        GetShortPathName(fileDialog.GetPathName(), fileName.GetBuffer(strLength), strLength + 1);
+        fileName.ReleaseBuffer();
+
+        const int lastSlash = fileName.ReverseFind(L"\\") + 1;
+        fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash); 
+
+        txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);
 	}
 
     return TRUE;
+
 }
