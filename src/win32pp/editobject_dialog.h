@@ -29,17 +29,18 @@ class EditObjectDialog : public CWnd {
             //contentSize(32,32);                             
         }
 
-        GameObject::Builder getGameObjectBuilder();
+        GameObject::Builder getAlteredObject();
 
     protected:
 
-        virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual int OnCreate(CREATESTRUCT& cs);
-        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
         virtual void OnClose(); 
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
+        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
+        
 
     private:
-        BOOL onBrowseForIcon();
+
         static bool CALLBACK SetFontTest(HWND child, LPARAM font);
 
         LRESULT OnSize(WPARAM& wParam, LPARAM& lParam);
@@ -53,7 +54,7 @@ class EditObjectDialog : public CWnd {
         EditObjectEffectsTab*           effectsTab;
         EditObjectLocationsTab*         locationsTab;
 
-        CButton                         dialogButtons[3];
+        CButton                         btnDialogControl[3];
         CTab                            tabControl;
         CSize                           contentSize;
 

@@ -38,8 +38,10 @@ MainWindowFrame::~MainWindowFrame() {
         gameWorldController = NULL;
     }
 
-    delete eod;
-    eod = NULL;
+    if(eod) {
+        delete eod;
+        eod = NULL;
+    }
 
 }
 

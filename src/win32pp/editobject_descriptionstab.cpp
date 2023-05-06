@@ -303,12 +303,20 @@ BOOL EditObjectDescriptionsTab::onBrowseForMedia(const bool findIcon) {
 
 	if(fileDialog.DoModal() == IDOK) {
 
+        // Convert the Long Path Name of the file into a short one. We can't use long paths
+        // As the game was written for Windows 3.1.
+
         CString fileName;
         const long strLength = GetShortPathName(fileDialog.GetPathName(), NULL, 0);
         GetShortPathName(fileDialog.GetPathName(), fileName.GetBuffer(strLength), strLength + 1);
         fileName.ReleaseBuffer();
 
         const int lastSlash = fileName.ReverseFind(L"\\") + 1;
+        if(lastSlash < 0) {
+            MessageBox(L"Could not turn long path name into a short path name.", L"File Path Error", MB_OK | MB_ICONERROR);
+            return TRUE;
+        }
+
         fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash); 
 
         txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);

@@ -1,10 +1,27 @@
 #include "editobject_dialog.h"
+#include "shared_functions.h"
 
-void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
-    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditObjectDialog";
-    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+
+//=============================================================================
+// Win32++ Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnClose - Processes the WM_CLOSE message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+void EditObjectDialog::OnClose() {
+    
+    CWnd::OnClose();
+
 }
+
+///----------------------------------------------------------------------------
+/// OnCreate - Set some defaults for the Dialog window, and create remaining
+/// child controls.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
 
 int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
@@ -99,7 +116,32 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     LONG tallestTab = effectsTab->getPageHeight() + (ctrlSpace.YWINDOW_MARGIN * 2); // This tab is always the tallest.
     tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, tallestTab, FALSE);
 
-    // TODO: OK, CANCEL, APPLY buttons
+    CPoint cPos(ctrlSpace.XWINDOW_MARGIN + widestTab, ctrlSpace.YWINDOW_MARGIN + tallestTab + ctrlSpace.YUNRELATED_MARGIN);
+
+    cPos.Offset(-(CD.XBUTTON), 0);
+
+    // TODO: Only show apply when editing an existing object, not creating a new one.
+
+    for(int i = 2; i >= 0; --i) {
+        
+        btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
+        btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        btnDialogControl[i].SetWindowTextW(L"TEST");
+        cPos.Offset(-(CD.XBUTTON + ctrlSpace.XBUTTON_MARGIN), 0);
+    }
+
+    btnDialogControl[0].SetDlgCtrlID(IDOK);
+    btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption, btnDialogControl[0], caption, langMap);
+    EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption, btnDialogControl[1], caption, langMap);
+
+    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
+
+    //btnDialogControl[2].SetDlgCtrlID(101);
 
     descriptionsTab->populateFields(bd.build());
     qualitiesTab->populateFields(bd.build());
@@ -107,20 +149,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     locationsTab->populateFields(bd.build());
 
     return CWnd::OnCreate(cs);
-}
 
-LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
-
-    if(msg == WM_SIZE) {
-        return OnSize(wParam, lParam);
-    }
-
-    return WndProcDefault(msg, wParam, lParam);
-}
-
-bool CALLBACK EditObjectDialog::SetFontTest(HWND child, LPARAM font) {
-    ::SendMessage(child, WM_SETFONT, font, true);
-    return true;
 }
 
 ///----------------------------------------------------------------------------
@@ -179,25 +208,41 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 
 }
 
-//
-//
-//
+///----------------------------------------------------------------------------
+/// PreRegisterClass - Override defaults for tab page
+///----------------------------------------------------------------------------
 
-void EditObjectDialog::OnClose() {
-
-    WORD retVal = qualitiesTab->validateFields(); 
-    retVal = descriptionsTab->validateFields();
-    retVal = locationsTab->validateFields();
-    getGameObjectBuilder();
-
-    if(retVal == 0) {
-        CWnd::OnClose();
-    }
-
-    
+void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
+    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = L"EditObjectDialog";
+    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
-GameObject::Builder EditObjectDialog::getGameObjectBuilder() {
+///----------------------------------------------------------------------------
+/// WndProc - Window Procedure for the Frame.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
+
+    if(msg == WM_SIZE) {
+        //return OnSize(wParam, lParam);
+    }
+
+    return WndProcDefault(msg, wParam, lParam);
+}
+
+//=============================================================================
+// Public Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// getAlteredObject - Get a copy of the object that is being built by this
+/// dialog window.
+/// @returns a Copy of a GameObject::Builder object.
+///----------------------------------------------------------------------------
+
+GameObject::Builder EditObjectDialog::getAlteredObject() {
 
     GameObject::Builder bd;
     descriptionsTab->insertData(bd);
@@ -205,4 +250,20 @@ GameObject::Builder EditObjectDialog::getGameObjectBuilder() {
     effectsTab->insertData(bd);
     locationsTab->insertData(bd);
     return bd;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// SetProperFont - Sets the font of the window and all it's child controls
+/// to the font specified. Meant to be used with EnumChildWindows.
+/// @param Handle to the the control whose font is to be changed
+/// @param LPARAM of the font to be set on the control.
+///----------------------------------------------------------------------------
+
+bool CALLBACK EditObjectDialog::SetFontTest(HWND child, LPARAM font) {
+    ::SendMessage(child, WM_SETFONT, font, true);
+    return true;
 }
