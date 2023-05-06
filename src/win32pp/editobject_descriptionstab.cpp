@@ -1,12 +1,40 @@
 #include "editobject_tabviews.h"
 #include "../model/gameobject.h"
 #include <algorithm>
+#include <wxx_commondlg.h>
 
 #include "shared_functions.h"
+
+namespace ControlIDs {
+    const WORD BrowseIcon       = 101;
+    const WORD BrowseSound      = 102;
+}
 
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL EditObjectDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+    
+    if(lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD ctrlAction = HIWORD(wParam);
+
+        if(ctrlAction == BN_CLICKED && 
+          (ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound)) {
+                return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
+        }
+
+    }
+
+    return FALSE;
+}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates the controls for the Tab page.
@@ -54,6 +82,9 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
     txtDescriptions[GameObjectDescriptions::Icon].EnableWindow(FALSE);
     txtDescriptions[GameObjectDescriptions::Sound].EnableWindow(FALSE);
+
+    btnBrowse[0].SetDlgCtrlID(ControlIDs::BrowseIcon);
+    btnBrowse[1].SetDlgCtrlID(ControlIDs::BrowseSound);
 
     calculatePageWidth();
 
@@ -207,4 +238,34 @@ void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject) {
                           txtDescriptions[i], caption);
     }
 
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// onBrowseForMedia - When the Browse for Icon or Sound icon is pressed,
+/// search for one.
+/// @param if true, it will search for an icon, otherwise, search for a sound.
+///----------------------------------------------------------------------------
+
+BOOL EditObjectDescriptionsTab::onBrowseForMedia(const bool findIcon) {
+
+	CFileDialog fileDialog(TRUE, NULL, NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, NULL);
+
+    if(findIcon) {
+        fileDialog.SetFilter(L"Image Files (*.BMP;*.ICO)|*.BMP;*.ICO");
+        fileDialog.SetTitle(L"Find Image File");
+    }
+    else {
+        fileDialog.SetFilter(L"Sound Files (*.WAV)|*.WAV");
+        fileDialog.SetTitle(L"Find Sound File");
+    }
+
+	if(fileDialog.DoModal() == IDOK) {
+        txtDescriptions[(findIcon ? 4 : 5)].SetWindowTextW(fileDialog.GetFileName());
+	}
+
+    return TRUE;
 }

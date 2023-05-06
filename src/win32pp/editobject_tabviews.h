@@ -61,11 +61,14 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
 
     protected:
         
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
+
+        BOOL onBrowseForMedia(const bool forIcon);
 
         CButton                 grpDescriptions;
         CStatic                 lblDescriptions[6];

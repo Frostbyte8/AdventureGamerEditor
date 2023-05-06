@@ -44,7 +44,9 @@ BOOL EditObjectQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
             updatePropertyValue(ctrlID);
         }
     }
-
+    else {
+        return FALSE;
+    }
 
     return TRUE;
 }

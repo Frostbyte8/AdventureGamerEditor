@@ -38,6 +38,7 @@ BOOL EditObjectEffectsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 
             if(notifyCode == EN_KILLFOCUS) {
                 updateAttributeValue(ctrlID);
+                return TRUE;
             }
 
         }

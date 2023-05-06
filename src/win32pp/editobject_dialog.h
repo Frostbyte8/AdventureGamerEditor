@@ -39,6 +39,7 @@ class EditObjectDialog : public CWnd {
         virtual void OnClose(); 
 
     private:
+        BOOL onBrowseForIcon();
         static bool CALLBACK SetFontTest(HWND child, LPARAM font);
 
         LRESULT OnSize(WPARAM& wParam, LPARAM& lParam);
