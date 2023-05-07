@@ -25,6 +25,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
         virtual void finishedEditObjectDialog();
+        void onEditObject(const int& alterType);
 
 	protected:
 
@@ -52,7 +53,10 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         GameWorldController*    gameWorldController;
 		WindowMetrics		    windowMetrics;
 
-        EditObjectDialog*       eod;
+        EditObjectDialog*       editObjectDialog;
+
+
+        HWND                    activeWindowHandle;
 
 		// Disable copy construction and assignment operator
 		MainWindowFrame(const MainWindowFrame&);

@@ -21,6 +21,8 @@
 	"210" : "Characters",
 	
 	"301" : "Adventure Gamer Editor++",
+    "302" : "Create Game Object",
+    "303" : "Editing Game Object: ",
 
     // Edit Object Dialog
 

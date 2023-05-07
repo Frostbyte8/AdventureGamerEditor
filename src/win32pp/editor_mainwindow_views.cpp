@@ -1,9 +1,37 @@
 #include "editor_mainwindow_views.h"
 #include "../util/languagemapper.h"
 
+namespace ControlIDs {
+    const WORD AddObjectButton    = 201;
+    const WORD EditObjectButton   = 202;
+    const WORD PlaceObjectButton  = 203;
+    const WORD DeleteObjectButton = 204;
+}
+
 //=============================================================================
 // Public / Protected Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL GameEntitiesView::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if(ctrlID == ControlIDs::AddObjectButton) {
+            mainWindow->onEditObject(0);
+        }
+
+    }
+
+    return FALSE;
+}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates child controls. 
@@ -34,6 +62,7 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
         caption = AtoW(langMap.get(LanguageConstants::ObjectAddButton + i).c_str(), CP_UTF8);
         alterObjectButton[i].Create(*this, 0, BS_PUSHBUTTON);
         alterObjectButton[i].SetWindowText(caption);
+        alterObjectButton[i].SetDlgCtrlID(ControlIDs::AddObjectButton+i);
 
         caption = AtoW(langMap.get(LanguageConstants::CharacterAddButton + i).c_str(), CP_UTF8);
         alterCharacterButton[i].Create(*this, 0, BS_PUSHBUTTON);

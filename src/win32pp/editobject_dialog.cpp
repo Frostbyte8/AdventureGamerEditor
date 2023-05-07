@@ -35,6 +35,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(windowMetrics), L"Effects"));
     locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(windowMetrics, gameMap), L"Locations"));
 
+    for(int i = 0; i < 3; ++i) {
+        btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
+    }
+
     std::vector<LONG> pageWidths;
 
     //
@@ -100,6 +104,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     LONG dialogButtonSize = (CD.XBUTTON * 3) + (ctrlSpace.XBUTTON_MARGIN * 2) + (ctrlSpace.XWINDOW_MARGIN);
 
+    // TODO: Better name for this
     widestTab = std::max(widestTab, dialogButtonSize);
     
     tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, 0, FALSE);
@@ -124,10 +129,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     // TODO: Only show apply when editing an existing object, not creating a new one.
 
     for(int i = 2; i >= 0; --i) {
-        
-        btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
         btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
-        btnDialogControl[i].SetWindowTextW(L"TEST");
         cPos.Offset(-(CD.XBUTTON + ctrlSpace.XBUTTON_MARGIN), 0);
     }
 
@@ -148,6 +150,8 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     qualitiesTab->populateFields(bd.build());
     effectsTab->populateFields(bd.build());
     locationsTab->populateFields(bd.build());
+
+    contentSize.SetSize(widestTab + (ctrlSpace.XWINDOW_MARGIN * 2), cPos.y + CD.YBUTTON + ctrlSpace.YWINDOW_MARGIN);
 
     return CWnd::OnCreate(cs);
 

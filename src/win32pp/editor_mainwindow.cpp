@@ -5,6 +5,8 @@
 #include "../util/languagemapper.h"
 #include <wxx_commondlg.h>
 
+#include "shared_functions.h"
+
 //=============================================================================
 // Constructors / Destructor
 //=============================================================================
@@ -15,7 +17,8 @@
 ///----------------------------------------------------------------------------
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
-                                     roadSelectorDocker(0), gameWorldController(0) {
+                                     roadSelectorDocker(0), gameWorldController(0),
+                                     activeWindowHandle(0), editObjectDialog(0) {
 
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
@@ -38,9 +41,9 @@ MainWindowFrame::~MainWindowFrame() {
         gameWorldController = NULL;
     }
 
-    if(eod) {
-        delete eod;
-        eod = NULL;
+    if(editObjectDialog) {
+        delete editObjectDialog;
+        editObjectDialog = NULL;
     }
 
 }
@@ -172,12 +175,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 void MainWindowFrame::OnInitialUpdate() {
     
-    
-    /*
-    const std::vector<GameTile> tiles = gameWorldController->getTiles();
-    // Just for a test.
-    DisplayErrorMessage(tiles.at(0).getDescription(), tiles.at(0).getName());
-    */
+    activeWindowHandle = GetHwnd(); 
 }
 
 ///----------------------------------------------------------------------------
@@ -202,6 +200,23 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     //    case WM_ERASEBKGND: return TRUE;
     //}
 
+    switch(msg) {
+
+        case WM_ACTIVATEAPP:
+        case WM_ACTIVATE:
+
+            // Make sure the correct window goes to the top
+            if(!IsWindowEnabled() && activeWindowHandle != 0) {
+                if((BOOL)wParam == TRUE) {
+                    ::SetWindowPos(activeWindowHandle, HWND_TOP, 0, 0, 0, 0, 
+                                   SWP_NOMOVE | SWP_NOSIZE);
+                }
+                return 0;
+            }
+
+            break;
+    }
+
 
 	return WndProcDefault(msg, wParam, lParam);
 }
@@ -219,17 +234,10 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
-    eod = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap());
-    eod->Create(0);
-    eod->SetParentWindow(GetHwnd());
-    eod->MoveWindow(0, 0, 256,256, TRUE);
-    eod->DoStuff();
-    eod->ShowWindow(SW_SHOW);
-
-
     return FALSE;
 
 }
+
 
 ///----------------------------------------------------------------------------
 /// OnFileNew - Create a new file when File > New is selected.
@@ -298,5 +306,64 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 }
 
 void MainWindowFrame::finishedEditObjectDialog() {
-    MessageBox(L"Editing done.", L"", MB_OK);
+
+    if(editObjectDialog) {
+        delete editObjectDialog;
+        editObjectDialog = NULL;
+        activeWindowHandle = GetHwnd();
+    }
+
+}
+
+void MainWindowFrame::onEditObject(const int& alterType) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(!editObjectDialog && activeWindowHandle == GetHwnd()) {
+        
+        editObjectDialog = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap());
+        editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+        editObjectDialog->SetParentWindow(GetHwnd());
+
+        // We need to hold on to this as we will need it to make sure the Dialog is the front most window
+        activeWindowHandle = editObjectDialog->GetHwnd();
+
+        CString caption;
+
+        if(alterType == 0) {
+            EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
+        }
+        else {
+            //EOD_SetWindowText(303, editObjectDialog, caption, langMap);
+        }
+
+        const CSize contentSize = editObjectDialog->getContentSize();
+        RECT rc = {0, 0, contentSize.cx, contentSize.cy};
+
+        // TODO: DPI
+        const HMONITOR currentMonitor = MonitorFromWindow(GetHwnd(), 0);
+        MONITORINFOEX monitorInfo;
+        monitorInfo.cbSize = sizeof(MONITORINFOEX);
+        GetMonitorInfo(currentMonitor, &monitorInfo);
+
+        
+        AdjustWindowRectEx(&rc, editObjectDialog->GetStyle(), FALSE, editObjectDialog->GetExStyle());
+        CPoint windowPos;
+        
+        // Calculate where on the monitor the window is position
+
+        windowPos.x = (abs(monitorInfo.rcWork.right - monitorInfo.rcWork.left) / 2) - ((rc.right + abs(rc.left)) / 2);
+        windowPos.y = (abs(monitorInfo.rcWork.bottom - monitorInfo.rcWork.top) / 2) - ((rc.bottom + abs(rc.top)) / 2);
+
+        // Offset this to where the monitor is
+        windowPos.Offset(monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top);
+        
+        editObjectDialog->DoStuff();
+
+        // Move window to the top and show it.
+        //editObjectDialog->MoveWindow(0, 0, contentSize.cx, contentSize.cy, TRUE);
+        editObjectDialog->SetWindowPos(HWND_TOP, windowPos.x, windowPos.y, rc.right + abs(rc.left), rc.bottom + abs(rc.top), 0);
+        editObjectDialog->ShowWindow(SW_SHOW);
+
+   } 
 }

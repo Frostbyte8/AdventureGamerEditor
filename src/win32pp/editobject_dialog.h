@@ -26,10 +26,12 @@ class EditObjectDialog : public CWnd {
 
         EditObjectDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : 
                          mainWindow(inMainWindow), windowMetrics(inWindowMetrics), gameMap(inGameMap) {
-            //contentSize(32,32);                             
+            contentSize.SetSize(0,0);                             
         }
 
         GameObject::Builder getAlteredObject();
+
+        const CSize& getContentSize() const { return contentSize; }
 
         void SetParentWindow(const HWND hWnd) {
             parentWindow = hWnd;

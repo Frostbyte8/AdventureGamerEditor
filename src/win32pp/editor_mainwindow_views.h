@@ -24,6 +24,7 @@ class GameEntitiesView : public CWnd {
     protected:
         virtual void PreRegisterClass(WNDCLASS& wc);
 
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
