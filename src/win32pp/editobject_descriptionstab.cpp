@@ -86,8 +86,6 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     btnBrowse[0].SetDlgCtrlID(ControlIDs::BrowseIcon);
     btnBrowse[1].SetDlgCtrlID(ControlIDs::BrowseSound);
 
-    calculatePageWidth();
-
     return retVal;
 
 }
@@ -126,7 +124,7 @@ BOOL EditObjectDescriptionsTab::PreTranslateMessage(MSG &msg) {
 /// controls
 ///----------------------------------------------------------------------------
 
-void EditObjectDescriptionsTab::calculatePageWidth() {
+void EditObjectDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
     
     pageWidth = 0;
 
@@ -134,11 +132,11 @@ void EditObjectDescriptionsTab::calculatePageWidth() {
     // one of the labels, so we will loop through that.
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
-        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+        pageWidth = std::max(windowMetrics.CalculateStringWidth(
                              lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
     }
 
-    const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlSpacing cs = windowMetrics.GetControlSpacing();
     pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
     
 }
@@ -167,10 +165,10 @@ void EditObjectDescriptionsTab::insertData(GameObject::Builder& builder) {
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 
-void EditObjectDescriptionsTab::moveControls() {
+void EditObjectDescriptionsTab::moveControls(const WindowMetrics& windowMetrics) {
     
-    const WindowMetrics::ControlSpacing CS      = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD   = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
     
     // The max width of a row is the size of the tab page, less the margins of the
     // Group Box and the window.

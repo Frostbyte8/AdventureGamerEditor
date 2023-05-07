@@ -28,13 +28,14 @@ class EOTabViewBase : public CWnd {
         // Pure Virtual Functions
         // TODO: Give moveControls a WindowMetrics object so it's consistent with
         // the DPI settings of the monitor it is on.
-        virtual void calculatePageWidth() = 0;
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics) = 0;
         virtual void insertData(GameObject::Builder& builder) = 0;
         virtual void populateFields(const GameObject& gameObject) = 0;
-        virtual void moveControls() = 0;
+        virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
         virtual WORD validateFields() = 0;
 
     protected:
+        
 
         LONG pageWidth;
         LONG pageHeight;
@@ -50,13 +51,12 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
     public:
         
         // Constructor
-        EditObjectDescriptionsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) { }
 
         // Pure Virtual Functions (implemented) 
-        virtual void calculatePageWidth();
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject);
-        virtual void moveControls();
+        virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields();
 
     protected:
@@ -75,9 +75,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         CAnsiEdit               txtDescriptions[6];
         CButton                 btnBrowse[2];
         CStatic                 picIcon;
-        
-        WindowMetrics*          windowMetrics;
-        
+                
 };
 
 //=============================================================================
@@ -89,13 +87,13 @@ class EditObjectQualitiesTab : public EOTabViewBase {
     public:
 
         // Constuctor
-        EditObjectQualitiesTab(WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : windowMetrics(inWindowMetrics), gameMap(inGameMap) { }
+        EditObjectQualitiesTab(const GameMap* inGameMap) : gameMap(inGameMap) { }
 
         // Pure Virtual Functions (implemented)
-        virtual void calculatePageWidth();
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject); 
-        virtual void moveControls();
+        virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields();
 
     protected:
@@ -111,7 +109,6 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         void updatePropertyValue(const WORD& ctrlID);
 
         const GameMap*          gameMap;
-        WindowMetrics*          windowMetrics;
 
         CButton                 grpFlags;
         CButton                 grpProperties;
@@ -133,14 +130,11 @@ class EditObjectEffectsTab : public EOTabViewBase {
 
     public:
 
-        // Constructor
-        EditObjectEffectsTab(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
-
         // Pure Virtual Functions (implemented)
-        virtual void calculatePageWidth();
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject); 
-        virtual void moveControls();
+        virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields() { return 0; }
 
     protected:
@@ -153,8 +147,6 @@ class EditObjectEffectsTab : public EOTabViewBase {
     private:
 
         void updateAttributeValue(const WORD& ctrlID);
-
-        WindowMetrics*          windowMetrics;
 
         CButton                 grpEffects;
         CButton                 btnEffect[2];
@@ -182,13 +174,13 @@ class EditObjectLocationsTab : public EOTabViewBase {
     public:
 
         // Constructor
-        EditObjectLocationsTab(WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : windowMetrics(inWindowMetrics), gameMap(inGameMap) {}
+        EditObjectLocationsTab(const GameMap* inGameMap) : gameMap(inGameMap) {}
 
         // Pure Virtual Functions (implemented)
-        virtual void calculatePageWidth();
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject); 
-        virtual void moveControls();
+        virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields();
 
 
@@ -205,7 +197,6 @@ class EditObjectLocationsTab : public EOTabViewBase {
         inline void toggleUnlocksDoor(const BOOL& doesUnlock);
 
         const GameMap*          gameMap;
-        WindowMetrics*          windowMetrics;
 
         CButton                 grpLocations;
 

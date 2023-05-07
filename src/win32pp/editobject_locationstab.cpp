@@ -109,8 +109,6 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         txtDoorCoord[k].LimitText(2);
     }
 
-    calculatePageWidth();
-
     return retVal;
 
 }
@@ -149,7 +147,8 @@ BOOL EditObjectLocationsTab::PreTranslateMessage(MSG &msg) {
 /// controls
 ///----------------------------------------------------------------------------
 
-void EditObjectLocationsTab::calculatePageWidth() {
+void EditObjectLocationsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
+
     pageWidth = 0;
 
     std::vector<CWnd *> controlList;
@@ -161,13 +160,13 @@ void EditObjectLocationsTab::calculatePageWidth() {
     const size_t clSize = controlList.size();
     
     for(size_t j = 0; j < clSize; ++j) {
-        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+        pageWidth = std::max(windowMetrics.CalculateStringWidth(
                              controlList[j]->GetWindowTextW().c_str()),
                              pageWidth);
     }
 
-    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
-    LONG btnWidth = windowMetrics->CalculateStringWidth(btnUnlocksDoor.GetWindowTextW().c_str());
+    const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
+    LONG btnWidth = windowMetrics.CalculateStringWidth(btnUnlocksDoor.GetWindowTextW().c_str());
     btnWidth += CD.XCHECKBOX + CD.XCHECKBOX_GAP; 
 
     pageWidth = std::max(btnWidth, pageWidth);
@@ -229,10 +228,10 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 
-void EditObjectLocationsTab::moveControls() {
+void EditObjectLocationsTab::moveControls(const WindowMetrics& windowMetrics) {
     
-    const WindowMetrics::ControlSpacing CS = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
 
     // The max width of a row is the size of the tab page, less the margins of the
     // Group Box and the window.
@@ -253,8 +252,8 @@ void EditObjectLocationsTab::moveControls() {
     // TODO: The Labels and textboxes are not properly Aligned, nor are they
     // the correct size.
 
-    const int lblCoordWidths = windowMetrics->XDLU2PIX(12);
-    const int txtCoordWidths = windowMetrics->XDLU2PIX(24);
+    const int lblCoordWidths = windowMetrics.XDLU2PIX(12);
+    const int txtCoordWidths = windowMetrics.XDLU2PIX(24);
     const int lblYOffset = (CD.YTEXTBOX_ONE_LINE_ALONE / 2) - (CD.YLABEL / 2);
     
 
@@ -309,6 +308,7 @@ void EditObjectLocationsTab::moveControls() {
                             maxGroupBoxWidth, cPos.y);
     
     pageHeight = grpLocations.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
+
 }
 
 ///----------------------------------------------------------------------------

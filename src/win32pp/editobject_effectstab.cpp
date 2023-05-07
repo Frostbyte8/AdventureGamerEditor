@@ -129,8 +129,6 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText(LanguageConstants::MakesPlayersHearingLabel,
                       lblSenses[1], caption, langMap);
 
-    calculatePageWidth();
-
     return retVal;
 
 }
@@ -169,24 +167,24 @@ BOOL EditObjectEffectsTab::PreTranslateMessage(MSG &msg) {
 /// controls
 ///----------------------------------------------------------------------------
 
-void EditObjectEffectsTab::calculatePageWidth() {
+void EditObjectEffectsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
 
-    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
     const int RadioButtonBaseWidth = CD.XRADIOBUTTON + CD.XRADIOBUTTON_GAP;
 
     // See if attributes is the widest
-    const int headWidth1 = windowMetrics->CalculateStringWidth(lblAttribHeading[0].GetWindowText().c_str());
-    const int headWidth2 = windowMetrics->CalculateStringWidth(lblAttribHeading[1].GetWindowText().c_str());
+    const int headWidth1 = windowMetrics.CalculateStringWidth(lblAttribHeading[0].GetWindowText().c_str());
+    const int headWidth2 = windowMetrics.CalculateStringWidth(lblAttribHeading[1].GetWindowText().c_str());
 
     int typeWidth = 0;
 
     for(int i = 0; i < 5; ++i) {
-        const int textSize = windowMetrics->CalculateStringWidth(lblAttribType[i].GetWindowTextW().c_str());
+        const int textSize = windowMetrics.CalculateStringWidth(lblAttribType[i].GetWindowTextW().c_str());
         typeWidth = std::max(textSize, typeWidth);
     }
 
-    const int polarityWidth = windowMetrics->CalculateStringWidth(btnAttribPolarity[0].GetWindowText().c_str()) +
-                              windowMetrics->CalculateStringWidth(btnAttribPolarity[1].GetWindowText().c_str()) +
+    const int polarityWidth = windowMetrics.CalculateStringWidth(btnAttribPolarity[0].GetWindowText().c_str()) +
+                              windowMetrics.CalculateStringWidth(btnAttribPolarity[1].GetWindowText().c_str()) +
                               RadioButtonBaseWidth;
     
     if(polarityWidth > typeWidth) {
@@ -202,10 +200,10 @@ void EditObjectEffectsTab::calculatePageWidth() {
 
     for(int k = 0; k < 2; ++k) {
 
-        int stringWidth = windowMetrics->CalculateStringWidth(btnEffect[k].GetWindowText().c_str());
+        int stringWidth = windowMetrics.CalculateStringWidth(btnEffect[k].GetWindowText().c_str());
         singleLineWidth = std::max(stringWidth + RadioButtonBaseWidth, singleLineWidth);
 
-        stringWidth = windowMetrics->CalculateStringWidth(lblSenses[k].GetWindowText().c_str());
+        stringWidth = windowMetrics.CalculateStringWidth(lblSenses[k].GetWindowText().c_str());
         singleLineWidth = std::max(stringWidth, singleLineWidth);
     }
 
@@ -246,10 +244,10 @@ void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 
-void EditObjectEffectsTab::moveControls() {
+void EditObjectEffectsTab::moveControls(const WindowMetrics& windowMetrics) {
     
-    const WindowMetrics::ControlSpacing CS = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
 
     // The max width of a row is the size of the tab page, less the margins of the
     // Group Box and the window.
@@ -355,6 +353,7 @@ void EditObjectEffectsTab::moveControls() {
                          maxGroupBoxWidth, cPos.y - yPos);
 
     pageHeight = cPos.y + CS.YUNRELATED_MARGIN;
+
 }
 
 ///----------------------------------------------------------------------------

@@ -162,17 +162,17 @@ BOOL EditObjectQualitiesTab::PreTranslateMessage(MSG &msg) {
 /// controls
 ///----------------------------------------------------------------------------
 
-void EditObjectQualitiesTab::calculatePageWidth() {
+void EditObjectQualitiesTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
     
     pageWidth = 0;
 
-    const WindowMetrics::ControlSpacing CS      = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD   = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
 
     const LONG checkboxWidth = CD.XCHECKBOX + CD.XCHECKBOX_GAP;
     
     for(int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
-        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+        pageWidth = std::max(windowMetrics.CalculateStringWidth(
                              btnFlags[i].GetWindowTextW().c_str()) + checkboxWidth,
                              pageWidth);
     }
@@ -187,7 +187,7 @@ void EditObjectQualitiesTab::calculatePageWidth() {
     const size_t clSize = controlList.size();
     
     for(size_t j = 0; j < clSize; ++j) {
-        pageWidth = std::max(windowMetrics->CalculateStringWidth(
+        pageWidth = std::max(windowMetrics.CalculateStringWidth(
                              controlList[j]->GetWindowTextW().c_str()), pageWidth);
     }
 
@@ -243,10 +243,10 @@ void EditObjectQualitiesTab::insertData(GameObject::Builder& builder) {
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 
-void EditObjectQualitiesTab::moveControls() {
+void EditObjectQualitiesTab::moveControls(const WindowMetrics& windowMetrics) {
     
-    const WindowMetrics::ControlSpacing CS      = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD   = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
     
     // The max width of a row is the size of the tab page, less the margins of the
     // Group Box and the window.
@@ -311,6 +311,7 @@ void EditObjectQualitiesTab::moveControls() {
 
 
     pageHeight = cPos.y + CS.YUNRELATED_MARGIN;
+
 }
 
 ///----------------------------------------------------------------------------

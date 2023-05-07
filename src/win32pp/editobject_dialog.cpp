@@ -30,10 +30,13 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
 
     tabControl.Create(*this);
-    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(windowMetrics), L"Descriptions"));
-    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(windowMetrics, gameMap), L"Qualities"));
-    effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(windowMetrics), L"Effects"));
-    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(windowMetrics, gameMap), L"Locations"));
+
+    
+
+    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(), L"Descriptions"));
+    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap), L"Qualities"));
+    effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(), L"Effects"));
+    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(gameMap), L"Locations"));
 
     for(int i = 0; i < 3; ++i) {
         btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
@@ -41,49 +44,14 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     std::vector<LONG> pageWidths;
 
-    //
-    // TEST DATA
-    //
-
-    GameObject::Builder bd;
-    bd.description("Thing", 0);
-    bd.description("Looks pretty cool", 1);
-    bd.description("You hold it high above your head. Nothing Happens.", 2);
-    bd.description("The object for no reason at all ceases to exist suddenly.", 3);
-    bd.description("thing.ico", 4);
-    bd.description("hello.wav", 5);
-    bd.attributeBase(-1, 0);
-    bd.attributeRandom(-2, 0);
-    bd.attributeBase(3, 1);
-    bd.attributeRandom(4, 1);
-
-    bd.flags1(64);
-    bd.flags2(1);
-
-    bd.location();
-    bd.monetaryWorth(1234);
-    bd.uses(123);
-    bd.usedWithID(2);
-
-    bd.makesHearing(HearingTypes::Normal());
-    bd.makesSight(SightTypes::Blind());
-
-    // TODO: I'm not sure why, but until you do this, the tabs are invisible. It might be because of
-    // how the window is created so it might go away after this window is an actual modal window.
-
-    //
-    // TEST DATA END
-    //
-
-
     // TODO: Figure out tab width
     HFONT dialogFont = windowMetrics->GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetFontTest), (LPARAM)dialogFont);
 
-    descriptionsTab->calculatePageWidth();
-    qualitiesTab->calculatePageWidth();
-    effectsTab->calculatePageWidth();
-    locationsTab->calculatePageWidth();
+    descriptionsTab->calculatePageWidth(*windowMetrics);
+    qualitiesTab->calculatePageWidth(*windowMetrics);
+    effectsTab->calculatePageWidth(*windowMetrics);
+    locationsTab->calculatePageWidth(*windowMetrics);
 
     pageWidths.push_back(descriptionsTab->getPageWidth());
     pageWidths.push_back(qualitiesTab->getPageWidth());
@@ -114,10 +82,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     tabControl.SelectPage(1);
     tabControl.SelectPage(0);
 
-    descriptionsTab->moveControls();
-    qualitiesTab->moveControls();
-    effectsTab->moveControls();
-    locationsTab->moveControls();   
+    descriptionsTab->moveControls(*windowMetrics);
+    qualitiesTab->moveControls(*windowMetrics);
+    effectsTab->moveControls(*windowMetrics);
+    locationsTab->moveControls(*windowMetrics);   
     
     LONG tallestTab = effectsTab->getPageHeight() + (ctrlSpace.YWINDOW_MARGIN * 2); // This tab is always the tallest.
     tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, tallestTab, FALSE);
@@ -143,13 +111,6 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption, btnDialogControl[1], caption, langMap);
 
     btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
-
-    //btnDialogControl[2].SetDlgCtrlID(101);
-
-    descriptionsTab->populateFields(bd.build());
-    qualitiesTab->populateFields(bd.build());
-    effectsTab->populateFields(bd.build());
-    locationsTab->populateFields(bd.build());
 
     contentSize.SetSize(widestTab + (ctrlSpace.XWINDOW_MARGIN * 2), cPos.y + CD.YBUTTON + ctrlSpace.YWINDOW_MARGIN);
 
