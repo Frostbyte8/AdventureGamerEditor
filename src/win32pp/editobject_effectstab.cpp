@@ -80,7 +80,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         EOD_SetWindowText(LanguageConstants::ObjectEnergyLabel+k,
                           lblAttribType[k], caption, langMap);
 
-        btnAttribPolarity[(k*2)].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
+        btnAttribPolarity[k*2].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
         btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_AUTORADIOBUTTON);
 
         EOD_SetWindowText(LanguageConstants::PositiveSignLabel,
@@ -125,6 +125,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
     EOD_SetWindowText(LanguageConstants::MakesPlayersSightLabel, lblSenses[0],
                       caption, langMap);
+
     
     EOD_SetWindowText(LanguageConstants::MakesPlayersHearingLabel,
                       lblSenses[1], caption, langMap);
@@ -362,7 +363,7 @@ void EditObjectEffectsTab::moveControls(const WindowMetrics& windowMetrics) {
 /// @param a constant reference to GameObject object
 ///----------------------------------------------------------------------------
 
-void EditObjectEffectsTab::populateFields(const GameObject& gameObject) {
+void EditObjectEffectsTab::populateFields(const GameObject& gameObject, const GameMap& gameMap) {
 
     if(gameObject.getFlags2() & GameObjectFlags2::EffectsTemporary) {
         btnEffect[1].SetCheck(BST_CHECKED);
@@ -412,5 +413,3 @@ void EditObjectEffectsTab::updateAttributeValue(const WORD& ctrlID) {
     spnAttribAmount[ctrlIndex].SetPos(newValue);
 
 }
-
-

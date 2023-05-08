@@ -83,6 +83,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         txtGroundCoord[k].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
         txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtGroundCoord[k].LimitText(2); // 0 to 99
+        txtGroundCoord[k].EnableWindow(FALSE);
     }
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
@@ -96,8 +97,6 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         caption += AtoW(gameCharacters[j].getName().c_str());
         cbxWhichCharacter.AddString(caption);
     }
-
-    cbxWhichCharacter.SetCurSel(0);
 
     btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
     EOD_SetWindowText(LanguageConstants::UnlocksDoorAtLabel, btnUnlocksDoor, caption, langMap);
@@ -317,7 +316,7 @@ void EditObjectLocationsTab::moveControls(const WindowMetrics& windowMetrics) {
 /// @param a constant reference to GameObject object
 ///----------------------------------------------------------------------------
 
-void EditObjectLocationsTab::populateFields(const GameObject& gameObject) {
+void EditObjectLocationsTab::populateFields(const GameObject& gameObject, const GameMap& gameMap) {
 
     const int isLocated = gameObject.getIsLocated();
 
@@ -340,6 +339,15 @@ void EditObjectLocationsTab::populateFields(const GameObject& gameObject) {
 
     toggleUnlocksDoor(unlocksDoor);
     btnUnlocksDoor.SetCheck(unlocksDoor);
+
+    const size_t whichChar = gameMap.characterIndexFromID(gameObject.getCreatureID());
+
+    if(whichChar == ((size_t)-1)) {
+        cbxWhichCharacter.SetCurSel(0);
+    }
+    else {
+        cbxWhichCharacter.SetCurSel(whichChar + 1);
+    }
 
 }
 

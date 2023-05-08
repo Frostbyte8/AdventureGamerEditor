@@ -30,7 +30,7 @@ class EOTabViewBase : public CWnd {
         // the DPI settings of the monitor it is on.
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) = 0;
         virtual void insertData(GameObject::Builder& builder) = 0;
-        virtual void populateFields(const GameObject& gameObject) = 0;
+        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) = 0;
         virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
         virtual WORD validateFields() = 0;
 
@@ -55,7 +55,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
-        virtual void populateFields(const GameObject& gameObject);
+        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields();
 
@@ -92,7 +92,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
-        virtual void populateFields(const GameObject& gameObject); 
+        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap); 
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields();
 
@@ -133,7 +133,7 @@ class EditObjectEffectsTab : public EOTabViewBase {
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
-        virtual void populateFields(const GameObject& gameObject); 
+        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap); 
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields() { return 0; }
 
@@ -179,7 +179,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
-        virtual void populateFields(const GameObject& gameObject); 
+        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap); 
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields();
 

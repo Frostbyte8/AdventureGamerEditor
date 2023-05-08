@@ -22,8 +22,8 @@ namespace GameObjectConstants {
     const int NotOnCreature     = 0;
     const int MaxMonetaryValue  = 10000;
     const int MinMonetaryValue  = 0;
-    const int MaxNumUses        = 1;
-    const int MinNumUses        = 10000;
+    const int MaxNumUses        = 10000;
+    const int MinNumUses        = 1;
 
     const int MinAttributeValue = 0;
     const int MaxAttributeValue = 12;

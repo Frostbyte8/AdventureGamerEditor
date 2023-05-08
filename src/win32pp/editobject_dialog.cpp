@@ -1,7 +1,6 @@
 #include "editobject_dialog.h"
 #include "shared_functions.h"
 
-
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
@@ -29,14 +28,22 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     const WindowMetrics::ControlSpacing ctrlSpace = windowMetrics->GetControlSpacing();
     const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
 
-    tabControl.Create(*this);
+    tabControl.Create(*this); 
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    caption = AtoW(langMap.get(LanguageConstants::DescriptionTab).c_str(), CP_UTF8);
+    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(), caption));
     
+    caption = AtoW(langMap.get(LanguageConstants::QualitiesTab).c_str(), CP_UTF8);
+    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap), caption));
 
-    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(), L"Descriptions"));
-    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap), L"Qualities"));
-    effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(), L"Effects"));
-    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(gameMap), L"Locations"));
+    caption = AtoW(langMap.get(LanguageConstants::EffectsTab).c_str(), CP_UTF8);
+    effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(), caption));
+
+    caption = AtoW(langMap.get(LanguageConstants::LocationsTab).c_str(), CP_UTF8);
+    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(gameMap), caption));
 
     for(int i = 0; i < 3; ++i) {
         btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
@@ -44,9 +51,14 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     std::vector<LONG> pageWidths;
 
-    // TODO: Figure out tab width
+    // Set the font to the font specified within window metrics.
+
     HFONT dialogFont = windowMetrics->GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetFontTest), (LPARAM)dialogFont);
+
+
+    // Next, find the widest tab, and make sure that the Dialog buttons
+    // are not even wider than that.
 
     descriptionsTab->calculatePageWidth(*windowMetrics);
     qualitiesTab->calculatePageWidth(*windowMetrics);
@@ -68,13 +80,16 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     // TODO: Verify that this is correct.
     // The 3rd margin is for the tab control, the other 2 are for inside the groupbox, I think.
+
     widestTab += ((ctrlSpace.XWINDOW_MARGIN * 3) + (ctrlSpace.XGROUPBOX_MARGIN * 2));
 
+    // Make sure that the 2/3 dialog buttons aren't wider than the tab.
     LONG dialogButtonSize = (CD.XBUTTON * 3) + (ctrlSpace.XBUTTON_MARGIN * 2) + (ctrlSpace.XWINDOW_MARGIN);
-
-    // TODO: Better name for this
     widestTab = std::max(widestTab, dialogButtonSize);
     
+
+    // Now that we know what our widest section is, we can resize our tab control
+    // and resize the contents of the tab pages to fit.
     tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, 0, FALSE);
 
     tabControl.SelectPage(3);
@@ -86,10 +101,13 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     qualitiesTab->moveControls(*windowMetrics);
     effectsTab->moveControls(*windowMetrics);
     locationsTab->moveControls(*windowMetrics);   
-    
+
+    // Now we can figure out how tall the tab control needs to be.
+
     LONG tallestTab = effectsTab->getPageHeight() + (ctrlSpace.YWINDOW_MARGIN * 2); // This tab is always the tallest.
     tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, tallestTab, FALSE);
 
+    // Finally, we need to move the dialog buttons into place
     CPoint cPos(ctrlSpace.XWINDOW_MARGIN + widestTab, ctrlSpace.YWINDOW_MARGIN + tallestTab + ctrlSpace.YUNRELATED_MARGIN);
 
     cPos.Offset(-(CD.XBUTTON), 0);
@@ -103,9 +121,6 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     btnDialogControl[0].SetDlgCtrlID(IDOK);
     btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    CString caption;
 
     EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption, btnDialogControl[0], caption, langMap);
     EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption, btnDialogControl[1], caption, langMap);

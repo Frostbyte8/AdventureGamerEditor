@@ -24,8 +24,8 @@ class EditObjectDialog : public CWnd {
 
     public:
 
-        EditObjectDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics, const GameMap* inGameMap) : 
-                         mainWindow(inMainWindow), windowMetrics(inWindowMetrics), gameMap(inGameMap) {
+        EditObjectDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics, const GameMap* inGameMap, bool inEditObject) : 
+                         mainWindow(inMainWindow), windowMetrics(inWindowMetrics), gameMap(inGameMap), editObject(inEditObject) {
             contentSize.SetSize(0,0);                             
         }
 
@@ -39,6 +39,16 @@ class EditObjectDialog : public CWnd {
 
         void DoStuff() {
             ::EnableWindow(parentWindow, FALSE);
+        }
+
+        void SetObjectToEdit(const GameObject& gameObject) {
+
+            if(descriptionsTab) {
+                descriptionsTab->populateFields(gameObject, *gameMap);
+                qualitiesTab->populateFields(gameObject, *gameMap);
+                effectsTab->populateFields(gameObject, *gameMap);
+                locationsTab->populateFields(gameObject, *gameMap);
+            }
         }
 
     protected:
@@ -63,6 +73,8 @@ class EditObjectDialog : public CWnd {
         EditObjectQualitiesTab*         qualitiesTab;
         EditObjectEffectsTab*           effectsTab;
         EditObjectLocationsTab*         locationsTab;
+
+        bool                            editObject;
 
         CButton                         btnDialogControl[3];
         CTab                            tabControl;

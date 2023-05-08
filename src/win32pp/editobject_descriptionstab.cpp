@@ -226,7 +226,7 @@ void EditObjectDescriptionsTab::moveControls(const WindowMetrics& windowMetrics)
 /// @param a constant reference to GameObject object
 ///----------------------------------------------------------------------------
 
-void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject) {
+void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject, const GameMap& gameMap) {
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
 

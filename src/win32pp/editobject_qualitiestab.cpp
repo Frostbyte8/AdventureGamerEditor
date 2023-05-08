@@ -96,7 +96,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     grpProperties.Create(*this, 0, BS_GROUPBOX);
-    grpProperties.SetWindowTextW(L"Properties");
+    grpProperties.SetWindowTextW(L"Properties"); // TODO: Langauge
 
     lblProperties[2].Create(*this, 0, SS_SIMPLE);
     EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2],
@@ -114,8 +114,6 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         caption += AtoW(gameObjects[j].getName().c_str());
         cbxUsedWith.AddString(caption);
     }
-
-    cbxUsedWith.SetCurSel(0);
 
     spnProperties[0].SetRange(GameObjectConstants::MaxMonetaryValue,
                               GameObjectConstants::MinMonetaryValue);
@@ -320,7 +318,7 @@ void EditObjectQualitiesTab::moveControls(const WindowMetrics& windowMetrics) {
 /// @param a constant reference to GameObject object
 ///----------------------------------------------------------------------------
 
-void EditObjectQualitiesTab::populateFields(const GameObject &gameObject) {
+void EditObjectQualitiesTab::populateFields(const GameObject &gameObject, const GameMap& gameMap) {
 
     const uint8_t flags = gameObject.getFlags1();
     
@@ -341,6 +339,15 @@ void EditObjectQualitiesTab::populateFields(const GameObject &gameObject) {
 
     windowText = AtoW(std::to_string(gameObject.getUses()).c_str());
     txtProperties[1].SetWindowText(windowText);
+
+    const size_t whichObj = gameMap.objectIndexFromID(gameObject.getUsedWithID());
+
+    if(whichObj == ((size_t)-1)) {
+        cbxUsedWith.SetCurSel(0);
+    }
+    else {
+        cbxUsedWith.SetCurSel(whichObj + 1);
+    }
 }
 
 //============================================================================

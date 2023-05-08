@@ -321,8 +321,17 @@ void MainWindowFrame::onEditObject(const int& alterType) {
 
     if(!editObjectDialog && activeWindowHandle == GetHwnd()) {
         
-        editObjectDialog = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap());
+        editObjectDialog = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap(), false);
         editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+
+        if(alterType == 1) {
+            //
+        }
+        else {
+            GameObject::Builder bd;
+            editObjectDialog->SetObjectToEdit(bd.build());
+        }
+
         editObjectDialog->SetParentWindow(GetHwnd());
 
         // We need to hold on to this as we will need it to make sure the Dialog is the front most window
@@ -357,7 +366,7 @@ void MainWindowFrame::onEditObject(const int& alterType) {
 
         // Offset this to where the monitor is
         windowPos.Offset(monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top);
-        
+       
         editObjectDialog->DoStuff();
 
         // Move window to the top and show it.
