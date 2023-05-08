@@ -100,5 +100,12 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
         CButton             grpFlags;
         CButton             btnFlags[8];
 
+        CButton             grpProperties;
+        CStatic             lblMoney;
+        CEdit               txtMoney;
+        CSpinButton         spnMoney;
+        CStatic             lblType;
+        CComboBox           cbxType;
+
 };
 #endif // __EDITCHARACTER_TABVIEWS_H__

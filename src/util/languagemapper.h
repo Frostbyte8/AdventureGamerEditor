@@ -146,6 +146,15 @@ namespace LanguageConstants {
     int const CharFlagsGroup                = 512;
     int const CharEnterDark                 = 513;
 
+    // Properties
+
+    int const CharPropertiesGroup           = 521;
+    int const CharMoneyLabel                = 522;
+    int const CharTypeLabel                 = 523;
+    int const CharMissionaryType            = 524;
+    int const CharTraderType                = 525;
+    int const CharFighterType               = 526;
+
     // Generic Labels/Captions
     
     int const XCoordLabel                   = 801;

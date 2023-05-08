@@ -34,6 +34,30 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     }
 
+    grpProperties.Create(*this, 0, BS_GROUPBOX);
+    EOD_SetWindowText(LanguageConstants::CharPropertiesGroup, grpProperties, caption, langMap);
+
+    lblMoney.Create(*this, 0, SS_SIMPLE);
+    EOD_SetWindowText(LanguageConstants::CharMoneyLabel, lblMoney, caption, langMap);
+
+    txtMoney.Create(*this, 0, ES_AUTOHSCROLL);
+    txtMoney.SetExStyle(WS_EX_CLIENTEDGE);
+    txtMoney.LimitText(5);
+    spnMoney.Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
+                    UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
+
+    lblType.Create(*this, 0, SS_SIMPLE);
+    EOD_SetWindowText(LanguageConstants::CharTypeLabel, lblType, caption, langMap);
+    cbxType.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
+
+    for(size_t j = 0; j < 3; ++j) {
+        EOD_AddString(LanguageConstants::CharMissionaryType+j, cbxType, caption, langMap);
+    }
+
+    spnMoney.SetRange(GameObjectConstants::MinMonetaryValue,
+                      GameObjectConstants::MaxMonetaryValue);
+                      
+
     return retVal;
 }
 
@@ -71,21 +95,12 @@ void EditCharacterQualitiesTab::calculatePageWidth(const WindowMetrics& windowMe
                              pageWidth);
     }
 
-    /*
-    std::vector<CWnd *> controlList;
-    controlList.reserve(2);
-        
-    for(int k = 0; k < 2; ++k) {
-        controlList.push_back(&lblProperties[k]);
-    }
-    
-    const size_t clSize = controlList.size();
-    
-    for(size_t j = 0; j < clSize; ++j) {
-        pageWidth = std::max(windowMetrics.CalculateStringWidth(
-                             controlList[j]->GetWindowTextW().c_str()), pageWidth);
-    }
-    */
+    pageWidth = std::max(windowMetrics.CalculateStringWidth(
+                         lblMoney.GetWindowTextW().c_str()), pageWidth);
+
+    pageWidth = std::max(windowMetrics.CalculateStringWidth(
+                         lblType.GetWindowTextW().c_str()), pageWidth);
+
 }
 
 ///----------------------------------------------------------------------------
@@ -127,30 +142,28 @@ void EditCharacterQualitiesTab::moveControls(const WindowMetrics& windowMetrics)
     grpFlags.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
                         maxGroupBoxWidth, cPos.y);
 
-    /*
-    // Now deal with things like money and uses
+    
+    // Now deal with money, and the character type
 
     cPos.Offset(0, CS.YUNRELATED_MARGIN + CS.YFIRST_GROUPBOX_MARGIN);
     
-    for(int i = 0; i < 2; i++) {
-        lblProperties[i].MoveWindow(cPos.x, cPos.y, 
-                                    defaultLabelSize.cx, defaultLabelSize.cy);
-
-        cPos.Offset(0, defaultLabelSize.cy + CS.YLABELASSOC_MARGIN);
-
-        txtProperties[i].MoveWindow(cPos.x, cPos.y,
-                                    defaultTextSize.cx, defaultTextSize.cy);
-
-        spnProperties[i].SetBuddy(txtProperties[i]);
-        cPos.Offset(0, defaultTextSize.cy + CS.YRELATED_MARGIN);
-    }
-
-    lblProperties[2].MoveWindow(cPos.x, cPos.y,
-                                defaultLabelSize.cx, defaultLabelSize.cy);
+    lblMoney.MoveWindow(cPos.x, cPos.y, 
+                        defaultLabelSize.cx, defaultLabelSize.cy);
 
     cPos.Offset(0, defaultLabelSize.cy + CS.YLABELASSOC_MARGIN);
 
-    cbxUsedWith.MoveWindow(cPos.x, cPos.y, defaultTextSize.cx,
+    txtMoney.MoveWindow(cPos.x, cPos.y,
+                        defaultTextSize.cx, defaultTextSize.cy);
+
+    spnMoney.SetBuddy(txtMoney);
+    cPos.Offset(0, defaultTextSize.cy + CS.YRELATED_MARGIN);
+
+    lblType.MoveWindow(cPos.x, cPos.y,
+                       defaultLabelSize.cx, defaultLabelSize.cy);
+
+    cPos.Offset(0, defaultLabelSize.cy + CS.YLABELASSOC_MARGIN);
+
+    cbxType.MoveWindow(cPos.x, cPos.y, defaultTextSize.cx,
                            CD.YDROPDOWN + (CD.YTEXTBOX_ONE_LINE_ALONE * 3));
 
     cPos.Offset(0, CD.YDROPDOWN);
@@ -158,8 +171,6 @@ void EditCharacterQualitiesTab::moveControls(const WindowMetrics& windowMetrics)
     grpProperties.MoveWindow(CS.XWINDOW_MARGIN,
                              grpFlags.GetClientRect().Height() + CS.YUNRELATED_MARGIN,
                              maxGroupBoxWidth, cPos.y - grpFlags.GetClientRect().Height());
-
-    */
 
     pageHeight = cPos.y + CS.YUNRELATED_MARGIN;
 
