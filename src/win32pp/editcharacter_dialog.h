@@ -32,6 +32,8 @@ class EditCharacterDialog : public CWnd {
         const GameMap*                  gameMap;
         WindowMetrics*                  windowMetrics;
 
+        EditCharacterDescriptionsTab*   descriptionsTab;
+        CTab                            tabControl;
 };
 
 #endif // __EDITCHARACTER_DIALOG_H__

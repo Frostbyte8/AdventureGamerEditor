@@ -51,11 +51,11 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
     public:
 
         // Pure Virtual Functions (implemented) 
-        virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder) {}
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) {}
-        virtual void moveControls(const WindowMetrics& windowMetrics) {}
-        virtual WORD validateFields() {}
+        virtual void moveControls(const WindowMetrics& windowMetrics);
+        virtual WORD validateFields() { return 0; }
 
     protected:
 
@@ -69,6 +69,7 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
         CButton             grpDescriptions;
         CStatic             lblDescriptions[6];
         CAnsiEdit           txtDescriptions[6];
+        CButton             btnBrowse[2];
 
 };
 

@@ -21,6 +21,34 @@ EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, Wind
 ///----------------------------------------------------------------------------
 
 int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
+
+    const WindowMetrics::ControlSpacing     CS = windowMetrics->GetControlSpacing();
+    const WindowMetrics::ControlDimensions  CD = windowMetrics->GetControlDimensions();
+
+    tabControl.Create(*this); 
+
+    descriptionsTab = reinterpret_cast<EditCharacterDescriptionsTab*>(tabControl.AddTabPage(new EditCharacterDescriptionsTab(), L"Desc"));
+
+    std::vector<LONG> pageWidths;
+
+    descriptionsTab->calculatePageWidth(*windowMetrics);
+    pageWidths.push_back(descriptionsTab->getPageWidth());
+
+    const size_t numTabs = pageWidths.size();
+    
+    LONG widestTab = 0;
+
+    for(size_t i = 0; i < numTabs; ++i) {
+        widestTab = std::max(pageWidths[i], widestTab);
+    }
+
+    widestTab += ((CS.XWINDOW_MARGIN * 3) + (CS.XGROUPBOX_MARGIN * 2));
+
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, widestTab, 500, FALSE);
+    tabControl.SelectPage(0);
+
+    descriptionsTab->moveControls(*windowMetrics);
+
     return CWnd::OnCreate(cs);
 }
 
