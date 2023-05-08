@@ -144,4 +144,37 @@ class EditCharacterAttributesTab : public ECTabViewBase {
 
 
 };
+
+//=============================================================================
+// EditCharacterMiscTab - 
+//=============================================================================
+
+class EditCharacterMiscTab : public ECTabViewBase {
+
+   public:
+
+        // Pure Virtual Functions (implemented) 
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
+        virtual void insertData(GameObject::Builder& builder) {}
+        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) {}
+        virtual void moveControls(const WindowMetrics& windowMetrics) {}
+        virtual WORD validateFields() { return 0; }
+
+    protected:
+
+        //virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreRegisterClass(WNDCLASS& wc);
+        //virtual BOOL PreTranslateMessage(MSG& msg);
+
+    private:
+
+        CButton             grpLocations;
+        CStatic             lblCoords[2];
+        CEdit               txtCoords[2];
+        CButton             grpInventory;
+        CListBox            lsbInventory;
+
+};
+
 #endif // __EDITCHARACTER_TABVIEWS_H__

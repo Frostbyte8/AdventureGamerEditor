@@ -69,27 +69,12 @@ void EditCharacterAttributesTab::PreRegisterClass(WNDCLASS& wc) {
 
 void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
     
-    /*
     pageWidth = 0;
 
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
 
-    const LONG checkboxWidth = CD.XCHECKBOX + CD.XCHECKBOX_GAP;
-    
-    for(int i = 0; i < GameCharacterFlags::NumFlags; ++i) {
-        pageWidth = std::max(windowMetrics.CalculateStringWidth(
-                             btnFlags[i].GetWindowTextW().c_str()) + checkboxWidth,
-                             pageWidth);
-    }
-
-    pageWidth = std::max(windowMetrics.CalculateStringWidth(
-                         lblMoney.GetWindowTextW().c_str()), pageWidth);
-
-    pageWidth = std::max(windowMetrics.CalculateStringWidth(
-                         lblType.GetWindowTextW().c_str()), pageWidth);
-
-    */
+    //TODO: Size the 5 labels. 
 }
 
 ///----------------------------------------------------------------------------
