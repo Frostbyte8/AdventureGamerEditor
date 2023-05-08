@@ -66,7 +66,18 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
     CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN,
                 CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
 
-    cPos.Offset(0, CD.YTEXTBOX_ONE_LINE_ALONE);
+    const int coordWidth = windowMetrics.CalculateStringWidth(L"MM");
+    const int txtWidth = windowMetrics.CalculateStringWidth(L"0000");
+
+    for(int i = 0; i < 2; ++i) {
+        lblCoords[i].MoveWindow(cPos.x, cPos.y, coordWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
+        cPos.Offset(coordWidth, 0);
+        txtCoords[i].MoveWindow(cPos.x, cPos.y, txtWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
+        cPos.Offset(txtWidth + CS.XRELATED_MARGIN, 0);
+    }
+
+    cPos.x = CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN;
+    cPos.y += CD.YTEXTBOX_ONE_LINE_ALONE;
 
     grpLocations.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
                             maxGroupBoxWidth, cPos.y);
@@ -80,6 +91,5 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
 
     grpInventory.MoveWindow(CS.XWINDOW_MARGIN, cPos.y,
                             maxGroupBoxWidth, CS.YFIRST_GROUPBOX_MARGIN + (CD.YTEXTBOX_ONE_LINE_ALONE * 5) + CS.YLAST_GROUPBOX_MARGIN);
-
     
 }
