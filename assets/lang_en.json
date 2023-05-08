@@ -126,11 +126,11 @@
     "526" : "Fighter",
 
     "527" : "Attributes",
-    "528" : "Amount (1 - 12)",
-    "529" : "Energy",
-    "530" : "Skill",
-    "531" : "Willpower",
-    "532" : "Luck",
+
+    "529" : "Energy (Max 12)",
+    "530" : "Skill (Max 12)",
+    "531" : "Willpower (Max 12)",
+    "532" : "Luck (Max 12)",
 
     "533" : "Character's Sight",
     "534" : "Normal",

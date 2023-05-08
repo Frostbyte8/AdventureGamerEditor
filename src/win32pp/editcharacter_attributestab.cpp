@@ -37,7 +37,13 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     lblSight.Create(*this, 0, SS_SIMPLE);
+    EOD_SetWindowText(LanguageConstants::CharSightLabel, lblSight, caption, langMap);
+
     cbxSight.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
+
+    for(int i = 0; i < 3; ++i) {
+        EOD_AddString(LanguageConstants::CharSightNormal+i, cbxSight, caption, langMap);
+    }
 
     return retVal;
 }
@@ -50,4 +56,94 @@ void EditCharacterAttributesTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
     wc.lpszClassName = L"EditCharacterAttributesTab";
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+}
+
+//=============================================================================
+// Public Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// calculatePageWidth - Finds how wide the tab page needs to be display the
+/// controls
+///----------------------------------------------------------------------------
+
+void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
+    
+    /*
+    pageWidth = 0;
+
+    const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
+
+    const LONG checkboxWidth = CD.XCHECKBOX + CD.XCHECKBOX_GAP;
+    
+    for(int i = 0; i < GameCharacterFlags::NumFlags; ++i) {
+        pageWidth = std::max(windowMetrics.CalculateStringWidth(
+                             btnFlags[i].GetWindowTextW().c_str()) + checkboxWidth,
+                             pageWidth);
+    }
+
+    pageWidth = std::max(windowMetrics.CalculateStringWidth(
+                         lblMoney.GetWindowTextW().c_str()), pageWidth);
+
+    pageWidth = std::max(windowMetrics.CalculateStringWidth(
+                         lblType.GetWindowTextW().c_str()), pageWidth);
+
+    */
+}
+
+///----------------------------------------------------------------------------
+/// moveControls - Move the controls to their desired positions
+///----------------------------------------------------------------------------
+
+void EditCharacterAttributesTab::moveControls(const WindowMetrics& windowMetrics) {
+    
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
+    
+    // The max width of a row is the size of the tab page, less the margins of the
+    // Group Box and the window.
+
+    const int maxGroupBoxWidth  = GetClientRect().right - (CS.XWINDOW_MARGIN * 2);
+    const int maxRowWidth       = maxGroupBoxWidth - (CS.XGROUPBOX_MARGIN * 2);
+
+    const CSize defaultLabelSize(maxRowWidth, CD.YLABEL);
+    const CSize defaultTextSize(maxRowWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
+
+    CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN,
+        CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
+
+    for(int i = 0; i < 4; ++i) {
+
+        lblAttribType[i].MoveWindow(cPos.x, cPos.y, 
+                                    defaultLabelSize.cx, defaultLabelSize.cy);
+
+        cPos.Offset(0, defaultLabelSize.cy + CS.YLABELASSOC_MARGIN);
+
+        txtAttribType[i].MoveWindow(cPos.x, cPos.y,
+                                    defaultTextSize.cx, defaultTextSize.cy);
+
+        cPos.Offset(0, defaultTextSize.cy + CS.YLABELASSOC_MARGIN);
+
+        spnAttribType[i].SetBuddy(txtAttribType[i].GetHwnd());
+    }
+
+    lblSight.MoveWindow(cPos.x, cPos.y,
+                        defaultLabelSize.cx, defaultLabelSize.cy);
+
+    cPos.Offset(0, defaultLabelSize.cy + CS.YLABELASSOC_MARGIN);
+
+    cbxSight.MoveWindow(cPos.x, cPos.y,
+                        defaultTextSize.cx, CD.YDROPDOWN + (CD.YTEXTBOX_ONE_LINE_ALONE * 3));
+
+    cPos.Offset(0, CD.YDROPDOWN);
+
+    grpAttrib.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                         maxGroupBoxWidth, cPos.y);
+
+
+    pageHeight = grpAttrib.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
+
+
+
 }
