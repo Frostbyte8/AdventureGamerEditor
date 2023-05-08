@@ -33,7 +33,7 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
     grpInventory.Create(*this, 0, BS_GROUPBOX);
     EOD_SetWindowText(LanguageConstants::CharInventoryGroup, grpInventory, caption, langMap);
 
-    lsbInventory.Create(*this, 0, LBS_STANDARD);
+    lsbInventory.Create(*this, 0, LBS_STANDARD | WS_VSCROLL | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL);
 
     return retVal;
 }
@@ -51,3 +51,35 @@ void EditCharacterMiscTab::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Public Functions
 //=============================================================================
+
+void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
+    
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
+    
+    // The max width of a row is the size of the tab page, less the margins of the
+    // Group Box and the window.
+
+    const int maxGroupBoxWidth  = GetClientRect().right - (CS.XWINDOW_MARGIN * 2);
+    const int maxRowWidth       = maxGroupBoxWidth - (CS.XGROUPBOX_MARGIN * 2);
+
+    CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN,
+                CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
+
+    cPos.Offset(0, CD.YTEXTBOX_ONE_LINE_ALONE);
+
+    grpLocations.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                            maxGroupBoxWidth, cPos.y);
+
+    cPos.Offset(0, CS.YUNRELATED_MARGIN + CS.YFIRST_GROUPBOX_MARGIN);
+    
+    lsbInventory.MoveWindow(cPos.x, cPos.y, 
+                            maxRowWidth, CD.YTEXTBOX_ONE_LINE_ALONE * 5);
+
+    cPos.Offset(0, - CS.YFIRST_GROUPBOX_MARGIN);
+
+    grpInventory.MoveWindow(CS.XWINDOW_MARGIN, cPos.y,
+                            maxGroupBoxWidth, CS.YFIRST_GROUPBOX_MARGIN + (CD.YTEXTBOX_ONE_LINE_ALONE * 5) + CS.YLAST_GROUPBOX_MARGIN);
+
+    
+}
