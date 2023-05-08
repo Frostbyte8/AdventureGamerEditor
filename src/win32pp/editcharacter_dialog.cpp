@@ -36,6 +36,9 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     caption = AtoW(langMap.get(LanguageConstants::CharQualitiesTab).c_str(), CP_UTF8);
     qualitiesTab = reinterpret_cast<EditCharacterQualitiesTab*>(tabControl.AddTabPage(new EditCharacterQualitiesTab(), caption));
 
+    caption = AtoW(langMap.get(LanguageConstants::CharAttributesTab).c_str(), CP_UTF8);
+    attributesTab = reinterpret_cast<EditCharacterAttributesTab*>(tabControl.AddTabPage(new EditCharacterAttributesTab(), caption));
+
     std::vector<LONG> pageWidths;
 
     // Set the font to the font specified within window metrics.
@@ -45,9 +48,11 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     descriptionsTab->calculatePageWidth(*windowMetrics);
     qualitiesTab->calculatePageWidth(*windowMetrics);
+    attributesTab->calculatePageWidth(*windowMetrics);
 
     pageWidths.push_back(descriptionsTab->getPageWidth());
     pageWidths.push_back(qualitiesTab->getPageWidth());
+    pageWidths.push_back(attributesTab->getPageWidth());
 
     const size_t numTabs = pageWidths.size();
     
@@ -61,11 +66,13 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, widestTab, 500, FALSE);
 
+    tabControl.SelectPage(2);
     tabControl.SelectPage(1);
     tabControl.SelectPage(0);
 
     descriptionsTab->moveControls(*windowMetrics);
     qualitiesTab->moveControls(*windowMetrics);
+    attributesTab->moveControls(*windowMetrics);
 
     return CWnd::OnCreate(cs);
 }

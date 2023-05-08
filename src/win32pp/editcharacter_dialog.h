@@ -36,6 +36,7 @@ class EditCharacterDialog : public CWnd {
 
         EditCharacterDescriptionsTab*   descriptionsTab;
         EditCharacterQualitiesTab*      qualitiesTab;
+        EditCharacterAttributesTab*     attributesTab;
         CTab                            tabControl;
 };
 

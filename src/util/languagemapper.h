@@ -145,6 +145,13 @@ namespace LanguageConstants {
 
     int const CharFlagsGroup                = 512;
     int const CharEnterDark                 = 513;
+    int const CharEnterHazard               = 514;
+    int const CharUseJumppad                = 515;
+    int const CharBypassGates               = 516;
+    int const CharBypassDoors               = 517;
+    int const CharClimbBarriers             = 518;
+    int const CharWanders                   = 519;
+    int const CharFollowPlayer              = 520;
 
     // Properties
 
@@ -154,6 +161,23 @@ namespace LanguageConstants {
     int const CharMissionaryType            = 524;
     int const CharTraderType                = 525;
     int const CharFighterType               = 526;
+
+    // Attributes
+
+    int const CharAttributesGroup           = 527;
+    int const CharAttribAmountLabel         = 528;
+    int const CharAttribEnergy              = 529;
+    int const CharAttribSkill               = 530;
+    int const CharAttribWillpower           = 531;
+    int const CharAttribLuck                = 532;
+
+    int const CharSightLabel                = 533;
+    int const CharSightNormal               = 534;
+    int const CharSightBlind                = 535;
+    int const CharSightInfrared             = 536;
+
+    int const CharLocationGroup             = 537;
+    int const CharInventoryGroup            = 538;
 
     // Generic Labels/Captions
     
