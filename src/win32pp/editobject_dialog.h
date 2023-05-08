@@ -61,7 +61,7 @@ class EditObjectDialog : public CWnd {
 
     private:
 
-        static bool CALLBACK SetFontTest(HWND child, LPARAM font);
+        static bool CALLBACK SetProperFont(HWND child, LPARAM font);
 
         LRESULT OnSize(WPARAM& wParam, LPARAM& lParam);
 

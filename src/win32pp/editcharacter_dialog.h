@@ -28,11 +28,14 @@ class EditCharacterDialog : public CWnd {
 
     private:
 
+        static bool CALLBACK SetProperFont(HWND child, LPARAM font);
+
         MainWindowInterface*            mainWindow;
         const GameMap*                  gameMap;
         WindowMetrics*                  windowMetrics;
 
         EditCharacterDescriptionsTab*   descriptionsTab;
+        EditCharacterQualitiesTab*      qualitiesTab;
         CTab                            tabControl;
 };
 

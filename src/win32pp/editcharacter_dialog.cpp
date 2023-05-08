@@ -27,12 +27,27 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     tabControl.Create(*this); 
 
-    descriptionsTab = reinterpret_cast<EditCharacterDescriptionsTab*>(tabControl.AddTabPage(new EditCharacterDescriptionsTab(), L"Desc"));
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    caption = AtoW(langMap.get(LanguageConstants::CharDescriptonsTab).c_str(), CP_UTF8);
+    descriptionsTab = reinterpret_cast<EditCharacterDescriptionsTab*>(tabControl.AddTabPage(new EditCharacterDescriptionsTab(), caption));
+
+    caption = AtoW(langMap.get(LanguageConstants::CharQualitiesTab).c_str(), CP_UTF8);
+    qualitiesTab = reinterpret_cast<EditCharacterQualitiesTab*>(tabControl.AddTabPage(new EditCharacterQualitiesTab(), caption));
 
     std::vector<LONG> pageWidths;
 
+    // Set the font to the font specified within window metrics.
+
+    HFONT dialogFont = windowMetrics->GetCurrentFont();
+    EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
+
     descriptionsTab->calculatePageWidth(*windowMetrics);
+    qualitiesTab->calculatePageWidth(*windowMetrics);
+
     pageWidths.push_back(descriptionsTab->getPageWidth());
+    pageWidths.push_back(qualitiesTab->getPageWidth());
 
     const size_t numTabs = pageWidths.size();
     
@@ -45,9 +60,12 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     widestTab += ((CS.XWINDOW_MARGIN * 3) + (CS.XGROUPBOX_MARGIN * 2));
 
     tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, widestTab, 500, FALSE);
+
+    tabControl.SelectPage(1);
     tabControl.SelectPage(0);
 
     descriptionsTab->moveControls(*windowMetrics);
+    qualitiesTab->moveControls(*windowMetrics);
 
     return CWnd::OnCreate(cs);
 }
@@ -69,4 +87,20 @@ void EditCharacterDialog::PreRegisterClass(WNDCLASS& wc) {
 
 LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     return WndProcDefault(msg, wParam, lParam);
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// SetProperFont - Sets the font of the window and all it's child controls
+/// to the font specified. Meant to be used with EnumChildWindows.
+/// @param Handle to the the control whose font is to be changed
+/// @param LPARAM of the font to be set on the control.
+///----------------------------------------------------------------------------
+
+bool CALLBACK EditCharacterDialog::SetProperFont(HWND child, LPARAM font) {
+    ::SendMessage(child, WM_SETFONT, font, true);
+    return true;
 }

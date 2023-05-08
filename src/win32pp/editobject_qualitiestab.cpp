@@ -237,6 +237,7 @@ void EditObjectQualitiesTab::insertData(GameObject::Builder& builder) {
     // TODO: Figure out used with ID by getting the selected index and mapping it to the ID.
 
 }
+
 ///----------------------------------------------------------------------------
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------

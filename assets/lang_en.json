@@ -92,6 +92,57 @@
     "453" : "(No Object)",
     "454" : "(No Character)",
 
+    // Edit Character Dialog
+
+    "500" : "Descriptions",
+    "501" : "Qualities",
+    "502" : "Attributes",
+    "503" : "Misc.",
+
+    "504" : "Descriptions",
+    "505" : "Name",
+    "506" : "On Sight",
+    "507" : "On Fight",
+    "508" : "On Death",
+    "509" : "Icon",
+    "510" : "Sound (Unused)",
+    "511" : "Browse...",
+
+    "512" : "Flags",
+    "513" : "Can enter dark spaces",
+    "514" : "Can enter hazard spaces",
+    "515" : "Can use Jumppads",
+    "516" : "Can bypass locked gates",
+    "517" : "Can bypass locked doors",
+    "518" : "Can climb one-way barriers",
+    "519" : "Wanders when the player is not near",
+    "520" : "Follows player after seeing them",
+
+    "521" : "Properties",
+    "522" : "Money",
+    "523" : "Character Behavior",
+    "524" : "Missionary",
+    "525" : "Trader",
+    "526" : "Fighter",
+
+    "527" : "Attributes",
+    "528" : "Amount (1 - 12)",
+    "529" : "Energy",
+    "530" : "Skill",
+    "531" : "Willpower",
+    "532" : "Luck",
+
+    "533" : "Character's Sight",
+    "534" : "Normal",
+    "535" : "Blind",
+    "536" : "Infrared",
+
+    "537" : "Location",
+    "538" : "Character Inventory",
+
+    // Shared Strings
+
+
     // Generic Labels/Captions
 
     "801" : "X",                                        // X-Coordinate Label

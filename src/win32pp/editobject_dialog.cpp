@@ -54,7 +54,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     // Set the font to the font specified within window metrics.
 
     HFONT dialogFont = windowMetrics->GetCurrentFont();
-    EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetFontTest), (LPARAM)dialogFont);
+    EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
 
     // Next, find the widest tab, and make sure that the Dialog buttons
@@ -244,7 +244,7 @@ GameObject::Builder EditObjectDialog::getAlteredObject() {
 /// @param LPARAM of the font to be set on the control.
 ///----------------------------------------------------------------------------
 
-bool CALLBACK EditObjectDialog::SetFontTest(HWND child, LPARAM font) {
+bool CALLBACK EditObjectDialog::SetProperFont(HWND child, LPARAM font) {
     ::SendMessage(child, WM_SETFONT, font, true);
     return true;
 }

@@ -1,7 +1,6 @@
 #include "editcharacter_tabviews.h"
 #include "../model/gamecharacter.h"
 
-#include <algorithm>
 #include "shared_functions.h"
 
 //=============================================================================
@@ -9,8 +8,8 @@
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// OnCreate - Set some defaults for the Dialog window, and create remaining
-/// child controls.
+/// OnCreate - Set some defaults for the tab, and create remaining child
+/// controls.
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
@@ -32,10 +31,10 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
         if(i > 3) {
             btnBrowse[i-4].Create(*this, 0, BS_PUSHBUTTON);
+            EOD_SetWindowText(LanguageConstants::CharBrowseButtonCaption, btnBrowse[i-4], caption, langMap);
+            txtDescriptions[i].EnableWindow(FALSE);
         }
     } 
-
-    
 
     return retVal;
 }

@@ -141,6 +141,11 @@ namespace LanguageConstants {
     int const CharSoundLabel                = 510;
     int const CharBrowseButtonCaption       = 511;
 
+    // Flags
+
+    int const CharFlagsGroup                = 512;
+    int const CharEnterDark                 = 513;
+
     // Generic Labels/Captions
     
     int const XCoordLabel                   = 801;
