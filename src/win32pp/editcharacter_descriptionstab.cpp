@@ -15,7 +15,23 @@
 ///----------------------------------------------------------------------------
 
 int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
-    return CWnd::OnCreate(cs);
+    const int retVal = CWnd::OnCreate(cs);
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    grpDescriptions.Create(*this, 0, BS_GROUPBOX);
+    EOD_SetWindowText(LanguageConstants::CharDescriptionsGroup, grpDescriptions, caption, langMap);
+
+    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
+        lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
+        txtDescriptions[i].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
+        txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
+
+        EOD_SetWindowText(LanguageConstants::CharNameLabel+i, lblDescriptions[i], caption, langMap);
+    } 
+
+    return retVal;
 }
 
 ///----------------------------------------------------------------------------

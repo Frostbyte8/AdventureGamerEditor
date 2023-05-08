@@ -5,7 +5,7 @@
 // Constructors
 //=============================================================================
 
-EditCharacterDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics,
+EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics,
                     const GameMap* inGameMap, bool inEditCharacter) : mainWindow(inMainWindow),
                     windowMetrics(inWindowMetrics), gameMap(inGameMap) {
 }

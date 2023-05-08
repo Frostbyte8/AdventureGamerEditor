@@ -18,7 +18,8 @@
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
                                      roadSelectorDocker(0), gameWorldController(0),
-                                     activeWindowHandle(0), editObjectDialog(0) {
+                                     activeWindowHandle(0), editObjectDialog(0),
+                                     editCharacterDialog(0) {
 
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
@@ -44,6 +45,11 @@ MainWindowFrame::~MainWindowFrame() {
     if(editObjectDialog) {
         delete editObjectDialog;
         editObjectDialog = NULL;
+    }
+
+    if(editCharacterDialog) {
+        delete editCharacterDialog;
+        editCharacterDialog = NULL;
     }
 
 }
@@ -234,6 +240,10 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
+    editCharacterDialog = new EditCharacterDialog(this, &windowMetrics, gameWorldController->getGameMap(), false);
+    editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+    editCharacterDialog->MoveWindow(0, 0, 128, 128, TRUE);
+    editCharacterDialog->ShowWindow(SW_SHOW);
     return FALSE;
 
 }

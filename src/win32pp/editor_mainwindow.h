@@ -9,6 +9,7 @@
 #include "../controller/gameworld_controller.h"
 #include "../win32/window_metrics.h"
 #include "editobject_dialog.h"
+#include "editcharacter_dialog.h"
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
@@ -54,6 +55,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 		WindowMetrics		    windowMetrics;
 
         EditObjectDialog*       editObjectDialog;
+        EditCharacterDialog*    editCharacterDialog;
 
 
         HWND                    activeWindowHandle;

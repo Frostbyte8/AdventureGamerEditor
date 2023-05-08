@@ -12,8 +12,9 @@
 
 #include "../win32/window_metrics.h"
 #include "../interface/mainwindow_interface.h"
+#include "editcharacter_tabviews.h"
 
-class EditCharacterDialog : CWnd public {
+class EditCharacterDialog : public CWnd {
 
     public:
 

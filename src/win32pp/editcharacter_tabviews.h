@@ -49,6 +49,7 @@ class ECTabViewBase : public CWnd {
 class EditCharacterDescriptionsTab : public ECTabViewBase {
 
     public:
+
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
         virtual void insertData(GameObject::Builder& builder) {}
@@ -57,10 +58,18 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
         virtual WORD validateFields() {}
 
     protected:
+
         //virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         //virtual BOOL PreTranslateMessage(MSG& msg);
+
+    private:
+
+        CButton             grpDescriptions;
+        CStatic             lblDescriptions[6];
+        CAnsiEdit           txtDescriptions[6];
+
 };
 
 #endif // __EDITCHARACTER_TABVIEWS_H__

@@ -50,7 +50,9 @@ namespace LanguageConstants {
     int const EffectsTab                    = 402;
     int const LocationsTab                  = 403;
 
-    // Descriptions Tab
+    // Descriptions Tab TODO: new names to distinguish
+    // which of these are for objects, and which are for
+    // characters
 
     int const DescriptionsGroupLabel        = 404;
     int const NameLabel                     = 405;
@@ -119,6 +121,25 @@ namespace LanguageConstants {
     // Combo Box Values
     int const NoObjectSelected              = 453;
     int const NoCharacterSelected           = 454;
+
+    // Edit Character Dialog
+    // Tab Labels
+
+    int const CharDescriptonsTab            = 500;
+    int const CharQualitiesTab              = 501;
+    int const CharAttributesTab             = 502;
+    int const CharMiscTab                   = 503;
+
+    // Descriptions
+
+    int const CharDescriptionsGroup         = 504;
+    int const CharNameLabel                 = 505;
+    int const CharOnSightLabel              = 506;
+    int const CharOnFightLabel              = 507;
+    int const CharOnDeathLabel              = 508;
+    int const CharIconLabel                 = 509;
+    int const CharSoundLabel                = 510;
+    int const CharBrowseButtonCaption       = 511;
 
     // Generic Labels/Captions
     
