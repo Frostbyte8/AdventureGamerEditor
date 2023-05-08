@@ -190,7 +190,7 @@ LRESULT EditObjectDialog::OnSize(WPARAM& wParam, LPARAM& lParam) {
 }
 
 ///----------------------------------------------------------------------------
-/// PreRegisterClass - Override defaults for tab page
+/// PreRegisterClass - Override defaults for dialog
 ///----------------------------------------------------------------------------
 
 void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
