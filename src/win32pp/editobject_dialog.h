@@ -46,6 +46,7 @@ class EditObjectDialog : public CWnd {
 
         void SetObjectToEdit(const GameObject& gameObject) {
 
+            // TODO: These need to be set to 0
             if(descriptionsTab) {
                 descriptionsTab->populateFields(gameObject, *gameMap);
                 qualitiesTab->populateFields(gameObject, *gameMap);

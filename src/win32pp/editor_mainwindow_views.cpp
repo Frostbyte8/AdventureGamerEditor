@@ -2,10 +2,11 @@
 #include "../util/languagemapper.h"
 
 namespace ControlIDs {
-    const WORD AddObjectButton    = 201;
-    const WORD EditObjectButton   = 202;
-    const WORD PlaceObjectButton  = 203;
-    const WORD DeleteObjectButton = 204;
+    const WORD AddObjectButton          = 201;
+    const WORD EditObjectButton         = 202;
+    const WORD PlaceObjectButton        = 203;
+    const WORD DeleteObjectButton       = 204;
+    const WORD AddCharacterButton       = 205;
 }
 
 //=============================================================================
@@ -26,6 +27,9 @@ BOOL GameEntitiesView::OnCommand(WPARAM wParam, LPARAM lParam) {
 
         if(ctrlID == ControlIDs::AddObjectButton) {
             mainWindow->onEditObject(0);
+        }
+        else if(ctrlID == ControlIDs::AddCharacterButton) {
+            mainWindow->onEditCharacter(0);
         }
 
     }
@@ -67,6 +71,7 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
         caption = AtoW(langMap.get(LanguageConstants::CharacterAddButton + i).c_str(), CP_UTF8);
         alterCharacterButton[i].Create(*this, 0, BS_PUSHBUTTON);
         alterCharacterButton[i].SetWindowText(caption);
+        alterCharacterButton[i].SetDlgCtrlID(ControlIDs::AddCharacterButton+i);
     }
 
     return retVal;

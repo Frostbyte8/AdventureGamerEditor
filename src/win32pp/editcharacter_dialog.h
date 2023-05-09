@@ -44,6 +44,7 @@ class EditCharacterDialog : public CWnd {
 
     protected:
 
+        virtual void OnClose(); 
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);

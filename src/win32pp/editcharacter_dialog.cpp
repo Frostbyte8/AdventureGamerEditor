@@ -18,6 +18,18 @@ EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, Wind
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// OnClose - Processes the WM_CLOSE message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+void EditCharacterDialog::OnClose() {
+    
+    ::EnableWindow(parentWindow, TRUE);
+    CWnd::OnClose();
+    mainWindow->finishedEditCharacterDialog();
+}
+
+///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the Dialog window, and create remaining
 /// child controls.
 /// Refer to the Win32++ documentation for more information.
