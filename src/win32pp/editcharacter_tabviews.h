@@ -120,7 +120,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder) {}
-        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {}
+        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields() { return 0; }
 

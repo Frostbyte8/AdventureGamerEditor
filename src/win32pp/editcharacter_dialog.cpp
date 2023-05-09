@@ -94,9 +94,14 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     bd.flags(36);
     bd.money(100);
     bd.type(1);
+    bd.attribute(4, AttributeTypes::Energy());
+    bd.attribute(3, AttributeTypes::Skill());
+    bd.attribute(5, AttributeTypes::Luck());
+    bd.attribute(2, AttributeTypes::Willpower());
 
     descriptionsTab->populateFields(bd.build(), *gameMap);
     qualitiesTab->populateFields(bd.build(), *gameMap);
+    attributesTab->populateFields(bd.build(), *gameMap);
 
     // End Test Data
 

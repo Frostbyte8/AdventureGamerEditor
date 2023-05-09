@@ -231,6 +231,9 @@ class GameCharacter {
         const int& getType() const { return base.type; }
         const int& getID() const { return base.ID; }
         const int& getMoney() const { return base.money; }
+        const int& getAttribute(const int& which) const { return base.attribute[which]; }
+        const int& getSight() const { return base.sight; }
+
         const std::string& getName() const { return base.description[0]; }
 
     private:

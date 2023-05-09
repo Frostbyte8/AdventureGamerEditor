@@ -129,6 +129,18 @@ void EditCharacterAttributesTab::moveControls(const WindowMetrics& windowMetrics
 
     pageHeight = grpAttrib.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
 
+}
 
+///----------------------------------------------------------------------------
+/// populateFields - 
+///----------------------------------------------------------------------------
+
+void EditCharacterAttributesTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+
+    for(int i = 0; i < 4; ++i) {
+        spnAttribType[i].SetPos(gameCharacter.getAttribute(i));
+    }
+
+    cbxSight.SetCurSel(gameCharacter.getSight());
 
 }
