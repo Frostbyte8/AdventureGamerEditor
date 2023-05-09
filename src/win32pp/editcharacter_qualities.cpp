@@ -175,3 +175,24 @@ void EditCharacterQualitiesTab::moveControls(const WindowMetrics& windowMetrics)
     pageHeight = cPos.y + CS.YUNRELATED_MARGIN;
 
 }
+
+///----------------------------------------------------------------------------
+/// populateFields - 
+///----------------------------------------------------------------------------
+
+void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+
+    const uint8_t flags = gameCharacter.getFlags();
+
+    for(int i = 0; i < GameCharacterFlags::NumFlags; ++i) {
+        if(flags & (1<<i)) {
+            btnFlags[i].SetCheck(BST_CHECKED);
+        }
+    }
+
+    spnMoney.SetPos(gameCharacter.getMoney());
+
+    cbxType.SetCurSel(gameCharacter.getType());
+
+}
+ 

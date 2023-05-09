@@ -227,7 +227,10 @@ class GameCharacter {
         // TODO: Accessors
 
         const std::string& getDescription(const int& which) const { return base.description[which]; }
+        const uint8_t& getFlags() const { return base.flags; }
+        const int& getType() const { return base.type; }
         const int& getID() const { return base.ID; }
+        const int& getMoney() const { return base.money; }
         const std::string& getName() const { return base.description[0]; }
 
     private:

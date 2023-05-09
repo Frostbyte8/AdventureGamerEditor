@@ -96,6 +96,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     bd.type(1);
 
     descriptionsTab->populateFields(bd.build(), *gameMap);
+    qualitiesTab->populateFields(bd.build(), *gameMap);
 
     // End Test Data
 
