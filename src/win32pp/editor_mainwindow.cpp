@@ -401,17 +401,20 @@ void MainWindowFrame::finishedEditCharacterDialog() {
 void MainWindowFrame::onEditCharacter(const int& alterType) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
+    const bool editingChar = (alterType == AlterType::Edit) ? true : false;
 
     if(!editCharacterDialog && activeWindowHandle == GetHwnd()) {
 
-        editCharacterDialog = new EditCharacterDialog(this, &windowMetrics, gameWorldController->getGameMap(), false);
+        editCharacterDialog = new EditCharacterDialog(this, &windowMetrics, gameWorldController->getGameMap(), editingChar);
         editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
 
-        if(alterType == 1) {
-        }
-        else {
+        if(alterType == AlterType::Add) {
             GameCharacter::Builder bd;
             editCharacterDialog->SetCharacterToEdit(bd.build());
+        }
+        else if(alterType == AlterType::Edit) {
+            GameCharacter::Builder charToEdit(gameWorldController->getGameMap()->getGameCharacters().at(0));    
+            editCharacterDialog->SetCharacterToEdit(charToEdit.build());
         }
 
         editCharacterDialog->SetParentWindow(GetHwnd());

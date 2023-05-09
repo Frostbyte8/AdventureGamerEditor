@@ -109,7 +109,7 @@ void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter, co
     const size_t oiSize = objectIndices.size();
 
     for(size_t i = 0; i < oiSize; ++i) {
-        //gameObjects[i].GetName()
+        lsbInventory.AddString(AtoW(gameObjects[i].getName().c_str()));
     }
 
 }

@@ -2,11 +2,17 @@
 #include "../util/languagemapper.h"
 
 namespace ControlIDs {
+
     const WORD AddObjectButton          = 201;
     const WORD EditObjectButton         = 202;
     const WORD PlaceObjectButton        = 203;
     const WORD DeleteObjectButton       = 204;
+
     const WORD AddCharacterButton       = 205;
+    const WORD EditCharacterButton      = 206;
+    const WORD PlaceCharacterButton     = 207;
+    const WORD DeleteCharacterButton    = 208;
+
 }
 
 //=============================================================================
@@ -33,6 +39,9 @@ BOOL GameEntitiesView::OnCommand(WPARAM wParam, LPARAM lParam) {
         }
         else if(ctrlID == ControlIDs::EditObjectButton) {
             mainWindow->onEditObject(AlterType::Edit);
+        }
+        else if(ctrlID == ControlIDs::EditCharacterButton) {
+            mainWindow->onEditCharacter(AlterType::Edit);
         }
 
     }
