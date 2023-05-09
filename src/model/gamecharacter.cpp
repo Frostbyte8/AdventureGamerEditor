@@ -23,7 +23,16 @@ void GameCharacter::Builder::readCharacter(std::ifstream& mapFile) {
     money(std::stoi(line));
 
     std::getline(mapFile, line);
-    location(line);
+
+    std::vector<std::string> tokens = Frost::split(line, ',');
+
+    if(tokens.size() == 2) {
+        // TODO: Try
+        location(std::stoi(tokens[0]), std::stoi(tokens[1]));
+    }
+    else {
+        throw std::invalid_argument("Tried to read invalid location type");
+    }
 
     for(int i = 0; i < AttributeTypes::NumTypesForCharacters; i++) {
         std::getline(mapFile, line);

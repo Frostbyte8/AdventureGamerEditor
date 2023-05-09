@@ -197,8 +197,8 @@ bool GameWorldController::tryPlaceCharacterAtTile(const int& row, const int& col
             
             const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
             GameCharacter::Builder charBuilder(gameCharacters[charIndex]);
-            std::string newLocation = std::to_string(col) + "," + std::to_string(row);
-            charBuilder.location(newLocation);
+            //std::string newLocation = std::to_string(col) + "," + std::to_string(row);
+            charBuilder.location(col, row);
             gameMap->replaceCharacter(gmKey, charIndex, charBuilder.build());
             return true;
 

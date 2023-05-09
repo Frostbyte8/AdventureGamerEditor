@@ -98,10 +98,12 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     bd.attribute(3, AttributeTypes::Skill());
     bd.attribute(5, AttributeTypes::Luck());
     bd.attribute(2, AttributeTypes::Willpower());
+    bd.location(5, 9);
 
     descriptionsTab->populateFields(bd.build(), *gameMap);
     qualitiesTab->populateFields(bd.build(), *gameMap);
     attributesTab->populateFields(bd.build(), *gameMap);
+    miscTab->populateFields(bd.build(), *gameMap);
 
     // End Test Data
 

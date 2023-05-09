@@ -93,3 +93,23 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
                             maxGroupBoxWidth, CS.YFIRST_GROUPBOX_MARGIN + (CD.YTEXTBOX_ONE_LINE_ALONE * 5) + CS.YLAST_GROUPBOX_MARGIN);
     
 }
+
+///----------------------------------------------------------------------------
+/// populateFields - 
+///----------------------------------------------------------------------------
+
+void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+
+    CString caption;
+    EOD_SetWindowText(std::to_string(gameCharacter.getX()), txtCoords[0], caption);
+    EOD_SetWindowText(std::to_string(gameCharacter.getY()), txtCoords[1], caption);
+
+    std::vector<size_t> objectIndices = gameMap.getCharacterInventory(gameCharacter.getID());
+    const std::vector<GameObject>& gameObjects = gameMap.getGameObjects();
+    const size_t oiSize = objectIndices.size();
+
+    for(size_t i = 0; i < oiSize; ++i) {
+        //gameObjects[i].GetName()
+    }
+
+}

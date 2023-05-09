@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <assert.h>
+#include "../compat/std_extras_compat.h"
 #include "../compat/stdint_compat.h"
 #include "../editor_constants.h"
 
@@ -73,7 +74,7 @@ class GameCharacter {
             int             money;
             int             sight;
             int             type;
-            int             unused; // Seems to always be 0. Flags2?
+            int             unused; // Seems to always be 0. Flags2? Possible that save games use this field.
 
             // Cached information used by the editor
             int             x;
@@ -155,8 +156,24 @@ class GameCharacter {
                     return *this;
                 }
 
+                /*
                 Builder& location(const std::string& location) {
                     base.location = location;
+
+                    // TODO: Cache X and Y
+
+                    return *this;
+                }
+                */
+
+                Builder& location(const int& x, const int& y) {
+
+                    base.location = std::to_string(x) + "," + std::to_string(y);
+
+                    // Cache location for the editor
+                    base.x = x;
+                    base.y = y;
+
                     return *this;
                 }
 
@@ -233,6 +250,8 @@ class GameCharacter {
         const int& getMoney() const { return base.money; }
         const int& getAttribute(const int& which) const { return base.attribute[which]; }
         const int& getSight() const { return base.sight; }
+        const int& getX() const { return base.x; }
+        const int& getY() const { return base.y; }
 
         const std::string& getName() const { return base.description[0]; }
 
