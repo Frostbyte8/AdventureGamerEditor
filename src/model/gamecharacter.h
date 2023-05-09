@@ -226,6 +226,7 @@ class GameCharacter {
 
         // TODO: Accessors
 
+        const std::string& getDescription(const int& which) const { return base.description[which]; }
         const int& getID() const { return base.ID; }
         const std::string& getName() const { return base.description[0]; }
 

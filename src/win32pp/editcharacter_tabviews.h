@@ -30,8 +30,8 @@ class ECTabViewBase : public CWnd {
         // TODO: Give moveControls a WindowMetrics object so it's consistent with
         // the DPI settings of the monitor it is on.
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) = 0;
-        virtual void insertData(GameObject::Builder& builder) = 0;
-        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) = 0;
+        virtual void insertData(GameCharacter::Builder& builder) = 0;
+        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) = 0;
         virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
         virtual WORD validateFields() = 0;
 
@@ -52,8 +52,8 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
-        virtual void insertData(GameObject::Builder& builder) {}
-        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) {}
+        virtual void insertData(GameCharacter::Builder& builder) {}
+        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields() { return 0; }
 
@@ -83,8 +83,8 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
-        virtual void insertData(GameObject::Builder& builder) {}
-        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) {}
+        virtual void insertData(GameCharacter::Builder& builder) {}
+        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {}
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields() { return 0; }
 
@@ -119,8 +119,8 @@ class EditCharacterAttributesTab : public ECTabViewBase {
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
-        virtual void insertData(GameObject::Builder& builder) {}
-        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) {}
+        virtual void insertData(GameCharacter::Builder& builder) {}
+        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {}
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields() { return 0; }
 
@@ -155,8 +155,8 @@ class EditCharacterMiscTab : public ECTabViewBase {
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
-        virtual void insertData(GameObject::Builder& builder) {}
-        virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) {}
+        virtual void insertData(GameCharacter::Builder& builder) {}
+        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {}
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields() { return 0; }
 

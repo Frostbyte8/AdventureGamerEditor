@@ -81,6 +81,24 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     attributesTab->moveControls(*windowMetrics);
     miscTab->moveControls(*windowMetrics);
 
+    // Test Data
+
+    GameCharacter::Builder bd;
+    bd.description("Random Generic Guy", 0);
+    bd.description("He is a very generic guy with no qualities that stand out about him", 1);
+    bd.description("His fighting style is so basic and underwhelming.", 2);
+    bd.description("Is this string even used in the game? I can't remember", 3);
+    bd.description("guy.ico", 4);
+    bd.description("ding.wav", 5);
+
+    bd.flags(36);
+    bd.money(100);
+    bd.type(1);
+
+    descriptionsTab->populateFields(bd.build(), *gameMap);
+
+    // End Test Data
+
     return CWnd::OnCreate(cs);
 }
 

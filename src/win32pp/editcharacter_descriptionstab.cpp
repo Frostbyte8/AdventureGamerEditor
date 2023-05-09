@@ -53,6 +53,10 @@ void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
 // Public Functions
 //=============================================================================
 
+///----------------------------------------------------------------------------
+/// calculateWidth -
+///----------------------------------------------------------------------------
+
 void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
     pageWidth = 0;
 
@@ -67,6 +71,10 @@ void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windo
     const WindowMetrics::ControlSpacing cs = windowMetrics.GetControlSpacing();
     pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
 }
+
+///----------------------------------------------------------------------------
+/// moveControls -
+///----------------------------------------------------------------------------
 
 void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetrics) {
 
@@ -122,4 +130,15 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
     pageHeight = grpDescriptions.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
 }
 
+///----------------------------------------------------------------------------
+/// populateFields -
+///----------------------------------------------------------------------------
 
+void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+
+    CString caption;
+
+    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
+        EOD_SetWindowText(gameCharacter.getDescription(i), txtDescriptions[i], caption);
+    }
+}
