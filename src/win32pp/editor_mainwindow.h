@@ -28,6 +28,9 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedEditObjectDialog();
         void onEditObject(const int& alterType);
 
+        virtual void finishedEditCharacterDialog();
+        void onEditCharacter(const int& alterType);
+
 	protected:
 
         virtual BOOL    OnCommand(WPARAM wparam, LPARAM lparam);

@@ -27,6 +27,7 @@ class EditObjectDialog : public CWnd {
         EditObjectDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics, const GameMap* inGameMap, bool inEditObject) : 
                          mainWindow(inMainWindow), windowMetrics(inWindowMetrics), gameMap(inGameMap), editObject(inEditObject) {
             contentSize.SetSize(0,0);                             
+            parentWindow = 0;
         }
 
         GameObject::Builder getAlteredObject();
@@ -38,7 +39,9 @@ class EditObjectDialog : public CWnd {
         }
 
         void DoStuff() {
-            ::EnableWindow(parentWindow, FALSE);
+            if(parentWindow != 0) {
+                ::EnableWindow(parentWindow, FALSE);
+            }
         }
 
         void SetObjectToEdit(const GameObject& gameObject) {

@@ -42,6 +42,17 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void onEditObject(const int& alterType) = 0;
 
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit Character Dialog Window is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedEditCharacterDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to alter
+        /// or create an Character
+        ///--------------------------------------------------------------------
+        virtual void onEditCharacter(const int& alterType) = 0;
+
 };
 
 #endif // __MAINWINDOW_INTERFACE_H__

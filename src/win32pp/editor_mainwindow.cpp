@@ -240,10 +240,6 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
-    editCharacterDialog = new EditCharacterDialog(this, &windowMetrics, gameWorldController->getGameMap(), false);
-    editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
-    editCharacterDialog->MoveWindow(0, 0, 128, 128, TRUE);
-    editCharacterDialog->ShowWindow(SW_SHOW);
     return FALSE;
 
 }
@@ -385,4 +381,78 @@ void MainWindowFrame::onEditObject(const int& alterType) {
         editObjectDialog->ShowWindow(SW_SHOW);
 
    } 
+}
+
+void MainWindowFrame::finishedEditCharacterDialog() {
+
+    if(editCharacterDialog) {
+        delete editCharacterDialog;
+        editCharacterDialog = NULL;
+        activeWindowHandle = GetHwnd();
+    }
+
+}
+
+void MainWindowFrame::onEditCharacter(const int& alterType) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    /*
+    if(!editObjectDialog && activeWindowHandle == GetHwnd()) {
+        
+        editObjectDialog = new EditCharacterDialog(this, &windowMetrics, gameWorldController->getGameMap(), false);
+        editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+
+        if(alterType == 1) {
+            //
+        }
+        else {
+            GameObject::Builder bd;
+            editObjectDialog->SetObjectToEdit(bd.build());
+        }
+
+        editObjectDialog->SetParentWindow(GetHwnd());
+
+        // We need to hold on to this as we will need it to make sure the Dialog is the front most window
+        activeWindowHandle = editObjectDialog->GetHwnd();
+
+        CString caption;
+
+        if(alterType == 0) {
+            EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
+        }
+        else {
+            //EOD_SetWindowText(303, editObjectDialog, caption, langMap);
+        }
+
+        const CSize contentSize = editObjectDialog->getContentSize();
+        RECT rc = {0, 0, contentSize.cx, contentSize.cy};
+
+        // TODO: DPI
+        const HMONITOR currentMonitor = MonitorFromWindow(GetHwnd(), 0);
+        MONITORINFOEX monitorInfo;
+        monitorInfo.cbSize = sizeof(MONITORINFOEX);
+        GetMonitorInfo(currentMonitor, &monitorInfo);
+
+        
+        AdjustWindowRectEx(&rc, editObjectDialog->GetStyle(), FALSE, editObjectDialog->GetExStyle());
+        CPoint windowPos;
+        
+        // Calculate where on the monitor the window is position
+
+        windowPos.x = (abs(monitorInfo.rcWork.right - monitorInfo.rcWork.left) / 2) - ((rc.right + abs(rc.left)) / 2);
+        windowPos.y = (abs(monitorInfo.rcWork.bottom - monitorInfo.rcWork.top) / 2) - ((rc.bottom + abs(rc.top)) / 2);
+
+        // Offset this to where the monitor is
+        windowPos.Offset(monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top);
+       
+        editObjectDialog->DoStuff();
+
+        // Move window to the top and show it.
+        //editObjectDialog->MoveWindow(0, 0, contentSize.cx, contentSize.cy, TRUE);
+        editObjectDialog->SetWindowPos(HWND_TOP, windowPos.x, windowPos.y, rc.right + abs(rc.left), rc.bottom + abs(rc.top), 0);
+        editObjectDialog->ShowWindow(SW_SHOW);
+
+   } 
+   */
 }

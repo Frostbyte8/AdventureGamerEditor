@@ -20,6 +20,28 @@ class EditCharacterDialog : public CWnd {
 
         EditCharacterDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics, const GameMap* inGameMap, bool inEditCharacter);
 
+        const CSize& getContentSize() const { return contentSize; }
+
+        void SetParentWindow(const HWND hWnd) {
+            parentWindow = hWnd;
+        }
+
+        void DoStuff() {
+            if(parentWindow != 0) {
+                ::EnableWindow(parentWindow, FALSE);
+            }
+        }
+
+        void SetCharacterToEdit(const GameCharacter& gameCharacter) {
+
+            if(descriptionsTab) {
+                descriptionsTab->populateFields(gameCharacter, *gameMap);
+                qualitiesTab->populateFields(gameCharacter, *gameMap);
+                attributesTab->populateFields(gameCharacter, *gameMap);
+                miscTab->populateFields(gameCharacter, *gameMap);
+            }
+        }
+
     protected:
 
         virtual int OnCreate(CREATESTRUCT& cs);
@@ -30,6 +52,7 @@ class EditCharacterDialog : public CWnd {
 
         static bool CALLBACK SetProperFont(HWND child, LPARAM font);
 
+        HWND                            parentWindow;
         MainWindowInterface*            mainWindow;
         const GameMap*                  gameMap;
         WindowMetrics*                  windowMetrics;
@@ -39,6 +62,7 @@ class EditCharacterDialog : public CWnd {
         EditCharacterAttributesTab*     attributesTab;
         EditCharacterMiscTab*           miscTab;
         CTab                            tabControl;
+        CSize                           contentSize;
 };
 
 #endif // __EDITCHARACTER_DIALOG_H__
