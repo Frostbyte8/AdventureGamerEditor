@@ -141,4 +141,15 @@ class SightTypes {
 
 #undef SIGHTTYPES
 
+///----------------------------------------------------------------------------
+/// AlterTypes - Add / Edit / Place / Delete an Object
+///----------------------------------------------------------------------------
+
+namespace AlterType {
+    const unsigned int Add      = 0;
+    const unsigned int Edit     = 1;
+    const unsigned int Place    = 2;
+    const unsigned int Delete   = 3;
+}
+
 #endif // __EDITOR_CONSTANTS_H__

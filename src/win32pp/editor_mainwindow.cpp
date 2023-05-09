@@ -321,21 +321,25 @@ void MainWindowFrame::finishedEditObjectDialog() {
 
 }
 
+// TODO: Rename this to "On Alter Object", also the id/index of the object being edited
+
 void MainWindowFrame::onEditObject(const int& alterType) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
+    const bool editingObject = (alterType == AlterType::Edit) ? true : false;
 
     if(!editObjectDialog && activeWindowHandle == GetHwnd()) {
         
-        editObjectDialog = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap(), false);
+        editObjectDialog = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap(), editingObject);
         editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
 
-        if(alterType == 1) {
-            //
-        }
-        else {
+        if(alterType == AlterType::Add) {
             GameObject::Builder bd;
             editObjectDialog->SetObjectToEdit(bd.build());
+        }
+        else if (alterType == AlterType::Edit) {
+            GameObject::Builder objectToEdit(gameWorldController->getGameMap()->getGameObjects().at(0));
+            editObjectDialog->SetObjectToEdit(objectToEdit.build());
         }
 
         editObjectDialog->SetParentWindow(GetHwnd());
@@ -345,11 +349,12 @@ void MainWindowFrame::onEditObject(const int& alterType) {
 
         CString caption;
 
-        if(alterType == 0) {
+        if(alterType == AlterType::Add) {
             EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
         }
-        else {
-            //EOD_SetWindowText(303, editObjectDialog, caption, langMap);
+        else if(alterType == AlterType::Edit) {
+
+            EOD_SetWindowText(LanguageConstants::EditObjectDialogCaption, *editObjectDialog, caption, langMap);
         }
 
         const CSize contentSize = editObjectDialog->getContentSize();

@@ -22,9 +22,9 @@ void GameCharacter::Builder::readCharacter(std::ifstream& mapFile) {
     std::getline(mapFile, line);
     money(std::stoi(line));
 
-    std::getline(mapFile, line);
+    Frost::getVBString(mapFile, line);
 
-    std::vector<std::string> tokens = Frost::split(line, ',');
+    std::vector<std::string> tokens = Frost::split(line, ',');   
 
     if(tokens.size() == 2) {
         // TODO: Try
