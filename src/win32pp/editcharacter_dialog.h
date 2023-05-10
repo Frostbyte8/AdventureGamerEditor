@@ -23,18 +23,6 @@ class EditCharacterDialog : public EditDialogBase {
         EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
                             HWND inParentHandle, bool inEditCharacter);
 
-        const CSize& getContentSize() const { return contentSize; }
-
-        void SetParentWindow(const HWND hWnd) {
-            parentWindow = hWnd;
-        }
-
-        void DoStuff() {
-            if(parentWindow != 0) {
-                ::EnableWindow(parentWindow, FALSE);
-            }
-        }
-
         void SetCharacterToEdit(const GameCharacter& gameCharacter) {
 
             if(descriptionsTab) {
@@ -59,7 +47,7 @@ class EditCharacterDialog : public EditDialogBase {
         EditCharacterAttributesTab*     attributesTab;
         EditCharacterMiscTab*           miscTab;
         CTab                            tabControl;
-        CSize                           contentSize;
+        
 };
 
 #endif // __EDITCHARACTER_DIALOG_H__

@@ -2,6 +2,15 @@
 #include "shared_functions.h"
 
 //=============================================================================
+// Constructors
+//=============================================================================
+
+EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
+HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
+    descriptionsTab = NULL;
+}
+
+//=============================================================================
 // Win32++ Functions
 //=============================================================================
 
@@ -25,8 +34,8 @@ void EditObjectDialog::OnClose() {
 
 int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
-    const WindowMetrics::ControlSpacing ctrlSpace = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing ctrlSpace = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
 
     tabControl.Create(*this); 
 
@@ -53,17 +62,17 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     // Set the font to the font specified within window metrics.
 
-    HFONT dialogFont = windowMetrics->GetCurrentFont();
+    HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
 
     // Next, find the widest tab, and make sure that the Dialog buttons
     // are not even wider than that.
 
-    descriptionsTab->calculatePageWidth(*windowMetrics);
-    qualitiesTab->calculatePageWidth(*windowMetrics);
-    effectsTab->calculatePageWidth(*windowMetrics);
-    locationsTab->calculatePageWidth(*windowMetrics);
+    descriptionsTab->calculatePageWidth(windowMetrics);
+    qualitiesTab->calculatePageWidth(windowMetrics);
+    effectsTab->calculatePageWidth(windowMetrics);
+    locationsTab->calculatePageWidth(windowMetrics);
 
     pageWidths.push_back(descriptionsTab->getPageWidth());
     pageWidths.push_back(qualitiesTab->getPageWidth());
@@ -97,10 +106,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     tabControl.SelectPage(1);
     tabControl.SelectPage(0);
 
-    descriptionsTab->moveControls(*windowMetrics);
-    qualitiesTab->moveControls(*windowMetrics);
-    effectsTab->moveControls(*windowMetrics);
-    locationsTab->moveControls(*windowMetrics);   
+    descriptionsTab->moveControls(windowMetrics);
+    qualitiesTab->moveControls(windowMetrics);
+    effectsTab->moveControls(windowMetrics);
+    locationsTab->moveControls(windowMetrics);   
 
     // Now we can figure out how tall the tab control needs to be.
 
@@ -231,20 +240,4 @@ GameObject::Builder EditObjectDialog::getAlteredObject() {
     effectsTab->insertData(bd);
     locationsTab->insertData(bd);
     return bd;
-}
-
-//=============================================================================
-// Private Functions
-//=============================================================================
-
-///----------------------------------------------------------------------------
-/// SetProperFont - Sets the font of the window and all it's child controls
-/// to the font specified. Meant to be used with EnumChildWindows.
-/// @param Handle to the the control whose font is to be changed
-/// @param LPARAM of the font to be set on the control.
-///----------------------------------------------------------------------------
-
-bool CALLBACK EditObjectDialog::SetProperFont(HWND child, LPARAM font) {
-    ::SendMessage(child, WM_SETFONT, font, true);
-    return true;
 }

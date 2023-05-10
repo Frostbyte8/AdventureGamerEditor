@@ -328,9 +328,28 @@ void MainWindowFrame::onEditObject(const int& alterType) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     const bool editingObject = (alterType == AlterType::Edit) ? true : false;
 
-    if(!editObjectDialog && activeWindowHandle == GetHwnd()) {
+    if(!editObjectDialog) {
         
-        editObjectDialog = new EditObjectDialog(this, &windowMetrics, gameWorldController->getGameMap(), editingObject);
+        
+        editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
+        prepareEditDialog(reinterpret_cast<EditDialogBase*>(editObjectDialog));
+
+        CString caption;
+
+        if(alterType == AlterType::Add) {
+            GameObject::Builder bd;
+            editObjectDialog->SetObjectToEdit(bd.build());
+            EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
+        }
+        else if (alterType == AlterType::Edit) {
+            GameObject::Builder objectToEdit(gameWorldController->getGameMap()->getGameObjects().at(0));
+            editObjectDialog->SetObjectToEdit(objectToEdit.build());
+             EOD_SetWindowText(LanguageConstants::EditObjectDialogCaption, *editObjectDialog, caption, langMap);
+        }
+
+        editObjectDialog->ShowWindow(SW_SHOW);
+
+        /*
         editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
 
         if(alterType == AlterType::Add) {
@@ -384,6 +403,7 @@ void MainWindowFrame::onEditObject(const int& alterType) {
         //editObjectDialog->MoveWindow(0, 0, contentSize.cx, contentSize.cy, TRUE);
         editObjectDialog->SetWindowPos(HWND_TOP, windowPos.x, windowPos.y, rc.right + abs(rc.left), rc.bottom + abs(rc.top), 0);
         editObjectDialog->ShowWindow(SW_SHOW);
+        */
 
    } 
 }
@@ -403,10 +423,14 @@ void MainWindowFrame::onEditCharacter(const int& alterType) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     const bool editingChar = (alterType == AlterType::Edit) ? true : false;
 
-    if(!editCharacterDialog && activeWindowHandle == GetHwnd()) {
+    if(!editCharacterDialog) {
 
-        editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingChar);
-        editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+        editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(),
+                                                      GetHwnd(), editingChar);
+
+        prepareEditDialog(reinterpret_cast<EditDialogBase*>(editCharacterDialog));
+
+        // TODO: Set Caption
 
         if(alterType == AlterType::Add) {
             GameCharacter::Builder bd;
@@ -416,23 +440,53 @@ void MainWindowFrame::onEditCharacter(const int& alterType) {
             GameCharacter::Builder charToEdit(gameWorldController->getGameMap()->getGameCharacters().at(0));    
             editCharacterDialog->SetCharacterToEdit(charToEdit.build());
         }
-
-        editCharacterDialog->SetParentWindow(GetHwnd());
-
-        activeWindowHandle = editCharacterDialog->GetHwnd();
-
-        CString caption;
-
-        if(alterType == 1) {
-        }
-        else {
-            //EOD_SetWindowText(LanguageConstants::AddCharacterDialogCaption, *editCharacterDialog, caption, langMap);
-        }
-
-        editCharacterDialog->DoStuff();
-        editCharacterDialog->SetWindowPos(HWND_TOP, 0, 0, 350, 550, 0);
+        
         editCharacterDialog->ShowWindow(SW_SHOW);
-
     }
+
+}
+
+void MainWindowFrame::prepareEditDialog(EditDialogBase* dialogBase) { 
+    
+    if(activeWindowHandle != GetHwnd()) {
+        return;
+    }
+
+    dialogBase->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+    
+    if(dialogBase->IsWindow()) {
+        activeWindowHandle = GetHwnd();
+    }
+    else {
+        return;
+    }
+
+    // TODO: Avoid requiring contentSize
+    const CSize contentSize = dialogBase->getContentSize();
+    RECT rc = {0, 0, contentSize.cx, contentSize.cy};
+
+    // Figure out which monitor to place the window, then center it on that monitor
+
+    // TODO: DPI
+    const HMONITOR currentMonitor = MonitorFromWindow(GetHwnd(), 0);
+    MONITORINFOEX monitorInfo;
+    monitorInfo.cbSize = sizeof(MONITORINFOEX);
+    GetMonitorInfo(currentMonitor, &monitorInfo);
+        
+    AdjustWindowRectEx(&rc, dialogBase->GetStyle(), FALSE, dialogBase->GetExStyle());
+    CPoint windowPos;
+    
+    // Calculate where on the monitor the window is position
+
+    windowPos.x = (abs(monitorInfo.rcWork.right - monitorInfo.rcWork.left) / 2) - ((rc.right + abs(rc.left)) / 2);
+    windowPos.y = (abs(monitorInfo.rcWork.bottom - monitorInfo.rcWork.top) / 2) - ((rc.bottom + abs(rc.top)) / 2);
+
+    // Offset this to where the monitor is
+    windowPos.Offset(monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top);
+
+    // Move window to the top and show it.
+    
+    dialogBase->SetWindowPos(HWND_TOP, windowPos.x, windowPos.y, 
+                             rc.right + abs(rc.left), rc.bottom + abs(rc.top), 0);
 
 }

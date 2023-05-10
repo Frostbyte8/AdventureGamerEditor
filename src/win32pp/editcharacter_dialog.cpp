@@ -7,7 +7,7 @@
 
 EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
-    contentSize.SetSize(0, 0);
+    descriptionsTab = NULL;
 }
 
 //=============================================================================
@@ -116,21 +116,3 @@ void EditCharacterDialog::PreRegisterClass(WNDCLASS& wc) {
 LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     return WndProcDefault(msg, wParam, lParam);
 }
-
-//=============================================================================
-// Private Functions
-//=============================================================================
-
-///----------------------------------------------------------------------------
-/// SetProperFont - Sets the font of the window and all it's child controls
-/// to the font specified. Meant to be used with EnumChildWindows.
-/// @param Handle to the the control whose font is to be changed
-/// @param LPARAM of the font to be set on the control.
-///----------------------------------------------------------------------------
-
-/*
-bool CALLBACK EditCharacterDialog::SetProperFont(HWND child, LPARAM font) {
-    ::SendMessage(child, WM_SETFONT, font, true);
-    return true;
-}
-*/

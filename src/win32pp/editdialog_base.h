@@ -13,19 +13,27 @@ class EditDialogBase : public CWnd {
         bool GoModal() {
             if(parentWindow != NULL) {
                 ::EnableWindow(parentWindow, FALSE);
+                return true;
             }
+
+            return false;
         }
+
+        const CSize& getContentSize() const { return contentSize; }
 
     protected:
 
         EditDialogBase(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentWindow) : 
-                       mainWindow(inMainWindow), gameMap(inGameMap), parentWindow(inParentWindow) {}
+                       mainWindow(inMainWindow), gameMap(inGameMap), parentWindow(inParentWindow) {
+            contentSize.SetSize(0, 0);
+        }
 
         static bool CALLBACK SetProperFont(HWND child, LPARAM font) {
             ::SendMessage(child, WM_SETFONT, font, true);
             return true;
         }
         
+        CSize                   contentSize;
         WindowMetrics           windowMetrics;
         MainWindowInterface*    mainWindow;
         const GameMap*          gameMap;

@@ -15,34 +15,22 @@
 
 #include "editobject_tabviews.h"
 
+#include "editdialog_base.h"
+
 // TODO: Window Metrics needs its own instance since if it moves to a differnt monitor
 // the metrics may be differnt.
 
 // TODO: Minimum Size and Maximum Size
 
-class EditObjectDialog : public CWnd {
+class EditObjectDialog : public EditDialogBase {
 
     public:
 
-        EditObjectDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics, const GameMap* inGameMap, bool inEditObject) : 
-                         mainWindow(inMainWindow), windowMetrics(inWindowMetrics), gameMap(inGameMap), editObject(inEditObject) {
-            contentSize.SetSize(0,0);                             
-            parentWindow = 0;
-        }
+        EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
+                            HWND inParentHandle, bool inEditObject);
+
 
         GameObject::Builder getAlteredObject();
-
-        const CSize& getContentSize() const { return contentSize; }
-
-        void SetParentWindow(const HWND hWnd) {
-            parentWindow = hWnd;
-        }
-
-        void DoStuff() {
-            if(parentWindow != 0) {
-                ::EnableWindow(parentWindow, FALSE);
-            }
-        }
 
         void SetObjectToEdit(const GameObject& gameObject) {
 
@@ -65,13 +53,7 @@ class EditObjectDialog : public CWnd {
 
     private:
 
-        static bool CALLBACK SetProperFont(HWND child, LPARAM font);
-
         LRESULT OnSize(WPARAM& wParam, LPARAM& lParam);
-
-        MainWindowInterface*            mainWindow;
-        const GameMap*                  gameMap;
-        WindowMetrics*                  windowMetrics;
 
         EditObjectDescriptionsTab*      descriptionsTab;
         EditObjectQualitiesTab*         qualitiesTab;
@@ -82,9 +64,7 @@ class EditObjectDialog : public CWnd {
 
         CButton                         btnDialogControl[3];
         CTab                            tabControl;
-        CSize                           contentSize;
 
-        HWND                            parentWindow;
 
 };
 

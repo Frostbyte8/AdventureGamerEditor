@@ -42,6 +42,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         void CreateMenuBar();
 
+        void prepareEditDialog(EditDialogBase* dialogBase);
+
         BOOL OnFileNew();
         BOOL OnFileOpen();
 
