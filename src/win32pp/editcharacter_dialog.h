@@ -14,11 +14,14 @@
 #include "../interface/mainwindow_interface.h"
 #include "editcharacter_tabviews.h"
 
-class EditCharacterDialog : public CWnd {
+#include "editdialog_base.h"
+
+class EditCharacterDialog : public EditDialogBase {
 
     public:
 
-        EditCharacterDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics, const GameMap* inGameMap, bool inEditCharacter);
+        EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
+                            HWND inParentHandle, bool inEditCharacter);
 
         const CSize& getContentSize() const { return contentSize; }
 
@@ -50,13 +53,6 @@ class EditCharacterDialog : public CWnd {
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
-
-        static bool CALLBACK SetProperFont(HWND child, LPARAM font);
-
-        HWND                            parentWindow;
-        MainWindowInterface*            mainWindow;
-        const GameMap*                  gameMap;
-        WindowMetrics*                  windowMetrics;
 
         EditCharacterDescriptionsTab*   descriptionsTab;
         EditCharacterQualitiesTab*      qualitiesTab;

@@ -5,12 +5,9 @@
 // Constructors
 //=============================================================================
 
-EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics,
-                    const GameMap* inGameMap, bool inEditCharacter) : mainWindow(inMainWindow),
-                    windowMetrics(inWindowMetrics), gameMap(inGameMap) {
-
+EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
+HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
     contentSize.SetSize(0, 0);
-    parentWindow = 0;
 }
 
 //=============================================================================
@@ -37,8 +34,8 @@ void EditCharacterDialog::OnClose() {
 
 int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
-    const WindowMetrics::ControlSpacing     CS = windowMetrics->GetControlSpacing();
-    const WindowMetrics::ControlDimensions  CD = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
 
     tabControl.Create(*this); 
 
@@ -61,13 +58,13 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     // Set the font to the font specified within window metrics.
 
-    HFONT dialogFont = windowMetrics->GetCurrentFont();
+    HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    descriptionsTab->calculatePageWidth(*windowMetrics);
-    qualitiesTab->calculatePageWidth(*windowMetrics);
-    attributesTab->calculatePageWidth(*windowMetrics);
-    miscTab->calculatePageWidth(*windowMetrics);
+    descriptionsTab->calculatePageWidth(windowMetrics);
+    qualitiesTab->calculatePageWidth(windowMetrics);
+    attributesTab->calculatePageWidth(windowMetrics);
+    miscTab->calculatePageWidth(windowMetrics);
 
     pageWidths.push_back(descriptionsTab->getPageWidth());
     pageWidths.push_back(qualitiesTab->getPageWidth());
@@ -91,10 +88,10 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     tabControl.SelectPage(1);
     tabControl.SelectPage(0);
 
-    descriptionsTab->moveControls(*windowMetrics);
-    qualitiesTab->moveControls(*windowMetrics);
-    attributesTab->moveControls(*windowMetrics);
-    miscTab->moveControls(*windowMetrics);
+    descriptionsTab->moveControls(windowMetrics);
+    qualitiesTab->moveControls(windowMetrics);
+    attributesTab->moveControls(windowMetrics);
+    miscTab->moveControls(windowMetrics);
 
     contentSize.SetSize(widestTab + (CS.XWINDOW_MARGIN * 2), 550);
 
@@ -131,7 +128,9 @@ LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 /// @param LPARAM of the font to be set on the control.
 ///----------------------------------------------------------------------------
 
+/*
 bool CALLBACK EditCharacterDialog::SetProperFont(HWND child, LPARAM font) {
     ::SendMessage(child, WM_SETFONT, font, true);
     return true;
 }
+*/

@@ -405,7 +405,7 @@ void MainWindowFrame::onEditCharacter(const int& alterType) {
 
     if(!editCharacterDialog && activeWindowHandle == GetHwnd()) {
 
-        editCharacterDialog = new EditCharacterDialog(this, &windowMetrics, gameWorldController->getGameMap(), editingChar);
+        editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingChar);
         editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
 
         if(alterType == AlterType::Add) {
