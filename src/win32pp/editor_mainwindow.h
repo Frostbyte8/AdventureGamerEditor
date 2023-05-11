@@ -25,11 +25,11 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
-        virtual void finishedEditObjectDialog();
-        void onEditObject(const int& alterType);
-
         virtual void finishedEditCharacterDialog();
+        virtual void finishedEditObjectDialog();
+                
         void onEditCharacter(const int& alterType);
+        void onEditObject(const int& alterType);
 
 	protected:
 
@@ -41,8 +41,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 	private:
 
         void CreateMenuBar();
-
-        void prepareEditDialog(EditDialogBase* dialogBase);
 
         BOOL OnFileNew();
         BOOL OnFileOpen();

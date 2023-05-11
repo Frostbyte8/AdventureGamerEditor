@@ -181,7 +181,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 void MainWindowFrame::OnInitialUpdate() {
     
-    activeWindowHandle = GetHwnd(); 
+    activeWindowHandle = *this; 
 }
 
 ///----------------------------------------------------------------------------
@@ -311,30 +311,27 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 
 }
 
-void MainWindowFrame::finishedEditObjectDialog() {
 
-    if(editObjectDialog) {
-        delete editObjectDialog;
-        editObjectDialog = NULL;
-        activeWindowHandle = GetHwnd();
-    }
-
-}
 
 // TODO: Rename this to "On Alter Object", also the id/index of the object being edited
 
 void MainWindowFrame::onEditObject(const int& alterType) {
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    const bool editingObject = (alterType == AlterType::Edit) ? true : false;
+    if(!editObjectDialog && activeWindowHandle == *this) {
+        
+        const bool editingObject = (alterType == AlterType::Edit) ? true : false;
 
-    if(!editObjectDialog) {
-        
-        
-        editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
-        prepareEditDialog(reinterpret_cast<EditDialogBase*>(editObjectDialog));
+        editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), *this, editingObject);
+        editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+
+        if(!editObjectDialog->IsWindow()) {
+            // TODO: Handle error.
+        }
+
+        activeWindowHandle = *this;
 
         CString caption;
+        LanguageMapper& langMap = LanguageMapper::getInstance();
 
         if(alterType == AlterType::Add) {
             GameObject::Builder bd;
@@ -347,90 +344,28 @@ void MainWindowFrame::onEditObject(const int& alterType) {
              EOD_SetWindowText(LanguageConstants::EditObjectDialogCaption, *editObjectDialog, caption, langMap);
         }
 
+        centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editObjectDialog));
         editObjectDialog->ShowWindow(SW_SHOW);
-
-        /*
-        editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
-
-        if(alterType == AlterType::Add) {
-            GameObject::Builder bd;
-            editObjectDialog->SetObjectToEdit(bd.build());
-        }
-        else if (alterType == AlterType::Edit) {
-            GameObject::Builder objectToEdit(gameWorldController->getGameMap()->getGameObjects().at(0));
-            editObjectDialog->SetObjectToEdit(objectToEdit.build());
-        }
-
-        editObjectDialog->SetParentWindow(GetHwnd());
-
-        // We need to hold on to this as we will need it to make sure the Dialog is the front most window
-        activeWindowHandle = editObjectDialog->GetHwnd();
-
-        CString caption;
-
-        if(alterType == AlterType::Add) {
-            EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
-        }
-        else if(alterType == AlterType::Edit) {
-
-            EOD_SetWindowText(LanguageConstants::EditObjectDialogCaption, *editObjectDialog, caption, langMap);
-        }
-
-        const CSize contentSize = editObjectDialog->getContentSize();
-        RECT rc = {0, 0, contentSize.cx, contentSize.cy};
-
-        // TODO: DPI
-        const HMONITOR currentMonitor = MonitorFromWindow(GetHwnd(), 0);
-        MONITORINFOEX monitorInfo;
-        monitorInfo.cbSize = sizeof(MONITORINFOEX);
-        GetMonitorInfo(currentMonitor, &monitorInfo);
-
-        
-        AdjustWindowRectEx(&rc, editObjectDialog->GetStyle(), FALSE, editObjectDialog->GetExStyle());
-        CPoint windowPos;
-        
-        // Calculate where on the monitor the window is position
-
-        windowPos.x = (abs(monitorInfo.rcWork.right - monitorInfo.rcWork.left) / 2) - ((rc.right + abs(rc.left)) / 2);
-        windowPos.y = (abs(monitorInfo.rcWork.bottom - monitorInfo.rcWork.top) / 2) - ((rc.bottom + abs(rc.top)) / 2);
-
-        // Offset this to where the monitor is
-        windowPos.Offset(monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top);
-       
-        editObjectDialog->DoStuff();
-
-        // Move window to the top and show it.
-        //editObjectDialog->MoveWindow(0, 0, contentSize.cx, contentSize.cy, TRUE);
-        editObjectDialog->SetWindowPos(HWND_TOP, windowPos.x, windowPos.y, rc.right + abs(rc.left), rc.bottom + abs(rc.top), 0);
-        editObjectDialog->ShowWindow(SW_SHOW);
-        */
 
    } 
 }
 
-void MainWindowFrame::finishedEditCharacterDialog() {
-
-    if(editCharacterDialog) {
-        delete editCharacterDialog;
-        editCharacterDialog = NULL;
-        activeWindowHandle = GetHwnd();
-    }
-
-}
-
 void MainWindowFrame::onEditCharacter(const int& alterType) {
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    const bool editingChar = (alterType == AlterType::Edit) ? true : false;
+    if(!editCharacterDialog && activeWindowHandle == *this) {
 
-    if(!editCharacterDialog) {
+        const bool editingChar = (alterType == AlterType::Edit) ? true : false;
+        editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
+        editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
 
-        editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(),
-                                                      GetHwnd(), editingChar);
-
-        prepareEditDialog(reinterpret_cast<EditDialogBase*>(editCharacterDialog));
+        if(!editCharacterDialog->IsWindow()) {
+            // TODO: Handle error.
+        }
 
         // TODO: Set Caption
+
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+        
 
         if(alterType == AlterType::Add) {
             GameCharacter::Builder bd;
@@ -441,52 +376,28 @@ void MainWindowFrame::onEditCharacter(const int& alterType) {
             editCharacterDialog->SetCharacterToEdit(charToEdit.build());
         }
         
+        centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
         editCharacterDialog->ShowWindow(SW_SHOW);
     }
 
 }
 
-void MainWindowFrame::prepareEditDialog(EditDialogBase* dialogBase) { 
-    
-    if(activeWindowHandle != GetHwnd()) {
-        return;
+void MainWindowFrame::finishedEditCharacterDialog() {
+
+    if(editCharacterDialog) {
+        delete editCharacterDialog;
+        editCharacterDialog = NULL;
+        activeWindowHandle = *this;
     }
 
-    dialogBase->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
-    
-    if(dialogBase->IsWindow()) {
-        activeWindowHandle = GetHwnd();
+}
+
+void MainWindowFrame::finishedEditObjectDialog() {
+
+    if(editObjectDialog) {
+        delete editObjectDialog;
+        editObjectDialog = NULL;
+        activeWindowHandle = *this;
     }
-    else {
-        return;
-    }
-
-    // TODO: Avoid requiring contentSize
-    const CSize contentSize = dialogBase->getContentSize();
-    RECT rc = {0, 0, contentSize.cx, contentSize.cy};
-
-    // Figure out which monitor to place the window, then center it on that monitor
-
-    // TODO: DPI
-    const HMONITOR currentMonitor = MonitorFromWindow(GetHwnd(), 0);
-    MONITORINFOEX monitorInfo;
-    monitorInfo.cbSize = sizeof(MONITORINFOEX);
-    GetMonitorInfo(currentMonitor, &monitorInfo);
-        
-    AdjustWindowRectEx(&rc, dialogBase->GetStyle(), FALSE, dialogBase->GetExStyle());
-    CPoint windowPos;
-    
-    // Calculate where on the monitor the window is position
-
-    windowPos.x = (abs(monitorInfo.rcWork.right - monitorInfo.rcWork.left) / 2) - ((rc.right + abs(rc.left)) / 2);
-    windowPos.y = (abs(monitorInfo.rcWork.bottom - monitorInfo.rcWork.top) / 2) - ((rc.bottom + abs(rc.top)) / 2);
-
-    // Offset this to where the monitor is
-    windowPos.Offset(monitorInfo.rcMonitor.left, monitorInfo.rcMonitor.top);
-
-    // Move window to the top and show it.
-    
-    dialogBase->SetWindowPos(HWND_TOP, windowPos.x, windowPos.y, 
-                             rc.right + abs(rc.left), rc.bottom + abs(rc.top), 0);
 
 }

@@ -136,7 +136,13 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
 
-    contentSize.SetSize(widestTab + (ctrlSpace.XWINDOW_MARGIN * 2), cPos.y + CD.YBUTTON + ctrlSpace.YWINDOW_MARGIN);
+    RECT rc = {0, 0, widestTab + (ctrlSpace.XWINDOW_MARGIN * 2),  cPos.y + CD.YBUTTON + ctrlSpace.YWINDOW_MARGIN};
+    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
+    
+    // TODO: For some reason, the window is shown even if it's specified not to. Figure out why, or at least figure out
+    // if SWP_HIDEWINDOW is necessary. Look into precreate
+
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_HIDEWINDOW | SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
     return CWnd::OnCreate(cs);
 

@@ -8,6 +8,10 @@
 #include <wxx_stdcontrols.h>
 #include "../util/languagemapper.h"
 
+//=============================================================================
+// Functions that rely on Langauge Mapper.
+//=============================================================================
+
 ///----------------------------------------------------------------------------
 /// LM_SetWindowText - Set the caption of the given control to the given 
 /// languagemap string.
@@ -46,6 +50,29 @@ inline void EOD_SetWindowText(const std::string& str, CWnd& widget, CString& cap
 inline void EOD_AddString(const unsigned int& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
     caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
     widget.AddString(caption);
+}
+
+//=============================================================================
+// Helper Functions
+//=============================================================================
+
+inline void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window) {
+    
+    RECT rc = window.GetClientRect();
+    
+    MONITORINFOEX monitorInfo;
+    monitorInfo.cbSize = sizeof(MONITORINFOEX);
+    GetMonitorInfo(currentMonitor, &monitorInfo);
+
+    AdjustWindowRectEx(&rc, window.GetStyle(), FALSE, window.GetExStyle());
+
+    // Calculate Where the window is positioned, then offset it to where the monitor is.
+
+    const CPoint windowPos((abs(monitorInfo.rcWork.right - monitorInfo.rcWork.left) / 2) - ((rc.right + abs(rc.left)) / 2) + monitorInfo.rcMonitor.left,
+                           (abs(monitorInfo.rcWork.bottom - monitorInfo.rcWork.top) / 2) - ((rc.bottom + abs(rc.top)) / 2) + monitorInfo.rcMonitor.top);
+
+    window.SetWindowPos(0, windowPos.x, windowPos.y, 0, 0, SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOSIZE | SWP_NOZORDER | SWP_NOREPOSITION);
+
 }
 
 #endif // __SHARED_FUNCTIONS_H__
