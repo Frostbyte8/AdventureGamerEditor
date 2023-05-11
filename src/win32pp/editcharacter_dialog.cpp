@@ -98,7 +98,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
 
 
-    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_HIDEWINDOW | SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
     return CWnd::OnCreate(cs);
 }

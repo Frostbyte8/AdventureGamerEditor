@@ -142,7 +142,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     // TODO: For some reason, the window is shown even if it's specified not to. Figure out why, or at least figure out
     // if SWP_HIDEWINDOW is necessary. Look into precreate
 
-    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_HIDEWINDOW | SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
     return CWnd::OnCreate(cs);
 

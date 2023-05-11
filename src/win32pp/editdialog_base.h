@@ -28,6 +28,10 @@ class EditDialogBase : public CWnd {
             ::SendMessage(child, WM_SETFONT, font, true);
             return true;
         }
+
+        virtual void PreCreate(CREATESTRUCT& cs) {
+            cs.style &= ~WS_VISIBLE;
+        }
         
         WindowMetrics           windowMetrics;
         MainWindowInterface*    mainWindow;
