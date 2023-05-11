@@ -28,8 +28,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedEditCharacterDialog();
         virtual void finishedEditObjectDialog();
                 
-        void onEditCharacter(const int& alterType);
-        void onEditObject(const int& alterType);
+        void onAlterCharacter(const int& alterType);
+        void onAlterObject(const int& alterType);
 
 	protected:
 
@@ -59,7 +59,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         EditObjectDialog*       editObjectDialog;
         EditCharacterDialog*    editCharacterDialog;
-
 
         HWND                    activeWindowHandle;
 

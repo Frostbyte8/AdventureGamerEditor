@@ -60,7 +60,7 @@ class EditObjectDialog : public EditDialogBase {
         EditObjectEffectsTab*           effectsTab;
         EditObjectLocationsTab*         locationsTab;
 
-        bool                            editObject;
+        bool                            isEditObject;
 
         CButton                         btnDialogControl[3];
         CTab                            tabControl;

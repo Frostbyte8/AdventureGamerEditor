@@ -8,6 +8,7 @@
 EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
     descriptionsTab = NULL;
+    isEditObject = inEditObject;
 }
 
 //=============================================================================
@@ -123,7 +124,9 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     // TODO: Only show apply when editing an existing object, not creating a new one.
 
-    for(int i = 2; i >= 0; --i) {
+    int startNum = isEditObject ? 2 : 1;
+
+    for(int i = startNum; i >= 0; --i) {
         btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
         cPos.Offset(-(CD.XBUTTON + ctrlSpace.XBUTTON_MARGIN), 0);
     }
@@ -139,9 +142,6 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
     RECT rc = {0, 0, widestTab + (ctrlSpace.XWINDOW_MARGIN * 2),  cPos.y + CD.YBUTTON + ctrlSpace.YWINDOW_MARGIN};
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
     
-    // TODO: For some reason, the window is shown even if it's specified not to. Figure out why, or at least figure out
-    // if SWP_HIDEWINDOW is necessary. Look into precreate
-
     SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
     return CWnd::OnCreate(cs);

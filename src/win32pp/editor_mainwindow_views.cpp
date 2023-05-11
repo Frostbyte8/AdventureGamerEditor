@@ -32,16 +32,16 @@ BOOL GameEntitiesView::OnCommand(WPARAM wParam, LPARAM lParam) {
         const WORD notifyCode = HIWORD(wParam);
 
         if(ctrlID == ControlIDs::AddObjectButton) {
-            mainWindow->onEditObject(AlterType::Add);
+            mainWindow->onAlterObject(AlterType::Add);
         }
         else if(ctrlID == ControlIDs::AddCharacterButton) {
-            mainWindow->onEditCharacter(AlterType::Add);
+            mainWindow->onAlterCharacter(AlterType::Add);
         }
         else if(ctrlID == ControlIDs::EditObjectButton) {
-            mainWindow->onEditObject(AlterType::Edit);
+            mainWindow->onAlterObject(AlterType::Edit);
         }
         else if(ctrlID == ControlIDs::EditCharacterButton) {
-            mainWindow->onEditCharacter(AlterType::Edit);
+            mainWindow->onAlterCharacter(AlterType::Edit);
         }
 
     }

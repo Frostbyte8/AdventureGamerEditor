@@ -30,17 +30,20 @@ class MainWindowInterface {
         /// @param Title of the message box, if necessary.
         ///--------------------------------------------------------------------
         virtual void displayErrorMessage(const std::string& message, const std::string& title) = 0;
+       
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to add, edit
+        /// place or delete a character
+        /// @param an integer specifying the type of action to take.
+        ///--------------------------------------------------------------------
+        virtual void onAlterCharacter(const int& alterType) = 0;
 
         ///--------------------------------------------------------------------
-        /// Sent when the Edit Object Dialog Window is finished
+        /// Sent when window is being told that the user wants to add, edit
+        /// place or delete an object
+        /// @param an integer specifying the type of action to take.
         ///--------------------------------------------------------------------
-        virtual void finishedEditObjectDialog() = 0;
-
-        ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to alter
-        /// or create an Object
-        ///--------------------------------------------------------------------
-        virtual void onEditObject(const int& alterType) = 0;
+        virtual void onAlterObject(const int& alterType) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
@@ -48,10 +51,9 @@ class MainWindowInterface {
         virtual void finishedEditCharacterDialog() = 0;
 
         ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to alter
-        /// or create an Character
+        /// Sent when the Edit Object Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void onEditCharacter(const int& alterType) = 0;
+        virtual void finishedEditObjectDialog() = 0;
 
 };
 

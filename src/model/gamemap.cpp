@@ -481,7 +481,15 @@ void GameMap::readCharacters(std::ifstream& mapFile) {
 
     for(int i = 0; i < numChars; i++) {
         GameCharacter::Builder characterBuilder;
-        characterBuilder.readCharacter(mapFile);
+
+        try {
+            characterBuilder.readCharacter(mapFile);
+        }
+        catch (const std::invalid_argument e) {
+            errorMsg.append(e.what());
+            throw std::runtime_error(errorMsg);
+        }
+
         GameCharacter gameCharacter = characterBuilder.build();
         gameCharacters.push_back(gameCharacter);
 

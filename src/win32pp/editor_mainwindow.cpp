@@ -311,11 +311,7 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 
 }
 
-
-
-// TODO: Rename this to "On Alter Object", also the id/index of the object being edited
-
-void MainWindowFrame::onEditObject(const int& alterType) {
+void MainWindowFrame::onAlterObject(const int& alterType) {
 
     if(!editObjectDialog && activeWindowHandle == *this) {
         
@@ -350,11 +346,15 @@ void MainWindowFrame::onEditObject(const int& alterType) {
    } 
 }
 
-void MainWindowFrame::onEditCharacter(const int& alterType) {
+void MainWindowFrame::onAlterCharacter(const int& alterType) {
+
+    // Make sure that the dialog isn't already running, or that
+    // another modal window isn't already running.
 
     if(!editCharacterDialog && activeWindowHandle == *this) {
 
         const bool editingChar = (alterType == AlterType::Edit) ? true : false;
+
         editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
         editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
 
@@ -383,6 +383,9 @@ void MainWindowFrame::onEditCharacter(const int& alterType) {
 }
 
 void MainWindowFrame::finishedEditCharacterDialog() {
+
+    // The Dialog can only be finished if we actually
+    // had one, so make sure of that.
 
     if(editCharacterDialog) {
         delete editCharacterDialog;

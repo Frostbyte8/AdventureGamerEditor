@@ -177,7 +177,7 @@ void EditObjectLocationsTab::calculatePageWidth(const WindowMetrics& windowMetri
 ///----------------------------------------------------------------------------
 
 void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
-    
+
     if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
 
         int groundX = std::stoi(WtoA(txtGroundCoord[0].GetWindowText()).c_str());
