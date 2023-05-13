@@ -9,7 +9,6 @@
 
 ///----------------------------------------------------------------------------
 /// LanguageConstants - Used by the translation system of the editor.
-/// TODO: Move to own file
 ///----------------------------------------------------------------------------
 
 namespace LanguageConstants {

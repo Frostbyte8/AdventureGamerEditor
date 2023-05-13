@@ -156,16 +156,6 @@ class GameCharacter {
                     return *this;
                 }
 
-                /*
-                Builder& location(const std::string& location) {
-                    base.location = location;
-
-                    // TODO: Cache X and Y
-
-                    return *this;
-                }
-                */
-
                 Builder& location(const int& x, const int& y) {
 
                     base.location = std::to_string(x) + "," + std::to_string(y);
@@ -238,8 +228,6 @@ class GameCharacter {
     //-------------------------------------------------------------------------
 
     public:
-
-        //GameCharacter() {} // TODO: Remove this. Used for testing
 
         // TODO: Accessors
 

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cctype>
 #include <vector>
+#include <io.h>
 
 namespace Frost {
 
@@ -175,6 +176,16 @@ namespace Frost {
 
         return str.substr(0, lastPos+1);
 
+    }
+
+    ///------------------------------------------------------------------------
+    /// DoesFileExist - Checks if a file exists
+    /// TODO: Make Cross platform
+    /// @return true if the file exists, false if it does not
+    ///------------------------------------------------------------------------
+    
+    bool doesFileExist(const std::string& fullPath) {
+        return _access_s(fullPath.c_str(), 0) ? false : true;
     }
 
 }

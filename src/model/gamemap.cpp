@@ -360,7 +360,6 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
     // TODO: Throwing an error right now causes the object to be in an undefined state.
     // We also need to do some better error checking.
     // TODO: Verify correct extentions.
-	// TODO: Reserve tiles
 
     gameInfo.readHeader(key, mapFile);
 
@@ -601,9 +600,6 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
     std::string errorMsg = "Error reading row descriptions: ";
     std::map<unsigned int, std::string> descriptionMap;
 
-    // TODO: check if the file exists, then check if we can open it, and error out
-    // if necessary.
-
     ifs.open(rowFileName.c_str(), std::ifstream::in | std::ios::binary);
     
     if(ifs) {
@@ -654,6 +650,12 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
         }
         catch (const std::out_of_range& e) {
             errorMsg.append(e.what());
+            throw std::runtime_error(errorMsg);
+        }
+    }
+    else {
+        if(Frost::doesFileExist(rowFileName.c_str())) {
+            errorMsg.append("could not open " + rowFileName + " for reading.");
             throw std::runtime_error(errorMsg);
         }
     }

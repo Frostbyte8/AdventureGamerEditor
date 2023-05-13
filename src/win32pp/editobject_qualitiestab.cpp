@@ -96,7 +96,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     grpProperties.Create(*this, 0, BS_GROUPBOX);
-    grpProperties.SetWindowTextW(L"Properties"); // TODO: Langauge
+    EOD_SetWindowText(LanguageConstants::PropertiesGroupLabel, grpProperties, caption, langMap);
 
     lblProperties[2].Create(*this, 0, SS_SIMPLE);
     EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2],

@@ -27,8 +27,6 @@ class ECTabViewBase : public CWnd {
         const LONG& getPageHeight() const { return pageHeight; }
 
         // Pure Virtual Functions
-        // TODO: Give moveControls a WindowMetrics object so it's consistent with
-        // the DPI settings of the monitor it is on.
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) = 0;
         virtual void insertData(GameCharacter::Builder& builder) = 0;
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) = 0;

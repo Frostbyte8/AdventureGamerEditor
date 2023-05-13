@@ -122,8 +122,6 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
 
     cPos.Offset(-(CD.XBUTTON), 0);
 
-    // TODO: Only show apply when editing an existing object, not creating a new one.
-
     int startNum = isEditObject ? 2 : 1;
 
     for(int i = startNum; i >= 0; --i) {
