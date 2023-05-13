@@ -13,6 +13,15 @@
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// LM_toUTF8 - Converts a Language Mapper string to a CString.
+///----------------------------------------------------------------------------
+
+inline CString LM_toUTF8(const unsigned int& ID, const LanguageMapper& langMap) {
+    CString retVal = AtoW(langMap.get(ID).c_str(), CP_UTF8);
+    return retVal;
+}
+
+///----------------------------------------------------------------------------
 /// LM_SetWindowText - Set the caption of the given control to the given 
 /// languagemap string.
 /// @param reference to a control.

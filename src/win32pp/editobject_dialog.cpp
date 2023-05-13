@@ -33,116 +33,123 @@ void EditObjectDialog::OnClose() {
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-int EditObjectDialog::OnCreate(CREATESTRUCT& cs) {
+int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
-    const WindowMetrics::ControlSpacing ctrlSpace = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
-
-    tabControl.Create(*this); 
+    const int numDialogButtons = isEditObject ? 3 : 2;
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    caption = AtoW(langMap.get(LanguageConstants::DescriptionTab).c_str(), CP_UTF8);
-    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(tabControl.AddTabPage(new EditObjectDescriptionsTab(), caption));
+    tabControl.Create(*this); 
+
+    // Create 4 Tabs for the Tab Control.
+
+    caption = LM_toUTF8(LanguageConstants::DescriptionTab, langMap);
+    descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(
+                      tabControl.AddTabPage(new EditObjectDescriptionsTab(), caption));
     
-    caption = AtoW(langMap.get(LanguageConstants::QualitiesTab).c_str(), CP_UTF8);
-    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap), caption));
+    caption = LM_toUTF8(LanguageConstants::QualitiesTab, langMap);
+    qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(
+                   tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap), caption));
 
-    caption = AtoW(langMap.get(LanguageConstants::EffectsTab).c_str(), CP_UTF8);
-    effectsTab = reinterpret_cast<EditObjectEffectsTab*>(tabControl.AddTabPage(new EditObjectEffectsTab(), caption));
+    caption = LM_toUTF8(LanguageConstants::EffectsTab, langMap);
+    effectsTab = reinterpret_cast<EditObjectEffectsTab*>(
+                 tabControl.AddTabPage(new EditObjectEffectsTab(), caption));
 
-    caption = AtoW(langMap.get(LanguageConstants::LocationsTab).c_str(), CP_UTF8);
-    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(tabControl.AddTabPage(new EditObjectLocationsTab(gameMap), caption));
+    caption = LM_toUTF8(LanguageConstants::LocationsTab, langMap);
+    locationsTab = reinterpret_cast<EditObjectLocationsTab*>(
+                   tabControl.AddTabPage(new EditObjectLocationsTab(gameMap), caption));
 
-    for(int i = 0; i < 3; ++i) {
+    // We also need to create the Ok, Cancel and Apply buttons too.
+
+    for(int i = 0; i < numDialogButtons; ++i) {
         btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
     }
 
-    std::vector<LONG> pageWidths;
+    btnDialogControl[0].SetDlgCtrlID(IDOK);
+    btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
 
-    // Set the font to the font specified within window metrics.
+    EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption,
+                      btnDialogControl[0], caption, langMap);
+
+    EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption,
+                      btnDialogControl[1], caption, langMap);
+
+    if(isEditObject) {
+        //btnDialogControl[2].SetDlgCtrl(IDAPPLY);
+        EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
+                          btnDialogControl[2], caption, langMap);
+    }
+
+    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
+
+    // The font must be set on the controls before we do any kind of sizing
+    // so we can reliably test widths on the controls
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
+    // Now to find the widest point. We'll see what is longer:
+    // The minimum dialog width, the widest tab, or the three dialog buttons
+    // We will always assume 3 buttons here so the Add/Edit are consistent.
 
-    // Next, find the widest tab, and make sure that the Dialog buttons
-    // are not even wider than that.
-
-    descriptionsTab->calculatePageWidth(windowMetrics);
-    qualitiesTab->calculatePageWidth(windowMetrics);
-    effectsTab->calculatePageWidth(windowMetrics);
-    locationsTab->calculatePageWidth(windowMetrics);
-
-    pageWidths.push_back(descriptionsTab->getPageWidth());
-    pageWidths.push_back(qualitiesTab->getPageWidth());
-    pageWidths.push_back(effectsTab->getPageWidth());
-    pageWidths.push_back(locationsTab->getPageWidth());
-
-    const size_t numTabs = pageWidths.size();
-    
-    LONG widestTab = 0;
-
-    for(size_t i = 0; i < numTabs; ++i) {
-        widestTab = std::max(pageWidths[i], widestTab);
-    }
-
-    // TODO: Verify that this is correct.
-    // The 3rd margin is for the tab control, the other 2 are for inside the groupbox, I think.
-
-    widestTab += ((ctrlSpace.XWINDOW_MARGIN * 3) + (ctrlSpace.XGROUPBOX_MARGIN * 2));
-
-    // Make sure that the 2/3 dialog buttons aren't wider than the tab.
-    LONG dialogButtonSize = (CD.XBUTTON * 3) + (ctrlSpace.XBUTTON_MARGIN * 2) + (ctrlSpace.XWINDOW_MARGIN);
-    widestTab = std::max(widestTab, dialogButtonSize);
-    
+    LONG widestPoint = findLongestTab(true);
+    LONG dialogButtonSize = (CD.XBUTTON * 3) + (CS.XBUTTON_MARGIN * 2) + (CS.XWINDOW_MARGIN * 2);
+    widestPoint = std::max(widestPoint, dialogButtonSize);
+    //widestPoint = std::max<LONG>(widestPoint, 450); // TODO: Replace 450 with minimum dialog width, and a reasonable number
 
     // Now that we know what our widest section is, we can resize our tab control
     // and resize the contents of the tab pages to fit.
-    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, 0, FALSE);
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          widestPoint, 0, FALSE);
 
+    // TODO: For some reason, if this is not done, the tabs never show up.
     tabControl.SelectPage(3);
     tabControl.SelectPage(2);
     tabControl.SelectPage(1);
     tabControl.SelectPage(0);
+
+    // Move controls so they can fit into their new width.
 
     descriptionsTab->moveControls(windowMetrics);
     qualitiesTab->moveControls(windowMetrics);
     effectsTab->moveControls(windowMetrics);
     locationsTab->moveControls(windowMetrics);   
 
-    // Now we can figure out how tall the tab control needs to be.
+    // Now we can figure out how tall the tab control needs to be, and adjust
+    // the dimensions of the tab control accordingly.
 
-    LONG tallestTab = effectsTab->getPageHeight() + (ctrlSpace.YWINDOW_MARGIN * 2); // This tab is always the tallest.
-    tabControl.MoveWindow(ctrlSpace.XWINDOW_MARGIN, ctrlSpace.YWINDOW_MARGIN, widestTab, tallestTab, FALSE);
+    const LONG tallestPage = findLongestTab(false);
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          widestPoint, tallestPage, FALSE);
 
     // Finally, we need to move the dialog buttons into place
-    CPoint cPos(ctrlSpace.XWINDOW_MARGIN + widestTab, ctrlSpace.YWINDOW_MARGIN + tallestTab + ctrlSpace.YUNRELATED_MARGIN);
+    CPoint cPos(CS.XWINDOW_MARGIN + widestPoint,
+                CS.YWINDOW_MARGIN + tallestPage + CS.YUNRELATED_MARGIN);
 
     cPos.Offset(-(CD.XBUTTON), 0);
 
-    int startNum = isEditObject ? 2 : 1;
-
-    for(int i = startNum; i >= 0; --i) {
+    // We have to go backwards though to place them
+    for(int i = numDialogButtons - 1; i >= 0; --i) {
         btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
-        cPos.Offset(-(CD.XBUTTON + ctrlSpace.XBUTTON_MARGIN), 0);
+        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
     }
 
-    btnDialogControl[0].SetDlgCtrlID(IDOK);
-    btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
+    // Finally, Resize the dialog window, but be careful not to move it or
+    // activate it in anyway.
 
-    EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption, btnDialogControl[0], caption, langMap);
-    EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption, btnDialogControl[1], caption, langMap);
+    RECT rc = {0, 0,
+               widestPoint + (CS.XWINDOW_MARGIN * 2),
+               cPos.y + CD.YBUTTON + CS.YWINDOW_MARGIN };
 
-    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
-
-    RECT rc = {0, 0, widestTab + (ctrlSpace.XWINDOW_MARGIN * 2),  cPos.y + CD.YBUTTON + ctrlSpace.YWINDOW_MARGIN};
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
     
-    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
+                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
-    return CWnd::OnCreate(cs);
+    return CWnd::OnCreate(createStruct);
 
 }
 
@@ -244,4 +251,60 @@ GameObject::Builder EditObjectDialog::getAlteredObject() {
     effectsTab->insertData(bd);
     locationsTab->insertData(bd);
     return bd;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// findLongestTab - Finds the Widest/Tallest tab, and returns how long it is.
+/// @param if true, find the width, if false, find the height
+/// @returns the length of the tab in the given direction
+///----------------------------------------------------------------------------
+
+LONG EditObjectDialog::findLongestTab(const bool getWidth) {
+
+    LONG longestTab = 0;
+    std::vector<LONG> pageDims;
+
+    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
+
+    if(getWidth) {
+        descriptionsTab->calculatePageWidth(windowMetrics);
+        qualitiesTab->calculatePageWidth(windowMetrics);
+        effectsTab->calculatePageWidth(windowMetrics);
+        locationsTab->calculatePageWidth(windowMetrics);
+
+        pageDims.push_back(descriptionsTab->getPageWidth());
+        pageDims.push_back(qualitiesTab->getPageWidth());
+        pageDims.push_back(effectsTab->getPageWidth());
+        pageDims.push_back(locationsTab->getPageWidth());
+    }
+    else {
+        pageDims.push_back(descriptionsTab->getPageHeight());
+        pageDims.push_back(qualitiesTab->getPageHeight());
+        pageDims.push_back(effectsTab->getPageHeight());
+        pageDims.push_back(locationsTab->getPageHeight());
+    }
+
+    const size_t numTabs = pageDims.size();
+
+    for(size_t i = 0; i < numTabs; ++i) {
+        longestTab = std::max(pageDims[i], longestTab);
+    }
+
+    if(getWidth) {
+
+        // TODO: Verify that this is correct.
+        // Though, why a 3rd window Margin is needed is confusing.
+
+        longestTab += ((CS.XWINDOW_MARGIN * 3) + (CS.XGROUPBOX_MARGIN * 2));
+
+    }
+    else {
+        longestTab += CS.YWINDOW_MARGIN * 2;
+    }
+
+    return longestTab;
 }
