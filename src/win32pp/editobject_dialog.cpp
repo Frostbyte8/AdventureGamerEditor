@@ -102,8 +102,15 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     // Now that we know what our widest section is, we can resize our tab control
     // and resize the contents of the tab pages to fit.
+
+    RECT tabRect = {0, 0, widestPoint, 0};
+
+    tabControl.SendMessage(TCM_ADJUSTRECT, TRUE, (LPARAM)&tabRect);
+
+    const LONG adjustedPageWidth = tabRect.right + abs(tabRect.left);
+
     tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                          widestPoint, 0, FALSE);
+                          adjustedPageWidth, 0, FALSE);
 
     // TODO: For some reason, if this is not done, the tabs never show up.
     tabControl.SelectPage(3);
@@ -123,10 +130,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     const LONG tallestPage = findLongestTab(false);
     tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                          widestPoint, tallestPage, FALSE);
+                          adjustedPageWidth, tallestPage, FALSE);
 
     // Finally, we need to move the dialog buttons into place
-    CPoint cPos(CS.XWINDOW_MARGIN + widestPoint,
+    CPoint cPos(CS.XWINDOW_MARGIN + adjustedPageWidth,
                 CS.YWINDOW_MARGIN + tallestPage + CS.YUNRELATED_MARGIN);
 
     cPos.Offset(-(CD.XBUTTON), 0);
@@ -141,7 +148,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     // activate it in anyway.
 
     RECT rc = {0, 0,
-               widestPoint + (CS.XWINDOW_MARGIN * 2),
+               adjustedPageWidth + (CS.XWINDOW_MARGIN * 2),
                cPos.y + CD.YBUTTON + CS.YWINDOW_MARGIN };
 
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
@@ -294,12 +301,11 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
         longestTab = std::max(pageDims[i], longestTab);
     }
 
+    // Apply margins.
+
     if(getWidth) {
 
-        // TODO: Verify that this is correct.
-        // Though, why a 3rd window Margin is needed is confusing.
-
-        longestTab += ((CS.XWINDOW_MARGIN * 3) + (CS.XGROUPBOX_MARGIN * 2));
+        longestTab += CS.XWINDOW_MARGIN * 2;
 
     }
     else {

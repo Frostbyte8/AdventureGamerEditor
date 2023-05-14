@@ -189,6 +189,7 @@ void EditObjectQualitiesTab::calculatePageWidth(const WindowMetrics& windowMetri
                              controlList[j]->GetWindowTextW().c_str()), pageWidth);
     }
 
+    pageWidth += CS.XGROUPBOX_MARGIN * 2;
 }
 
 ///----------------------------------------------------------------------------

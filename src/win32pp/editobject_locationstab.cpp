@@ -169,6 +169,9 @@ void EditObjectLocationsTab::calculatePageWidth(const WindowMetrics& windowMetri
     btnWidth += CD.XCHECKBOX + CD.XCHECKBOX_GAP; 
 
     pageWidth = std::max(btnWidth, pageWidth);
+
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    pageWidth += CS.XGROUPBOX_MARGIN * 2;
 }
 
 ///----------------------------------------------------------------------------

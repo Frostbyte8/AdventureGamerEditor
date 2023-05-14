@@ -170,6 +170,7 @@ BOOL EditObjectEffectsTab::PreTranslateMessage(MSG &msg) {
 
 void EditObjectEffectsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
 
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
     const int RadioButtonBaseWidth = CD.XRADIOBUTTON + CD.XRADIOBUTTON_GAP;
 
@@ -210,6 +211,7 @@ void EditObjectEffectsTab::calculatePageWidth(const WindowMetrics& windowMetrics
 
     pageWidth = std::max(singleLineWidth, totalAttribWidth);
     
+    pageWidth += CS.XGROUPBOX_MARGIN * 2;   
 }
 
 ///----------------------------------------------------------------------------

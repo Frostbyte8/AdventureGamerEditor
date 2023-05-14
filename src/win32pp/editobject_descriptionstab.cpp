@@ -126,6 +126,8 @@ BOOL EditObjectDescriptionsTab::PreTranslateMessage(MSG &msg) {
 
 void EditObjectDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
     
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+
     pageWidth = 0;
 
     // The Width will be the size of the widest control, in this case, it will be
@@ -137,7 +139,7 @@ void EditObjectDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMe
     }
 
     const WindowMetrics::ControlSpacing cs = windowMetrics.GetControlSpacing();
-    pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
+    pageWidth += cs.XGROUPBOX_MARGIN * 2;
     
 }
 
