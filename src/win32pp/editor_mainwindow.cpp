@@ -325,6 +325,7 @@ void MainWindowFrame::onAlterObject(const int& alterType) {
         }
 
         activeWindowHandle = *this;
+        editObjectDialog->GoModal();
 
         CString caption;
         LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -361,6 +362,9 @@ void MainWindowFrame::onAlterCharacter(const int& alterType) {
         if(!editCharacterDialog->IsWindow()) {
             // TODO: Handle error.
         }
+
+        activeWindowHandle = *this;
+        editCharacterDialog->GoModal();
 
         // TODO: Set Caption
 
