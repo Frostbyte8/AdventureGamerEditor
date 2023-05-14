@@ -80,7 +80,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     for(int k = 0; k < 2; ++k) {
-        txtGroundCoord[k].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
+        txtGroundCoord[k].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtGroundCoord[k].LimitText(2); // 0 to 99
         txtGroundCoord[k].EnableWindow(FALSE);
@@ -103,7 +103,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
     btnUnlocksDoor.SetDlgCtrlID(ControlIDs::UnlocksDoor);
 
     for(int k = 0; k < 2; ++k) {
-        txtDoorCoord[k].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
+        txtDoorCoord[k].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         txtDoorCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtDoorCoord[k].LimitText(2);
     }
@@ -251,12 +251,22 @@ void EditObjectLocationsTab::moveControls(const WindowMetrics& windowMetrics) {
 
     cPos.Offset(0, defaultRadioSize.cy + CS.YRELATED_MARGIN);
 
-    // TODO: The Labels and textboxes are not properly Aligned, nor are they
-    // the correct size.
+    // In a number of dialogs, it seems that labels are bottom aligned to the text
+    // boxes.
 
-    const int lblCoordWidths = windowMetrics.XDLU2PIX(12);
-    const int txtCoordWidths = windowMetrics.XDLU2PIX(24);
-    const int lblYOffset = (CD.YTEXTBOX_ONE_LINE_ALONE / 2) - (CD.YLABEL / 2);
+    const int lblCoordWidths = std::max(windowMetrics.CalculateStringWidth(lblDoorCoord[0].GetWindowText().c_str()) * 2,
+                                        windowMetrics.CalculateStringWidth(lblDoorCoord[1].GetWindowText().c_str()) * 2);
+
+    const DWORD bothMargins = txtDoorCoord[0].GetMargins();
+    const WORD marginOffset = LOWORD(bothMargins) + HIWORD(bothMargins);
+    
+    // Even though we can only show 2 numbers, we'll make enough space for 3.
+    const LONG coordWidth = windowMetrics.CalculateStringWidth(L"000");
+    RECT coordRC = {0, 0, coordWidth + marginOffset, 0};
+    AdjustWindowRectEx(&coordRC, 0, FALSE, WS_EX_CLIENTEDGE);
+
+    const int txtCoordWidths = coordRC.right + abs(coordRC.left);
+    const int lblYOffset = (CD.YTEXTBOX_ONE_LINE_ALONE) - (CD.YLABEL);
     
 
     lblGroundCoord[0].MoveWindow(cPos.x, cPos.y + lblYOffset,
@@ -268,7 +278,7 @@ void EditObjectLocationsTab::moveControls(const WindowMetrics& windowMetrics) {
     lblGroundCoord[1].MoveWindow(cPos.x + lblCoordWidths + txtCoordWidths + CS.XRELATED_MARGIN,
                                  cPos.y + lblYOffset, lblCoordWidths, CD.YLABEL);
 
-    txtGroundCoord[1].MoveWindow(cPos.x + (lblCoordWidths * 2) + txtCoordWidths, cPos.y,
+    txtGroundCoord[1].MoveWindow(cPos.x + (lblCoordWidths * 2) + txtCoordWidths + CS.XRELATED_MARGIN, cPos.y,
                                  txtCoordWidths, CD.YTEXTBOX_ONE_LINE_ALONE);
 
     cPos.Offset(0, CD.YTEXTBOX_ONE_LINE_ALONE + CS.YRELATED_MARGIN);
