@@ -206,23 +206,6 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     //    case WM_ERASEBKGND: return TRUE;
     //}
 
-    switch(msg) {
-
-        case WM_ACTIVATEAPP:
-        case WM_ACTIVATE:
-
-            // Make sure the correct window goes to the top
-            if(!IsWindowEnabled() && activeWindowHandle != 0) {
-                if((BOOL)wParam == TRUE) {
-                    ::SetWindowPos(activeWindowHandle, HWND_TOP, 0, 0, 0, 0, 
-                                   SWP_NOMOVE | SWP_NOSIZE);
-                }
-                return 0;
-            }
-
-            break;
-    }
-
 
 	return WndProcDefault(msg, wParam, lParam);
 }
@@ -318,13 +301,15 @@ void MainWindowFrame::onAlterObject(const int& alterType) {
         const bool editingObject = (alterType == AlterType::Edit) ? true : false;
 
         editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), *this, editingObject);
-        editObjectDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+        editObjectDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+        editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+        
 
         if(!editObjectDialog->IsWindow()) {
             // TODO: Handle error.
         }
 
-        activeWindowHandle = *this;
+        activeWindowHandle = editObjectDialog->GetHwnd();
         editObjectDialog->GoModal();
 
         CString caption;
@@ -343,7 +328,7 @@ void MainWindowFrame::onAlterObject(const int& alterType) {
 
         centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editObjectDialog));
         editObjectDialog->ShowWindow(SW_SHOW);
-
+        
    } 
 }
 
@@ -357,13 +342,14 @@ void MainWindowFrame::onAlterCharacter(const int& alterType) {
         const bool editingChar = (alterType == AlterType::Edit) ? true : false;
 
         editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
-        editCharacterDialog->Create(0, WS_EX_DLGMODALFRAME | WS_EX_WINDOWEDGE, WS_POPUPWINDOW | WS_CAPTION);
+        editCharacterDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+        editCharacterDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
 
         if(!editCharacterDialog->IsWindow()) {
             // TODO: Handle error.
         }
 
-        activeWindowHandle = *this;
+        activeWindowHandle = editCharacterDialog->GetHwnd();
         editCharacterDialog->GoModal();
 
         // TODO: Set Caption

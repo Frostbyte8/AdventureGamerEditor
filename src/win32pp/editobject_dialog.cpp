@@ -22,6 +22,7 @@ HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap
 
 void EditObjectDialog::OnClose() {
     
+    // TODO: Put this into the base
     ::EnableWindow(parentWindow, TRUE);
     CWnd::OnClose();
     mainWindow->finishedEditObjectDialog();

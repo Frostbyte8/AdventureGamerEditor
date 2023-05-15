@@ -13,6 +13,7 @@ class EditDialogBase : public CWnd {
         bool GoModal() {
             if(parentWindow != NULL) {
                 ::EnableWindow(parentWindow, FALSE);
+                
                 return true;
             }
 
