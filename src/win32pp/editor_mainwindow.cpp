@@ -395,28 +395,32 @@ void MainWindowFrame::finishedEditCharacterDialog() {
 
 }
 
-void MainWindowFrame::finishedEditObjectDialog(const int& alterType) {
+void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool& wasCanceled) {
 
     if(alterType == AlterType::Add || alterType == AlterType::Edit) {
 
         if(editObjectDialog) {
 
-            GameObject::Builder bd = editObjectDialog->getAlteredObject();
+            // Only progress if the option was not canceled in some way.
 
-            if(alterType == AlterType::Add) {
-                gameWorldController->tryAddObject(bd);
+            if(!wasCanceled) {
+                GameObject::Builder bd = editObjectDialog->getAlteredObject();
+    
+                if(alterType == AlterType::Add) {
+                    gameWorldController->tryAddObject(bd);
+                }
+                else {
+                    //gameWorldController->tryUpdateObject(bd);
+                }
+    
+                entityView->updateLists(gameWorldController->getGameMap()->getGameObjects());
             }
-            else {
-                //gameWorldController->tryUpdateObject(bd);
-            }
-
             
 
             delete editObjectDialog;
             editObjectDialog = NULL;
             activeWindowHandle = *this;
 
-            entityView->updateLists(gameWorldController->getGameMap()->getGameObjects());
         }
 
     }

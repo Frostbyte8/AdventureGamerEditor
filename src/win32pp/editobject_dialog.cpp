@@ -10,9 +10,10 @@ namespace ControlIDs {
 //=============================================================================
 
 EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
-    descriptionsTab = NULL;
+HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
+descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0) {
     isEditObject = inEditObject;
+    optionChosen = 0;
 }
 
 //=============================================================================
@@ -25,17 +26,52 @@ HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap
 ///----------------------------------------------------------------------------
 
 void EditObjectDialog::OnClose() {
-    
-    descriptionsTab->insertData(newObject);
-    qualitiesTab->insertData(newObject);
-    effectsTab->insertData(newObject);
-    locationsTab->insertData(newObject);
 
-    // TODO: Put this into the base
+    bool wasCanceled = optionChosen != 2 ? true : false;
+
+    // Ok Clicked
+    if(optionChosen == 2) {
+        descriptionsTab->insertData(newObject);
+        qualitiesTab->insertData(newObject);
+        effectsTab->insertData(newObject);
+        locationsTab->insertData(newObject);
+    }
+
+    // X Clicked
+    if(optionChosen == 0) {
+    }
+    
     ::EnableWindow(parentWindow, TRUE);
     const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;
     CWnd::OnClose();
-    mainWindow->finishedEditObjectDialog(alterType);
+    mainWindow->finishedEditObjectDialog(alterType, wasCanceled);
+}
+
+///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+    const WORD ctrlID = LOWORD(wParam);
+    const WORD notifyCode = HIWORD(wParam);
+
+    if(lParam) {
+        if(notifyCode == BN_CLICKED) {
+            if(ctrlID == IDOK) {
+                optionChosen = 2;
+                Close();
+                return TRUE;
+            }
+            else if(ctrlID == IDCANCEL) {
+                optionChosen = 1;
+                Close();
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
 }
 
 ///----------------------------------------------------------------------------

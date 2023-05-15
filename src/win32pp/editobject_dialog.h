@@ -46,6 +46,7 @@ class EditObjectDialog : public EditDialogBase {
     protected:
 
         virtual void OnClose(); 
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
@@ -65,6 +66,7 @@ class EditObjectDialog : public EditDialogBase {
         EditObjectLocationsTab*         locationsTab;
 
         bool                            isEditObject;
+        int                             optionChosen;
 
         CButton                         btnDialogControl[3];
         CTab                            tabControl;

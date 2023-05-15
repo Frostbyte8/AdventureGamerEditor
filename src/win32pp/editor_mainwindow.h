@@ -26,7 +26,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
         virtual void finishedEditCharacterDialog();
-        virtual void finishedEditObjectDialog(const int& alterType);
+        virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled);
                 
         void onAlterCharacter(const int& alterType);
         void onAlterObject(const int& alterType);
