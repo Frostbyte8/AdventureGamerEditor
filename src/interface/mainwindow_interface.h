@@ -53,7 +53,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the Edit Object Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditObjectDialog() = 0;
+        virtual void finishedEditObjectDialog(const int& alterType) = 0;
 
 };
 

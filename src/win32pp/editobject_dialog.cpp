@@ -26,10 +26,16 @@ HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap
 
 void EditObjectDialog::OnClose() {
     
+    descriptionsTab->insertData(newObject);
+    qualitiesTab->insertData(newObject);
+    effectsTab->insertData(newObject);
+    locationsTab->insertData(newObject);
+
     // TODO: Put this into the base
     ::EnableWindow(parentWindow, TRUE);
+    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;
     CWnd::OnClose();
-    mainWindow->finishedEditObjectDialog();
+    mainWindow->finishedEditObjectDialog(alterType);
 }
 
 ///----------------------------------------------------------------------------
@@ -260,12 +266,7 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 GameObject::Builder EditObjectDialog::getAlteredObject() {
 
-    GameObject::Builder bd;
-    descriptionsTab->insertData(bd);
-    qualitiesTab->insertData(bd);
-    effectsTab->insertData(bd);
-    locationsTab->insertData(bd);
-    return bd;
+    return newObject;
 }
 
 //=============================================================================

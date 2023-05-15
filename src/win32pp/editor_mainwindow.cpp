@@ -395,12 +395,29 @@ void MainWindowFrame::finishedEditCharacterDialog() {
 
 }
 
-void MainWindowFrame::finishedEditObjectDialog() {
+void MainWindowFrame::finishedEditObjectDialog(const int& alterType) {
 
-    if(editObjectDialog) {
-        delete editObjectDialog;
-        editObjectDialog = NULL;
-        activeWindowHandle = *this;
+    if(alterType == AlterType::Add || alterType == AlterType::Edit) {
+
+        if(editObjectDialog) {
+
+            GameObject::Builder bd = editObjectDialog->getAlteredObject();
+
+            if(alterType == AlterType::Add) {
+                gameWorldController->tryAddObject(bd);
+            }
+            else {
+                //gameWorldController->tryUpdateObject(bd);
+            }
+
+            
+
+            delete editObjectDialog;
+            editObjectDialog = NULL;
+            activeWindowHandle = *this;
+
+            entityView->updateLists(gameWorldController->getGameMap()->getGameObjects());
+        }
+
     }
-
 }
