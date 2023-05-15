@@ -286,15 +286,27 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 
     // Find out if Adventuer Gamer has a hard limit on the number of Objects.
     // TODO: Reuse unused IDs first.
-    const int nextID = gameMap->getLastObjectID() + 1;
-    gameObject.ID(nextID);
-    try {
-        gameMap->addObject(gmKey, gameObject.build());
+    // TODO: Check if the user wanted to add or replace, and catch that if
+    // necessary.
+
+    if(gameObject.getID() == GameObjectConstants::NoID) {
+
+        const int nextID = gameMap->getLastObjectID() + 1;
+        gameObject.ID(nextID);
+
+        try {
+            gameMap->addObject(gmKey, gameObject.build());
+        }
+        catch (const std::bad_alloc&) {
+            mainWindow->displayErrorMessage("Could not add object: Out of memory.", "Out of Memory");
+            return false;
+        }
     }
-    catch (const std::bad_alloc&) {
-        mainWindow->displayErrorMessage("Could not add object: Out of memory.", "Out of Memory");
-        return false;
+    else {
+        const size_t index = gameMap->objectIndexFromID(gameObject.getID());
+        gameMap->replaceObject(gmKey, index, gameObject.build());
     }
+
     return true;
 }
 

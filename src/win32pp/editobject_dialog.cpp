@@ -380,6 +380,7 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
 bool EditObjectDialog::okClicked() {
 
     // TODO: Make sure the window exists.
+    // TODO: Better validation
 
     WORD validated = descriptionsTab->validateFields();
 

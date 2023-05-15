@@ -367,6 +367,10 @@ class GameObject {
                     return *this;
                 }
 
+                const int getID() const {
+                    return base.ID;
+                }
+
                 const uint8_t getFlags2() const  {
                     return base.flags2;
                 }

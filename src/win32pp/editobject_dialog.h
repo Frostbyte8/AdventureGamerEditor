@@ -33,9 +33,10 @@ class EditObjectDialog : public EditDialogBase {
         GameObject::Builder getAlteredObject();
 
         void SetObjectToEdit(const GameObject& gameObject) {
-
             // TODO: These need to be set to 0
             if(descriptionsTab) {
+
+                newObject = GameObject::Builder(gameObject);
                 descriptionsTab->populateFields(gameObject, *gameMap);
                 qualitiesTab->populateFields(gameObject, *gameMap);
                 effectsTab->populateFields(gameObject, *gameMap);
