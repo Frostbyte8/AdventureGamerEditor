@@ -259,14 +259,14 @@ bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, c
 /// @return true if the operation was successful, false if it was not.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryAddCharacter(GameCharacter::Builder& gameCharacter) {
+bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuilder) {
 
     // Find out if Adventuer Gamer has a hard limit on the number of Characters.
     // TODO: Reuse unused IDs first.
     const int nextID = gameMap->getLastCharacterID() + 1;
-    gameCharacter.ID(nextID);
+    characterBuilder.ID(nextID);
     try {
-        gameMap->addCharacter(gmKey, gameCharacter.build());
+        gameMap->addCharacter(gmKey, characterBuilder.build());
     }
     catch (const std::bad_alloc&) {
         mainWindow->displayErrorMessage("Could not add character: Out of memory.", "Out of Memory");

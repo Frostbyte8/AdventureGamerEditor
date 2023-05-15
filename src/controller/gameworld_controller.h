@@ -22,10 +22,11 @@ class GameWorldController {
         const int& getMapWidth() const {return gameMap->getWidth(); }
         const int& getMapHeight() const {return gameMap->getHeight(); }
 
-        bool tryAddCharacter(GameCharacter::Builder& GameCharacter);
+        bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
 
         bool tryReplaceObject(GameObject::Builder& objectBuilder);
+        // bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
 
         bool tryRemoveCharacter(const int& charID);
         bool tryRemoveObject(const int& charID);
