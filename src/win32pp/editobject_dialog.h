@@ -54,6 +54,8 @@ class EditObjectDialog : public EditDialogBase {
 
     private:
 
+        bool    okClicked();
+
         LONG    findLongestTab(const bool getWidth);
 
         LRESULT OnSize(WPARAM& wParam, LPARAM& lParam);

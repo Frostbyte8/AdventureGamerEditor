@@ -9,6 +9,10 @@ namespace ControlIDs {
     const WORD OnPlayer         = 102;
     const WORD OnCharacter      = 103;
     const WORD UnlocksDoor      = 104;
+    const WORD XGroundText      = 105;
+    const WORD YGroundText      = 106;
+    const WORD XDoorText        = 107;
+    const WORD YDoorText        = 108;
 }
 
 //=============================================================================
@@ -84,6 +88,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         txtGroundCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtGroundCoord[k].LimitText(2); // 0 to 99
         txtGroundCoord[k].EnableWindow(FALSE);
+        txtGroundCoord[k].SetDlgCtrlID(ControlIDs::XGroundText + k);
     }
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
@@ -106,6 +111,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         txtDoorCoord[k].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         txtDoorCoord[k].SetExStyle(WS_EX_CLIENTEDGE);
         txtDoorCoord[k].LimitText(2);
+        txtDoorCoord[k].SetDlgCtrlID(ControlIDs::XDoorText + k);
     }
 
     return retVal;
@@ -387,7 +393,7 @@ WORD EditObjectLocationsTab::validateFields() {
         if(groundX < 0 || groundX > mapWidth || groundY < 0 || groundY > mapHeight) {
             MessageBox(L"Object cannot be placed outside of map bounds",
                        L"Validation Error", MB_OK | MB_ICONERROR);
-            return 1;
+            return ControlIDs::XGroundText;
         }
 
     }
@@ -400,7 +406,7 @@ WORD EditObjectLocationsTab::validateFields() {
         if(doorX < 0 || doorX > mapWidth || doorY < 0 || doorY > mapHeight) {
             MessageBox(L"Object cannot be told to unlock a door outside the map bounds",
                        L"Validation Error", MB_OK | MB_ICONERROR);
-            return 1;
+            return ControlIDs::XDoorText;
         }
 
         // TODO: Check if a door exists at the given coordinates, and if none

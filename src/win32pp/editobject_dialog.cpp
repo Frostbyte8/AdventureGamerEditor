@@ -39,6 +39,8 @@ void EditObjectDialog::OnClose() {
 
     // X Clicked
     if(optionChosen == 0) {
+        // TODO: If changes have been made, prompt the user to ensure they
+        // did not accidentally close the window.
     }
     
     ::EnableWindow(parentWindow, TRUE);
@@ -59,9 +61,14 @@ BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
     if(lParam) {
         if(notifyCode == BN_CLICKED) {
             if(ctrlID == IDOK) {
-                optionChosen = 2;
-                Close();
+                 
+                if(okClicked()) {
+                    optionChosen = 2;
+                    Close();
+                }
+                
                 return TRUE;
+
             }
             else if(ctrlID == IDCANCEL) {
                 optionChosen = 1;
@@ -363,4 +370,49 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
     }
 
     return longestTab;
+}
+
+///----------------------------------------------------------------------------
+/// okClicked - Called when the OK button is clicked
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool EditObjectDialog::okClicked() {
+
+    // TODO: Make sure the window exists.
+
+    WORD validated = descriptionsTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(0);
+        descriptionsTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+    validated = qualitiesTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(1);
+        qualitiesTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+    validated = effectsTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(2);
+        effectsTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+    validated = locationsTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(3);
+        locationsTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+
+    return true;
 }
