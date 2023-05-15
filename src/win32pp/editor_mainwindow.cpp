@@ -410,8 +410,7 @@ void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool&
                     gameWorldController->tryAddObject(bd);
                 }
                 else {
-                    // Split soon.
-                    gameWorldController->tryAddObject(bd);
+                    gameWorldController->tryReplaceObject(bd);
                 }
     
                 entityView->updateLists(gameWorldController->getGameMap()->getGameObjects());

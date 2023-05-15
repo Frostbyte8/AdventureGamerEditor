@@ -303,8 +303,39 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
         }
     }
     else {
+        mainWindow->displayErrorMessage("Could not add object: Object had an ID.", "Object add error");
+        return false;
+    }
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// tryReplaceObject - Attempts to replace an Object.
+/// @param A reference to a Object Builder object. Must have a valid ID of an
+/// already existing object.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryReplaceObject(GameObject::Builder& gameObject) {
+
+    // Find out if Adventuer Gamer has a hard limit on the number of Objects.
+
+    if(gameObject.getID() != GameObjectConstants::NoID) {
+ 
         const size_t index = gameMap->objectIndexFromID(gameObject.getID());
+
+        if(index == (size_t)-1) {
+            mainWindow->displayErrorMessage("Could not find object to replace: ID not found.", "ID not found");
+            return false;
+        }
+
         gameMap->replaceObject(gmKey, index, gameObject.build());
+
+    }
+    else {
+        mainWindow->displayErrorMessage("Invalid Object ID given.", "Invalid ID");
+        return false;
     }
 
     return true;
