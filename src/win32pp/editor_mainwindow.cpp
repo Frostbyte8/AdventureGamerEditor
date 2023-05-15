@@ -321,9 +321,13 @@ void MainWindowFrame::onAlterObject(const int& alterType) {
             EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
         }
         else if (alterType == AlterType::Edit) {
-            GameObject::Builder objectToEdit(gameWorldController->getGameMap()->getGameObjects().at(0));
+            // TODO: make sure the character exists before doing this.
+            const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(0);
+            GameObject::Builder objectToEdit(gameObject);
             editObjectDialog->SetObjectToEdit(objectToEdit.build());
-             EOD_SetWindowText(LanguageConstants::EditObjectDialogCaption, *editObjectDialog, caption, langMap);
+            caption = LM_toUTF8(LanguageConstants::EditObjectDialogCaption, langMap);
+            caption += gameObject.getName().c_str();
+            editObjectDialog->SetWindowText(caption); 
         }
 
         centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editObjectDialog));
@@ -343,7 +347,7 @@ void MainWindowFrame::onAlterCharacter(const int& alterType) {
 
         editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
         editCharacterDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-        editCharacterDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+        editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
 
         if(!editCharacterDialog->IsWindow()) {
             // TODO: Handle error.
@@ -355,15 +359,21 @@ void MainWindowFrame::onAlterCharacter(const int& alterType) {
         // TODO: Set Caption
 
         LanguageMapper& langMap = LanguageMapper::getInstance();
-        
+        CString caption;
 
         if(alterType == AlterType::Add) {
             GameCharacter::Builder bd;
             editCharacterDialog->SetCharacterToEdit(bd.build());
+            EOD_SetWindowText(LanguageConstants::AddCharacterDialogCaption, *editCharacterDialog, caption, langMap);
         }
         else if(alterType == AlterType::Edit) {
-            GameCharacter::Builder charToEdit(gameWorldController->getGameMap()->getGameCharacters().at(0));    
+
+            const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(0);
+            caption = LM_toUTF8(LanguageConstants::EditCharacterDialogCaption, langMap);
+            caption += gameCharacter.getName().c_str();
+            GameCharacter::Builder charToEdit(gameCharacter);
             editCharacterDialog->SetCharacterToEdit(charToEdit.build());
+            editCharacterDialog->SetWindowText(caption); 
         }
         
         centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editCharacterDialog));

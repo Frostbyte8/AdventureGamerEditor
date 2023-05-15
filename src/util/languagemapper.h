@@ -40,6 +40,8 @@ namespace LanguageConstants {
     int const MainWindowCaption             = 301;
     int const AddObjectDialogCaption        = 302;
     int const EditObjectDialogCaption       = 303;
+    int const AddCharacterDialogCaption     = 304;
+    int const EditCharacterDialogCaption    = 305;
 
     // Edit Object Dialog
     // Tab Labels

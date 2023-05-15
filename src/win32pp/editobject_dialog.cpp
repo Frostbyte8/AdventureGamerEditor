@@ -1,6 +1,10 @@
 #include "editobject_dialog.h"
 #include "shared_functions.h"
 
+namespace ControlIDs {
+    const WORD ID_APPLY     = 1001;
+}
+
 //=============================================================================
 // Constructors
 //=============================================================================
@@ -79,7 +83,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
                       btnDialogControl[1], caption, langMap);
 
     if(isEditObject) {
-        //btnDialogControl[2].SetDlgCtrl(IDAPPLY);
+        btnDialogControl[2].SetDlgCtrlID(ControlIDs::ID_APPLY);
         EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
                           btnDialogControl[2], caption, langMap);
     }
@@ -99,7 +103,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     LONG widestPoint = findLongestTab(true);
     LONG dialogButtonSize = (CD.XBUTTON * 3) + (CS.XBUTTON_MARGIN * 2) + (CS.XWINDOW_MARGIN * 2);
     widestPoint = std::max(widestPoint, dialogButtonSize);
-    //widestPoint = std::max<LONG>(widestPoint, 450); // TODO: Replace 450 with minimum dialog width, and a reasonable number
+
+    // TODO: After figuring out the DPI, replace 450 with a reasonable minimum width
+
+    //widestPoint = std::max<LONG>(widestPoint, 450);
 
     // Now that we know what our widest section is, we can resize our tab control
     // and resize the contents of the tab pages to fit.
@@ -279,6 +286,7 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
     const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
 
     if(getWidth) {
+
         descriptionsTab->calculatePageWidth(windowMetrics);
         qualitiesTab->calculatePageWidth(windowMetrics);
         effectsTab->calculatePageWidth(windowMetrics);
@@ -290,6 +298,10 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
         pageDims.push_back(locationsTab->getPageWidth());
     }
     else {
+
+        // For height, it is calculated after all the controls are moved
+        // into place.
+
         pageDims.push_back(descriptionsTab->getPageHeight());
         pageDims.push_back(qualitiesTab->getPageHeight());
         pageDims.push_back(effectsTab->getPageHeight());
