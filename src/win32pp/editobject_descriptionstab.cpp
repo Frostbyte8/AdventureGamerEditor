@@ -301,7 +301,7 @@ BOOL EditObjectDescriptionsTab::onBrowseForMedia(const bool findIcon) {
         fileDialog.SetTitle(L"Find Sound File");
     }
 
-	if(fileDialog.DoModal() == IDOK) {
+	if(fileDialog.DoModal(GetParent().GetHwnd()) == IDOK) {
 
         // Convert the Long Path Name of the file into a short one. We can't use long paths
         // As the game was written for Windows 3.1.
