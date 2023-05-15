@@ -294,11 +294,20 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 
 }
 
-void MainWindowFrame::onAlterObject(const int& alterType) {
+void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
     if(!editObjectDialog && activeWindowHandle == *this) {
-        
+
+        const std::vector<GameObject>& gameObjects = gameWorldController->getGameMap()->getGameObjects();
         const bool editingObject = (alterType == AlterType::Edit) ? true : false;
+
+        if(editingObject) {
+            
+            if(gameObjects.empty() || index > gameObjects.size() - 1) {
+                displayErrorMessage("Invalid object index", "error");
+                return;
+            }
+        }
 
         editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), *this, editingObject);
         editObjectDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
@@ -322,7 +331,7 @@ void MainWindowFrame::onAlterObject(const int& alterType) {
         }
         else if (alterType == AlterType::Edit) {
             // TODO: make sure the character exists before doing this.
-            const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(0);
+            const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
             GameObject::Builder objectToEdit(gameObject);
             editObjectDialog->SetObjectToEdit(objectToEdit.build());
             caption = LM_toUTF8(LanguageConstants::EditObjectDialogCaption, langMap);

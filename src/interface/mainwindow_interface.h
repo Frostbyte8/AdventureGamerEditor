@@ -43,7 +43,7 @@ class MainWindowInterface {
         /// place or delete an object
         /// @param an integer specifying the type of action to take.
         ///--------------------------------------------------------------------
-        virtual void onAlterObject(const int& alterType) = 0;
+        virtual void onAlterObject(const int& alterType, const size_t& index) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
