@@ -379,13 +379,19 @@ void EditObjectLocationsTab::populateFields(const GameObject& gameObject, const 
 
 WORD EditObjectLocationsTab::validateFields() {
 
-    IntegerValidator iv(0, 5, 0, &txtGroundCoord[0]);
+    IntegerValidator iv(&txtGroundCoord[0], 0, 5);
 
-    if(iv.validate()) {
-        MessageBox(L"Ok", L"OK", MB_OK);
-    }
-    else {
-        MessageBox(L"nk", L"nK", MB_OK);
+    int retVal = iv.validate();
+
+    if(retVal) {
+        if(retVal == errorCodes::OutOfRange) {
+            MessageBox(L"Out of Range", L"OOR", MB_OK);
+        }
+        else if(retVal == errorCodes::InvalidData) {
+            MessageBox(L"Data was not a number", L"ID", MB_OK);
+        }
+
+        return iv.getWindow()->GetDlgCtrlID();
     }
 
     const int mapWidth = gameMap->getWidth() - 1;

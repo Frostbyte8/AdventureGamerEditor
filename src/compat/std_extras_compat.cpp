@@ -102,6 +102,10 @@ long std::stol(const std::string& in) {
     const std::string MIN_STR = "-2147483648";
     const std::string MAX_STR = "2147483647";
 
+    if(!IsValidInteger(in)) {
+        throw std::invalid_argument("Invalid integer given");
+    }
+
     if(!IsIntegerWithinRange(in, MIN_STR, MAX_STR)) {
         throw std::out_of_range("Value must be between " + MIN_STR + " and " + MAX_STR + ".");
     }

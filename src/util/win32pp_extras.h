@@ -24,36 +24,40 @@ inline bool IsScrollBarKey(const int& vk) {
 class InputValidator {
 
     public:
-        InputValidator(const WORD& inID, const CWnd* wnd) : ctrlID(inID),
-                       ctrlWindow(wnd) {}
+        InputValidator(const CWnd* wnd) : ctrlWindow(wnd) {}
 
-        const WORD& getCtrlID() { return ctrlID; }
         const CWnd* getWindow() { return ctrlWindow; }
-
-        virtual bool validate() = 0;
+        virtual int validate() = 0;
 
     private:
-        WORD ctrlID;
+
         const CWnd* ctrlWindow;
-        //std::string lastErrorMessage;
-        //std::string lastErrorTitle;
 };
 
 class IntegerValidator : public InputValidator {
 
     public:
-        IntegerValidator(const LONG& inMinValue, const LONG& inMaxValue,
-                         const WORD& ctrlID, const CWnd* wnd) :
-                         InputValidator(ctrlID, wnd),
+        IntegerValidator(const CWnd* wnd, const LONG& inMinValue,
+                         const LONG& inMaxValue) : InputValidator(wnd),
                          minValue(inMinValue), maxValue(inMaxValue) {}
 
-        virtual bool validate();
+        virtual int validate();
 
     private:
         LONG minValue;
         LONG maxValue;
         LONG curMaxValue;
+        int lastError;
 };
+
+namespace errorCodes {
+    enum ec {
+        NoError         = 0,
+        OutOfRange      = 1,
+        InvalidData     = 2,
+        ControlNotFound = 3
+    };
+}
 
 // TODO: Edit box that can be validated
 
