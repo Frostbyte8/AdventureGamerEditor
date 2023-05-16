@@ -408,12 +408,25 @@ bool EditObjectDialog::okClicked() {
         return false;
     }
 
+    /*
     validated = locationsTab->validateFields();
 
     if(validated) {
         tabControl.SelectPage(3);
         locationsTab->GetDlgItem(validated).SetFocus();
         return false;
+    }
+    */
+
+    const InputValidator* iv = locationsTab->newValidTest();
+    
+    if(iv->getType() == validatorTypes::Integer) {
+
+        const IntegerValidator* iv2 = reinterpret_cast<const IntegerValidator*>(iv);
+
+        CString errtest;
+        errtest.Format(L"%d", iv2->getMaxValue());
+        MessageBox(errtest, errtest, MB_OK);
     }
 
 

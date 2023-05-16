@@ -91,9 +91,9 @@ void CAnsiEdit::OnPaste() {
 // Validators
 //=============================================================================
 
-int IntegerValidator::validate() {
+bool IntegerValidator::validate() {
 
-    const CWnd* window  = getWindow();
+    const CWnd* window = getWindow();
 
     if(window->IsWindow()) {
 
@@ -103,19 +103,24 @@ int IntegerValidator::validate() {
             value = std::stol(WtoA(window->GetWindowText()).c_str());
         }
         catch (const std::invalid_argument) {
-            return errorCodes::InvalidData;
+            lastError = errorCodes::InvalidData;
+            return false;
         }
         catch (const std::out_of_range) {
-            return errorCodes::OutOfRange;
+            lastError = errorCodes::OutOfRange;
+            return false;
         }
 
         if(value > maxValue || value < minValue) {
-            return errorCodes::OutOfRange;
+            lastError = errorCodes::OutOfRange;
+            return false;
         }
     }
     else {
-        return errorCodes::ControlNotFound;
+        lastError = errorCodes::ControlNotFound;
+        return false;
     }
 
-    return errorCodes::NoError;
+    lastError = errorCodes::NoError;
+    return true;
 }

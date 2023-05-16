@@ -182,6 +182,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap); 
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual WORD validateFields();
+        InputValidator* newValidTest();
 
 
     protected:
@@ -204,12 +205,16 @@ class EditObjectLocationsTab : public EOTabViewBase {
 
         CStatic                 lblGroundCoord[2];
         CEdit                   txtGroundCoord[2];
+        IntegerValidator        groundCoordValidator[2];
 
         CComboBox               cbxWhichCharacter;
 
         CButton                 btnUnlocksDoor;
         CStatic                 lblDoorCoord[2];
         CEdit                   txtDoorCoord[2];
+        IntegerValidator        doorCoordVaildator[2];
+
+
 
 };
 

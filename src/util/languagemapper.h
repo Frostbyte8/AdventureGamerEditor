@@ -195,6 +195,9 @@ namespace LanguageConstants {
     int const FileReadError                 = 10003;
     int const FileReadErrorCaption          = 10004;
 
+    int const IntegerOutOfRange             = 10005;
+    int const IntegerOutOfRangeTitle        = 10006;
+
     // Error for when a string is not found.
 
     int const ErrStringNotFound             = 32767;

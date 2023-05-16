@@ -159,6 +159,8 @@
 	"10002" : "Error getting tile",
 	"10003" : "Unable to read Adventure Gamer File:",
 	"10004" : "Error reading file",
+    "10005" : "Value out of range. Must be between %d and %d.",
+    "10006" : "Out of Range",
 	
     "32767" : "Err: String not Found"        // String was not found
 }

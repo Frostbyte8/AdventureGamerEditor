@@ -91,6 +91,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         txtGroundCoord[k].SetDlgCtrlID(ControlIDs::XGroundText + k);
     }
 
+
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     EOD_AddString(LanguageConstants::NoCharacterSelected, cbxWhichCharacter, caption, langMap);
 
@@ -113,6 +114,9 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
         txtDoorCoord[k].LimitText(2);
         txtDoorCoord[k].SetDlgCtrlID(ControlIDs::XDoorText + k);
     }
+
+    groundCoordValidator[0] = IntegerValidator(&txtGroundCoord[0], 0, gameMap->getWidth() - 1);
+    groundCoordValidator[1] = IntegerValidator(&txtGroundCoord[1], 0, gameMap->getHeight() - 1);
 
     return retVal;
 
@@ -377,42 +381,45 @@ void EditObjectLocationsTab::populateFields(const GameObject& gameObject, const 
 /// of the control that caused the validation error.
 ///----------------------------------------------------------------------------
 
-WORD EditObjectLocationsTab::validateFields() {
-
-    IntegerValidator iv(&txtGroundCoord[0], 0, 5);
-
-    int retVal = iv.validate();
-
-    if(retVal) {
-        if(retVal == errorCodes::OutOfRange) {
-            MessageBox(L"Out of Range", L"OOR", MB_OK);
-        }
-        else if(retVal == errorCodes::InvalidData) {
-            MessageBox(L"Data was not a number", L"ID", MB_OK);
-        }
-
-        return iv.getWindow()->GetDlgCtrlID();
-    }
-
-    const int mapWidth = gameMap->getWidth() - 1;
-    const int mapHeight = gameMap->getHeight() - 1;
-
-    // TODO: Given how many times this has popped up while testing, this
-    // appears to be broken.
+InputValidator* EditObjectLocationsTab::newValidTest() {
 
     if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
-
-        const int groundX = std::stoi(WtoA(txtGroundCoord[0].GetWindowText()).c_str());
-        const int groundY = std::stoi(WtoA(txtGroundCoord[1].GetWindowText()).c_str());
-
-        if(groundX < 0 || groundX > mapWidth || groundY < 0 || groundY > mapHeight) {
-            MessageBox(L"Object cannot be placed outside of map bounds",
-                       L"Validation Error", MB_OK | MB_ICONERROR);
-            return ControlIDs::XGroundText;
+        for(int i = 0; i < 2; ++i) {
+            if(!groundCoordValidator[i].validate()) {
+                return &groundCoordValidator[i];
+            }
         }
-
     }
 
+    return NULL;
+}
+
+WORD EditObjectLocationsTab::validateFields() {
+
+    if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
+        for(int i = 0; i < 2; ++i) {
+            if(!groundCoordValidator[i].validate()) {
+                const int errorCode = groundCoordValidator[i].getErrorCode();
+
+                if(errorCode == errorCodes::ControlNotFound) {
+                    return -1; // -1 = Error happened, but also can't find control ID
+                }
+
+                if(errorCode == errorCodes::OutOfRange) {
+                    LanguageMapper& langMap = LanguageMapper::getInstance();
+                    const LONG minValue = groundCoordValidator[i].getMinValue();
+                    const LONG maxValue = groundCoordValidator[i].getMaxValue();
+                    CString error = LM_toUTF8(LanguageConstants::IntegerOutOfRange, langMap);
+                    error.Format(error.c_str(), minValue, maxValue);
+                    MessageBox(error, L"", MB_OK | MB_ICONERROR);
+                }
+
+                return groundCoordValidator[i].getWindow()->GetDlgCtrlID();
+            }
+        }
+    }
+
+    /*
     if(btnUnlocksDoor.GetCheck() == BST_CHECKED) {
 
         const int doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
@@ -428,6 +435,7 @@ WORD EditObjectLocationsTab::validateFields() {
         // exists, ask the user if this is correct.
 
     }
+    */
 
 
     return 0;

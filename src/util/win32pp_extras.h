@@ -21,13 +21,43 @@ inline bool IsScrollBarKey(const int& vk) {
     return false;
 }
 
+namespace errorCodes {
+    enum ec {
+        NoError         = 0,
+        OutOfRange      = 1,
+        InvalidData     = 2,
+        ControlNotFound = 3
+    };
+}
+
+namespace validatorTypes {
+    enum vt {
+        None            = 0,
+        Integer         = 1
+    };
+}
+
+// TODO: Base class for all platforms, then sub-class them for OS specific ones
+// later.
+
 class InputValidator {
 
     public:
-        InputValidator(const CWnd* wnd) : ctrlWindow(wnd) {}
+        InputValidator(const CWnd* wnd, const int& inType) : ctrlWindow(wnd),
+                       lastError(errorCodes::NoError), langMessageID(0),
+                       langTitleID(0), type(inType) {}
 
         const CWnd* getWindow() { return ctrlWindow; }
-        virtual int validate() = 0;
+        const int& getErrorCode() const { return lastError; }
+        const int& getType() const { return type; }
+        virtual bool validate() = 0;
+
+    protected:
+
+        int lastError;
+        int type;
+        WORD langMessageID;
+        WORD langTitleID;
 
     private:
 
@@ -37,27 +67,22 @@ class InputValidator {
 class IntegerValidator : public InputValidator {
 
     public:
+
+        IntegerValidator() : InputValidator(NULL, validatorTypes::Integer), minValue(0), maxValue(0) {}
+
         IntegerValidator(const CWnd* wnd, const LONG& inMinValue,
-                         const LONG& inMaxValue) : InputValidator(wnd),
+                         const LONG& inMaxValue) : InputValidator(wnd, validatorTypes::Integer),
                          minValue(inMinValue), maxValue(inMaxValue) {}
 
-        virtual int validate();
+        const LONG& getMinValue() const { return minValue; }
+        const LONG& getMaxValue() const { return maxValue; }
+        virtual bool validate();
 
     private:
+
         LONG minValue;
         LONG maxValue;
-        LONG curMaxValue;
-        int lastError;
 };
-
-namespace errorCodes {
-    enum ec {
-        NoError         = 0,
-        OutOfRange      = 1,
-        InvalidData     = 2,
-        ControlNotFound = 3
-    };
-}
 
 // TODO: Edit box that can be validated
 
