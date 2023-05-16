@@ -379,6 +379,15 @@ void EditObjectLocationsTab::populateFields(const GameObject& gameObject, const 
 
 WORD EditObjectLocationsTab::validateFields() {
 
+    IntegerValidator iv(0, 5, 0, &txtGroundCoord[0]);
+
+    if(iv.validate()) {
+        MessageBox(L"Ok", L"OK", MB_OK);
+    }
+    else {
+        MessageBox(L"nk", L"nK", MB_OK);
+    }
+
     const int mapWidth = gameMap->getWidth() - 1;
     const int mapHeight = gameMap->getHeight() - 1;
 

@@ -25,6 +25,7 @@ void EditCharacterDialog::OnClose() {
     ::EnableWindow(parentWindow, TRUE);
     CWnd::OnClose();
     mainWindow->finishedEditCharacterDialog();
+
 }
 
 ///----------------------------------------------------------------------------

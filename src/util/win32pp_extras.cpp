@@ -1,5 +1,6 @@
 #include "win32pp_extras.h"
 #include "frost.h"
+#include "../compat/std_extras_compat.h"
 
 LRESULT CAnsiEdit::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     
@@ -84,4 +85,22 @@ void CAnsiEdit::OnPaste() {
         CloseClipboard();
 
     }
+}
+
+//=============================================================================
+// Validators
+//=============================================================================
+
+bool IntegerValidator::validate() {
+
+    const CWnd* window  = getWindow();
+
+    if(window->IsWindow()) {
+        const int value = std::stoi(WtoA(window->GetWindowText()).c_str());
+        if(value <= maxValue && value >= minValue) {
+            return true;
+        }
+    }
+
+    return false;
 }
