@@ -129,46 +129,64 @@ bool StringValidator::validate() {
 
     const CWnd* window = getWindow();
 
-    if(window->IsWindow()) {
-
-        // TODO: Fix warning
-        if(maxChars != 0 && window->GetWindowTextLength() > maxChars) {
-            lastError = errorCodes::TooManyChars;
-            return false;
-        }
-       
-        if(!startsWith.empty() || !endsWith.empty()) {
-
-            const CString inStr = window->GetWindowText();
-
-            CString field = inStr.Left(startsWith.size());
-            
-            if(!field.IsEmpty()) {
-                field.MakeUpper();
-
-                if( field.Compare(AtoW(startsWith.c_str(), CP_UTF8)) ) {
-                    lastError = errorCodes::StartsWith;
-                    return false;
-                }
-            }
-
-            field = inStr.Right(endsWith.size());
-
-            if(!field.IsEmpty()) {
-                field.MakeUpper();
-                if(field.Compare(AtoW(endsWith.c_str(), CP_UTF8))) {
-                    lastError = errorCodes::EndsWith;
-                    return false;
-                }
-            }
-
-        }
-
-    }
-    else {
+    if(!window || !window->IsWindow()) {
         lastError = errorCodes::ControlNotFound;
         return false;
     }
 
+    // TODO: Fix warning
+    if(maxChars != 0 && window->GetWindowTextLength() > maxChars) {
+        lastError = errorCodes::TooManyChars;
+        return false;
+    }
+    
+    lastError = errorCodes::NoError;
+    const CString inStr = window->GetWindowText();
+    CString field;
+
+    if(!startsWith.empty()) {
+
+        const size_t startSize = startsWith.size();
+
+        for(size_t i = 0; i < startSize; ++i) {
+            
+            field = inStr.Left(startsWith[i].size());
+
+            if(!field.IsEmpty()) {
+
+                field.MakeUpper();
+
+                if(!field.Compare(AtoW(startsWith[i].c_str(), CP_UTF8)) ) {
+                    return true;
+                }
+            }
+        }
+
+        lastError = errorCodes::StartsWith;
+        return false;
+    }
+
+    if(!endsWith.empty()) {
+
+        const size_t endSize = endsWith.size();
+
+        for(size_t i = 0; i < endSize; ++i) {
+            
+            field = inStr.Right(endsWith[i].size());
+
+            if(!field.IsEmpty()) {
+
+                field.MakeUpper();
+
+                if(!field.Compare(AtoW(endsWith[i].c_str(), CP_UTF8)) ) {
+                    return true;
+                }
+            }
+        }
+
+        lastError = errorCodes::EndsWith;
+        return false;
+    }
+ 
     return true;
 }

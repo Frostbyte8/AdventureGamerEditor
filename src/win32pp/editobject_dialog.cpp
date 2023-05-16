@@ -421,8 +421,11 @@ bool EditObjectDialog::okClicked() {
             }
 
             MessageBox(errorMessage, L"", MB_OK | MB_ICONERROR);
+
             tabControl.SelectPage(i);
-            validator->getWindow()->SetFocus();
+            if(errorCode != errorCodes::ControlNotFound) {
+                validator->getWindow()->SetFocus();
+            }
             
             return false;
         }
