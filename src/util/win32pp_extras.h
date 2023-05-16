@@ -47,7 +47,7 @@ class InputValidator {
                        lastError(errorCodes::NoError), langMessageID(0),
                        langTitleID(0), type(inType) {}
 
-        const CWnd* getWindow() { return ctrlWindow; }
+        const CWnd* getWindow() const { return ctrlWindow; }
         const int& getErrorCode() const { return lastError; }
         const int& getType() const { return type; }
         virtual bool validate() = 0;

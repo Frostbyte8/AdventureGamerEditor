@@ -243,12 +243,13 @@ void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject, con
 ///----------------------------------------------------------------------------
 /// validateFields - Ensures that the data given by the user is valid, and if
 /// is not, gives the user a chance to correct it.
-/// @return 0 if no errors are found, and if an error is found, returns the ID
-/// of the control that caused the validation error.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
 ///----------------------------------------------------------------------------
 
-WORD EditObjectDescriptionsTab::validateFields() {
+InputValidator* EditObjectDescriptionsTab::validateFields() {
    
+    /*
     if(txtDescriptions[4].GetWindowTextLength() > 12 ) {
         MessageBox(L"File names cannot exceed 8 characters plus 3 for the extension", L"Validation Error", MB_OK | MB_ICONERROR);
         return ControlIDs::BrowseIcon;
@@ -274,8 +275,9 @@ WORD EditObjectDescriptionsTab::validateFields() {
         MessageBox(L"Sound file must be a .WAV", L"Validation Error", MB_OK | MB_ICONERROR);
         return ControlIDs::BrowseSound;
     }
+    */
 
-    return 0;
+    return NULL;
 }
 
 //=============================================================================

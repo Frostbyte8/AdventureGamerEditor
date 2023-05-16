@@ -406,14 +406,15 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
 }
 
 ///----------------------------------------------------------------------------
-/// validateFields - Checks that the data entered is valid, and that the user
-/// didn't try to do something to get an invalid value entered.
-/// @return 0 if no errors occurred, otherwise ID of the control that caused
-/// the validation error.
+/// validateFields - Ensures that the data given by the user is valid, and if
+/// is not, gives the user a chance to correct it.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
 ///----------------------------------------------------------------------------
 
-WORD EditObjectQualitiesTab::validateFields() {
+InputValidator* EditObjectQualitiesTab::validateFields() {
 
+    /*
     // TODO: Pretty sure this is wrong.
 
     // Check to see if the object is in a fixed position.
@@ -441,6 +442,9 @@ WORD EditObjectQualitiesTab::validateFields() {
     }
 
     return 0;
+    */
+
+    return NULL;
 
 }
 

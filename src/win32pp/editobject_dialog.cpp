@@ -381,54 +381,45 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
 
 bool EditObjectDialog::okClicked() {
 
-    // TODO: Make sure the window exists.
-    // TODO: Better validation
+    std::vector<EOTabViewBase*> tabPages;
 
-    WORD validated = descriptionsTab->validateFields();
+    const size_t numTabs = 4;
+    tabPages.reserve(numTabs);
+    tabPages.push_back(descriptionsTab);
+    tabPages.push_back(qualitiesTab);
+    tabPages.push_back(effectsTab);
+    tabPages.push_back(locationsTab);
 
-    if(validated) {
-        tabControl.SelectPage(0);
-        descriptionsTab->GetDlgItem(validated).SetFocus();
-        return false;
+    for(size_t i = 0; i < numTabs; ++i) {
+        EOTabViewBase& tabPage = *tabPages[i];
+        const InputValidator* validator = tabPage.validateFields();
+
+        if(validator != NULL) {
+
+            LanguageMapper& langMap = LanguageMapper::getInstance();
+            CString errorMessage;
+            const int errorCode = validator->getErrorCode();
+
+            if(validator->getType() == validatorTypes::Integer) {
+                const IntegerValidator* intValidator = reinterpret_cast<const IntegerValidator*>(validator);
+                    
+                if(errorCode == errorCodes::OutOfRange) {
+                    errorMessage = LM_toUTF8(LanguageConstants::IntegerOutOfRange, langMap);
+                    errorMessage.Format(errorMessage, intValidator->getMinValue(), intValidator->getMaxValue());
+                }
+                else if(errorCode == errorCodes::InvalidData) {
+                    errorMessage = LM_toUTF8(LanguageConstants::ErrStringNotFound, langMap);
+                }
+            }
+
+
+            MessageBox(errorMessage, L"", MB_OK | MB_ICONERROR);
+            tabControl.SelectPage(i);
+            validator->getWindow()->SetFocus();
+            
+            return false;
+        }
     }
-
-    validated = qualitiesTab->validateFields();
-
-    if(validated) {
-        tabControl.SelectPage(1);
-        qualitiesTab->GetDlgItem(validated).SetFocus();
-        return false;
-    }
-
-    validated = effectsTab->validateFields();
-
-    if(validated) {
-        tabControl.SelectPage(2);
-        effectsTab->GetDlgItem(validated).SetFocus();
-        return false;
-    }
-
-    /*
-    validated = locationsTab->validateFields();
-
-    if(validated) {
-        tabControl.SelectPage(3);
-        locationsTab->GetDlgItem(validated).SetFocus();
-        return false;
-    }
-    */
-
-    const InputValidator* iv = locationsTab->newValidTest();
-    
-    if(iv->getType() == validatorTypes::Integer) {
-
-        const IntegerValidator* iv2 = reinterpret_cast<const IntegerValidator*>(iv);
-
-        CString errtest;
-        errtest.Format(L"%d", iv2->getMaxValue());
-        MessageBox(errtest, errtest, MB_OK);
-    }
-
 
     return true;
 }

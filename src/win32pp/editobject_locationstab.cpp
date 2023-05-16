@@ -377,11 +377,11 @@ void EditObjectLocationsTab::populateFields(const GameObject& gameObject, const 
 ///----------------------------------------------------------------------------
 /// validateFields - Ensures that the data given by the user is valid, and if
 /// is not, gives the user a chance to correct it.
-/// @return 0 if no errors are found, and if an error is found, returns the ID
-/// of the control that caused the validation error.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
 ///----------------------------------------------------------------------------
 
-InputValidator* EditObjectLocationsTab::newValidTest() {
+InputValidator* EditObjectLocationsTab::validateFields() {
 
     if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
         for(int i = 0; i < 2; ++i) {
@@ -391,54 +391,15 @@ InputValidator* EditObjectLocationsTab::newValidTest() {
         }
     }
 
-    return NULL;
-}
-
-WORD EditObjectLocationsTab::validateFields() {
-
-    if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
+    if(btnUnlocksDoor.GetCheck() == BST_CHECKED) {
         for(int i = 0; i < 2; ++i) {
-            if(!groundCoordValidator[i].validate()) {
-                const int errorCode = groundCoordValidator[i].getErrorCode();
-
-                if(errorCode == errorCodes::ControlNotFound) {
-                    return -1; // -1 = Error happened, but also can't find control ID
-                }
-
-                if(errorCode == errorCodes::OutOfRange) {
-                    LanguageMapper& langMap = LanguageMapper::getInstance();
-                    const LONG minValue = groundCoordValidator[i].getMinValue();
-                    const LONG maxValue = groundCoordValidator[i].getMaxValue();
-                    CString error = LM_toUTF8(LanguageConstants::IntegerOutOfRange, langMap);
-                    error.Format(error.c_str(), minValue, maxValue);
-                    MessageBox(error, L"", MB_OK | MB_ICONERROR);
-                }
-
-                return groundCoordValidator[i].getWindow()->GetDlgCtrlID();
+            if(!doorCoordVaildator[i].validate()) {
+                return &doorCoordVaildator[i];
             }
         }
     }
 
-    /*
-    if(btnUnlocksDoor.GetCheck() == BST_CHECKED) {
-
-        const int doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
-        const int doorY = std::stoi(WtoA(txtDoorCoord[1].GetWindowText()).c_str());
-
-        if(doorX < 0 || doorX > mapWidth || doorY < 0 || doorY > mapHeight) {
-            MessageBox(L"Object cannot be told to unlock a door outside the map bounds",
-                       L"Validation Error", MB_OK | MB_ICONERROR);
-            return ControlIDs::XDoorText;
-        }
-
-        // TODO: Check if a door exists at the given coordinates, and if none
-        // exists, ask the user if this is correct.
-
-    }
-    */
-
-
-    return 0;
+    return NULL;
 }
 
 //=============================================================================

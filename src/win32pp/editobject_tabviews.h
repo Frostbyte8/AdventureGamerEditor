@@ -32,7 +32,7 @@ class EOTabViewBase : public CWnd {
         virtual void insertData(GameObject::Builder& builder) = 0;
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) = 0;
         virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
-        virtual WORD validateFields() = 0;
+        virtual InputValidator* validateFields() = 0;
 
     protected:
         
@@ -57,7 +57,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields();
+        virtual InputValidator* validateFields();
 
     protected:
         
@@ -94,7 +94,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap); 
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields();
+        virtual InputValidator* validateFields();
 
     protected:
                 
@@ -135,7 +135,7 @@ class EditObjectEffectsTab : public EOTabViewBase {
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap); 
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields() { return 0; }
+        virtual InputValidator* validateFields() { return NULL; }
 
     protected:
 
@@ -181,8 +181,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual void insertData(GameObject::Builder& builder);
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap); 
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields();
-        InputValidator* newValidTest();
+        virtual InputValidator* validateFields();
 
 
     protected:
