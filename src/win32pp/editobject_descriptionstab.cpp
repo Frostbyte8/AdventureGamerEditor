@@ -86,6 +86,8 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     btnBrowse[0].SetDlgCtrlID(ControlIDs::BrowseIcon);
     btnBrowse[1].SetDlgCtrlID(ControlIDs::BrowseSound);
 
+    descValidator = StringValidator(&txtDescriptions[4], "", ".ICO", 12);
+
     return retVal;
 
 }
@@ -249,6 +251,10 @@ void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject, con
 
 InputValidator* EditObjectDescriptionsTab::validateFields() {
    
+    if(!descValidator.validate()) {
+        return &descValidator;
+    }
+
     /*
     if(txtDescriptions[4].GetWindowTextLength() > 12 ) {
         MessageBox(L"File names cannot exceed 8 characters plus 3 for the extension", L"Validation Error", MB_OK | MB_ICONERROR);

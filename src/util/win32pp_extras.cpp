@@ -124,3 +124,51 @@ bool IntegerValidator::validate() {
     lastError = errorCodes::NoError;
     return true;
 }
+
+bool StringValidator::validate() {
+
+    const CWnd* window = getWindow();
+
+    if(window->IsWindow()) {
+
+        // TODO: Fix warning
+        if(maxChars != 0 && window->GetWindowTextLength() > maxChars) {
+            lastError = errorCodes::TooManyChars;
+            return false;
+        }
+       
+        if(!startsWith.empty() || !endsWith.empty()) {
+
+            const CString inStr = window->GetWindowText();
+
+            CString field = inStr.Left(startsWith.size());
+            
+            if(!field.IsEmpty()) {
+                field.MakeUpper();
+
+                if( field.Compare(AtoW(startsWith.c_str(), CP_UTF8)) ) {
+                    lastError = errorCodes::StartsWith;
+                    return false;
+                }
+            }
+
+            field = inStr.Right(endsWith.size());
+
+            if(!field.IsEmpty()) {
+                field.MakeUpper();
+                if(field.Compare(AtoW(endsWith.c_str(), CP_UTF8))) {
+                    lastError = errorCodes::EndsWith;
+                    return false;
+                }
+            }
+
+        }
+
+    }
+    else {
+        lastError = errorCodes::ControlNotFound;
+        return false;
+    }
+
+    return true;
+}

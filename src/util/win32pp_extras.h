@@ -26,14 +26,18 @@ namespace errorCodes {
         NoError         = 0,
         OutOfRange      = 1,
         InvalidData     = 2,
-        ControlNotFound = 3
+        ControlNotFound = 3,
+        TooManyChars    = 4,
+        StartsWith      = 5,
+        EndsWith        = 6
     };
 }
 
 namespace validatorTypes {
     enum vt {
         None            = 0,
-        Integer         = 1
+        Integer         = 1,
+        String          = 2
     };
 }
 
@@ -82,6 +86,30 @@ class IntegerValidator : public InputValidator {
 
         LONG minValue;
         LONG maxValue;
+};
+
+class StringValidator : public InputValidator {
+
+    public:
+
+        StringValidator() : InputValidator(NULL, validatorTypes::String), startsWith(""),
+                                           endsWith(""), maxChars(0) {}
+
+        StringValidator(const CWnd* wnd, const std::string inStartsWith,
+                        const std::string& inEndsWith, const size_t& inMaxChars) : InputValidator(wnd, validatorTypes::String),
+                        startsWith(inStartsWith), endsWith(inEndsWith), maxChars(inMaxChars) {}
+
+        const std::string& getEndsWith() const { return endsWith; }
+        const std::string& getStartsWith() const { return startsWith; }
+        const size_t& getMaxChars() const { return maxChars; }
+        virtual bool validate();
+
+    private:
+
+        std::string startsWith;
+        std::string endsWith;
+        size_t maxChars;
+        
 };
 
 // TODO: Edit box that can be validated

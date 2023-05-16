@@ -411,7 +411,14 @@ bool EditObjectDialog::okClicked() {
                     errorMessage = LM_toUTF8(LanguageConstants::ErrStringNotFound, langMap);
                 }
             }
-
+            else if(validator->getType() == validatorTypes::String) {
+                if(errorCode == errorCodes::TooManyChars) {
+                    errorMessage = L"TOO MANY";
+                }
+                else if(errorCode == errorCodes::EndsWith) {
+                    errorMessage = L"MUST END IN ICO";
+                }
+            }
 
             MessageBox(errorMessage, L"", MB_OK | MB_ICONERROR);
             tabControl.SelectPage(i);

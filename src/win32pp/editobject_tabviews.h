@@ -75,6 +75,8 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         CAnsiEdit               txtDescriptions[6];
         CButton                 btnBrowse[2];
         CStatic                 picIcon;
+
+        StringValidator         descValidator;
                 
 };
 
