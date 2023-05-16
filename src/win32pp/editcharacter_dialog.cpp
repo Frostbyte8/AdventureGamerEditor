@@ -8,6 +8,7 @@
 EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
 descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL) {
+    optionChosen = IDCLOSE;
 }
 
 //=============================================================================
@@ -24,6 +25,40 @@ void EditCharacterDialog::OnClose() {
     ::EnableWindow(parentWindow, TRUE);
     CWnd::OnClose();
     mainWindow->finishedEditCharacterDialog();
+}
+
+///----------------------------------------------------------------------------
+/// OnCommnad - Processes the WM_COMMAND message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+BOOL EditCharacterDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    const WORD ctrlID = LOWORD(wParam);
+    const WORD notifyCode = HIWORD(wParam);
+
+    if(lParam) {
+        if(notifyCode == BN_CLICKED) {
+            if(ctrlID == IDOK) {
+                 
+                
+                if(okClicked()) {
+                    optionChosen = IDOK;
+                    Close();
+                }
+                
+                return TRUE;
+                
+
+            }
+            else if(ctrlID == IDCANCEL) {
+                optionChosen = IDCANCEL;
+                Close();
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
 }
 
 ///----------------------------------------------------------------------------
@@ -120,4 +155,54 @@ void EditCharacterDialog::PreRegisterClass(WNDCLASS& wc) {
 
 LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     return WndProcDefault(msg, wParam, lParam);
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// okClicked - Called when the OK button is clicked. Checks to see if all the
+/// data is valid. If it is, then the action will be successful.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool EditCharacterDialog::okClicked() {
+
+    // TODO: Make sure the window exists.
+    // TODO: Better validation
+
+    WORD validated = descriptionsTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(0);
+        descriptionsTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+    validated = qualitiesTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(1);
+        qualitiesTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+    validated = attributesTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(2);
+        attributesTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+    validated = miscTab->validateFields();
+
+    if(validated) {
+        tabControl.SelectPage(3);
+        miscTab->GetDlgItem(validated).SetFocus();
+        return false;
+    }
+
+    return true;
 }

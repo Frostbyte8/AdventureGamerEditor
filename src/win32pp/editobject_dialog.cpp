@@ -13,7 +13,9 @@ EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const Game
 HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
 descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0) {
     isEditObject = inEditObject;
-    optionChosen = 0;
+    // By default, we will assume the user pushed the X button of the window.
+     
+    optionChosen = IDCLOSE;
 }
 
 //=============================================================================
@@ -29,16 +31,14 @@ void EditObjectDialog::OnClose() {
 
     bool wasCanceled = optionChosen != 2 ? true : false;
 
-    // Ok Clicked
-    if(optionChosen == 2) {
+    if(optionChosen == IDOK) {
         descriptionsTab->insertData(newObject);
         qualitiesTab->insertData(newObject);
         effectsTab->insertData(newObject);
         locationsTab->insertData(newObject);
     }
 
-    // X Clicked
-    if(optionChosen == 0) {
+    if(optionChosen == IDCLOSE) {
         // TODO: If changes have been made, prompt the user to ensure they
         // did not accidentally close the window.
     }
@@ -55,6 +55,7 @@ void EditObjectDialog::OnClose() {
 ///----------------------------------------------------------------------------
 
 BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+
     const WORD ctrlID = LOWORD(wParam);
     const WORD notifyCode = HIWORD(wParam);
 
@@ -63,7 +64,7 @@ BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
             if(ctrlID == IDOK) {
                  
                 if(okClicked()) {
-                    optionChosen = 2;
+                    optionChosen = IDOK;
                     Close();
                 }
                 
@@ -71,7 +72,7 @@ BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
             }
             else if(ctrlID == IDCANCEL) {
-                optionChosen = 1;
+                optionChosen = IDCANCEL;
                 Close();
                 return TRUE;
             }
@@ -373,7 +374,8 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
 }
 
 ///----------------------------------------------------------------------------
-/// okClicked - Called when the OK button is clicked
+/// okClicked - Called when the OK button is clicked. Checks to see if all the
+/// data is valid. If it is, then the action will be successful.
 /// @return true if the operation was successful, false if it was not.
 ///----------------------------------------------------------------------------
 
