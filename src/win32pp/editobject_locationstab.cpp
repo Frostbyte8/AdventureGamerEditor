@@ -117,6 +117,8 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     groundCoordValidator[0] = IntegerValidator(&txtGroundCoord[0], 0, gameMap->getWidth() - 1);
     groundCoordValidator[1] = IntegerValidator(&txtGroundCoord[1], 0, gameMap->getHeight() - 1);
+    doorCoordVaildator[0] = IntegerValidator(&txtDoorCoord[0], 0, gameMap->getWidth() - 1);
+    doorCoordVaildator[1] = IntegerValidator(&txtDoorCoord[1], 0, gameMap->getHeight() - 1);
 
     return retVal;
 

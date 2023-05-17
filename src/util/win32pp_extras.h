@@ -29,7 +29,8 @@ namespace errorCodes {
         ControlNotFound = 3,
         TooManyChars    = 4,
         StartsWith      = 5,
-        EndsWith        = 6
+        EndsWith        = 6,
+        NotEnoughChars  = 7
     };
 }
 
@@ -92,12 +93,12 @@ class StringValidator : public InputValidator {
 
     public:
 
-        StringValidator() : InputValidator(NULL, validatorTypes::String), maxChars(0) {}
+        StringValidator() : InputValidator(NULL, validatorTypes::String), maxChars(0), minChars(0) {}
 
             
         StringValidator(const CWnd* wnd, const std::string& inStartsWith, const std::string& inEndsWith, 
-                        const size_t& inMaxChars) : InputValidator(wnd, validatorTypes::String), 
-                        maxChars(inMaxChars) {
+                        const int& inMaxChars, const int& inMinChars) : InputValidator(wnd, validatorTypes::String), 
+                        maxChars(inMaxChars), minChars(inMinChars) {
 
             if(!inStartsWith.empty()) {
                 startsWith.push_back(inStartsWith);
@@ -106,28 +107,43 @@ class StringValidator : public InputValidator {
             if(!inEndsWith.empty()) {
                 endsWith.push_back(inEndsWith);
             }
+
         }
 
-        StringValidator(const CWnd* wnd, const std::vector<std::string>& inStartsWith, 
-                        const std::vector<std::string>& inEndsWith, const size_t& inMaxChars) : 
-                        InputValidator(wnd, validatorTypes::String), startsWith(inStartsWith), 
-                        endsWith(inEndsWith), maxChars(inMaxChars) {}
+        StringValidator(const CWnd* wnd, const std::vector<std::string>* inStartsWith, 
+                        const std::vector<std::string>* inEndsWith, const int& inMaxChars,
+                        const int& inMinChars) : InputValidator(wnd, validatorTypes::String), 
+                        maxChars(inMaxChars), minChars(inMinChars) {
+        
+            if(inStartsWith) {
+                const size_t startSize = inStartsWith->size();
+                startsWith.reserve(startSize);
+                for(size_t i = 0; i < startSize; ++i) {
+                    startsWith.push_back((*inStartsWith)[i]);
+                }
+            }
+
+            if(inEndsWith) {
+                const size_t endSize = inEndsWith->size();
+                endsWith.reserve(endSize);
+                for(size_t i = 0; i < endSize; ++i) {
+                    endsWith.push_back((*inEndsWith)[i]);
+                }
+            }
+        }
 
         const std::vector<std::string>& getEndsWith() const { return endsWith; }
         const std::vector<std::string>& getStartsWith() const { return startsWith; }
-        const size_t& getMaxChars() const { return maxChars; }
+        const int& getMaxChars() const { return maxChars; }
+        const int& getMinChars() const { return minChars; }
         virtual bool validate();
 
     private:
 
         std::vector<std::string> startsWith;
         std::vector<std::string> endsWith;
-
-        /*
-        std::string startsWith;
-        std::string endsWith;
-        */
-        size_t maxChars;
+        int minChars;
+        int maxChars;
         
 };
 

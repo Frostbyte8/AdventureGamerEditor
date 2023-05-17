@@ -134,9 +134,15 @@ bool StringValidator::validate() {
         return false;
     }
 
-    // TODO: Fix warning
-    if(maxChars != 0 && window->GetWindowTextLength() > maxChars) {
+    const int numChars = window->GetWindowTextLength();
+
+    if(maxChars != 0 && numChars > maxChars) {
         lastError = errorCodes::TooManyChars;
+        return false;
+    }
+
+    if(numChars < minChars) {
+        lastError = errorCodes::NotEnoughChars;
         return false;
     }
     

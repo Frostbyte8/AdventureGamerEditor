@@ -76,7 +76,8 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         CButton                 btnBrowse[2];
         CStatic                 picIcon;
 
-        StringValidator         descValidator;
+        StringValidator         iconDescValidator;
+        StringValidator         soundDescValidator;
                 
 };
 

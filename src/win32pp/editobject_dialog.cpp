@@ -412,11 +412,35 @@ bool EditObjectDialog::okClicked() {
                 }
             }
             else if(validator->getType() == validatorTypes::String) {
+                const StringValidator* strValidator = reinterpret_cast<const StringValidator*>(validator);
+
                 if(errorCode == errorCodes::TooManyChars) {
-                    errorMessage = L"TOO MANY";
+                    errorMessage = L"String has too many characters. The maximum amount of characters is %d.";
+                    errorMessage.Format(errorMessage, strValidator->getMaxChars());
+                }
+                else if(errorCode == errorCodes::NotEnoughChars) {
+                    errorMessage = L"String does not have enough chars. The minimum amount of characters is %d.";
+                    errorMessage.Format(errorMessage, strValidator->getMinChars());
                 }
                 else if(errorCode == errorCodes::EndsWith) {
-                    errorMessage = L"MUST END IN ICO";
+                    
+                    errorMessage = L"File must end in one of the following extensions: ";
+                    
+                    const std::vector<std::string>& extenVec = strValidator->getEndsWith();
+                    
+                    const size_t numExten = extenVec.size();
+                    
+                    for(size_t i = 0; i < numExten; ++i) {
+                        
+                        errorMessage += AtoW(extenVec[i].c_str(), CP_UTF8);;
+
+                        if(i != numExten - 1) {
+                            errorMessage += L", ";
+                        }
+                        else {
+                            errorMessage += L".";
+                        }
+                    }
                 }
             }
 

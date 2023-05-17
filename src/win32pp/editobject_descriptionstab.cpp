@@ -86,7 +86,12 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     btnBrowse[0].SetDlgCtrlID(ControlIDs::BrowseIcon);
     btnBrowse[1].SetDlgCtrlID(ControlIDs::BrowseSound);
 
-    descValidator = StringValidator(&txtDescriptions[4], "", ".ICO", 12);
+    std::vector<std::string> imageExtensions;
+    imageExtensions.push_back(".ICO");
+    imageExtensions.push_back(".BMP");
+
+    iconDescValidator = StringValidator(&txtDescriptions[4], NULL, &imageExtensions, 12, 5);
+    soundDescValidator = StringValidator(&txtDescriptions[5], "", ".WAV", 12, 5);
 
     return retVal;
 
@@ -251,37 +256,17 @@ void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject, con
 
 InputValidator* EditObjectDescriptionsTab::validateFields() {
    
-    if(!descValidator.validate()) {
-        return &descValidator;
+    if(txtDescriptions[4].GetTextLength() != 0) {
+        if(!iconDescValidator.validate()) {
+            return &iconDescValidator;
+        }
     }
 
-    /*
-    if(txtDescriptions[4].GetWindowTextLength() > 12 ) {
-        MessageBox(L"File names cannot exceed 8 characters plus 3 for the extension", L"Validation Error", MB_OK | MB_ICONERROR);
-        return ControlIDs::BrowseIcon;
+    if(txtDescriptions[5].GetTextLength() != 0) {
+        if(!soundDescValidator.validate()) {
+            return &soundDescValidator;
+        }   
     }
-    
-    if(txtDescriptions[5].GetWindowTextLength() > 12 ) {
-        MessageBox(L"File names cannot exceed 8 characters plus 3 for the extension", L"Validation Error", MB_OK | MB_ICONERROR);
-        return ControlIDs::BrowseIcon;
-    }
-    
-    CString field = txtDescriptions[4].GetWindowText().Right(4);
-    field.MakeUpper();
-
-    if(field.Compare(L".ICO") && field.Compare(L".BMP")) {
-        MessageBox(L"Image must be an .ICO or a .BMP.", L"Validation Error", MB_OK | MB_ICONERROR);
-        return ControlIDs::BrowseIcon;
-    }
-
-    field = txtDescriptions[5].GetWindowText().Right(4);
-    field.MakeUpper();
-
-    if(field.Compare(L".WAV")) {
-        MessageBox(L"Sound file must be a .WAV", L"Validation Error", MB_OK | MB_ICONERROR);
-        return ControlIDs::BrowseSound;
-    }
-    */
 
     return NULL;
 }
