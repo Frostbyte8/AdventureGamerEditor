@@ -3,9 +3,44 @@
 
 #include "shared_functions.h"
 
+namespace ControlIDs {
+    const WORD Energy       = 101;
+    const WORD Skill        = 102;
+    const WORD Willpower    = 103;
+    const WORD Luck         = 104;
+}
+
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL EditCharacterAttributesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if(ctrlID >= ControlIDs::Energy &&
+           ctrlID <= ControlIDs::Luck) {
+
+            const WORD index = ctrlID - ControlIDs::Energy;
+            if(notifyCode == EN_KILLFOCUS) {
+                const int newValue = std::stoi(WtoA(txtAttribType[index].GetWindowText()).c_str());
+                spnAttribType[index].SetPos(newValue);
+                return TRUE;
+            }
+
+        }
+    }
+
+    return FALSE;
+}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the tab, and create remaining child
@@ -30,6 +65,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
         txtAttribType[i].Create(*this, 0, ES_AUTOHSCROLL);
         txtAttribType[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtAttribType[i].LimitText(2);
+        txtAttribType[i].SetDlgCtrlID(ControlIDs::Energy + i);
         EOD_SetWindowText(LanguageConstants::CharAttribEnergy+i, lblAttribType[i], caption, langMap);
         spnAttribType[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);

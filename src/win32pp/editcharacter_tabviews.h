@@ -131,7 +131,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
 
     protected:
 
-        //virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         //virtual BOOL PreTranslateMessage(MSG& msg);
