@@ -3,6 +3,11 @@
 
 #include "shared_functions.h"
 
+namespace ControlIDs {
+    const WORD XTextCoord   = 101;
+    const WORD YTextCoord   = 102;
+}
+
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
@@ -28,12 +33,16 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
         EOD_SetWindowText(LanguageConstants::XCoordLabel, lblCoords[i], caption, langMap);
         txtCoords[i].Create(*this, 0, ES_AUTOHSCROLL);
         txtCoords[i].SetExStyle(WS_EX_CLIENTEDGE);
+        txtCoords[i].SetDlgCtrlID(ControlIDs::XTextCoord+i);
     }
 
     grpInventory.Create(*this, 0, BS_GROUPBOX);
     EOD_SetWindowText(LanguageConstants::CharInventoryGroup, grpInventory, caption, langMap);
 
     lsbInventory.Create(*this, 0, LBS_STANDARD | WS_VSCROLL | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL);
+
+    coordValidator[0] = IntegerValidator(&txtCoords[0], 0, gameMap->getWidth() - 1);
+    coordValidator[1] = IntegerValidator(&txtCoords[1], 0, gameMap->getHeight() - 1);
 
     return retVal;
 }
@@ -98,18 +107,36 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
 /// populateFields - 
 ///----------------------------------------------------------------------------
 
-void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter, const GameMap& REMOVETHISPARAM) {
 
     CString caption;
     EOD_SetWindowText(std::to_string(gameCharacter.getX()), txtCoords[0], caption);
     EOD_SetWindowText(std::to_string(gameCharacter.getY()), txtCoords[1], caption);
 
-    std::vector<size_t> objectIndices = gameMap.getCharacterInventory(gameCharacter.getID());
-    const std::vector<GameObject>& gameObjects = gameMap.getGameObjects();
+    std::vector<size_t> objectIndices = gameMap->getCharacterInventory(gameCharacter.getID());
+    const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
     const size_t oiSize = objectIndices.size();
 
     for(size_t i = 0; i < oiSize; ++i) {
         lsbInventory.AddString(AtoW(gameObjects[i].getName().c_str()));
     }
 
+}
+
+///----------------------------------------------------------------------------
+/// validateFields - Ensures that the data given by the user is valid, and if
+/// is not, gives the user a chance to correct it.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
+///----------------------------------------------------------------------------
+
+InputValidator* EditCharacterMiscTab::validateFields() {
+
+    for(int i = 0; i < 2; ++i) {
+        if(!coordValidator[i].validate()) {
+            return &coordValidator[i];
+        }
+    }
+
+    return NULL;
 }

@@ -88,7 +88,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     attributesTab = reinterpret_cast<EditCharacterAttributesTab*>(tabControl.AddTabPage(new EditCharacterAttributesTab(), caption));
 
     caption = AtoW(langMap.get(LanguageConstants::CharMiscTab).c_str(), CP_UTF8);
-    miscTab = reinterpret_cast<EditCharacterMiscTab*>(tabControl.AddTabPage(new EditCharacterMiscTab(), caption));
+    miscTab = reinterpret_cast<EditCharacterMiscTab*>(tabControl.AddTabPage(new EditCharacterMiscTab(gameMap), caption));
 
     std::vector<LONG> pageWidths;
 

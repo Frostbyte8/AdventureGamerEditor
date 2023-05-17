@@ -158,12 +158,14 @@ class EditCharacterMiscTab : public ECTabViewBase {
 
    public:
 
+        EditCharacterMiscTab(const GameMap* inGameMap) : gameMap(inGameMap) {}
+
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
         virtual void insertData(GameCharacter::Builder& builder) {}
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual InputValidator* validateFields() { return NULL; }
+        virtual InputValidator* validateFields();
 
     protected:
 
@@ -174,11 +176,15 @@ class EditCharacterMiscTab : public ECTabViewBase {
 
     private:
 
+        const GameMap*      gameMap;
+
         CButton             grpLocations;
         CStatic             lblCoords[2];
         CEdit               txtCoords[2];
         CButton             grpInventory;
         CListBox            lsbInventory;
+
+        IntegerValidator    coordValidator[2];
 
 };
 
