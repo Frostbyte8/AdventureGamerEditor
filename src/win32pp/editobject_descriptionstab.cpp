@@ -224,8 +224,7 @@ void EditObjectDescriptionsTab::moveControls(const WindowMetrics& windowMetrics)
     grpDescriptions.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
                                maxGroupBoxWidth, cPos.y);
 
-
-    pageHeight = grpDescriptions.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
+    pageHeight = cPos.y + CS.YWINDOW_MARGIN + CS.YUNRELATED_MARGIN;
 
 }
 

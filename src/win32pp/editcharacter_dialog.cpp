@@ -1,6 +1,10 @@
 #include "editcharacter_dialog.h"
 #include "shared_functions.h"
 
+namespace ControlIDs {
+    const WORD ID_APPLY     = 1001;
+}
+
 //=============================================================================
 // Constructors
 //=============================================================================
@@ -84,6 +88,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
+    const int numDialogButtons = isEditCharacter ? 3 : 2;
 
     tabControl.Create(*this); 
 
@@ -102,24 +107,41 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     caption = AtoW(langMap.get(LanguageConstants::CharMiscTab).c_str(), CP_UTF8);
     miscTab = reinterpret_cast<EditCharacterMiscTab*>(tabControl.AddTabPage(new EditCharacterMiscTab(gameMap), caption));
 
-    std::vector<LONG> pageWidths;
+    // We also need to create the Ok, Cancel and Apply buttons too.
+
+    for(int i = 0; i < numDialogButtons; ++i) {
+        btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
+    }
+
+    btnDialogControl[0].SetDlgCtrlID(IDOK);
+    btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
+
+    EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption,
+                      btnDialogControl[0], caption, langMap);
+
+    EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption,
+                      btnDialogControl[1], caption, langMap);
+
+    if(isEditCharacter) {
+        btnDialogControl[2].SetDlgCtrlID(ControlIDs::ID_APPLY);
+        EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
+                          btnDialogControl[2], caption, langMap);
+    }
+
+    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
 
     // Set the font to the font specified within window metrics.
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    descriptionsTab->calculatePageWidth(windowMetrics);
-    qualitiesTab->calculatePageWidth(windowMetrics);
-    attributesTab->calculatePageWidth(windowMetrics);
-    miscTab->calculatePageWidth(windowMetrics);
+    // Now to find the widest point. We'll see what is longer:
+    // The minimum dialog width, or the widest tab. 4 Buttons + Spacing seems like a good
+    // amount of space.
 
-    // The minimum dialog width, the widest tab, or the three dialog buttons
-    // We will always assume 3 buttons here so the Add/Edit are consistent.
-
+    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XBUTTON_MARGIN * 2);
     LONG widestPoint = findLongestTab(true);
-    LONG dialogButtonSize = (CD.XBUTTON * 3) + (CS.XBUTTON_MARGIN * 2) + (CS.XWINDOW_MARGIN * 2);
-    widestPoint = std::max(widestPoint, dialogButtonSize);
+    widestPoint = std::max(widestPoint, minSize);
 
     // We have to adjust the tab control so it's the correct dimensions first
     // and we need to use TCM_ADJUSTRECT to do so.
@@ -161,20 +183,20 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     cPos.Offset(-(CD.XBUTTON), 0);
 
     // We have to go backwards though to place them
-    /*
     for(int i = numDialogButtons - 1; i >= 0; --i) {
         btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
         cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
     }
-    */
-
 
     // TODO: Finish calculating dimensions
-    RECT rc = {0, 0, adjustedPageWidth + (CS.XWINDOW_MARGIN * 2), 550};
+    RECT rc = {0, 0,
+               adjustedPageWidth + (CS.XWINDOW_MARGIN * 2),
+               cPos.y + CD.YBUTTON + CS.YWINDOW_MARGIN };
+
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
 
-
-    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top), SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
+                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
     return CWnd::OnCreate(cs);
 }

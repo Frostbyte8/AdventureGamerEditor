@@ -101,6 +101,8 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
     grpInventory.MoveWindow(CS.XWINDOW_MARGIN, cPos.y,
                             maxGroupBoxWidth, CS.YFIRST_GROUPBOX_MARGIN + (CD.YTEXTBOX_ONE_LINE_ALONE * 5) + CS.YLAST_GROUPBOX_MARGIN);
     
+    // TODO: Fix this, this is incorrect
+    pageHeight = grpInventory.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
 }
 
 ///----------------------------------------------------------------------------

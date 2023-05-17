@@ -54,6 +54,8 @@ class EditCharacterDialog : public EditDialogBase {
         EditCharacterAttributesTab*     attributesTab;
         EditCharacterMiscTab*           miscTab;
         CTab                            tabControl;
+
+        CButton                         btnDialogControl[3];
         
 };
 

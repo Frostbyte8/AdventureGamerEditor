@@ -163,7 +163,7 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
                                maxGroupBoxWidth, cPos.y);
 
 
-    pageHeight = grpDescriptions.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
+    pageHeight = cPos.y + CS.YUNRELATED_MARGIN + CS.YWINDOW_MARGIN;
 }
 
 ///----------------------------------------------------------------------------

@@ -144,16 +144,12 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
     // Now to find the widest point. We'll see what is longer:
-    // The minimum dialog width, the widest tab, or the three dialog buttons
-    // We will always assume 3 buttons here so the Add/Edit are consistent.
+    // The minimum dialog width, or the widest tab. 4 Buttons + Spacing seems like a good
+    // amount of space.
 
     LONG widestPoint = findLongestTab(true);
-    LONG dialogButtonSize = (CD.XBUTTON * 3) + (CS.XBUTTON_MARGIN * 2) + (CS.XWINDOW_MARGIN * 2);
-    widestPoint = std::max(widestPoint, dialogButtonSize);
-
-    // TODO: After figuring out the DPI, replace 450 with a reasonable minimum width
-
-    //widestPoint = std::max<LONG>(widestPoint, 450);
+    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
+    widestPoint = std::max(widestPoint, minSize);
 
     // Now that we know what our widest section is, we can resize our tab control
     // and resize the contents of the tab pages to fit.
