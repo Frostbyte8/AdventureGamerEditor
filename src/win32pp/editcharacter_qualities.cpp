@@ -3,9 +3,40 @@
 
 #include "shared_functions.h"
 
+namespace ControlIDs {
+    const WORD MoneyOnHand = 101;
+}
+
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCommand - Process the WM_COMMAND message. Refer to to the Win32++
+/// documentation for more details.
+///----------------------------------------------------------------------------
+
+BOOL EditCharacterQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(!lParam) {
+        return FALSE;
+    }
+
+    const WORD ctrlID = LOWORD(wParam);
+    const WORD ctrlAction = HIWORD(wParam);
+
+    if(ctrlID == ControlIDs::MoneyOnHand) {
+        if(ctrlAction == EN_KILLFOCUS) {
+            const int newValue = std::stoi(WtoA(txtMoney.GetWindowText()).c_str());
+            spnMoney.SetPos(newValue);
+        }
+    }
+    else {
+        return FALSE;
+    }
+
+    return TRUE;
+}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the tab, and create remaining child
@@ -28,7 +59,6 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     for(int k = 0; k < GameCharacterFlags::NumFlags; ++k) {
 
         btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
-        //btnFlags[k].SetDlgCtrlID(ControlIDs::MasterKey + k);
         EOD_SetWindowText(LanguageConstants::CharEnterDark+k, btnFlags[k],
                           caption, langMap);
 
@@ -43,6 +73,7 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     txtMoney.Create(*this, 0, ES_AUTOHSCROLL);
     txtMoney.SetExStyle(WS_EX_CLIENTEDGE);
     txtMoney.LimitText(5);
+    txtMoney.SetDlgCtrlID(ControlIDs::MoneyOnHand);
     spnMoney.Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                     UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
@@ -57,6 +88,7 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     spnMoney.SetRange(GameObjectConstants::MinMonetaryValue,
                       GameObjectConstants::MaxMonetaryValue);
                       
+   
 
     return retVal;
 }
