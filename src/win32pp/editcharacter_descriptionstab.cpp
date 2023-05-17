@@ -1,11 +1,39 @@
 #include "editcharacter_tabviews.h"
 #include "../model/gamecharacter.h"
+#include <wxx_commondlg.h>
 
 #include "shared_functions.h"
+
+namespace ControlIDs {
+    const WORD BrowseIcon   = 101;
+    const WORD BrowseSound  = 102;
+}
 
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+    
+    if(lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD ctrlAction = HIWORD(wParam);
+
+        if(ctrlAction == BN_CLICKED && 
+          (ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound)) {
+                return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
+        }
+
+    }
+
+    return FALSE;
+}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the tab, and create remaining child
@@ -31,10 +59,18 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
         if(i > 3) {
             btnBrowse[i-4].Create(*this, 0, BS_PUSHBUTTON);
+            btnBrowse[i-4].SetDlgCtrlID(ControlIDs::BrowseIcon + (i-4));
             EOD_SetWindowText(LanguageConstants::CharBrowseButtonCaption, btnBrowse[i-4], caption, langMap);
             txtDescriptions[i].EnableWindow(FALSE);
         }
     } 
+
+    std::vector<std::string> imageExtensions;
+    imageExtensions.push_back(".ICO");
+    imageExtensions.push_back(".BMP");
+
+    iconDescValidator = StringValidator(&txtDescriptions[4], NULL, &imageExtensions, 12, 5);
+    soundDescValidator = StringValidator(&txtDescriptions[5], "", ".WAV", 12, 5);
 
     return retVal;
 }
@@ -141,4 +177,78 @@ void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameChara
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
         EOD_SetWindowText(gameCharacter.getDescription(i), txtDescriptions[i], caption);
     }
+}
+
+///----------------------------------------------------------------------------
+/// validateFields - Ensures that the data given by the user is valid, and if
+/// is not, gives the user a chance to correct it.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
+///----------------------------------------------------------------------------
+
+InputValidator* EditCharacterDescriptionsTab::validateFields() {
+   
+    if(txtDescriptions[4].GetTextLength() != 0) {
+        if(!iconDescValidator.validate()) {
+            return &iconDescValidator;
+        }
+    }
+
+    if(txtDescriptions[5].GetTextLength() != 0) {
+        if(!soundDescValidator.validate()) {
+            return &soundDescValidator;
+        }   
+    }
+
+    return NULL;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// onBrowseForMedia - When the Browse for Icon or Sound icon is pressed,
+/// search for one.
+/// @param if true, it will search for an icon, otherwise, search for a sound.
+///----------------------------------------------------------------------------
+
+// TODO: Split this into a shared function
+
+BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
+
+	CFileDialog fileDialog(TRUE, NULL, NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, NULL);
+
+    if(findIcon) {
+        fileDialog.SetFilter(L"Image Files (*.BMP;*.ICO)|*.BMP;*.ICO");
+        fileDialog.SetTitle(L"Find Image File");
+    }
+    else {
+        fileDialog.SetFilter(L"Sound Files (*.WAV)|*.WAV");
+        fileDialog.SetTitle(L"Find Sound File");
+    }
+
+	if(fileDialog.DoModal(GetParent().GetHwnd()) == IDOK) {
+
+        // Convert the Long Path Name of the file into a short one. We can't use long paths
+        // As the game was written for Windows 3.1.
+
+        CString fileName;
+        const long strLength = GetShortPathName(fileDialog.GetPathName(), NULL, 0);
+        GetShortPathName(fileDialog.GetPathName(), fileName.GetBuffer(strLength), strLength + 1);
+        fileName.ReleaseBuffer();
+
+        const int lastSlash = fileName.ReverseFind(L"\\") + 1;
+        if(lastSlash < 0) {
+            MessageBox(L"Could not turn long path name into a short path name.", L"File Path Error", MB_OK | MB_ICONERROR);
+            return TRUE;
+        }
+
+        fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash); 
+
+        txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);
+	}
+
+    return TRUE;
+
 }

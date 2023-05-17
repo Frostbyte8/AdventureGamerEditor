@@ -33,7 +33,7 @@ class EditObjectDialog : public EditDialogBase {
         GameObject::Builder getAlteredObject();
 
         void SetObjectToEdit(const GameObject& gameObject) {
-            // TODO: These need to be set to 0
+
             if(descriptionsTab) {
 
                 newObject = GameObject::Builder(gameObject);
@@ -41,7 +41,9 @@ class EditObjectDialog : public EditDialogBase {
                 qualitiesTab->populateFields(gameObject, *gameMap);
                 effectsTab->populateFields(gameObject, *gameMap);
                 locationsTab->populateFields(gameObject, *gameMap);
+
             }
+
         }
 
     protected:
@@ -68,7 +70,7 @@ class EditObjectDialog : public EditDialogBase {
         EditObjectEffectsTab*           effectsTab;
         EditObjectLocationsTab*         locationsTab;
 
-        bool                            isEditObject;
+        const bool                      isEditObject;
         int                             optionChosen;
 
         CButton                         btnDialogControl[3];

@@ -11,11 +11,8 @@ namespace ControlIDs {
 
 EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0) {
-    isEditObject = inEditObject;
-    // By default, we will assume the user pushed the X button of the window.
-     
-    optionChosen = IDCLOSE;
+descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0), optionChosen(IDCLOSE),
+isEditObject(inEditObject) {
 }
 
 //=============================================================================
@@ -396,58 +393,14 @@ bool EditObjectDialog::okClicked() {
 
         if(validator != NULL) {
 
-            LanguageMapper& langMap = LanguageMapper::getInstance();
             CString errorMessage;
-            const int errorCode = validator->getErrorCode();
-
-            if(validator->getType() == validatorTypes::Integer) {
-                const IntegerValidator* intValidator = reinterpret_cast<const IntegerValidator*>(validator);
-                    
-                if(errorCode == errorCodes::OutOfRange) {
-                    errorMessage = LM_toUTF8(LanguageConstants::IntegerOutOfRange, langMap);
-                    errorMessage.Format(errorMessage, intValidator->getMinValue(), intValidator->getMaxValue());
-                }
-                else if(errorCode == errorCodes::InvalidData) {
-                    errorMessage = LM_toUTF8(LanguageConstants::ErrStringNotFound, langMap);
-                }
-            }
-            else if(validator->getType() == validatorTypes::String) {
-                const StringValidator* strValidator = reinterpret_cast<const StringValidator*>(validator);
-
-                if(errorCode == errorCodes::TooManyChars) {
-                    errorMessage = L"String has too many characters. The maximum amount of characters is %d.";
-                    errorMessage.Format(errorMessage, strValidator->getMaxChars());
-                }
-                else if(errorCode == errorCodes::NotEnoughChars) {
-                    errorMessage = L"String does not have enough chars. The minimum amount of characters is %d.";
-                    errorMessage.Format(errorMessage, strValidator->getMinChars());
-                }
-                else if(errorCode == errorCodes::EndsWith) {
-                    
-                    errorMessage = L"File must end in one of the following extensions: ";
-                    
-                    const std::vector<std::string>& extenVec = strValidator->getEndsWith();
-                    
-                    const size_t numExten = extenVec.size();
-                    
-                    for(size_t i = 0; i < numExten; ++i) {
-                        
-                        errorMessage += AtoW(extenVec[i].c_str(), CP_UTF8);;
-
-                        if(i != numExten - 1) {
-                            errorMessage += L", ";
-                        }
-                        else {
-                            errorMessage += L".";
-                        }
-                    }
-                }
-            }
+            CString errorTitle;
+            processValidatorError(errorMessage, errorTitle, validator);
 
             MessageBox(errorMessage, L"", MB_OK | MB_ICONERROR);
 
             tabControl.SelectPage(i);
-            if(errorCode != errorCodes::ControlNotFound) {
+            if(validator->getErrorCode() != errorCodes::ControlNotFound) {
                 validator->getWindow()->SetFocus();
             }
             

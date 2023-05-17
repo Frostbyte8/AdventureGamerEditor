@@ -31,7 +31,7 @@ class ECTabViewBase : public CWnd {
         virtual void insertData(GameCharacter::Builder& builder) = 0;
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) = 0;
         virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
-        virtual WORD validateFields() = 0;
+        virtual InputValidator* validateFields() = 0;
 
     protected:
 
@@ -53,16 +53,21 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
         virtual void insertData(GameCharacter::Builder& builder) {}
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields() { return 0; }
+        virtual InputValidator* validateFields();
 
     protected:
 
-        //virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         //virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
+
+        BOOL onBrowseForMedia(const bool forIcon);
+        
+        StringValidator     iconDescValidator;
+        StringValidator     soundDescValidator;
 
         CButton             grpDescriptions;
         CStatic             lblDescriptions[6];
@@ -84,7 +89,7 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
         virtual void insertData(GameCharacter::Builder& builder) {}
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields() { return 0; }
+        virtual InputValidator* validateFields() { return NULL; }
 
     protected:
 
@@ -95,6 +100,7 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
 
     private:
 
+
         CButton             grpFlags;
         CButton             btnFlags[8];
 
@@ -104,6 +110,7 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
         CSpinButton         spnMoney;
         CStatic             lblType;
         CComboBox           cbxType;
+
 
 };
 
@@ -120,7 +127,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
         virtual void insertData(GameCharacter::Builder& builder) {}
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields() { return 0; }
+        virtual InputValidator* validateFields() { return NULL; }
 
     protected:
 
@@ -156,7 +163,7 @@ class EditCharacterMiscTab : public ECTabViewBase {
         virtual void insertData(GameCharacter::Builder& builder) {}
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual WORD validateFields() { return 0; }
+        virtual InputValidator* validateFields() { return NULL; }
 
     protected:
 

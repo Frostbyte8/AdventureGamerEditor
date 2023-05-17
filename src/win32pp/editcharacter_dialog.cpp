@@ -7,8 +7,8 @@
 
 EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL) {
-    optionChosen = IDCLOSE;
+descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL),
+isEditCharacter(inEditCharacter), optionChosen(IDCLOSE) {
 }
 
 //=============================================================================
@@ -170,39 +170,34 @@ LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 bool EditCharacterDialog::okClicked() {
 
-    // TODO: Make sure the window exists.
-    // TODO: Better validation
+    std::vector<ECTabViewBase*> tabPages;
 
-    WORD validated = descriptionsTab->validateFields();
+    const size_t numTabs = 4;
+    tabPages.reserve(numTabs);
+    tabPages.push_back(descriptionsTab);
+    tabPages.push_back(qualitiesTab);
+    tabPages.push_back(attributesTab);
+    tabPages.push_back(miscTab);
 
-    if(validated) {
-        tabControl.SelectPage(0);
-        descriptionsTab->GetDlgItem(validated).SetFocus();
-        return false;
-    }
+    for(size_t i = 0; i < numTabs; ++i) {
+        ECTabViewBase& tabPage = *tabPages[i];
+        const InputValidator* validator = tabPage.validateFields();
 
-    validated = qualitiesTab->validateFields();
+        if(validator != NULL) {
 
-    if(validated) {
-        tabControl.SelectPage(1);
-        qualitiesTab->GetDlgItem(validated).SetFocus();
-        return false;
-    }
+            CString errorMessage;
+            CString errorTitle;
+            processValidatorError(errorMessage, errorTitle, validator);
 
-    validated = attributesTab->validateFields();
+            MessageBox(errorMessage, L"", MB_OK | MB_ICONERROR);
 
-    if(validated) {
-        tabControl.SelectPage(2);
-        attributesTab->GetDlgItem(validated).SetFocus();
-        return false;
-    }
-
-    validated = miscTab->validateFields();
-
-    if(validated) {
-        tabControl.SelectPage(3);
-        miscTab->GetDlgItem(validated).SetFocus();
-        return false;
+            tabControl.SelectPage(i);
+            if(validator->getErrorCode() != errorCodes::ControlNotFound) {
+                validator->getWindow()->SetFocus();
+            }
+            
+            return false;
+        }
     }
 
     return true;

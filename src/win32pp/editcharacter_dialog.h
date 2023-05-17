@@ -21,7 +21,7 @@ class EditCharacterDialog : public EditDialogBase {
     public:
 
         EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-                            HWND inParentHandle, bool inEditCharacter);
+                            HWND inParentHandle, bool inIsEditCharacter);
 
         void SetCharacterToEdit(const GameCharacter& gameCharacter) {
 
@@ -46,6 +46,7 @@ class EditCharacterDialog : public EditDialogBase {
         bool okClicked();
 
         int                             optionChosen;
+        const bool                      isEditCharacter;
 
         EditCharacterDescriptionsTab*   descriptionsTab;
         EditCharacterQualitiesTab*      qualitiesTab;
