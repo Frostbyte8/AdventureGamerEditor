@@ -29,7 +29,7 @@ descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0) {
 
 void EditObjectDialog::OnClose() {
 
-    bool wasCanceled = optionChosen != 2 ? true : false;
+    bool wasCanceled = optionChosen != IDOK ? true : false;
 
     if(optionChosen == IDOK) {
         descriptionsTab->insertData(newObject);
