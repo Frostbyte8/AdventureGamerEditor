@@ -26,18 +26,18 @@ isEditObject(inEditObject) {
 
 void EditObjectDialog::OnClose() {
 
-    bool wasCanceled = optionChosen != IDOK ? true : false;
+    const bool wasCanceled = optionChosen != IDOK ? true : false;
+
+    if(optionChosen == IDCLOSE) {
+        // TODO: If changes have been made, prompt the user to ensure they
+        // did not accidentally close the window.
+    }
 
     if(optionChosen == IDOK) {
         descriptionsTab->insertData(newObject);
         qualitiesTab->insertData(newObject);
         effectsTab->insertData(newObject);
         locationsTab->insertData(newObject);
-    }
-
-    if(optionChosen == IDCLOSE) {
-        // TODO: If changes have been made, prompt the user to ensure they
-        // did not accidentally close the window.
     }
     
     ::EnableWindow(parentWindow, TRUE);

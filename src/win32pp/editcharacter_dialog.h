@@ -43,6 +43,7 @@ class EditCharacterDialog : public EditDialogBase {
 
     private:
 
+        LONG    findLongestTab(const bool getWidth);
         bool okClicked();
 
         int                             optionChosen;

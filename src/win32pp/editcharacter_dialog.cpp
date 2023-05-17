@@ -21,8 +21,20 @@ isEditCharacter(inEditCharacter), optionChosen(IDCLOSE) {
 ///----------------------------------------------------------------------------
 
 void EditCharacterDialog::OnClose() {
-    
+
+    const bool wasCanceled = optionChosen != IDOK ? true : false;   
+
+    if(optionChosen == IDOK) {
+        /*
+        descriptionsTab->insertData(newCharacter);
+        qualitiesTab->insertData(newCharacter);
+        attributesTab->insertData(newCharacter);
+        miscTab->insertData(newCharacter);
+        */
+    }
+
     ::EnableWindow(parentWindow, TRUE);
+    const int alterType = isEditCharacter ? AlterType::Edit : AlterType::Add;
     CWnd::OnClose();
     mainWindow->finishedEditCharacterDialog();
 
@@ -102,35 +114,63 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     attributesTab->calculatePageWidth(windowMetrics);
     miscTab->calculatePageWidth(windowMetrics);
 
-    pageWidths.push_back(descriptionsTab->getPageWidth());
-    pageWidths.push_back(qualitiesTab->getPageWidth());
-    pageWidths.push_back(attributesTab->getPageWidth());
-    pageWidths.push_back(miscTab->getPageWidth());
+    // The minimum dialog width, the widest tab, or the three dialog buttons
+    // We will always assume 3 buttons here so the Add/Edit are consistent.
 
-    const size_t numTabs = pageWidths.size();
-    
-    LONG widestTab = 0;
+    LONG widestPoint = findLongestTab(true);
+    LONG dialogButtonSize = (CD.XBUTTON * 3) + (CS.XBUTTON_MARGIN * 2) + (CS.XWINDOW_MARGIN * 2);
+    widestPoint = std::max(widestPoint, dialogButtonSize);
 
-    for(size_t i = 0; i < numTabs; ++i) {
-        widestTab = std::max(pageWidths[i], widestTab);
-    }
+    // We have to adjust the tab control so it's the correct dimensions first
+    // and we need to use TCM_ADJUSTRECT to do so.
 
-    widestTab += ((CS.XWINDOW_MARGIN * 3) + (CS.XGROUPBOX_MARGIN * 2));
+    RECT tabRect = {0, 0, widestPoint, 0};
 
-    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, widestTab, 500, FALSE);
+    tabControl.SendMessage(TCM_ADJUSTRECT, TRUE, (LPARAM)&tabRect);
+
+    const LONG adjustedPageWidth = tabRect.right + abs(tabRect.left);
+
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          adjustedPageWidth, 0, FALSE);
+
+    // TODO: For some reason we have to do this or the controls are invisible. Research why.
 
     tabControl.SelectPage(3);
     tabControl.SelectPage(2);
     tabControl.SelectPage(1);
     tabControl.SelectPage(0);
 
+    // Now move the controls so they fit their new width.
+
     descriptionsTab->moveControls(windowMetrics);
     qualitiesTab->moveControls(windowMetrics);
     attributesTab->moveControls(windowMetrics);
     miscTab->moveControls(windowMetrics);
 
+    // Now we can figure out how tall the tab control needs to be, and adjust
+    // the dimensions of the tab control accordingly.
+
+    const LONG tallestPage = findLongestTab(false);
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          adjustedPageWidth, tallestPage, FALSE);
+
+    // Finally, we need to move the dialog buttons into place
+    CPoint cPos(CS.XWINDOW_MARGIN + adjustedPageWidth,
+                CS.YWINDOW_MARGIN + tallestPage + CS.YUNRELATED_MARGIN);
+
+    cPos.Offset(-(CD.XBUTTON), 0);
+
+    // We have to go backwards though to place them
+    /*
+    for(int i = numDialogButtons - 1; i >= 0; --i) {
+        btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
+    }
+    */
+
+
     // TODO: Finish calculating dimensions
-    RECT rc = {0, 0,widestTab + (CS.XWINDOW_MARGIN * 2), 550};
+    RECT rc = {0, 0, adjustedPageWidth + (CS.XWINDOW_MARGIN * 2), 550};
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
 
 
@@ -161,6 +201,63 @@ LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 // Private Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// findLongestTab - Finds the Widest/Tallest tab, and returns how long it is.
+/// @param if true, find the width, if false, find the height
+/// @returns the length of the tab in the given direction
+///----------------------------------------------------------------------------
+
+LONG EditCharacterDialog::findLongestTab(const bool getWidth) {
+
+    LONG longestTab = 0;
+    std::vector<LONG> pageDims;
+
+    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
+
+    if(getWidth) {
+
+        descriptionsTab->calculatePageWidth(windowMetrics);
+        qualitiesTab->calculatePageWidth(windowMetrics);
+        attributesTab->calculatePageWidth(windowMetrics);
+        miscTab->calculatePageWidth(windowMetrics);
+
+        pageDims.push_back(descriptionsTab->getPageWidth());
+        pageDims.push_back(qualitiesTab->getPageWidth());
+        pageDims.push_back(attributesTab->getPageWidth());
+        pageDims.push_back(miscTab->getPageWidth());
+    }
+    else {
+
+        // For height, it is calculated after all the controls are moved
+        // into place.
+
+        pageDims.push_back(descriptionsTab->getPageHeight());
+        pageDims.push_back(qualitiesTab->getPageHeight());
+        pageDims.push_back(attributesTab->getPageHeight());
+        pageDims.push_back(miscTab->getPageHeight());
+    }
+
+    const size_t numTabs = pageDims.size();
+
+    for(size_t i = 0; i < numTabs; ++i) {
+        longestTab = std::max(pageDims[i], longestTab);
+    }
+
+    // Apply margins.
+
+    if(getWidth) {
+
+        longestTab += CS.XWINDOW_MARGIN * 2;
+
+    }
+    else {
+        longestTab += CS.YWINDOW_MARGIN * 2;
+    }
+
+    return longestTab;
+}
+
 
 ///----------------------------------------------------------------------------
 /// okClicked - Called when the OK button is clicked. Checks to see if all the
