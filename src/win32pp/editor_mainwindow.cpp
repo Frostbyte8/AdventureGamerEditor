@@ -405,7 +405,7 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bo
             gameWorldController->tryAddCharacter(bd);
         }
         else {
-            //gameWorldController->tryReplaceCharacter(bd);
+            gameWorldController->tryReplaceCharacter(bd);
         }
 
         entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());

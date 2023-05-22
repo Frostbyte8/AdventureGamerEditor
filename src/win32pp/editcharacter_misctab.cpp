@@ -30,7 +30,7 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 2; ++i) {
         lblCoords[i].Create(*this, 0, SS_SIMPLE);
-        EOD_SetWindowText(LanguageConstants::XCoordLabel, lblCoords[i], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::XCoordLabel+i, lblCoords[i], caption, langMap);
         txtCoords[i].Create(*this, 0, ES_AUTOHSCROLL);
         txtCoords[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtCoords[i].SetDlgCtrlID(ControlIDs::XTextCoord+i);
@@ -60,6 +60,19 @@ void EditCharacterMiscTab::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Public Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// insertData - Takes the data given by the user, and inputs it into the
+/// builder object.
+///----------------------------------------------------------------------------
+
+void EditCharacterMiscTab::insertData(GameCharacter::Builder& builder) {
+
+    int groundX = std::stoi(WtoA(txtCoords[0].GetWindowText()).c_str());
+    int groundY = std::stoi(WtoA(txtCoords[1].GetWindowText()).c_str());
+    builder.location(groundX, groundY);
+
+}
 
 void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
     

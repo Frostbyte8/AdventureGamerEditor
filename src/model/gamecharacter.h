@@ -201,6 +201,10 @@ class GameCharacter {
                     // TOOD: Any additional error checking that must occur, we may also
                     return (*this);
                 }
+
+                const int& getID() const {
+                    return base.ID;
+                }
                 
 
             //private:

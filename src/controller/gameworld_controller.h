@@ -25,8 +25,9 @@ class GameWorldController {
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
 
+        // TODO: These names don't match the ones in the .cpp file
         bool tryReplaceObject(GameObject::Builder& objectBuilder);
-        // bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
+        bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
 
         bool tryRemoveCharacter(const int& charID);
         bool tryRemoveObject(const int& charID);

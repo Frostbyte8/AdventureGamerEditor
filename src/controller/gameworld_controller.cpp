@@ -311,6 +311,37 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 }
 
 ///----------------------------------------------------------------------------
+/// tryReplaceCharacter - Attempts to replace a Character
+/// @param A reference to a Character Builder object. Must have a valid ID of an
+/// already existing character.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& gameCharacter) {
+
+    // Find out if Adventuer Gamer has a hard limit on the number of Characters.
+
+    if(gameCharacter.getID() != GameCharacterConstants::NoID) {
+ 
+        const size_t index = gameMap->characterIndexFromID(gameCharacter.getID());
+
+        if(index == (size_t)-1) {
+            mainWindow->displayErrorMessage("Could not find character to replace: ID not found.", "ID not found");
+            return false;
+        }
+
+        gameMap->replaceCharacter(gmKey, index, gameCharacter.build());
+
+    }
+    else {
+        mainWindow->displayErrorMessage("Invalid Character ID given.", "Invalid ID");
+        return false;
+    }
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
 /// tryReplaceObject - Attempts to replace an Object.
 /// @param A reference to a Object Builder object. Must have a valid ID of an
 /// already existing object.
