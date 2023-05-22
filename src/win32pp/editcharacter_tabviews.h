@@ -50,7 +50,7 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
-        virtual void insertData(GameCharacter::Builder& builder) {}
+        virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields();
@@ -86,7 +86,7 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
-        virtual void insertData(GameCharacter::Builder& builder) {}
+        virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields() { return NULL; }
@@ -124,7 +124,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
-        virtual void insertData(GameCharacter::Builder& builder) {}
+        virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields() { return NULL; }

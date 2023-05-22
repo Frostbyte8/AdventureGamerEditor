@@ -136,6 +136,28 @@ void EditCharacterQualitiesTab::calculatePageWidth(const WindowMetrics& windowMe
 }
 
 ///----------------------------------------------------------------------------
+/// insertData - Takes the data given by the user, and inputs it into the
+/// builder object.
+///----------------------------------------------------------------------------
+
+void EditCharacterQualitiesTab::insertData(GameCharacter::Builder& builder) {
+
+    uint8_t newFlags = 0;
+
+    for(int i = 0; i < 6; ++i) {
+        if(btnFlags[i].GetCheck() == BST_CHECKED) {
+            newFlags += (1<<i);
+        }
+    }
+
+    builder.flags(newFlags);
+    builder.money(spnMoney.GetPos());
+    builder.type(cbxType.GetCurSel());
+
+}
+
+
+///----------------------------------------------------------------------------
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 

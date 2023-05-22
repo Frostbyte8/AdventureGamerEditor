@@ -203,7 +203,7 @@ class GameCharacter {
                 }
                 
 
-            private:
+            //private:
 
                 // These ones should only be accessed via the read function
 

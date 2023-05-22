@@ -19,7 +19,7 @@ class GameEntitiesView : public CWnd {
 	public:
 		GameEntitiesView(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics) : mainWindow(inMainWindow), windowMetrics(inWindowMetrics) {}
 		virtual ~GameEntitiesView() {}
-        void updateLists(const std::vector<GameObject>& gameObject);
+        void updateLists(const std::vector<GameObject>& gameObject, const std::vector<GameCharacter>& gameCharacters);
 
     protected:
         virtual void PreRegisterClass(WNDCLASS& wc);

@@ -109,6 +109,26 @@ void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windo
 }
 
 ///----------------------------------------------------------------------------
+/// insertData - Takes the data given by the user, and inputs it into the
+/// builder object.
+///----------------------------------------------------------------------------
+
+void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
+
+    // TODO: For the controller version of this, send the text and let the controller
+    // do the string capping.
+
+    CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameObjectConstants::MaxNameLength);
+    builder.description(WtoA(wideDesc).c_str(), 0);  
+
+    for(int i = 1; i < 6; ++i) {
+        wideDesc = txtDescriptions[i].GetWindowText().Left(GameObjectConstants::MaxDescriptionLength);
+        builder.description(WtoA(wideDesc).c_str(), i);
+    }
+
+}
+
+///----------------------------------------------------------------------------
 /// moveControls -
 ///----------------------------------------------------------------------------
 

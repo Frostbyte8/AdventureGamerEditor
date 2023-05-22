@@ -35,13 +35,13 @@ BOOL GameEntitiesView::OnCommand(WPARAM wParam, LPARAM lParam) {
             mainWindow->onAlterObject(AlterType::Add, 0);
         }
         else if(ctrlID == ControlIDs::AddCharacterButton) {
-            mainWindow->onAlterCharacter(AlterType::Add);
+            mainWindow->onAlterCharacter(AlterType::Add, 0);
         }
         else if(ctrlID == ControlIDs::EditObjectButton) {
             mainWindow->onAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
         }
         else if(ctrlID == ControlIDs::EditCharacterButton) {
-            mainWindow->onAlterCharacter(AlterType::Edit);
+            mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());
         }
 
     }
@@ -106,13 +106,23 @@ void GameEntitiesView::PreRegisterClass(WNDCLASS& wc) {
 /// updateLists - Test function for populating the list boxes
 ///----------------------------------------------------------------------------
 
-void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects) {
+void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects, const std::vector<GameCharacter>& gameCharacters) {
+
     objectsListBox.ClearStrings();
 
     for(std::vector<GameObject>::const_iterator it = gameObjects.begin();
         it != gameObjects.end(); ++it) {
             CString objectName = AtoW(it->getName().c_str(), CP_UTF8);
             objectsListBox.AddString(objectName);
+    }
+
+
+    charactersListBox.ClearStrings();
+
+    for(std::vector<GameCharacter>::const_iterator it = gameCharacters.begin();
+        it != gameCharacters.end(); ++it) {
+            CString charName = AtoW(it->getName().c_str(), CP_UTF8);
+            charactersListBox.AddString(charName);
     }
 }
 

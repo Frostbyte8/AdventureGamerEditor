@@ -36,7 +36,7 @@ class MainWindowInterface {
         /// place or delete a character
         /// @param an integer specifying the type of action to take.
         ///--------------------------------------------------------------------
-        virtual void onAlterCharacter(const int& alterType) = 0;
+        virtual void onAlterCharacter(const int& alterType, const size_t& index) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to add, edit
@@ -48,7 +48,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditCharacterDialog() = 0;
+        virtual void finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Object Dialog Window is finished

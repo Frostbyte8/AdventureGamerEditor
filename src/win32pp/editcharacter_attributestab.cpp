@@ -114,6 +114,21 @@ void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowM
 }
 
 ///----------------------------------------------------------------------------
+/// insertData - Takes the data given by the user, and inputs it into the
+/// builder object.
+///----------------------------------------------------------------------------
+
+void EditCharacterAttributesTab::insertData(GameCharacter::Builder& builder) {
+
+    for(int i = 0; i < 4; ++i) {
+        const int amount = std::stoi(WtoA(txtAttribType[i].GetWindowText()).c_str());
+        builder.attribute(amount, i);
+    }
+
+    builder.sight(cbxSight.GetCurSel());
+}
+
+///----------------------------------------------------------------------------
 /// moveControls - Move the controls to their desired positions
 ///----------------------------------------------------------------------------
 

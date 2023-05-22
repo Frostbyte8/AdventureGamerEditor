@@ -260,7 +260,7 @@ BOOL MainWindowFrame::OnFileOpen() {
 
 		gameWorldController->loadWorld(filePath, fileName);
         reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
-        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects());
+        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
 	}
 
     return TRUE;
@@ -345,7 +345,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
    } 
 }
 
-void MainWindowFrame::onAlterCharacter(const int& alterType) {
+void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index) {
 
     // Make sure that the dialog isn't already running, or that
     // another modal window isn't already running.
@@ -391,46 +391,57 @@ void MainWindowFrame::onAlterCharacter(const int& alterType) {
 
 }
 
-void MainWindowFrame::finishedEditCharacterDialog() {
+void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled) {
 
-    // The Dialog can only be finished if we actually
-    // had one, so make sure of that.
-
-    if(editCharacterDialog) {
-        delete editCharacterDialog;
-        editCharacterDialog = NULL;
-        activeWindowHandle = *this;
+    if(!editCharacterDialog || (alterType != AlterType::Add && alterType != AlterType::Edit)) {
+        return;
     }
+   
+    if(!wasCanceled) {
+
+        GameCharacter::Builder bd = editCharacterDialog->getAlteredCharacter();
+
+        if(alterType == AlterType::Add) {
+            gameWorldController->tryAddCharacter(bd);
+        }
+        else {
+            //gameWorldController->tryReplaceCharacter(bd);
+        }
+
+        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
+
+    }
+
+    delete editCharacterDialog;
+    editCharacterDialog = NULL;
+    activeWindowHandle = *this;
 
 }
 
 void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool& wasCanceled) {
 
-    if(alterType == AlterType::Add || alterType == AlterType::Edit) {
+    if(!editObjectDialog || (alterType != AlterType::Add && alterType != AlterType::Edit)) {
+        return;
+    }
 
-        if(editObjectDialog) {
+    if(!wasCanceled) {
 
-            // Only progress if the option was not canceled in some way.
+        GameObject::Builder bd = editObjectDialog->getAlteredObject();
 
-            if(!wasCanceled) {
-                GameObject::Builder bd = editObjectDialog->getAlteredObject();
-    
-                if(alterType == AlterType::Add) {
-                    gameWorldController->tryAddObject(bd);
-                }
-                else {
-                    gameWorldController->tryReplaceObject(bd);
-                }
-    
-                entityView->updateLists(gameWorldController->getGameMap()->getGameObjects());
-            }
-            
-
-            delete editObjectDialog;
-            editObjectDialog = NULL;
-            activeWindowHandle = *this;
-
+        if(alterType == AlterType::Add) {
+            gameWorldController->tryAddObject(bd);
+        }
+        else {
+            gameWorldController->tryReplaceObject(bd);
         }
 
+        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
+
     }
+    
+
+    delete editObjectDialog;
+    editObjectDialog = NULL;
+    activeWindowHandle = *this;
+
 }

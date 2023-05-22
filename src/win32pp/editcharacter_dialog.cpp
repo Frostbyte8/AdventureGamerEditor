@@ -28,19 +28,22 @@ void EditCharacterDialog::OnClose() {
 
     const bool wasCanceled = optionChosen != IDOK ? true : false;   
 
+    if(optionChosen == IDCLOSE) {
+        // TODO: If changes have been made, prompt the user to ensure they
+        // did not accidentally close the window.
+    }
+
     if(optionChosen == IDOK) {
-        /*
         descriptionsTab->insertData(newCharacter);
         qualitiesTab->insertData(newCharacter);
         attributesTab->insertData(newCharacter);
         miscTab->insertData(newCharacter);
-        */
     }
 
     ::EnableWindow(parentWindow, TRUE);
     const int alterType = isEditCharacter ? AlterType::Edit : AlterType::Add;
     CWnd::OnClose();
-    mainWindow->finishedEditCharacterDialog();
+    mainWindow->finishedEditCharacterDialog(alterType, wasCanceled);
 
 }
 
@@ -218,6 +221,21 @@ void EditCharacterDialog::PreRegisterClass(WNDCLASS& wc) {
 
 LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     return WndProcDefault(msg, wParam, lParam);
+}
+
+//=============================================================================
+// Public Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// getAlteredCharacter - Get a copy of the object that is being built by this
+/// dialog window.
+/// @returns a Copy of a GameObject::Builder object.
+///----------------------------------------------------------------------------
+
+GameCharacter::Builder EditCharacterDialog::getAlteredCharacter() {
+
+    return newCharacter;
 }
 
 //=============================================================================

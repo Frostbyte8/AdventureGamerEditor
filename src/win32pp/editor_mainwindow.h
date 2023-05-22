@@ -25,10 +25,10 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
-        virtual void finishedEditCharacterDialog();
+        virtual void finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled);
         virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled);
                 
-        void onAlterCharacter(const int& alterType);
+        void onAlterCharacter(const int& alterType, const size_t& index);
         void onAlterObject(const int& alterType, const size_t& index);
 
 	protected:

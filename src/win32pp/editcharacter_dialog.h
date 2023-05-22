@@ -23,14 +23,18 @@ class EditCharacterDialog : public EditDialogBase {
         EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
                             HWND inParentHandle, bool inIsEditCharacter);
 
+        GameCharacter::Builder getAlteredCharacter();
+
         void SetCharacterToEdit(const GameCharacter& gameCharacter) {
 
             if(descriptionsTab) {
+
                 descriptionsTab->populateFields(gameCharacter, *gameMap);
                 qualitiesTab->populateFields(gameCharacter, *gameMap);
                 attributesTab->populateFields(gameCharacter, *gameMap);
                 miscTab->populateFields(gameCharacter, *gameMap);
             }
+
         }
 
     protected:
@@ -48,6 +52,8 @@ class EditCharacterDialog : public EditDialogBase {
 
         int                             optionChosen;
         const bool                      isEditCharacter;
+
+        GameCharacter::Builder          newCharacter;
 
         EditCharacterDescriptionsTab*   descriptionsTab;
         EditCharacterQualitiesTab*      qualitiesTab;
