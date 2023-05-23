@@ -246,7 +246,7 @@ void GameMap::replaceObject(GMKey, const size_t& index, const GameObject& gameOb
 /// characterIndexFromID - Search for a character via it's ID, then return
 /// its index in the gameCharacter vector if it is found.
 /// @param character ID to search for.
-/// @returns the index in the game character vector of the character if found,
+/// @return the index in the game character vector of the character if found,
 /// (size_t)-1 if it was not.
 ///----------------------------------------------------------------------------
 
@@ -269,7 +269,7 @@ const size_t GameMap::characterIndexFromID(const int& charID) const {
 /// objectIndexFromID - Search for an object via it's ID, then return its index
 /// in the gameCharacter vector if it is found.
 /// @param object ID to search for.
-/// @returns the index in the game object vector of the object if found,
+/// @return the index in the game object vector of the object if found,
 /// (size_t)-1 if it was not.
 ///----------------------------------------------------------------------------
 
@@ -289,17 +289,37 @@ const size_t GameMap::objectIndexFromID(const int& objectID) const {
 }
 
 ///----------------------------------------------------------------------------
+/// characterIDFromIndex - If found, returns the ID of the object with the
+/// given index
+/// @param character index to search for.
+/// @return the ID of the object if found, GameCharacterConstants::NoID if
+/// not.
+///----------------------------------------------------------------------------
+
+const int& GameMap::characterIDFromIndex(const size_t& charIndex) const {
+
+    const size_t gcSize = gameCharacters.size();
+
+    if(charIndex > gcSize || gameCharacters.empty()) {
+        return GameCharacterConstants::NoID;
+    }
+
+    return gameCharacters[charIndex].getID();
+
+}
+
+///----------------------------------------------------------------------------
 /// objectIDFromIndex - If found, returns the ID of the object with the given
 /// index
 /// @param object index to search for.
-/// @returns the ID of the object if found, GameObjectConstants::NoID if not.
+/// @return the ID of the object if found, GameObjectConstants::NoID if not.
 ///----------------------------------------------------------------------------
 
 const int& GameMap::objectIDFromIndex(const size_t& objectIndex) const {
 
     const size_t goSize = gameObjects.size();
 
-    if(objectIndex > goSize) {
+    if(objectIndex > goSize || gameObjects.empty()) {
         return GameObjectConstants::NoID;
     }
 

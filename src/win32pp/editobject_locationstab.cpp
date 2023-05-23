@@ -215,7 +215,7 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
         }
         else {
             // Map Index to ID
-            // charID = gameMap->characterIndexToID(charIndex);
+            builder.location(gameMap->characterIDFromIndex(charIndex-1));
         }
     }
 

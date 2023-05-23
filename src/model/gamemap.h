@@ -55,6 +55,7 @@ class GameMap {
         // Public Functions
         const size_t characterIndexFromID(const int& charID) const;
         const size_t objectIndexFromID(const int& objectID) const;
+        const int& characterIDFromIndex(const size_t& charIndex) const;
         const int& objectIDFromIndex(const size_t& objectIndex) const;
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
         bool isRowColInMapBounds(const int& row, const int& col) const;
