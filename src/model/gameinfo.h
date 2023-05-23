@@ -26,6 +26,11 @@ class GameInfo {
         inline void readPlayerAttributes(Key, std::ifstream& mapFile) { readPlayerAttributes(mapFile); }
         inline void writeHeader(Key, std::ofstream& mapFile) { writeHeader(mapFile); }
 
+        const std::string& getGameName() const { return gameName; }
+        const std::string& getCurrencyName() const { return currencyName; }
+        const int getBaseAttribute(const int& which) const { return baseAttributes[which]; }
+        const int getRandomAttribute(const int& which) const { return randomAttributes[which]; }
+
 	private:
 
         void readHeader(std::ifstream& mapFile);

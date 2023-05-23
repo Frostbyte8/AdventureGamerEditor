@@ -13,8 +13,8 @@ class EditWorldInfoDialog : public EditDialogBase {
     public:
         EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
 
-        void setWorldInfo();
-        void calculatePageWidth(); 
+        void setWorldInfo(const GameInfo& gameInfo);
+        void calculatePageWidth();
 
     protected:
 
@@ -26,6 +26,8 @@ class EditWorldInfoDialog : public EditDialogBase {
     private:
 
         void moveControls();
+
+        // TODO: Random
 
         CButton         grpWorldInfo;
         CStatic         lblProperties[2]; // Name and Money

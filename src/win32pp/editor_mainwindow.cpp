@@ -320,13 +320,13 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
     editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), *this, editingObject);
     editObjectDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-    editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    
 
     if(!editObjectDialog->IsWindow()) {
         // TODO: Handle error.
     }
 
+    editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    
     activeWindowHandle = editObjectDialog->GetHwnd();
     editObjectDialog->GoModal();
 
@@ -375,11 +375,12 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
     editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
     editCharacterDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-    editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
 
     if(!editCharacterDialog->IsWindow()) {
         // TODO: Handle error.
     }
+
+    editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
 
     activeWindowHandle = editCharacterDialog->GetHwnd();
     editCharacterDialog->GoModal();
@@ -480,13 +481,16 @@ void MainWindowFrame::onEditWorldInfo() {
         return;
     }
     
+    // TODO: We don't need Gameinfo for this
     editWorldInfoDialog = new EditWorldInfoDialog(this, gameWorldController->getGameMap(), *this);
     editWorldInfoDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-    editWorldInfoDialog->SetExStyle(editWorldInfoDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
 
     if(!editWorldInfoDialog->IsWindow()) {
         // TODO: Handle error.
     }
+
+    editWorldInfoDialog->SetExStyle(editWorldInfoDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    editWorldInfoDialog->setWorldInfo(gameWorldController->getGameMap()->getGameInfo());
 
     activeWindowHandle = editWorldInfoDialog->GetHwnd();
     editWorldInfoDialog->GoModal();

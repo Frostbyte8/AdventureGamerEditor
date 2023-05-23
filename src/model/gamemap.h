@@ -35,6 +35,7 @@ class GameMap {
         const int& getLastObjectID() const;
 		inline const int getNumTiles() const;
         inline const GameTile& getTile(const int& index) const { return tiles[index]; }
+        const GameInfo& getGameInfo() const { return gameInfo; }
 
         // Collection Accessors
         const std::vector<size_t> getCharacterInventory(const size_t& charID) const;

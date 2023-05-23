@@ -172,6 +172,20 @@ void EditWorldInfoDialog::calculatePageWidth() {
 
 }
 
+void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {
+
+    CString caption;
+
+    EOD_SetWindowText(gameInfo.getGameName(), txtProperties[0], caption);
+    EOD_SetWindowText(gameInfo.getCurrencyName(), txtProperties[1], caption);
+
+    for(int i = 0; i < 5; ++i) {
+        int base = gameInfo.getBaseAttribute(i);
+        spnAttributes[i].SetPos(base);
+    }
+
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================
