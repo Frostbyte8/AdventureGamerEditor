@@ -2,7 +2,6 @@
 #include "../util/languagemapper.h"
 #include "shared_functions.h"
 
-
 namespace ControlIDs {
     const WORD WorldName           = 101;
     const WORD CurrencyName        = 102;
@@ -22,7 +21,8 @@ namespace ControlIDs {
 // Constructors
 //=============================================================================
 EditWorldInfoDialog::EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
+HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
+optionChosen(IDCLOSE) {
 }
 
 
@@ -37,7 +37,7 @@ HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
 
 void EditWorldInfoDialog::OnClose() {
 
-    /*
+    
     const bool wasCanceled = optionChosen != IDOK ? true : false;   
 
     if(optionChosen == IDCLOSE) {
@@ -48,11 +48,10 @@ void EditWorldInfoDialog::OnClose() {
     if(optionChosen == IDOK) {
         // Insert Data
     }
-    */
 
     ::EnableWindow(parentWindow, TRUE);
     CWnd::OnClose();
-    mainWindow->finishedEditWorldInfoDialog(true);
+    mainWindow->finishedEditWorldInfoDialog(wasCanceled);
 
 }
 
@@ -104,6 +103,15 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
         txtAttributes[i].SetDlgCtrlID(ControlIDs::txtEnergy+i);
         spnAttributes[i].SetDlgCtrlID(ControlIDs::spnEnergy+i);
     }
+
+    for(int i = 0; i < 3; ++i) {
+        btnDialog[i].Create(*this, 0, BS_PUSHBUTTON);
+        EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption+i, btnDialog[i], caption, langMap);
+    }
+
+    btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
+    btnDialog[0].SetDlgCtrlID(IDOK);
+    btnDialog[1].SetDlgCtrlID(IDCANCEL);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -160,7 +168,7 @@ void EditWorldInfoDialog::calculatePageWidth() {
     }
 
     pageWidth += CS.XGROUPBOX_MARGIN * 2;
-    pageWidth = std::max(pageWidth, static_cast<LONG>((CD.XBUTTON * 3) + (CS.XBUTTON_MARGIN * 2)));
+    pageWidth = std::max(pageWidth, static_cast<LONG>((CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3)));
 
 }
 
@@ -214,10 +222,22 @@ void EditWorldInfoDialog::moveControls() {
 
     grpWorldInfo.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, maxGroupBoxWidth, cPos.y);
 
+    cPos.Offset(0, CS.YUNRELATED_MARGIN);
+
+    CPoint btnPos(GetClientRect().right - CS.XWINDOW_MARGIN, cPos.y + CS.YUNRELATED_MARGIN);
+    btnPos.Offset(-(CD.XBUTTON), 0);
+
+    for(int i = 2; i >= 0; --i) {
+        btnDialog[i].MoveWindow(btnPos.x, btnPos.y, CD.XBUTTON, CD.YBUTTON);
+        btnPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
+    }
+
+    btnPos.Offset(0, CD.YBUTTON);
+
     // TODO: Finish calculating dimensions
     RECT rc = {0, 0,
                maxGroupBoxWidth + (CS.XWINDOW_MARGIN * 2),
-               cPos.y + (CS.YWINDOW_MARGIN * 2) };
+               btnPos.y + (CS.YWINDOW_MARGIN * 2) };
 
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
 

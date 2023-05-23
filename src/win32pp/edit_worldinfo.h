@@ -36,6 +36,7 @@ class EditWorldInfoDialog : public EditDialogBase {
         CButton         btnDialog[3];
 
         LONG            pageWidth;
+        int             optionChosen; 
 
         // TODO: Player Start X/Y, 
 };
