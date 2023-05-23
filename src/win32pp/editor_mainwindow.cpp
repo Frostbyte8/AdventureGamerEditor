@@ -352,7 +352,16 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
     if(!editCharacterDialog && activeWindowHandle == *this) {
 
+        const std::vector<GameCharacter>& gameCharacters = gameWorldController->getGameMap()->getGameCharacters();
         const bool editingChar = (alterType == AlterType::Edit) ? true : false;
+
+        if(editingChar) {
+            
+            if(gameCharacters.empty() || index > gameCharacters.size() - 1) {
+                displayErrorMessage("Invalid character index", "error");
+                return;
+            }
+        }
 
         editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
         editCharacterDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
