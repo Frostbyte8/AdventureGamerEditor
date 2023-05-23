@@ -235,8 +235,45 @@ void EditObjectQualitiesTab::insertData(GameObject::Builder& builder) {
     builder.monetaryWorth(spnProperties[0].GetPos());
     builder.uses(spnProperties[1].GetPos());
 
-    // TODO: Figure out used with ID by getting the selected index and mapping it to the ID.
+    const int currentID = builder.getID();
+    size_t usedWithIndex = cbxUsedWith.GetCurSel();
+    
 
+    if(usedWithIndex == 0) {
+        // Nothing selected
+        builder.usedWithID(0);
+    }
+    else if(currentID == GameObjectConstants::NoID) {
+        // Selected something, but it's also a new object
+        builder.usedWithID(gameMap->objectIDFromIndex(usedWithIndex - 1));
+    }
+    else {
+        // Find the proper Index
+
+        size_t currentIndex = gameMap->objectIndexFromID(currentID);
+
+        if(currentIndex < usedWithIndex) {
+            usedWithIndex++;
+        }
+
+        builder.usedWithID(gameMap->objectIDFromIndex(usedWithIndex - 1));
+
+    }
+
+    /*
+    if(currentID != GameObjectConstants::NoID) {
+        int usedWithIndex = cbxUsedWith.GetCurSel();
+        if(usedWith >= currentID) {
+            usedWith++;
+        }        
+
+        builder.usedWithID(gameMap->objectIDFromIndex(usedWith));
+
+    }
+    else {
+        builder.usedWithID(0);
+    }
+    */
 }
 
 ///----------------------------------------------------------------------------
@@ -342,13 +379,25 @@ void EditObjectQualitiesTab::populateFields(const GameObject &gameObject, const 
     windowText = AtoW(std::to_string(gameObject.getUses()).c_str());
     txtProperties[1].SetWindowText(windowText);
 
-    const size_t whichObj = gameMap.objectIndexFromID(gameObject.getUsedWithID());
+    size_t usedWithIndex = gameMap.objectIndexFromID(gameObject.getUsedWithID());
+    const size_t thisIndex = gameMap.objectIndexFromID(gameObject.getID());
 
-    if(whichObj == ((size_t)-1)) {
+    // Remove the current object from the list.
+
+    if(gameObject.getID() != GameObjectConstants::NoID) {
+        cbxUsedWith.DeleteString(thisIndex+1);
+    }
+
+    if(usedWithIndex == ((size_t)-1)) {
         cbxUsedWith.SetCurSel(0);
     }
     else {
-        cbxUsedWith.SetCurSel(whichObj + 1);
+
+        if(thisIndex > usedWithIndex) {
+            usedWithIndex++;
+        }
+
+        cbxUsedWith.SetCurSel(usedWithIndex);
     }
 }
 
