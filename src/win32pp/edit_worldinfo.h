@@ -11,19 +11,21 @@ class EditWorldInfoDialog : public EditDialogBase {
 
     
     public:
-        EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, const HWND& inParentHandle);
+        EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
 
         void setWorldInfo();
-        void calculatePageWidth(const WindowMetrics& wndMetrics); 
+        void calculatePageWidth(); 
 
     protected:
 
+        virtual void OnClose(); 
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
 
     private:
 
-        void moveControls(const WindowMetrics& wndMetrics);
+        void moveControls();
 
         CButton         grpWorldInfo;
         CStatic         lblProperties[2]; // Name and Money

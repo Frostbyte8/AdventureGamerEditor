@@ -228,6 +228,8 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
+    onEditWorldInfo();
+
     return FALSE;
 
 }
@@ -301,53 +303,54 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 
 void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
-    if(!editObjectDialog && activeWindowHandle == *this) {
+    if(editObjectDialog || activeWindowHandle != *this) {
+        return;
+    }
 
-        const std::vector<GameObject>& gameObjects = gameWorldController->getGameMap()->getGameObjects();
-        const bool editingObject = (alterType == AlterType::Edit) ? true : false;
+    const std::vector<GameObject>& gameObjects = gameWorldController->getGameMap()->getGameObjects();
+    const bool editingObject = (alterType == AlterType::Edit) ? true : false;
 
-        if(editingObject) {
-            
-            if(gameObjects.empty() || index > gameObjects.size() - 1) {
-                displayErrorMessage("Invalid object index", "error");
-                return;
-            }
-        }
-
-        editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), *this, editingObject);
-        editObjectDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-        editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    if(editingObject) {
         
-
-        if(!editObjectDialog->IsWindow()) {
-            // TODO: Handle error.
+        if(gameObjects.empty() || index > gameObjects.size() - 1) {
+            displayErrorMessage("Invalid object index", "error");
+            return;
         }
+    }
 
-        activeWindowHandle = editObjectDialog->GetHwnd();
-        editObjectDialog->GoModal();
+    editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), *this, editingObject);
+    editObjectDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    
 
-        CString caption;
-        LanguageMapper& langMap = LanguageMapper::getInstance();
+    if(!editObjectDialog->IsWindow()) {
+        // TODO: Handle error.
+    }
 
-        if(alterType == AlterType::Add) {
-            GameObject::Builder bd;
-            editObjectDialog->SetObjectToEdit(bd.build());
-            EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
-        }
-        else if (alterType == AlterType::Edit) {
-            // TODO: make sure the character exists before doing this.
-            const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
-            GameObject::Builder objectToEdit(gameObject);
-            editObjectDialog->SetObjectToEdit(objectToEdit.build());
-            caption = LM_toUTF8(LanguageConstants::EditObjectDialogCaption, langMap);
-            caption += gameObject.getName().c_str();
-            editObjectDialog->SetWindowText(caption); 
-        }
+    activeWindowHandle = editObjectDialog->GetHwnd();
+    editObjectDialog->GoModal();
 
-        centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editObjectDialog));
-        editObjectDialog->ShowWindow(SW_SHOW);
-        
-   } 
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(alterType == AlterType::Add) {
+        GameObject::Builder bd;
+        editObjectDialog->SetObjectToEdit(bd.build());
+        EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
+    }
+    else if (alterType == AlterType::Edit) {
+        // TODO: make sure the character exists before doing this.
+        const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
+        GameObject::Builder objectToEdit(gameObject);
+        editObjectDialog->SetObjectToEdit(objectToEdit.build());
+        caption = LM_toUTF8(LanguageConstants::EditObjectDialogCaption, langMap);
+        caption += gameObject.getName().c_str();
+        editObjectDialog->SetWindowText(caption); 
+    }
+
+    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editObjectDialog));
+    editObjectDialog->ShowWindow(SW_SHOW);
+
 }
 
 void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index) {
@@ -355,74 +358,79 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     // Make sure that the dialog isn't already running, or that
     // another modal window isn't already running.
 
-    if(!editCharacterDialog && activeWindowHandle == *this) {
-
-        const std::vector<GameCharacter>& gameCharacters = gameWorldController->getGameMap()->getGameCharacters();
-        const bool editingChar = (alterType == AlterType::Edit) ? true : false;
-
-        if(editingChar) {
-            
-            if(gameCharacters.empty() || index > gameCharacters.size() - 1) {
-                displayErrorMessage("Invalid character index", "error");
-                return;
-            }
-        }
-
-        editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
-        editCharacterDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-        editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-
-        if(!editCharacterDialog->IsWindow()) {
-            // TODO: Handle error.
-        }
-
-        activeWindowHandle = editCharacterDialog->GetHwnd();
-        editCharacterDialog->GoModal();
-
-        // TODO: Set Caption
-
-        LanguageMapper& langMap = LanguageMapper::getInstance();
-        CString caption;
-
-        if(alterType == AlterType::Add) {
-            GameCharacter::Builder bd;
-            editCharacterDialog->SetCharacterToEdit(bd.build());
-            EOD_SetWindowText(LanguageConstants::AddCharacterDialogCaption, *editCharacterDialog, caption, langMap);
-        }
-        else if(alterType == AlterType::Edit) {
-
-            const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(0);
-            caption = LM_toUTF8(LanguageConstants::EditCharacterDialogCaption, langMap);
-            caption += gameCharacter.getName().c_str();
-            GameCharacter::Builder charToEdit(gameCharacter);
-            editCharacterDialog->SetCharacterToEdit(charToEdit.build());
-            editCharacterDialog->SetWindowText(caption); 
-        }
-        
-        centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
-        editCharacterDialog->ShowWindow(SW_SHOW);
+    if(editCharacterDialog || activeWindowHandle != *this) {
+        return;
     }
+
+    const std::vector<GameCharacter>& gameCharacters = gameWorldController->getGameMap()->getGameCharacters();
+    const bool editingChar = (alterType == AlterType::Edit) ? true : false;
+
+    if(editingChar) {
+        
+        if(gameCharacters.empty() || index > gameCharacters.size() - 1) {
+            displayErrorMessage("Invalid character index", "error");
+            return;
+        }
+    }
+
+    editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
+    editCharacterDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+
+    if(!editCharacterDialog->IsWindow()) {
+        // TODO: Handle error.
+    }
+
+    activeWindowHandle = editCharacterDialog->GetHwnd();
+    editCharacterDialog->GoModal();
+
+    // TODO: Set Caption
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    if(alterType == AlterType::Add) {
+        GameCharacter::Builder bd;
+        editCharacterDialog->SetCharacterToEdit(bd.build());
+        EOD_SetWindowText(LanguageConstants::AddCharacterDialogCaption, *editCharacterDialog, caption, langMap);
+    }
+    else if(alterType == AlterType::Edit) {
+
+        const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(0);
+        caption = LM_toUTF8(LanguageConstants::EditCharacterDialogCaption, langMap);
+        caption += gameCharacter.getName().c_str();
+        GameCharacter::Builder charToEdit(gameCharacter);
+        editCharacterDialog->SetCharacterToEdit(charToEdit.build());
+        editCharacterDialog->SetWindowText(caption); 
+    }
+    
+    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
+    editCharacterDialog->ShowWindow(SW_SHOW);
 
 }
 
 void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled) {
 
-    if(!editCharacterDialog || (alterType != AlterType::Add && alterType != AlterType::Edit)) {
+    if(!editCharacterDialog) {
         return;
     }
+
+    if(alterType == AlterType::Add || alterType == AlterType::Edit) {
    
-    if(!wasCanceled) {
+        if(!wasCanceled) {
 
-        GameCharacter::Builder bd = editCharacterDialog->getAlteredCharacter();
+            GameCharacter::Builder bd = editCharacterDialog->getAlteredCharacter();
 
-        if(alterType == AlterType::Add) {
-            gameWorldController->tryAddCharacter(bd);
+            if(alterType == AlterType::Add) {
+                gameWorldController->tryAddCharacter(bd);
+            }
+            else {
+                gameWorldController->tryReplaceCharacter(bd);
+            }
+
+            entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
+
         }
-        else {
-            gameWorldController->tryReplaceCharacter(bd);
-        }
-
-        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
 
     }
 
@@ -434,29 +442,28 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bo
 
 void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool& wasCanceled) {
 
-    if(!editObjectDialog)  {
+    if(!editObjectDialog) {
         return;
     }
 
-    if(alterType != AlterType::Add && alterType != AlterType::Edit) {
-        return;
-    }
+    if(alterType == AlterType::Add && alterType == AlterType::Edit) {
 
-    if(!wasCanceled) {
+        if(!wasCanceled) {
 
-        GameObject::Builder bd = editObjectDialog->getAlteredObject();
+            GameObject::Builder bd = editObjectDialog->getAlteredObject();
 
-        if(alterType == AlterType::Add) {
-            gameWorldController->tryAddObject(bd);
+            if(alterType == AlterType::Add) {
+                gameWorldController->tryAddObject(bd);
+            }
+            else {
+                gameWorldController->tryReplaceObject(bd);
+            }
+
+            entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
+
         }
-        else {
-            gameWorldController->tryReplaceObject(bd);
-        }
 
-        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
-
-    }
-    
+    }    
 
     delete editObjectDialog;
     editObjectDialog = NULL;
@@ -469,10 +476,10 @@ void MainWindowFrame::onEditWorldInfo() {
     // Make sure that the dialog isn't already running, or that
     // another modal window isn't already running.
 
-    if(!editWorldInfoDialog && activeWindowHandle == *this) {
+    if(editWorldInfoDialog || activeWindowHandle != *this) {
         return;
     }
-
+    
     editWorldInfoDialog = new EditWorldInfoDialog(this, gameWorldController->getGameMap(), *this);
     editWorldInfoDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
     editWorldInfoDialog->SetExStyle(editWorldInfoDialog->GetExStyle() | WS_EX_DLGMODALFRAME);

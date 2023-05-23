@@ -180,6 +180,18 @@ namespace LanguageConstants {
     int const CharLocationGroup             = 537;
     int const CharInventoryGroup            = 538;
 
+    // Edit World Info Dialog
+    // Captions
+    int const WorldSettingsGroup            = 600;
+    int const WorldNameLabel                = 601;
+    int const WorldCurrencyLabel            = 602;
+
+    int const PlayerEnergy                  = 603;
+    int const PlayerSkill                   = 604;
+    int const PlayerWillpower               = 605;
+    int const PlayerLuck                    = 606;
+    int const PlayerTorchlife               = 607;
+
     // Generic Labels/Captions
     
     int const XCoordLabel                   = 801;

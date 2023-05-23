@@ -1,4 +1,7 @@
 #include "edit_worldinfo.h"
+#include "../util/languagemapper.h"
+#include "shared_functions.h"
+
 
 namespace ControlIDs {
     const WORD WorldName           = 101;
@@ -18,7 +21,6 @@ namespace ControlIDs {
 //=============================================================================
 // Constructors
 //=============================================================================
-
 EditWorldInfoDialog::EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
 }
@@ -27,6 +29,41 @@ HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnClose - Processes the WM_CLOSE message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+void EditWorldInfoDialog::OnClose() {
+
+    /*
+    const bool wasCanceled = optionChosen != IDOK ? true : false;   
+
+    if(optionChosen == IDCLOSE) {
+        // TODO: If changes have been made, prompt the user to ensure they
+        // did not accidentally close the window.
+    }
+
+    if(optionChosen == IDOK) {
+        // Insert Data
+    }
+    */
+
+    ::EnableWindow(parentWindow, TRUE);
+    CWnd::OnClose();
+    mainWindow->finishedEditWorldInfoDialog(true);
+
+}
+
+///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+BOOL EditWorldInfoDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+    return FALSE;
+}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the Dialog window, and create remaining
@@ -39,11 +76,12 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    grpWorldInfo.Create(*this, 0 BS_GROUPBOX);
+    grpWorldInfo.Create(*this, 0, BS_GROUPBOX);
     EOD_SetWindowText(LanguageConstants::WorldSettingsGroup, grpWorldInfo, caption, langMap);
 
     for(int i = 0; i < 2; ++i) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
+        EOD_SetWindowText(LanguageConstants::WorldNameLabel+i, lblProperties[i], caption, langMap);
         txtProperties[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtProperties[i].LimitText(128);
@@ -52,9 +90,9 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 5; ++i) {
         lblAttributes[i].Create(*this, 0, SS_SIMPLE);
-        EOD_SetWindowText(LangaugeConstants::PlayerEnergy+i, lblAttributes[i], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::PlayerEnergy+i, lblAttributes[i], caption, langMap);
         txtAttributes[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
-        spnAttributes[i].Create(*this, 0 WS_VISIBLE | UDS_AUTOBUDDY |
+        spnAttributes[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
         txtAttributes[i].SetExStyle(WS_EX_CLIENTEDGE);
@@ -67,6 +105,24 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
         spnAttributes[i].SetDlgCtrlID(ControlIDs::spnEnergy+i);
     }
 
+    HFONT dialogFont = windowMetrics.GetCurrentFont();
+    EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
+
+    calculatePageWidth();
+
+    // TODO: Finish calculating dimensions
+    RECT rc = {0, 0,
+               pageWidth + (windowMetrics.GetControlSpacing().XWINDOW_MARGIN * 2),
+               0};
+
+    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
+
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
+                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+
+    moveControls();
+
+    return CWnd::OnCreate(cs);
 }
 
 ///----------------------------------------------------------------------------
@@ -83,10 +139,10 @@ void EditWorldInfoDialog::PreRegisterClass(WNDCLASS& wc) {
 // Public Functions
 //=============================================================================
 
-void EditWorldInfoDialog::calculatePageWidth(const WindowMetrics& wndMetrics) {
+void EditWorldInfoDialog::calculatePageWidth() {
 
-    const WindowMetrics::ControlSpacing CS      = wndMetrics.GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD   = wndMetrics.GetControlDimensions();
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
 
     pageWidth = 0;
 
@@ -104,18 +160,18 @@ void EditWorldInfoDialog::calculatePageWidth(const WindowMetrics& wndMetrics) {
     }
 
     pageWidth += CS.XGROUPBOX_MARGIN * 2;
+    pageWidth = std::max(pageWidth, static_cast<LONG>((CD.XBUTTON * 3) + (CS.XBUTTON_MARGIN * 2)));
 
-    pageWidth = std::max(pageWidth, (CD.YBUTTON * 3) + (CS.XBUTTON_MARGIN));
 }
 
 //=============================================================================
 // Private Functions
 //=============================================================================
 
-void EditWorldInfoDialog::moveControls(const WindowMetrics& wndMetrics) {
+void EditWorldInfoDialog::moveControls() {
 
-    const WindowMetrics::ControlSpacing CS      = wndMetrics.GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD   = wndMetrics.GetControlDimensions();
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
 
     // The max width of a row is the size of the window, less the margins of the
     // Group Box and the window.
@@ -155,5 +211,17 @@ void EditWorldInfoDialog::moveControls(const WindowMetrics& wndMetrics) {
 
         spnAttributes[i].SetBuddy(txtAttributes[i].GetHwnd());
     }
+
+    grpWorldInfo.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, maxGroupBoxWidth, cPos.y);
+
+    // TODO: Finish calculating dimensions
+    RECT rc = {0, 0,
+               maxGroupBoxWidth + (CS.XWINDOW_MARGIN * 2),
+               cPos.y + (CS.YWINDOW_MARGIN * 2) };
+
+    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
+
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
+                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
 }

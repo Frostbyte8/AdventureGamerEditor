@@ -143,6 +143,9 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
+    // TODO: At some point, a large portion of this needs to be moved into another function
+    // to be called when the dialog window's dimensions change.
+
     // Now to find the widest point. We'll see what is longer:
     // The minimum dialog width, or the widest tab. 4 Buttons + Spacing seems like a good
     // amount of space.

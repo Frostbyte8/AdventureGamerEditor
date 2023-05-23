@@ -25,6 +25,9 @@
     "303" : "Editing Game Object: ",
     "304" : "Create a Game Character",
     "305" : "Editing Game Character: ",
+    "306" : "Editing World Properties",
+    "307" : "Editing Story",
+    "308" : "Player Inventory",
 
     // Edit Object Dialog
 
@@ -141,6 +144,17 @@
 
     "537" : "Location",
     "538" : "Character Inventory",
+
+    // Edit World Info Dialog
+
+    "600" : "World Settings",
+    "601" : "World Name",
+    "602" : "Currency Name",
+    "603" : "Energy",
+    "604" : "Skill",
+    "605" : "Willpower",
+    "606" : "Luck",
+    "607" : "Torch Life",
 
     // Shared Strings
 
