@@ -48,7 +48,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpDescriptions.Create(*this, 0, BS_GROUPBOX);
-    grpDescriptions.SetWindowTextW(L"Descriptions");
+    grpDescriptions.SetWindowTextW(L"Descriptions"); // TODO
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
         

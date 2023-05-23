@@ -260,20 +260,6 @@ void EditObjectQualitiesTab::insertData(GameObject::Builder& builder) {
 
     }
 
-    /*
-    if(currentID != GameObjectConstants::NoID) {
-        int usedWithIndex = cbxUsedWith.GetCurSel();
-        if(usedWith >= currentID) {
-            usedWith++;
-        }        
-
-        builder.usedWithID(gameMap->objectIDFromIndex(usedWith));
-
-    }
-    else {
-        builder.usedWithID(0);
-    }
-    */
 }
 
 ///----------------------------------------------------------------------------
