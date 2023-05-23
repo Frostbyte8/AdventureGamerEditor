@@ -90,18 +90,30 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     for(int i = 0; i < 5; ++i) {
         lblAttributes[i].Create(*this, 0, SS_SIMPLE);
         EOD_SetWindowText(LanguageConstants::PlayerEnergy+i, lblAttributes[i], caption, langMap);
+        
+
         txtAttributes[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         spnAttributes[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
+        txtRandomAttributes[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
+        spnRandomAttributes[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
+                                      UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
+
         txtAttributes[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtAttributes[i].LimitText(2);
+        txtRandomAttributes[i].SetExStyle(WS_EX_CLIENTEDGE);
+        txtRandomAttributes[i].LimitText(2);
 
         spnAttributes[i].SetRange(GameObjectConstants::MinAttributeValue,
                                   GameObjectConstants::MaxAttributeValue);
 
+        spnRandomAttributes[i].SetRange(GameObjectConstants::MinAttributeValue,
+                                        GameObjectConstants::MaxAttributeValue);
+
         txtAttributes[i].SetDlgCtrlID(ControlIDs::txtEnergy+i);
         spnAttributes[i].SetDlgCtrlID(ControlIDs::spnEnergy+i);
+
     }
 
     for(int i = 0; i < 3; ++i) {
@@ -181,7 +193,9 @@ void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {
 
     for(int i = 0; i < 5; ++i) {
         int base = gameInfo.getBaseAttribute(i);
+        int random = gameInfo.getRandomAttribute(i);
         spnAttributes[i].SetPos(base);
+        spnRandomAttributes[i].SetPos(random);
     }
 
 }
@@ -227,11 +241,16 @@ void EditWorldInfoDialog::moveControls() {
         cPos.Offset(0, defaultLabelSize.cy + CS.YLABELASSOC_MARGIN);
 
         txtAttributes[i].MoveWindow(cPos.x, cPos.y,
-                                    defaultEditSize.cx, defaultEditSize.cy);
+                                    defaultEditSize.cx / 2, defaultEditSize.cy);
+
+        txtRandomAttributes[i].MoveWindow(cPos.x + (defaultEditSize.cx / 2), cPos.y,
+                                          defaultEditSize.cx / 2, defaultEditSize.cy);
 
         cPos.Offset(0, defaultEditSize.cy + CS.YRELATED_MARGIN);
 
         spnAttributes[i].SetBuddy(txtAttributes[i].GetHwnd());
+        spnRandomAttributes[i].SetBuddy(txtRandomAttributes[i].GetHwnd());
+
     }
 
     grpWorldInfo.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN, maxGroupBoxWidth, cPos.y);

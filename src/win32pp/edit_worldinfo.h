@@ -35,6 +35,8 @@ class EditWorldInfoDialog : public EditDialogBase {
         CStatic         lblAttributes[5];
         CEdit           txtAttributes[5];
         CSpinButton     spnAttributes[5];
+        CEdit           txtRandomAttributes[5];
+        CSpinButton     spnRandomAttributes[5];
         CButton         btnDialog[3];
 
         LONG            pageWidth;
