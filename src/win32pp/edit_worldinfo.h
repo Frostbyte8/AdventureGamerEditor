@@ -5,10 +5,13 @@
 #include <wxx_stdcontrols.h>
 #include "../util/win32pp_extras.h"
 #include "../win32/window_metrics.h"
+#include "editdialog_base.h"
 
-class EditWorldInfoDialog {
+class EditWorldInfoDialog : public EditDialogBase {
 
+    
     public:
+        EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, const HWND& inParentHandle);
 
         void setWorldInfo();
         void calculatePageWidth(const WindowMetrics& wndMetrics); 

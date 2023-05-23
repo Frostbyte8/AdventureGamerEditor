@@ -16,6 +16,15 @@ namespace ControlIDs {
 }
 
 //=============================================================================
+// Constructors
+//=============================================================================
+
+EditWorldInfoDialog::EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
+HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle) {
+}
+
+
+//=============================================================================
 // Win32++ Functions
 //=============================================================================
 

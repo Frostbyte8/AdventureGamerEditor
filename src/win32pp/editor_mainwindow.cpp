@@ -19,7 +19,7 @@
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
                                      roadSelectorDocker(0), gameWorldController(0),
                                      activeWindowHandle(0), editObjectDialog(0),
-                                     editCharacterDialog(0) {
+                                     editCharacterDialog(0), editWorldInfoDialog(0) {
 
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
@@ -50,6 +50,11 @@ MainWindowFrame::~MainWindowFrame() {
     if(editCharacterDialog) {
         delete editCharacterDialog;
         editCharacterDialog = NULL;
+    }
+
+    if(editWorldInfoDialog) {
+        delete editWorldInfoDialog;
+        editWorldInfoDialog = NULL;
     }
 
 }
@@ -429,7 +434,11 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bo
 
 void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool& wasCanceled) {
 
-    if(!editObjectDialog || (alterType != AlterType::Add && alterType != AlterType::Edit)) {
+    if(!editObjectDialog)  {
+        return;
+    }
+
+    if(alterType != AlterType::Add && alterType != AlterType::Edit) {
         return;
     }
 
@@ -451,6 +460,46 @@ void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool&
 
     delete editObjectDialog;
     editObjectDialog = NULL;
+    activeWindowHandle = *this;
+
+}
+
+void MainWindowFrame::onEditWorldInfo() {
+
+    // Make sure that the dialog isn't already running, or that
+    // another modal window isn't already running.
+
+    if(!editWorldInfoDialog && activeWindowHandle == *this) {
+        return;
+    }
+
+    editWorldInfoDialog = new EditWorldInfoDialog(this, gameWorldController->getGameMap(), *this);
+    editWorldInfoDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editWorldInfoDialog->SetExStyle(editWorldInfoDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+
+    if(!editWorldInfoDialog->IsWindow()) {
+        // TODO: Handle error.
+    }
+
+    activeWindowHandle = editWorldInfoDialog->GetHwnd();
+    editWorldInfoDialog->GoModal();
+
+    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
+    editWorldInfoDialog->ShowWindow(SW_SHOW);
+}
+
+void MainWindowFrame::finishedEditWorldInfoDialog(const bool& wasCanceled) {
+
+    if(!editWorldInfoDialog) {
+        return;
+    }
+
+    if(!wasCanceled) {
+        // Update Information
+    }
+
+    delete editWorldInfoDialog;
+    editWorldInfoDialog = NULL;
     activeWindowHandle = *this;
 
 }

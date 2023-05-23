@@ -44,6 +44,12 @@ class MainWindowInterface {
         /// @param an integer specifying the type of action to take.
         ///--------------------------------------------------------------------
         virtual void onAlterObject(const int& alterType, const size_t& index) = 0;
+        
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to edit the 
+        /// Game World's information
+        ///--------------------------------------------------------------------
+        virtual void onEditWorldInfo() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
@@ -55,6 +61,10 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled) = 0;
 
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit World Info Dialog is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedEditWorldInfoDialog(const bool& wasCanceled) = 0;
 };
 
 #endif // __MAINWINDOW_INTERFACE_H__
