@@ -12,6 +12,8 @@
 #include "../model/gamecharacter.h"
 #include "../model/gamemap.h"
 
+#include "editdialog_base.h"
+
 //=============================================================================
 // EOTabViewBase - The base class for all tab pages within the Edit Object 
 // Dialog Window.
@@ -20,6 +22,8 @@
 class EOTabViewBase : public CWnd {
 
     public:
+
+        EOTabViewBase(EditDialogBase* inParent) : parentWindow(inParent) {}
 
         // Accessors
         const LONG& getPageWidth() const { return pageWidth; }
@@ -36,9 +40,11 @@ class EOTabViewBase : public CWnd {
 
     protected:
         
-
         LONG pageWidth;
         LONG pageHeight;
+        EditDialogBase*     parentWindow;
+
+    private:
 };
 
 //=============================================================================
@@ -51,6 +57,7 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
     public:
         
         // Constructor
+        EditObjectDescriptionsTab(EditDialogBase* inParent) : EOTabViewBase(inParent) {} 
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
@@ -90,7 +97,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
     public:
 
         // Constuctor
-        EditObjectQualitiesTab(const GameMap* inGameMap) : gameMap(inGameMap) { }
+        EditObjectQualitiesTab(const GameMap* inGameMap, EditDialogBase* inParent) : EOTabViewBase(inParent), gameMap(inGameMap) { }
 
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
@@ -132,7 +139,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
 class EditObjectEffectsTab : public EOTabViewBase {
 
     public:
-
+        EditObjectEffectsTab(EditDialogBase* inParent) : EOTabViewBase(inParent) {} 
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
@@ -177,7 +184,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
     public:
 
         // Constructor
-        EditObjectLocationsTab(const GameMap* inGameMap) : gameMap(inGameMap) {}
+        EditObjectLocationsTab(const GameMap* inGameMap, EditDialogBase* inParent) : EOTabViewBase(inParent), gameMap(inGameMap) {}
 
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);

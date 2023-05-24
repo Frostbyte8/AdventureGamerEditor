@@ -22,6 +22,10 @@ namespace LanguageConstants {
     int const SaveAsMenuItem                = 104;
     int const ExitMenuItem                  = 105;
 
+    int const EditMenuItem                  = 110;
+    int const LongDescMenuItem              = 111;
+    int const SummaryStoryMenuItem          = 112;
+
     int const ObjectAddButton               = 201;
     int const ObjectEditButton              = 202;
     int const ObjectPlaceButton             = 203;

@@ -28,7 +28,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
         virtual void finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled);
-        virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled);
+        virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled, const bool& pressedApply);
         virtual void finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply);
         virtual void finishedEditWorldInfoDialog(const bool& wasCanceled);
                 
@@ -53,6 +53,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         CMenu mainMenu;
         CMenu fileMenu;
+        CMenu editMenu;
         CBitmap tilesetBMP; 
 
 		GameEntitiesView*	    entityView;

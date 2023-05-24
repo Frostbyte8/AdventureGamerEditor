@@ -8,6 +8,10 @@
 namespace ControlIDs {
     const WORD BrowseIcon       = 101;
     const WORD BrowseSound      = 102;
+    const WORD Name             = 103;
+    const WORD Sight            = 104;
+    const WORD OnUse            = 105;
+    const WORD OnLastUse        = 106;
 }
 
 //=============================================================================
@@ -26,7 +30,12 @@ BOOL EditObjectDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
         const WORD ctrlID = LOWORD(wParam);
         const WORD ctrlAction = HIWORD(wParam);
 
-        if(ctrlAction == BN_CLICKED && 
+        if(ctrlID >= ControlIDs::Name && ctrlID <= ControlIDs::OnLastUse) {
+            if(ctrlAction == EN_CHANGE) {
+                parentWindow->madeChange();
+            }
+        }
+        else if(ctrlAction == BN_CLICKED && 
           (ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound)) {
                 return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
         }
@@ -76,6 +85,9 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
             EOD_SetWindowText(LanguageConstants::BrowseButton,
                               btnBrowse[currentButton], caption, langMap);
+        }
+        else {
+            txtDescriptions[i].SetDlgCtrlID(ControlIDs::Name+i);
         }
 
     }
@@ -314,6 +326,7 @@ BOOL EditObjectDescriptionsTab::onBrowseForMedia(const bool findIcon) {
         txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);
 	}
 
+    parentWindow->madeChange();
     return TRUE;
 
 }

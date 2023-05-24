@@ -2,7 +2,7 @@
 #include "shared_functions.h"
 
 namespace ControlIDs {
-    const WORD ID_APPLY     = 1001;
+    const WORD ID_APPLY     = 101;
 }
 
 //=============================================================================
@@ -26,24 +26,51 @@ isEditObject(inEditObject) {
 
 void EditObjectDialog::OnClose() {
 
-    const bool wasCanceled = optionChosen != IDOK ? true : false;
-
     if(optionChosen == IDCLOSE) {
-        // TODO: If changes have been made, prompt the user to ensure they
-        // did not accidentally close the window.
+
+        if(changeMade) {
+
+            LanguageMapper& langMap = LanguageMapper::getInstance();
+
+            CString message = LM_toUTF8(LanguageConstants::UnsavedChangesMessage, langMap);
+            CString title = LM_toUTF8(LanguageConstants::UnsavedChangesTitle, langMap);
+
+            const int response = MessageBox(message, title, MB_ICONQUESTION | MB_YESNOCANCEL);
+
+            if(response == IDYES) {
+                if(okClicked()) {
+                    optionChosen = IDOK;
+                }
+                else {
+                    return; // Can't do anything.
+                }
+            }
+            else if(response == IDNO) {
+                optionChosen = IDCANCEL;
+            }
+            else {
+                return; // Don't do anything.
+            }
+        }
+        else {
+            optionChosen = IDCANCEL;
+        }
     }
 
-    if(optionChosen == IDOK) {
-        descriptionsTab->insertData(newObject);
-        qualitiesTab->insertData(newObject);
-        effectsTab->insertData(newObject);
-        locationsTab->insertData(newObject);
+    const bool wasCanceled = optionChosen != IDOK ? true : false;   
+
+    if(optionChosen == IDOK || optionChosen == IDCANCEL) {
+
+        ::EnableWindow(parentWindow, TRUE);
+        const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;
+        CWnd::OnClose();
+        mainWindow->finishedEditObjectDialog(alterType, wasCanceled, false);
     }
-    
-    ::EnableWindow(parentWindow, TRUE);
-    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;
-    CWnd::OnClose();
-    mainWindow->finishedEditObjectDialog(alterType, wasCanceled);
+    else if(optionChosen == ControlIDs::ID_APPLY) {
+        mainWindow->finishedEditObjectDialog(AlterType::Edit, false, true);
+        changeMade = false;
+        optionChosen = IDCLOSE;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -67,6 +94,13 @@ BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
                 
                 return TRUE;
 
+            }
+            else if(ctrlID == ControlIDs::ID_APPLY) {
+                if(okClicked()) {
+                    optionChosen = ControlIDs::ID_APPLY;
+                    Close();
+                }
+                return TRUE;
             }
             else if(ctrlID == IDCANCEL) {
                 optionChosen = IDCANCEL;
@@ -100,19 +134,19 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     caption = LM_toUTF8(LanguageConstants::DescriptionTab, langMap);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(
-                      tabControl.AddTabPage(new EditObjectDescriptionsTab(), caption));
+                      tabControl.AddTabPage(new EditObjectDescriptionsTab(reinterpret_cast<EditDialogBase*>(this)), caption));
     
     caption = LM_toUTF8(LanguageConstants::QualitiesTab, langMap);
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(
-                   tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap), caption));
+                   tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap, reinterpret_cast<EditDialogBase*>(this)), caption));
 
     caption = LM_toUTF8(LanguageConstants::EffectsTab, langMap);
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(
-                 tabControl.AddTabPage(new EditObjectEffectsTab(), caption));
+                 tabControl.AddTabPage(new EditObjectEffectsTab(reinterpret_cast<EditDialogBase*>(this)), caption));
 
     caption = LM_toUTF8(LanguageConstants::LocationsTab, langMap);
     locationsTab = reinterpret_cast<EditObjectLocationsTab*>(
-                   tabControl.AddTabPage(new EditObjectLocationsTab(gameMap), caption));
+                   tabControl.AddTabPage(new EditObjectLocationsTab(gameMap, reinterpret_cast<EditDialogBase*>(this)), caption));
 
     // We also need to create the Ok, Cancel and Apply buttons too.
 
@@ -406,6 +440,11 @@ bool EditObjectDialog::okClicked() {
             return false;
         }
     }
+
+    descriptionsTab->insertData(newObject);
+    qualitiesTab->insertData(newObject);
+    effectsTab->insertData(newObject);
+    locationsTab->insertData(newObject);
 
     return true;
 }

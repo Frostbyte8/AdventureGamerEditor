@@ -35,9 +35,17 @@ BOOL EditObjectLocationsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 
     if(ctrlID >= ControlIDs::OnGround && ctrlID <= ControlIDs::OnCharacter) {
         locatedAtChanged(ctrlID, ctrlAction);
+        parentWindow->madeChange();
     }
     else if (ctrlID == ControlIDs::UnlocksDoor) {
         toggleUnlocksDoor(btnUnlocksDoor.GetCheck() == BST_CHECKED ? TRUE : FALSE);
+        parentWindow->madeChange();
+    }
+    else if(ctrlID == ControlIDs::XGroundText || ctrlID == ControlIDs::YGroundText ||
+            ctrlID == ControlIDs::XDoorText || ctrlID == ControlIDs::YDoorText) {
+        if(ctrlAction == EN_CHANGE) {
+            parentWindow->madeChange();
+        }
     }
     else {
         return FALSE;

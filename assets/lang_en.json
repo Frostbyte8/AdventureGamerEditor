@@ -6,6 +6,10 @@
     "103" : "&Save...",
     "104" : "Save &As...",
     "105" : "E&xit",
+
+    "110" : "&Edit",
+    "111" : "&Long Tile Description...",
+    "112" : "&Summary and Story...",
 	
 	"201" : "Add",						// Buttons in the "Objects" Groupbox
 	"202" : "Edit",

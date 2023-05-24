@@ -20,10 +20,14 @@ class EditDialogBase : public CWnd {
             return false;
         }
 
+        void madeChange() {
+            changeMade = true;
+        }
+
     protected:
 
         EditDialogBase(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentWindow) : 
-                       mainWindow(inMainWindow), gameMap(inGameMap), parentWindow(inParentWindow) {}
+                       mainWindow(inMainWindow), gameMap(inGameMap), parentWindow(inParentWindow), changeMade(false) {}
 
         static bool CALLBACK SetProperFont(HWND child, LPARAM font) {
             ::SendMessage(child, WM_SETFONT, font, true);
@@ -38,6 +42,7 @@ class EditDialogBase : public CWnd {
         MainWindowInterface*    mainWindow;
         const GameMap*          gameMap;
         HWND                    parentWindow;
+        bool                    changeMade;
 
     private:
         

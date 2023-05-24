@@ -16,6 +16,7 @@ namespace ControlIDs {
     const WORD Money        = 108;
     const WORD UsesBox      = 109;
     const WORD MoneyBox     = 110;
+    const WORD UsedWith     = 111;
 }
 
 //=============================================================================
@@ -38,10 +39,19 @@ BOOL EditObjectQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 
     if(ctrlID >= ControlIDs::MasterKey && ctrlID <= ControlIDs::Money) {
         flagsChanged(ctrlID, ctrlAction); 
+        parentWindow->madeChange();
     }
     else if(ctrlID == ControlIDs::UsesBox || ctrlID == ControlIDs::MoneyBox) {
         if(ctrlAction == EN_KILLFOCUS) {
             updatePropertyValue(ctrlID);
+        }
+        else if(ctrlAction == EN_CHANGE) {
+            parentWindow->madeChange();
+        }
+    }
+    else if(ctrlID == ControlIDs::UsedWith) {
+        if(ctrlAction == CBN_SELCHANGE) {
+            parentWindow->madeChange();
         }
     }
     else {
@@ -113,6 +123,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         caption = AtoW((std::to_string(gameObjects[j].getID()) + ". ").c_str()); 
         caption += AtoW(gameObjects[j].getName().c_str());
         cbxUsedWith.AddString(caption);
+        cbxUsedWith.SetDlgCtrlID(ControlIDs::UsedWith);
     }
 
     spnProperties[0].SetRange(GameObjectConstants::MaxMonetaryValue,
@@ -495,5 +506,3 @@ void EditObjectQualitiesTab::updatePropertyValue(const WORD& ctrlID) {
     spnProperties[ctrlIndex].SetPos(newValue);
 
 }
-
-

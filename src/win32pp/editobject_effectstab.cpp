@@ -15,6 +15,10 @@ namespace ControlIDs {
     const WORD LuckRandom            = 108;
     const WORD TorchLifeBase         = 109;
     const WORD TorchLifeRandom       = 110;
+    const WORD MakesSight            = 111;
+    const WORD MakesHearing          = 112;
+    const WORD EffectsConsume        = 113;
+    const WORD EffectsTemp           = 114;
 }
 
 //=============================================================================
@@ -40,7 +44,20 @@ BOOL EditObjectEffectsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
                 updateAttributeValue(ctrlID);
                 return TRUE;
             }
+            else if(notifyCode == EN_CHANGE) {
+                parentWindow->madeChange();
+            }
 
+        }
+        else if(ctrlID >= ControlIDs::EffectsConsume && ctrlID <= ControlIDs::EffectsTemp) {
+            if(notifyCode == BN_CLICKED) {
+                parentWindow->madeChange();
+            }
+        }
+        else if(ctrlID >= ControlIDs::MakesSight && ctrlID <= ControlIDs::MakesHearing) {
+            if(notifyCode == CBN_SELCHANGE) {
+                parentWindow->madeChange();
+            }
         }
     }
 
@@ -64,6 +81,8 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
     btnEffect[0].Create(*this, 0, BS_AUTORADIOBUTTON | WS_GROUP);
     btnEffect[1].Create(*this, 0, BS_AUTORADIOBUTTON);
+    btnEffect[0].SetDlgCtrlID(ControlIDs::EffectsConsume);
+    btnEffect[1].SetDlgCtrlID(ControlIDs::EffectsTemp);
 
     for(int i = 0; i < 2; ++i) {
         EOD_SetWindowText(LanguageConstants::ConsumpativeLabel+i, btnEffect[i],
@@ -113,6 +132,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     for(int m = 0; m < 2; ++m) {
         lblSenses[m].Create(*this, 0, SS_SIMPLE);
         cbxSenses[m].Create(*this, 0, CBS_DROPDOWNLIST | WS_TABSTOP);
+        cbxSenses[m].SetDlgCtrlID(ControlIDs::MakesSight+m);
     }
 
     for(int n = 0; n < 4; ++n) {

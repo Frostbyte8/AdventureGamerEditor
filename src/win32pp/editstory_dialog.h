@@ -37,7 +37,6 @@ class EditStoryDialog : public EditDialogBase {
         CButton         dialogButtons[3];
 
         int             optionChosen;
-        bool            changeMade;
         CString         dialogCaption;
 };
 

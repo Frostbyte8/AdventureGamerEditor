@@ -93,6 +93,7 @@ void MainWindowFrame::CreateMenuBar() {
 
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
+    editMenu.CreatePopupMenu();
 
     LanguageMapper& languageMapper = LanguageMapper::getInstance();
 
@@ -104,9 +105,18 @@ void MainWindowFrame::CreateMenuBar() {
     ADV_ADDMENUITEM(LanguageConstants::SaveAsMenuItem, fileMenu);
     ADV_ADDMENUITEM(LanguageConstants::ExitMenuItem, fileMenu);
 
+    ADV_ADDMENUITEM(LanguageConstants::LongDescMenuItem, editMenu);
+    ADV_ADDMENUITEM(LanguageConstants::SummaryStoryMenuItem, editMenu);
+
     caption = AtoW(languageMapper.get(LanguageConstants::FileMenuItem).c_str(), CP_UTF8);
+
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
+
+    caption = AtoW(languageMapper.get(LanguageConstants::EditMenuItem).c_str(), CP_UTF8);
+
+    mainMenu.AppendMenu(MF_STRING | MF_POPUP,
+                        reinterpret_cast<UINT_PTR>(editMenu.GetHandle()), caption);
 
     SetFrameMenu(mainMenu);
 
@@ -225,16 +235,18 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
-    static int i = 0;
     switch (LOWORD(wParam)) {
+
         case LanguageConstants::NewMenuItem: return OnFileNew();
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
+
+        case LanguageConstants::SummaryStoryMenuItem: onEditStory(); break;
+
+        default: return FALSE;
+
     }
 
-    onEditStory();
-
-    return FALSE;
-
+    return TRUE;
 }
 
 
@@ -444,13 +456,13 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bo
 
 }
 
-void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool& wasCanceled) {
+void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool& wasCanceled, const bool& pressedApply) {
 
     if(!editObjectDialog) {
         return;
     }
 
-    if(alterType == AlterType::Add && alterType == AlterType::Edit) {
+    if(alterType == AlterType::Add || alterType == AlterType::Edit) {
 
         if(!wasCanceled) {
 
@@ -469,9 +481,11 @@ void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool&
 
     }    
 
-    delete editObjectDialog;
-    editObjectDialog = NULL;
-    activeWindowHandle = *this;
+    if(!pressedApply) {
+        delete editObjectDialog;
+        editObjectDialog = NULL;
+        activeWindowHandle = *this;
+    }
 
 }
 

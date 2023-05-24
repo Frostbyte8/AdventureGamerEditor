@@ -12,7 +12,7 @@ namespace ControlIDs {
 
 EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-optionChosen(IDCLOSE), changeMade(false), dialogCaption("") {
+optionChosen(IDCLOSE), dialogCaption("") {
 }
 
 //=============================================================================
