@@ -12,7 +12,7 @@ namespace ControlIDs {
 
 EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-optionChosen(IDCLOSE), changeMade(false) {
+optionChosen(IDCLOSE), changeMade(false), dialogCaption("") {
 }
 
 //=============================================================================
@@ -67,6 +67,7 @@ void EditStoryDialog::OnClose() {
         mainWindow->finishedEditStoryDialog(false, true);
         optionChosen = IDCLOSE;
         changeMade = false;
+        SetWindowText(dialogCaption);
     }
 }
 
@@ -103,7 +104,10 @@ BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
             }
         }
         else if(notifyCode == EN_CHANGE) {
-            changeMade = true;
+            if(!changeMade) {
+                changeMade = true;
+                SetWindowText(dialogCaption + L"*");
+            }
         }
     }
 
@@ -120,6 +124,9 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
+
+    dialogCaption = LM_toUTF8(LanguageConstants::EditStorySummaryDialogCaption, langMap);
+    SetWindowText(dialogCaption);
 
     lblSummary.Create(*this, 0, SS_SIMPLE);
     lblSummary.SetWindowText(L"Summary");

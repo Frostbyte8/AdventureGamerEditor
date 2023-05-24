@@ -38,6 +38,7 @@ class EditStoryDialog : public EditDialogBase {
 
         int             optionChosen;
         bool            changeMade;
+        CString         dialogCaption;
 };
 
 #endif // __EDITSTORY_DIALOG_H__
