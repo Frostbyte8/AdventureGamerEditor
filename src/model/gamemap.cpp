@@ -724,6 +724,8 @@ void GameMap::readObjects(std::ifstream& mapFile) {
 
 void GameMap::readStory(const std::string& storyFilePath) {
 	
+    // TODO: Use the new Frost functions regarding strings and CRLF
+
     std::ifstream ifs;
 	ifs.open(storyFilePath.c_str(), std::ifstream::in | std::ios::binary);
 
@@ -734,10 +736,16 @@ void GameMap::readStory(const std::string& storyFilePath) {
 		ifs.read(&story[0], story.size());
 		ifs.close();
     }
+
+    const size_t summarySize = story.find("\"\r\n"); 
+
+    summary = story.substr(0, summarySize);
+    story = story.substr(summarySize + 3, std::string::npos);
     
     // Story files aren't mandatory, so if they're not found, there is no
     // error.
     story = Frost::rtrim(Frost::ltrim(story, "\""), "\n\r");
+    summary =  Frost::rtrim(Frost::ltrim(summary, "\""), "\n\r");
 
 }
 

@@ -11,7 +11,7 @@ class EditStoryDialog : public EditDialogBase {
 
     public:
         EditStoryDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
-        void setStory(const std::string& inStoryText);
+        void setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText);
 
     protected:
         virtual void OnClose(); 
@@ -20,7 +20,12 @@ class EditStoryDialog : public EditDialogBase {
 
     private:
 
+        void moveControls();
+
+        CStatic         lblStory;
+        CStatic         lblSummary;
         CAnsiEdit       txtStory;
+        CAnsiEdit       txtSummary;
         CButton         dialogButtons[3];
 
         int             optionChosen;

@@ -533,7 +533,7 @@ void MainWindowFrame::onEditStory() {
     }
 
     editStoryDialog->SetExStyle(editStoryDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    //editStoryDialog->setStory();
+    editStoryDialog->setStoryAndSummary(gameWorldController->getGameMap()->getStory(), gameWorldController->getGameMap()->getSummary());
 
     activeWindowHandle = editStoryDialog->GetHwnd();
     editStoryDialog->GoModal();

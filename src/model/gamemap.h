@@ -34,6 +34,8 @@ class GameMap {
         const int& getLastCharacterID() const;
         const int& getLastObjectID() const;
 		inline const int getNumTiles() const;
+        const std::string& getStory() const { return story; }
+        const std::string& getSummary() const { return summary; }
         inline const GameTile& getTile(const int& index) const { return tiles[index]; }
         const GameInfo& getGameInfo() const { return gameInfo; }
 
@@ -84,6 +86,7 @@ class GameMap {
         int lastUnusedObjectID;
         int lastUnusedCharacterID;
 
+        std::string summary;
         std::string story;
         std::vector<GameTile> tiles;
         std::vector<ConnectionPoint> jumpPoints;
