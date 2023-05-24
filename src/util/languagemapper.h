@@ -200,6 +200,11 @@ namespace LanguageConstants {
     int const GenericCancelButtonCaption    = 804;
     int const GenericApplyButtonCaption     = 805;
 
+    // Program Messages
+
+    int const UnsavedChangesMessage         = 5000;
+    int const UnsavedChangesTitle           = 5001;
+
     // Error Messages
 
     int const TileGetError                  = 10001;

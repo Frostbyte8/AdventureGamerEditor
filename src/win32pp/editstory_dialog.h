@@ -37,6 +37,7 @@ class EditStoryDialog : public EditDialogBase {
         CButton         dialogButtons[3];
 
         int             optionChosen;
+        bool            changeMade;
 };
 
 #endif // __EDITSTORY_DIALOG_H__

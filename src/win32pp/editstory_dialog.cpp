@@ -12,7 +12,7 @@ namespace ControlIDs {
 
 EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-optionChosen(IDCLOSE) {
+optionChosen(IDCLOSE), changeMade(false) {
 }
 
 //=============================================================================
@@ -25,15 +25,35 @@ optionChosen(IDCLOSE) {
 ///----------------------------------------------------------------------------
 
 void EditStoryDialog::OnClose() {
-    
-    const bool wasCanceled = optionChosen != IDOK ? true : false;   
 
     if(optionChosen == IDCLOSE) {
-        // TODO: If changes have been made, prompt the user to ensure they
-        // did not accidentally close the window.
-        // For now we'll treat it like cancel
-        optionChosen = IDCANCEL;
+
+        if(changeMade) {
+
+            LanguageMapper& langMap = LanguageMapper::getInstance();
+
+            CString message = LM_toUTF8(LanguageConstants::UnsavedChangesMessage, langMap);
+            CString title = LM_toUTF8(LanguageConstants::UnsavedChangesTitle, langMap);
+
+            const int response = MessageBox(message, title, MB_ICONQUESTION | MB_YESNOCANCEL);
+
+            if(response == IDYES) {
+                okClicked();
+                optionChosen = IDOK;
+            }
+            else if(response == IDNO) {
+                optionChosen = IDCANCEL;
+            }
+            else {
+                return; // Don't do anything.
+            }
+        }
+        else {
+            optionChosen = IDCANCEL;
+        }
     }
+
+    const bool wasCanceled = optionChosen != IDOK ? true : false;   
 
     if(optionChosen == IDOK || optionChosen == IDCANCEL) {
         // If either OK or Canceled are pressed, we need to give control
@@ -46,6 +66,7 @@ void EditStoryDialog::OnClose() {
         // Just apply, don't close.
         mainWindow->finishedEditStoryDialog(false, true);
         optionChosen = IDCLOSE;
+        changeMade = false;
     }
 }
 
@@ -80,6 +101,9 @@ BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
                 Close();
                 return TRUE;
             }
+        }
+        else if(notifyCode == EN_CHANGE) {
+            changeMade = true;
         }
     }
 

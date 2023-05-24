@@ -167,6 +167,11 @@
     "804" : "Cancel",
     "805" : "Apply",
 
+    // Program Messages
+
+    "5000" : "You have unsaved changes. Do you want to save them now?",
+    "5001" : "Save Changes?",
+
     // Error Messages
     
 	"10001" : "Unable to get tile: Invalid row or column was given.",
