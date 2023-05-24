@@ -11,6 +11,7 @@
 #include "editobject_dialog.h"
 #include "editcharacter_dialog.h"
 #include "edit_worldinfo.h"
+#include "editstory_dialog.h"
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
@@ -28,10 +29,12 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled);
         virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled);
+        virtual void finishedEditStoryDialog(const bool& wasCanceled);
         virtual void finishedEditWorldInfoDialog(const bool& wasCanceled);
                 
         virtual void onAlterCharacter(const int& alterType, const size_t& index);
         virtual void onAlterObject(const int& alterType, const size_t& index);
+        virtual void onEditStory();
         virtual void onEditWorldInfo();
 
 	protected:
@@ -63,6 +66,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         EditObjectDialog*       editObjectDialog;
         EditCharacterDialog*    editCharacterDialog;
         EditWorldInfoDialog*    editWorldInfoDialog;
+        EditStoryDialog*        editStoryDialog;
 
         HWND                    activeWindowHandle;
 

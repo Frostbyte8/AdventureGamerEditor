@@ -20,6 +20,7 @@ namespace ControlIDs {
 //=============================================================================
 // Constructors
 //=============================================================================
+
 EditWorldInfoDialog::EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
 optionChosen(IDCLOSE) {
@@ -146,7 +147,7 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
 }
 
 ///----------------------------------------------------------------------------
-/// PreRegisterClass - Override defaults for tab page
+/// PreRegisterClass - Override defaults for the dialog
 ///----------------------------------------------------------------------------
 
 void EditWorldInfoDialog::PreRegisterClass(WNDCLASS& wc) {

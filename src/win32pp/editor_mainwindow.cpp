@@ -17,10 +17,8 @@
 ///----------------------------------------------------------------------------
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
-                                     roadSelectorDocker(0), gameWorldController(0),
-                                     activeWindowHandle(0), editObjectDialog(0),
-                                     editCharacterDialog(0), editWorldInfoDialog(0) {
-
+roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
+editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
     LanguageMapper::getInstance();
@@ -55,6 +53,11 @@ MainWindowFrame::~MainWindowFrame() {
     if(editWorldInfoDialog) {
         delete editWorldInfoDialog;
         editWorldInfoDialog = NULL;
+    }
+
+    if(editStoryDialog) {
+        delete editStoryDialog;
+        editStoryDialog = NULL;
     }
 
 }
@@ -228,7 +231,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
     }
 
-    onEditWorldInfo();
+    onEditStory();
 
     return FALSE;
 
@@ -511,6 +514,47 @@ void MainWindowFrame::finishedEditWorldInfoDialog(const bool& wasCanceled) {
 
     delete editWorldInfoDialog;
     editWorldInfoDialog = NULL;
+    activeWindowHandle = *this;
+
+}
+
+
+void MainWindowFrame::onEditStory() {
+
+    if(editStoryDialog || activeWindowHandle != *this) {
+        return;
+    }
+
+    editStoryDialog = new EditStoryDialog(this, gameWorldController->getGameMap(), *this);
+    editStoryDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+
+    if(!editStoryDialog->IsWindow()) {
+        // TODO: Handle error;
+    }
+
+    editStoryDialog->SetExStyle(editStoryDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    //editStoryDialog->setStory();
+
+    activeWindowHandle = editStoryDialog->GetHwnd();
+    editStoryDialog->GoModal();
+
+    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editStoryDialog));
+    editStoryDialog->ShowWindow(SW_SHOW);
+    
+}
+
+void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled) {
+
+    if(!editStoryDialog) {
+        return;
+    }
+
+    if(!wasCanceled) {
+        // Update Information
+    }
+
+    delete editStoryDialog;
+    editStoryDialog = NULL;
     activeWindowHandle = *this;
 
 }
