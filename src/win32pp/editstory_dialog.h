@@ -25,6 +25,7 @@ class EditStoryDialog : public EditDialogBase {
     private:
 
         void moveControls();
+        void okClicked();
 
         std::string     storyText;
         std::string     summaryText;

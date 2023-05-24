@@ -2,6 +2,10 @@
 #include "../util/languagemapper.h"
 #include "shared_functions.h"
 
+namespace ControlIDs {
+    const WORD ID_APPLY = 101;
+}
+
 //=============================================================================
 // Constructors
 //=============================================================================
@@ -27,18 +31,22 @@ void EditStoryDialog::OnClose() {
     if(optionChosen == IDCLOSE) {
         // TODO: If changes have been made, prompt the user to ensure they
         // did not accidentally close the window.
+        // For now we'll treat it like cancel
+        optionChosen = IDCANCEL;
     }
 
-    if(optionChosen == IDOK) {
-        // Insert Data
-        storyText = WtoA(txtStory.GetWindowText());
-        summaryText = WtoA(txtSummary.GetWindowText());
+    if(optionChosen == IDOK || optionChosen == IDCANCEL) {
+        // If either OK or Canceled are pressed, we need to give control
+        // back to the parent window
+        ::EnableWindow(parentWindow, TRUE);
+        CWnd::OnClose();
+        mainWindow->finishedEditStoryDialog(wasCanceled, false);
     }
-
-    ::EnableWindow(parentWindow, TRUE);
-    CWnd::OnClose();
-    mainWindow->finishedEditStoryDialog(wasCanceled);
-
+    else if(optionChosen == ControlIDs::ID_APPLY) {
+        // Just apply, don't close.
+        mainWindow->finishedEditStoryDialog(false, true);
+        optionChosen = IDCLOSE;
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -47,7 +55,34 @@ void EditStoryDialog::OnClose() {
 ///----------------------------------------------------------------------------
 
 BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
-    optionChosen = IDOK;
+
+    const WORD ctrlID = LOWORD(wParam);
+    const WORD notifyCode = HIWORD(wParam);
+
+    if(lParam) {
+        if(notifyCode == BN_CLICKED) {
+            if(ctrlID == IDOK) {
+                 
+                okClicked();
+                optionChosen = IDOK;
+                Close();
+                return TRUE;
+
+            }
+            else if(ctrlID == ControlIDs::ID_APPLY) {
+                okClicked();
+                optionChosen = ControlIDs::ID_APPLY;
+                Close();
+                return TRUE;
+            }
+            else if(ctrlID == IDCANCEL) {
+                optionChosen = IDCANCEL;
+                Close();
+                return TRUE;
+            }
+        }
+    }
+
     return FALSE;
 }
 
@@ -82,6 +117,10 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     }
 
     dialogButtons[0].SetStyle(dialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
+
+    dialogButtons[0].SetDlgCtrlID(IDOK);
+    dialogButtons[1].SetDlgCtrlID(IDCANCEL);
+    dialogButtons[2].SetDlgCtrlID(ControlIDs::ID_APPLY);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -168,4 +207,9 @@ void EditStoryDialog::moveControls() {
     SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
                  SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
+}
+
+void EditStoryDialog::okClicked() {
+    storyText = WtoA(txtStory.GetWindowText());
+    summaryText = WtoA(txtSummary.GetWindowText());
 }

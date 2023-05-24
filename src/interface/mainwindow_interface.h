@@ -70,7 +70,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the Edit Story Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditStoryDialog(const bool& wasCanceled) = 0;
+        virtual void finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit World Info Dialog is finished

@@ -543,7 +543,7 @@ void MainWindowFrame::onEditStory() {
     
 }
 
-void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled) {
+void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApplied) {
 
     if(!editStoryDialog) {
         return;
@@ -554,8 +554,10 @@ void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled) {
                                                       editStoryDialog->getSummary()); 
     }
 
-    delete editStoryDialog;
-    editStoryDialog = NULL;
-    activeWindowHandle = *this;
+    if(!pressedApplied) {
+        delete editStoryDialog;
+        editStoryDialog = NULL;
+        activeWindowHandle = *this;
+    }
 
 }
