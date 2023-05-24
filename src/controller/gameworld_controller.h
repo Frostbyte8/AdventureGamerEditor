@@ -25,7 +25,7 @@ class GameWorldController {
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
 
-        // TODO: These names don't match the ones in the .cpp file
+        // TODO: These param names don't match the ones in the .cpp file
         bool tryReplaceObject(GameObject::Builder& objectBuilder);
         bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
 
@@ -37,6 +37,8 @@ class GameWorldController {
 
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         bool getCharacterFromID(const int& ID, GameCharacter* outChar);
+
+        bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
         
     private:
 

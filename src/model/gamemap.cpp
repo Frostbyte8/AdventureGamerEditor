@@ -238,6 +238,26 @@ void GameMap::replaceObject(GMKey, const size_t& index, const GameObject& gameOb
     gameObjects[index] = gameObject;
 }
 
+///----------------------------------------------------------------------------
+/// setStory - Set the story of the Game World
+/// @param GMKey used to restrict access of this function.
+/// @param Story text to be used for the story
+///----------------------------------------------------------------------------
+
+void GameMap::setStory(GMKey, const std::string& inStory) {
+    story = inStory;
+}
+
+///----------------------------------------------------------------------------
+/// setSummary - Set the Summary of the Game World
+/// @param GMKey used to restrict access of this function.
+/// @param Summary text to be used for the summary
+///----------------------------------------------------------------------------
+
+void GameMap::setSummary(GMKey, const std::string& inSummary) {
+    summary = inSummary;
+}
+
 //=============================================================================
 // Public Functions
 //=============================================================================

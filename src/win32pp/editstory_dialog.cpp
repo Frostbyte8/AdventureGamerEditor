@@ -31,12 +31,24 @@ void EditStoryDialog::OnClose() {
 
     if(optionChosen == IDOK) {
         // Insert Data
+        storyText = WtoA(txtStory.GetWindowText());
+        summaryText = WtoA(txtSummary.GetWindowText());
     }
 
     ::EnableWindow(parentWindow, TRUE);
     CWnd::OnClose();
     mainWindow->finishedEditStoryDialog(wasCanceled);
 
+}
+
+///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+    optionChosen = IDOK;
+    return FALSE;
 }
 
 ///----------------------------------------------------------------------------
@@ -99,6 +111,14 @@ void EditStoryDialog::setStoryAndSummary(const std::string& inStoryText, const s
         txtStory.SetWindowText(AtoW(inStoryText.c_str()));
         txtSummary.SetWindowText(AtoW(inSummaryText.c_str()));
     }
+}
+
+const std::string EditStoryDialog::getStory() {
+    return storyText;
+}
+
+const std::string EditStoryDialog::getSummary() {
+    return summaryText;
 }
 
 //=============================================================================

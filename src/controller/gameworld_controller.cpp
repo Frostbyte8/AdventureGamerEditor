@@ -470,3 +470,18 @@ bool GameWorldController::tryRemoveObject(const int& objectID) {
 
     return false;
 }
+
+///----------------------------------------------------------------------------
+/// tryUpdateStoryAndSummary - Attempts to update the story/summary.
+/// @param Story text to use for the story
+/// @param Summary text to use for the summary
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary) {
+
+    gameMap->setStory(gmKey, inStory);
+    gameMap->setSummary(gmKey, inSummary);
+
+    return true;
+}

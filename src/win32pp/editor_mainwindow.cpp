@@ -550,7 +550,8 @@ void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled) {
     }
 
     if(!wasCanceled) {
-        // Update Information
+        gameWorldController->tryUpdateStoryAndSummary(editStoryDialog->getStory(),
+                                                      editStoryDialog->getSummary()); 
     }
 
     delete editStoryDialog;

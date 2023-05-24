@@ -13,14 +13,21 @@ class EditStoryDialog : public EditDialogBase {
         EditStoryDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
         void setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText);
 
+        const std::string getStory();
+        const std::string getSummary();
+
     protected:
         virtual void OnClose(); 
+        virtual int OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
 
     private:
 
         void moveControls();
+
+        std::string     storyText;
+        std::string     summaryText;
 
         CStatic         lblStory;
         CStatic         lblSummary;
