@@ -122,8 +122,7 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
 /// populateFields - 
 ///----------------------------------------------------------------------------
 
-// TODO: Game Map as a param is not needed.
-void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter, const GameMap& REMOVETHISPARAM) {
+void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter) {
 
     CString caption;
     EOD_SetWindowText(std::to_string(gameCharacter.getX()), txtCoords[0], caption);

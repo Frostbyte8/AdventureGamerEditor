@@ -30,10 +30,10 @@ class EditCharacterDialog : public EditDialogBase {
             if(descriptionsTab) {
 
                 newCharacter = GameCharacter::Builder(gameCharacter);
-                descriptionsTab->populateFields(gameCharacter, *gameMap);
-                qualitiesTab->populateFields(gameCharacter, *gameMap);
-                attributesTab->populateFields(gameCharacter, *gameMap);
-                miscTab->populateFields(gameCharacter, *gameMap);
+                descriptionsTab->populateFields(gameCharacter);
+                qualitiesTab->populateFields(gameCharacter);
+                attributesTab->populateFields(gameCharacter);
+                miscTab->populateFields(gameCharacter);
             }
 
         }

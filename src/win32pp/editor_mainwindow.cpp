@@ -505,7 +505,6 @@ void MainWindowFrame::onEditWorldInfo() {
         return;
     }
     
-    // TODO: We don't need Gameinfo for this
     editWorldInfoDialog = new EditWorldInfoDialog(this, gameWorldController->getGameMap(), *this);
     editWorldInfoDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
@@ -589,7 +588,6 @@ void MainWindowFrame::onEditTileDescription() {
         return;
     }
 
-
     editTileDescriptionDialog = new EditTileDescriptionDialog(this, *this);
     editTileDescriptionDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
@@ -617,9 +615,6 @@ void MainWindowFrame::finishedEditTileDescriptionDialog(const bool& wasCanceled,
     if(!wasCanceled) {
         gameWorldController->tryUpdateTileDescription(0, 0, "This is the Tile Name", "This is the long description");
     }
-
-    // DEBUG
-    gameWorldController->tryUpdateTileDescription(0, 0, "This is the Tile Name", "This is the long description");
 
     if(!pressedApply) {
         delete editTileDescriptionDialog;

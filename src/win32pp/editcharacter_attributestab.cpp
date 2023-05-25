@@ -186,7 +186,7 @@ void EditCharacterAttributesTab::moveControls(const WindowMetrics& windowMetrics
 /// populateFields - 
 ///----------------------------------------------------------------------------
 
-void EditCharacterAttributesTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+void EditCharacterAttributesTab::populateFields(const GameCharacter& gameCharacter) {
 
     for(int i = 0; i < 4; ++i) {
         spnAttribType[i].SetPos(gameCharacter.getAttribute(i));

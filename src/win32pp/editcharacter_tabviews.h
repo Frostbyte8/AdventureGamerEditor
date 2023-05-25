@@ -29,7 +29,7 @@ class ECTabViewBase : public CWnd {
         // Pure Virtual Functions
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) = 0;
         virtual void insertData(GameCharacter::Builder& builder) = 0;
-        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) = 0;
+        virtual void populateFields(const GameCharacter& gameCharacter) = 0;
         virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
         virtual InputValidator* validateFields() = 0;
 
@@ -51,7 +51,7 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
-        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
+        virtual void populateFields(const GameCharacter& gameCharacter);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields();
 
@@ -83,11 +83,11 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
 class EditCharacterQualitiesTab : public ECTabViewBase {
 
     public:
-
+        EditCharacterQualitiesTab(const GameMap* inGameMap) : gameMap(inGameMap) {}
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
-        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
+        virtual void populateFields(const GameCharacter& gameCharacter);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields() { return NULL; }
 
@@ -100,7 +100,7 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
 
     private:
 
-
+        const GameMap*      gameMap;
         CButton             grpFlags;
         CButton             btnFlags[8];
 
@@ -125,7 +125,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
-        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
+        virtual void populateFields(const GameCharacter& gameCharacter);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields() { return NULL; }
 
@@ -163,7 +163,7 @@ class EditCharacterMiscTab : public ECTabViewBase {
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
         virtual void insertData(GameCharacter::Builder& builder);
-        virtual void populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap);
+        virtual void populateFields(const GameCharacter& gameCharacter);
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields();
 

@@ -10,15 +10,9 @@
 #include "../model/gamecharacter.h"
 #include "../model/gamemap.h"
 
-#include "../win32/window_metrics.h"
 #include "../interface/mainwindow_interface.h"
-
 #include "editobject_tabviews.h"
-
 #include "editdialog_base.h"
-
-// TODO: Window Metrics needs its own instance since if it moves to a differnt monitor
-// the metrics may be differnt.
 
 // TODO: Minimum Size and Maximum Size
 

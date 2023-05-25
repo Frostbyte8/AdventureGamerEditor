@@ -190,7 +190,7 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
 /// populateFields -
 ///----------------------------------------------------------------------------
 
-void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameCharacter) {
 
     CString caption;
 

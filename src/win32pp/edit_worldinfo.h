@@ -27,7 +27,7 @@ class EditWorldInfoDialog : public EditDialogBase {
 
         void moveControls();
 
-        // TODO: Random
+        // TODO: Random attributes
 
         const GameMap*          gameMap;
 

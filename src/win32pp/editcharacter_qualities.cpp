@@ -234,7 +234,7 @@ void EditCharacterQualitiesTab::moveControls(const WindowMetrics& windowMetrics)
 /// populateFields - 
 ///----------------------------------------------------------------------------
 
-void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacter, const GameMap& gameMap) {
+void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacter) {
 
     const uint8_t flags = gameCharacter.getFlags();
 
