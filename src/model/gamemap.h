@@ -54,9 +54,12 @@ class GameMap {
         void deleteObject(GMKey, const size_t& index);
         void replaceCharacter(GMKey, const size_t& index, const GameCharacter& gameChar);
         void replaceObject(GMKey, const size_t& index, const GameObject& gameObject);
+
         // TODO: Story and Summary should be part of INFO not Map
         void setStory(GMKey, const std::string& inStory);
         void setSummary(GMKey, const std::string& inSummary);
+
+        void updateTileDescription(GMKey, const size_t& index, const std::string& tileName, const std::string& tileDescription);
 
         // Public Functions
         const size_t characterIndexFromID(const int& charID) const;

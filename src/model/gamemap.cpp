@@ -258,6 +258,25 @@ void GameMap::setSummary(GMKey, const std::string& inSummary) {
     summary = inSummary;
 }
 
+///----------------------------------------------------------------------------
+/// updateTileDescription - Update the tile's name and description.
+/// @param GMKey used to restrict access of this function.
+/// @param index of the tile being updated.
+/// @param new name of the tile.
+/// @param new description of the tile.
+///----------------------------------------------------------------------------
+
+void GameMap::updateTileDescription(GMKey, const size_t& index, const std::string& tileName, const std::string& tileDescription) {
+
+    GameTile::Builder bd = GameTile::Builder(tiles[index]);
+
+    bd.name(tileName);
+    bd.description(tileDescription);
+
+    tiles[index] = bd.build();
+   
+}
+
 //=============================================================================
 // Public Functions
 //=============================================================================

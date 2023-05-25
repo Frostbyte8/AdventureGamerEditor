@@ -13,6 +13,11 @@ class EditTileDescriptionDialog : public EditDialogBase {
 
         EditTileDescriptionDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
 
+        const std::string getTileName() const { return tileName; }
+        const std::string getTileDescription() const { return tileDescription; }
+
+        void setTileDescription(const std::string& inName, const std::string& inDescription);
+
     protected:
 
         virtual void OnClose(); 
@@ -33,6 +38,8 @@ class EditTileDescriptionDialog : public EditDialogBase {
 
         std::string     tileName;
         std::string     tileDescription;
+
+        CString         dialogCaption;
 
         int optionChosen;
 };

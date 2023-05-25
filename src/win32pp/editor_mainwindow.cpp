@@ -243,16 +243,15 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
     switch (LOWORD(wParam)) {
 
+        // TODO: On New and Open need to be interface functions
         case LanguageConstants::NewMenuItem: return OnFileNew();
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
-
         case LanguageConstants::SummaryStoryMenuItem: onEditStory(); break;
-
-        //default: return FALSE;
+        case LanguageConstants::LongDescMenuItem: onEditTileDescription(); break;
+        default: return FALSE;
 
     }
 
-    onEditTileDescription();
 
     return TRUE;
 }
@@ -599,6 +598,8 @@ void MainWindowFrame::onEditTileDescription() {
     }
 
     editTileDescriptionDialog->SetExStyle(editTileDescriptionDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    const GameTile gt = gameWorldController->getGameMap()->getTile(0);
+    editTileDescriptionDialog->setTileDescription(gt.getName(), gt.getDescription());
 
     activeWindowHandle = editTileDescriptionDialog->GetHwnd();
     editTileDescriptionDialog->GoModal();
@@ -612,6 +613,13 @@ void MainWindowFrame::finishedEditTileDescriptionDialog(const bool& wasCanceled,
     if(!editTileDescriptionDialog) {
         return;
     }
+
+    if(!wasCanceled) {
+        gameWorldController->tryUpdateTileDescription(0, 0, "This is the Tile Name", "This is the long description");
+    }
+
+    // DEBUG
+    gameWorldController->tryUpdateTileDescription(0, 0, "This is the Tile Name", "This is the long description");
 
     if(!pressedApply) {
         delete editTileDescriptionDialog;

@@ -41,13 +41,15 @@ namespace LanguageConstants {
 
     // Window Captions
 
-    int const MainWindowCaption             = 301;
-    int const AddObjectDialogCaption        = 302;
-    int const EditObjectDialogCaption       = 303;
-    int const AddCharacterDialogCaption     = 304;
-    int const EditCharacterDialogCaption    = 305;
-
-    int const EditStorySummaryDialogCaption = 307;
+    int const MainWindowCaption                 = 301;
+    int const AddObjectDialogCaption            = 302;
+    int const EditObjectDialogCaption           = 303;
+    int const AddCharacterDialogCaption         = 304;
+    int const EditCharacterDialogCaption        = 305;
+    int const EditWorldInfoDialogCaption        = 306;
+    int const EditStorySummaryDialogCaption     = 307;
+    int const PlayerInventoryDialogCaption      = 308;
+    int const EditTileDescrtipionDialogCaption  = 309;
 
     // Edit Object Dialog
     // Tab Labels
@@ -197,6 +199,17 @@ namespace LanguageConstants {
     int const PlayerWillpower               = 605;
     int const PlayerLuck                    = 606;
     int const PlayerTorchlife               = 607;
+
+
+    // Story and Summary Dialog
+    // Captions
+    int const SummaryLabel                  = 650;
+    int const StoryLabel                    = 651;
+
+    // Edit Tile Description Dialog
+    // Captions
+    int const TileNameLabel                 = 700;
+    int const TileDescriptionLabel          = 701;
 
     // Generic Labels/Captions
     

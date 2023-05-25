@@ -179,6 +179,9 @@ class GameTile {
                     if(!description.empty()) {
                         base.flags |= TileFlags::MoreInfo;
                     }
+                    else if(base.flags & TileFlags::MoreInfo) {
+                        base.flags &= ~TileFlags::MoreInfo;
+                    }
                     return *this;
                 }
 

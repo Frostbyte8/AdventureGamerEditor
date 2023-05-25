@@ -32,6 +32,7 @@
     "306" : "Editing World Properties",
     "307" : "Editing Summary and Story",
     "308" : "Player Inventory",
+    "309" : "Editing Tile Description",
 
     // Edit Object Dialog
 
@@ -160,8 +161,17 @@
     "606" : "Luck",
     "607" : "Torch Life",
 
-    // Shared Strings
+    // Edit World Info Dialog
 
+    "650" : "Summary",
+    "651" : "Story",
+
+    // Edit Tile Description Dialog
+
+    "700" : "Tile Name",
+    "701" : "Tile Description",
+
+    // Shared Strings
 
     // Generic Labels/Captions
 

@@ -472,6 +472,27 @@ bool GameWorldController::tryRemoveObject(const int& objectID) {
 }
 
 ///----------------------------------------------------------------------------
+/// tryUpdateTileDescription - Attempts to update the tiles name and
+/// description. Also updates flags2 to indicate that there is more info.
+/// @param row of the tile being changed
+/// @param col of the tile being changed
+/// @param Name of the tile to be used
+/// @param Long Description of the tile
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription) {
+
+    if(!gameMap->isRowColInMapBounds(row, col)) {
+        // TODO: Handle error
+        return false;
+    }
+
+    gameMap->updateTileDescription(gmKey, gameMap->indexFromRowCol(row, col), inName, inDescription);
+
+}
+
+///----------------------------------------------------------------------------
 /// tryUpdateStoryAndSummary - Attempts to update the story/summary.
 /// @param Story text to use for the story
 /// @param Summary text to use for the summary

@@ -52,13 +52,13 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     lblTileName.Create(*this, 0, SS_SIMPLE);
-    lblTileName.SetWindowText(L"Tile Name");
+    EOD_SetWindowText(LanguageConstants::TileNameLabel, lblTileName, caption, langMap);
 
     txtTileName.Create(*this, 0, ES_AUTOHSCROLL);
     txtTileName.SetExStyle(txtTileName.GetExStyle() | WS_EX_CLIENTEDGE);
 
     lblTileDescription.Create(*this, 0, SS_SIMPLE);
-    lblTileDescription.SetWindowText(L"Tile Description");
+    EOD_SetWindowText(LanguageConstants::TileDescriptionLabel, lblTileDescription, caption, langMap);
 
     txtTileDescription.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
@@ -66,14 +66,20 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     for(int i = 0; i < 3; ++i) {
 
         btnDialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
-        EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption + 1, btnDialogButtons[i], caption, langMap);
+        EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption + i, btnDialogButtons[i], caption, langMap);
 
     }
+
+    btnDialogButtons[0].SetStyle(btnDialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
     moveControls();
+
+    dialogCaption = LM_toUTF8(LanguageConstants::EditTileDescrtipionDialogCaption, langMap);
+
+    SetWindowText(dialogCaption);
 
     return retVal;
 }
@@ -89,13 +95,23 @@ void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
+
+void EditTileDescriptionDialog::setTileDescription(const std::string& inName, const std::string& inDescription) {
+
+    if(txtTileName.IsWindow()) {
+        txtTileName.SetWindowText(AtoW(inName.c_str()));
+        txtTileDescription.SetWindowText(AtoW(inDescription.c_str()));
+    }
+
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================
 
 void EditTileDescriptionDialog::moveControls() {
 
-    // TODO: At some point, make this dialog resizable
+    // TODO: At some point, make this dialog resizable, also figure out actual width
 
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
