@@ -11,7 +11,7 @@ class EditTileDescriptionDialog : public EditDialogBase {
 
     public:
 
-        EditTileDescriptionDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
+        EditTileDescriptionDialog(MainWindowInterface* inMainWindow, HWND inParentHandle);
 
         const std::string getTileName() const { return tileName; }
         const std::string getTileDescription() const { return tileDescription; }

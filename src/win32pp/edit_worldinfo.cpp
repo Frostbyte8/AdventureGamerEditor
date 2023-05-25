@@ -22,8 +22,8 @@ namespace ControlIDs {
 //=============================================================================
 
 EditWorldInfoDialog::EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-optionChosen(IDCLOSE) {
+HWND inParentHandle) : EditDialogBase(inMainWindow, inParentHandle),
+gameMap(inGameMap), optionChosen(IDCLOSE) {
 }
 
 
@@ -37,8 +37,6 @@ optionChosen(IDCLOSE) {
 ///----------------------------------------------------------------------------
 
 void EditWorldInfoDialog::OnClose() {
-
-    
     const bool wasCanceled = optionChosen != IDOK ? true : false;   
 
     if(optionChosen == IDCLOSE) {

@@ -10,37 +10,26 @@ class EditDialogBase : public CWnd {
     
     public:
 
-        bool GoModal() {
-            if(parentWindow != NULL) {
-                ::EnableWindow(parentWindow, FALSE);
-                
-                return true;
-            }
+        bool GoModal();
+        //bool tryClose();
 
-            return false;
-        }
-
-        void madeChange() {
-            changeMade = true;
-        }
+        void madeChange();
 
     protected:
 
-        EditDialogBase(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentWindow) : 
-                       mainWindow(inMainWindow), gameMap(inGameMap), parentWindow(inParentWindow), changeMade(false) {}
+        EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow) : 
+                       mainWindow(inMainWindow), parentWindow(inParentWindow), changeMade(false) {}
 
         static bool CALLBACK SetProperFont(HWND child, LPARAM font) {
             ::SendMessage(child, WM_SETFONT, font, true);
             return true;
         }
 
-        virtual void PreCreate(CREATESTRUCT& cs) {
-            cs.style &= ~WS_VISIBLE;
-        }
+        virtual void PreCreate(CREATESTRUCT& cs);
         
         WindowMetrics           windowMetrics;
         MainWindowInterface*    mainWindow;
-        const GameMap*          gameMap;
+        //const GameMap*          gameMap;
         HWND                    parentWindow;
         bool                    changeMade;
 

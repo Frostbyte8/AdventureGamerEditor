@@ -10,7 +10,7 @@
 class EditStoryDialog : public EditDialogBase {
 
     public:
-        EditStoryDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
+        EditStoryDialog(MainWindowInterface* inMainWindow, HWND inParentHandle);
         void setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText);
 
         const std::string getStory();

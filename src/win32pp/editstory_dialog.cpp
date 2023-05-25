@@ -10,9 +10,8 @@ namespace ControlIDs {
 // Constructors
 //=============================================================================
 
-EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-optionChosen(IDCLOSE), dialogCaption("") {
+EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
+EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE), dialogCaption("") {
 }
 
 //=============================================================================

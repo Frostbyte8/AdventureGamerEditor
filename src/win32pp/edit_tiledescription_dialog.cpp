@@ -6,9 +6,8 @@
 // Constructors
 //=============================================================================
 
-EditTileDescriptionDialog::EditTileDescriptionDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-optionChosen(IDCLOSE) {
+EditTileDescriptionDialog::EditTileDescriptionDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
+EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE) {
 }
 
 

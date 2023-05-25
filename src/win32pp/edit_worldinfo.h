@@ -29,6 +29,8 @@ class EditWorldInfoDialog : public EditDialogBase {
 
         // TODO: Random
 
+        const GameMap*          gameMap;
+
         CButton         grpWorldInfo;
         CStatic         lblProperties[2]; // Name and Money
         CAnsiEdit       txtProperties[2];

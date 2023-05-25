@@ -546,7 +546,7 @@ void MainWindowFrame::onEditStory() {
         return;
     }
 
-    editStoryDialog = new EditStoryDialog(this, gameWorldController->getGameMap(), *this);
+    editStoryDialog = new EditStoryDialog(this, *this);
     editStoryDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editStoryDialog->IsWindow()) {
@@ -590,7 +590,7 @@ void MainWindowFrame::onEditTileDescription() {
     }
 
 
-    editTileDescriptionDialog = new EditTileDescriptionDialog(this, gameWorldController->getGameMap(), *this);
+    editTileDescriptionDialog = new EditTileDescriptionDialog(this, *this);
     editTileDescriptionDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(editTileDescriptionDialog->IsWindow()) {

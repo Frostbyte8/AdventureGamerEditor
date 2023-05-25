@@ -63,6 +63,8 @@ class EditObjectDialog : public EditDialogBase {
 
         LRESULT OnSize(WPARAM& wParam, LPARAM& lParam);
 
+        const GameMap*                  gameMap;
+
         GameObject::Builder             newObject;
 
         EditObjectDescriptionsTab*      descriptionsTab;

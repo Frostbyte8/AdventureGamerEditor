@@ -10,8 +10,8 @@ namespace ControlIDs {
 //=============================================================================
 
 EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inGameMap, inParentHandle),
-descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0), optionChosen(IDCLOSE),
+HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inParentHandle),
+gameMap(inGameMap), descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0), optionChosen(IDCLOSE),
 isEditObject(inEditObject) {
 }
 

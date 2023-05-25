@@ -50,7 +50,8 @@ class EditCharacterDialog : public EditDialogBase {
 
         LONG    findLongestTab(const bool getWidth);
         bool okClicked();
-
+        
+        const GameMap*          gameMap;
         int                             optionChosen;
         const bool                      isEditCharacter;
 
