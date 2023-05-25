@@ -22,10 +22,10 @@ optionChosen(IDCLOSE) {
 ///----------------------------------------------------------------------------
 
 void EditTileDescriptionDialog::OnClose() {
-
+    const bool wasCanceled = optionChosen != IDOK ? true : false;   
     ::EnableWindow(parentWindow, TRUE);
     CWnd::OnClose();
-    //mainWindow->finishedEditWorldInfoDialog(wasCanceled);
+    mainWindow->finishedEditTileDescriptionDialog(wasCanceled, false);
 
 }
 
@@ -63,7 +63,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     txtTileDescription.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
 
-    for(int i = 0; i < 2; ++i) {
+    for(int i = 0; i < 3; ++i) {
 
         btnDialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
         EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption + 1, btnDialogButtons[i], caption, langMap);
@@ -94,5 +94,41 @@ void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 
 void EditTileDescriptionDialog::moveControls() {
-}
 
+    // TODO: At some point, make this dialog resizable
+
+    const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
+    const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
+
+    const int minWidth = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
+    const int innerWidth = minWidth - (CS.XWINDOW_MARGIN * 2);
+
+    CPoint cPos(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN);
+
+    lblTileName.MoveWindow(cPos.x, cPos.y, innerWidth, CD.YLABEL);
+    cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
+    
+    txtTileName.MoveWindow(cPos.x, cPos.y, innerWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
+    cPos.Offset(0, CD.YTEXTBOX_ONE_LINE_ALONE + CS.YRELATED_MARGIN);
+
+    lblTileDescription.MoveWindow(cPos.x, cPos.y, innerWidth, CD.YLABEL);
+    cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
+
+    txtTileDescription.MoveWindow(cPos.x, cPos.y, innerWidth, (CD.YTEXTBOX_ONE_LINE_ALONE) + (CD.YTEXTBOX_ADDITIONAL_LINES * 5));
+    cPos.Offset(innerWidth - (CD.XBUTTON),
+                txtTileDescription.GetClientRect().Height() + CS.YUNRELATED_MARGIN);
+
+    for(int i = 2; i >= 0; --i) {
+        btnDialogButtons[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
+    }
+
+    // TODO: Finish calculating dimensions
+    RECT rc = {0, 0, minWidth, cPos.y + CS.YWINDOW_MARGIN + CD.YBUTTON};
+
+    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
+
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
+                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+
+}

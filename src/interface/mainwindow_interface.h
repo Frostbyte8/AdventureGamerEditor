@@ -52,6 +52,12 @@ class MainWindowInterface {
         virtual void onEditStory() = 0;
 
         ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to edit a tile's 
+        /// name or description.
+        ///--------------------------------------------------------------------
+        virtual void onEditTileDescription() = 0;
+
+        ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
         /// Game World's information
         ///--------------------------------------------------------------------
@@ -76,6 +82,13 @@ class MainWindowInterface {
         /// Sent when the Edit World Info Dialog is finished
         ///--------------------------------------------------------------------
         virtual void finishedEditWorldInfoDialog(const bool& wasCanceled) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the edit tile description
+        /// dialog is closed.
+        ///--------------------------------------------------------------------
+        virtual void finishedEditTileDescriptionDialog(const bool& wasCanceled, const bool& pressedApply) = 0;
+
 };
 
 #endif // __MAINWINDOW_INTERFACE_H__

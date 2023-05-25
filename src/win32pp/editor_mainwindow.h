@@ -12,6 +12,7 @@
 #include "editcharacter_dialog.h"
 #include "edit_worldinfo.h"
 #include "editstory_dialog.h"
+#include "edit_tiledescription_dialog.h"
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
@@ -30,11 +31,13 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled);
         virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled, const bool& pressedApply);
         virtual void finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply);
+        virtual void finishedEditTileDescriptionDialog(const bool& wasCanceled, const bool& pressedApply);
         virtual void finishedEditWorldInfoDialog(const bool& wasCanceled);
                 
         virtual void onAlterCharacter(const int& alterType, const size_t& index);
         virtual void onAlterObject(const int& alterType, const size_t& index);
         virtual void onEditStory();
+        virtual void onEditTileDescription();
         virtual void onEditWorldInfo();
 
 	protected:
@@ -56,20 +59,21 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         CMenu editMenu;
         CBitmap tilesetBMP; 
 
-		GameEntitiesView*	    entityView;
-		GameMapDocker*          gameMapDocker;
-		RoadSelectorDocker*     roadSelectorDocker;
-		EntitiesHereDocker*     entitiesHereDocker;
+		GameEntitiesView*               entityView;
+		GameMapDocker*                  gameMapDocker;
+		RoadSelectorDocker*             roadSelectorDocker;
+		EntitiesHereDocker*             entitiesHereDocker;
 
-        GameWorldController*    gameWorldController;
-		WindowMetrics		    windowMetrics;
+        GameWorldController*            gameWorldController;
+		WindowMetrics                   windowMetrics;
 
-        EditObjectDialog*       editObjectDialog;
-        EditCharacterDialog*    editCharacterDialog;
-        EditWorldInfoDialog*    editWorldInfoDialog;
-        EditStoryDialog*        editStoryDialog;
+        EditObjectDialog*               editObjectDialog;
+        EditCharacterDialog*            editCharacterDialog;
+        EditWorldInfoDialog*            editWorldInfoDialog;
+        EditStoryDialog*                editStoryDialog;
+        EditTileDescriptionDialog*      editTileDescriptionDialog;
 
-        HWND                    activeWindowHandle;
+        HWND                            activeWindowHandle;
 
 		// Disable copy construction and assignment operator
 		MainWindowFrame(const MainWindowFrame&);

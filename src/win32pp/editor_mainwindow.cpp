@@ -18,7 +18,8 @@
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
-editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0) {
+editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
+editTileDescriptionDialog(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
     LanguageMapper::getInstance();
@@ -58,6 +59,11 @@ MainWindowFrame::~MainWindowFrame() {
     if(editStoryDialog) {
         delete editStoryDialog;
         editStoryDialog = NULL;
+    }
+
+    if(editTileDescriptionDialog) {
+        delete editTileDescriptionDialog;
+        editTileDescriptionDialog = NULL;
     }
 
 }
@@ -242,9 +248,11 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         case LanguageConstants::SummaryStoryMenuItem: onEditStory(); break;
 
-        default: return FALSE;
+        //default: return FALSE;
 
     }
+
+    onEditTileDescription();
 
     return TRUE;
 }
@@ -557,7 +565,7 @@ void MainWindowFrame::onEditStory() {
     
 }
 
-void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApplied) {
+void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply) {
 
     if(!editStoryDialog) {
         return;
@@ -568,9 +576,46 @@ void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled, const boo
                                                       editStoryDialog->getSummary()); 
     }
 
-    if(!pressedApplied) {
+    if(!pressedApply) {
         delete editStoryDialog;
         editStoryDialog = NULL;
+        activeWindowHandle = *this;
+    }
+
+}
+
+void MainWindowFrame::onEditTileDescription() {
+
+    if(editTileDescriptionDialog || activeWindowHandle != *this) {
+        return;
+    }
+
+
+    editTileDescriptionDialog = new EditTileDescriptionDialog(this, gameWorldController->getGameMap(), *this);
+    editTileDescriptionDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+
+    if(editTileDescriptionDialog->IsWindow()) {
+        // TODO: Handle Error
+    }
+
+    editTileDescriptionDialog->SetExStyle(editTileDescriptionDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+
+    activeWindowHandle = editTileDescriptionDialog->GetHwnd();
+    editTileDescriptionDialog->GoModal();
+
+    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
+    editTileDescriptionDialog->ShowWindow(SW_SHOW);
+}
+
+void MainWindowFrame::finishedEditTileDescriptionDialog(const bool& wasCanceled, const bool& pressedApply) {
+    
+    if(!editTileDescriptionDialog) {
+        return;
+    }
+
+    if(!pressedApply) {
+        delete editTileDescriptionDialog;
+        editTileDescriptionDialog = NULL;
         activeWindowHandle = *this;
     }
 
