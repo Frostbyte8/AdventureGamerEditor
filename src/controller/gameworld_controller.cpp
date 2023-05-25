@@ -233,7 +233,7 @@ bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, c
                 const size_t charIndex = gameMap->characterIndexFromID(gameObjects[objectIndex].getCreatureID());
                 const std::string characterName = gameCharacters[charIndex].getName();
 
-                if(!mainWindow->askYesNoQuestion("The object is currently held by " + characterName + ". Do you still want to place it on the ground?", "Place Object?", true) == MainWindowInterfaceResponses::Yes) {
+                if(!mainWindow->askYesNoQuestion("The object is currently held by " + characterName + ". Do you still want to place it on the ground?", "Place Object?", true) == GenericInterfaceResponses::Yes) {
                     return false;
                 }
 
@@ -402,7 +402,7 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
 
             message.append("\n\nDo you still wish to delete this Character?");
 
-            if(mainWindow->askYesNoQuestion(message, "Remove Character?", true) != MainWindowInterfaceResponses::Yes) {
+            if(mainWindow->askYesNoQuestion(message, "Remove Character?", true) != GenericInterfaceResponses::Yes) {
                 return false;
             }
 
@@ -451,7 +451,7 @@ bool GameWorldController::tryRemoveObject(const int& objectID) {
 
             message.append("\n\nDo you still wish to delete this Object?");
 
-            if(mainWindow->askYesNoQuestion(message, "Remove Object?", true) != MainWindowInterfaceResponses::Yes) {
+            if(mainWindow->askYesNoQuestion(message, "Remove Object?", true) != GenericInterfaceResponses::Yes) {
                 return false;
             }
 

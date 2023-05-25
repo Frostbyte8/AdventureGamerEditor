@@ -6,14 +6,17 @@
 #include "../win32/window_metrics.h"
 #include "../interface/mainwindow_interface.h"
 
-class EditDialogBase : public CWnd {
+class EditDialogBase : public CWnd, public DialogBaseInterface {
     
     public:
 
         bool GoModal();
-        //bool tryClose();
+        bool tryClose();
 
         void madeChange();
+        //void changeReset();
+
+        virtual int askYesNoQuestion(const std::string& question, const std::string& title, bool allowCancel);
 
     protected:
 
@@ -27,15 +30,13 @@ class EditDialogBase : public CWnd {
 
         virtual void PreCreate(CREATESTRUCT& cs);
         
-        WindowMetrics           windowMetrics;
-        MainWindowInterface*    mainWindow;
-        //const GameMap*          gameMap;
-        HWND                    parentWindow;
-        bool                    changeMade;
+        WindowMetrics               windowMetrics;
+        MainWindowInterface*        mainWindow;
+        HWND                        parentWindow;
+        bool                        changeMade;
+        int                         optionChosen;
 
     private:
-        
-
 
 };
 

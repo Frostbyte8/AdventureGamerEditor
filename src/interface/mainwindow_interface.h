@@ -1,13 +1,8 @@
 #ifndef __MAINWINDOW_INTERFACE_H__
 #define __MAINWINDOW_INTERFACE_H__
 
+#include "shared_interface_definitions.h"
 #include <string>
-
-namespace MainWindowInterfaceResponses {
-    int const No        = 0;
-    int const Yes       = 1;
-    int const Cancel    = 2;
-}
 
 class MainWindowInterface {
 

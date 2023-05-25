@@ -44,3 +44,64 @@ void EditDialogBase::madeChange() {
         //markedAsChanged
     }
 }
+
+///----------------------------------------------------------------------------
+/// tryClose - Attempt to close the window, giving the user the option to
+/// save any unsaved changes before closing.
+/// @return true if closing should be done, false if it should not.
+///----------------------------------------------------------------------------
+
+bool EditDialogBase::tryClose() {
+    
+    if(optionChosen == IDCLOSE) {
+
+        if(changeMade) {
+            LanguageMapper& langMap = LanguageMapper::getInstance();
+
+            const int retVal = askYesNoQuestion(langMap.get(LanguageConstants::UnsavedChangesMessage),
+                                                langMap.get(LanguageConstants::UnsavedChangesTitle),
+                                                true);
+            
+            if(retVal == GenericInterfaceResponses::Yes) {
+                optionChosen = IDOK; // We will now act as if the use pressed the OK button.
+            }
+            else if(retVal == GenericInterfaceResponses::No) {
+                // If they select no, we'll simplly act as if they had
+                // pressed cancel button on the dialog, not the message box.
+                optionChosen = IDCANCEL;
+            }
+            else {
+                // The use selected "cancel" on the message box, so do not do anything!
+                return false;
+            }
+
+        }
+
+    }
+
+    // The user has made their choice.
+    return true;
+}
+
+//=============================================================================
+// Public Interface Functions
+//=============================================================================
+
+int EditDialogBase::askYesNoQuestion(const std::string& question, const std::string& title, bool allowCancel) {
+    
+    const CString question      = AtoW(inQuestion.c_str(), CP_UTF8);
+    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
+    const UINT messageBoxFlags  = MB_ICONQUESTION | (allowCancel ? MB_YESNOCANCEL : MB_YESNO);
+
+    const int retVal = MessageBox(question, title, messageBoxFlags);
+
+    if(retVal == IDYES) {
+        return GenericInterfaceResponses::Yes;
+    }
+    else if(retVal == IDNO) {
+        return GenericInterfaceResponses::No;
+    }
+
+    return GenericInterfaceResponses::Cancel;
+
+}

@@ -26,6 +26,7 @@ isEditObject(inEditObject) {
 
 void EditObjectDialog::OnClose() {
 
+    /*
     if(optionChosen == IDCLOSE) {
 
         if(changeMade) {
@@ -56,9 +57,29 @@ void EditObjectDialog::OnClose() {
             optionChosen = IDCANCEL;
         }
     }
+    */
+
+    if(!tryClose()) {
+        return; // Don't do anything
+    }
 
     const bool wasCanceled = optionChosen != IDOK ? true : false;   
 
+    if(optionChosen == IDOK) {
+        // Attempt to save data
+        //if(!saveData()) {
+        //    // Error!
+        //}
+    }
+
+    // End the Dialog Routine
+    
+    ::EnableWindow(parentWindow, TRUE);
+    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;
+    CWnd::OnClose();
+    mainWindow->finishedEditObjectDialog(alterType, wasCanceled, false);
+
+    /*
     if(optionChosen == IDOK || optionChosen == IDCANCEL) {
 
         ::EnableWindow(parentWindow, TRUE);
@@ -71,6 +92,7 @@ void EditObjectDialog::OnClose() {
         changeMade = false;
         optionChosen = IDCLOSE;
     }
+    */
 }
 
 ///----------------------------------------------------------------------------
