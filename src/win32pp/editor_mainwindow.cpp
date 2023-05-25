@@ -419,7 +419,7 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     }
     else if(alterType == AlterType::Edit) {
 
-        const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(0);
+        const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(index);
         caption = LM_toUTF8(LanguageConstants::EditCharacterDialogCaption, langMap);
         caption += gameCharacter.getName().c_str();
         GameCharacter::Builder charToEdit(gameCharacter);

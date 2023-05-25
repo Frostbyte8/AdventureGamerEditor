@@ -473,7 +473,7 @@ bool GameWorldController::tryRemoveObject(const int& objectID) {
 
 ///----------------------------------------------------------------------------
 /// tryUpdateTileDescription - Attempts to update the tiles name and
-/// description. Also updates flags2 to indicate that there is more info.
+/// description. 
 /// @param row of the tile being changed
 /// @param col of the tile being changed
 /// @param Name of the tile to be used
@@ -490,6 +490,7 @@ bool GameWorldController::tryUpdateTileDescription(const int& row, const int& co
 
     gameMap->updateTileDescription(gmKey, gameMap->indexFromRowCol(row, col), inName, inDescription);
 
+    return true;
 }
 
 ///----------------------------------------------------------------------------

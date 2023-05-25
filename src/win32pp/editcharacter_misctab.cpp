@@ -122,6 +122,7 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
 /// populateFields - 
 ///----------------------------------------------------------------------------
 
+// TODO: Game Map as a param is not needed.
 void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter, const GameMap& REMOVETHISPARAM) {
 
     CString caption;
@@ -133,7 +134,7 @@ void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter, co
     const size_t oiSize = objectIndices.size();
 
     for(size_t i = 0; i < oiSize; ++i) {
-        lsbInventory.AddString(AtoW(gameObjects[i].getName().c_str()));
+        lsbInventory.AddString(AtoW(gameObjects[objectIndices[i]].getName().c_str()));
     }
 
 }
