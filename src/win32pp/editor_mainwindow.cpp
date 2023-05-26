@@ -432,13 +432,13 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
 }
 
-void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled) {
+void MainWindowFrame::finishedEditCharacterDialog(const int& alterType) {
 
     if(!editCharacterDialog) {
         return;
     }
 
-    if(!wasCanceled && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
+    if(editCharacterDialog->hasSavedChanges() && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
    
         GameCharacter::Builder bd = editCharacterDialog->getAlteredCharacter();
 

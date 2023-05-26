@@ -12,6 +12,7 @@
 #include "../model/gamecharacter.h"
 #include "../model/gamemap.h"
 
+#include "editdialog_base.h"
 
 //=============================================================================
 // ECTabViewBase - The base class for all tab pages within the Edit Character 
@@ -21,6 +22,8 @@
 class ECTabViewBase : public CWnd {
 
     public:
+
+        ECTabViewBase(EditDialogBase* inParent) : parentWindow(inParent) {}
 
         // Accessors
         const LONG& getPageWidth() const { return pageWidth; }
@@ -37,6 +40,7 @@ class ECTabViewBase : public CWnd {
 
         LONG pageWidth;
         LONG pageHeight;
+        EditDialogBase*     parentWindow;
 };
 
 //=============================================================================
@@ -47,6 +51,8 @@ class ECTabViewBase : public CWnd {
 class EditCharacterDescriptionsTab : public ECTabViewBase {
 
     public:
+
+        EditCharacterDescriptionsTab(EditDialogBase* inParent) : ECTabViewBase(inParent) {}
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
@@ -83,7 +89,7 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
 class EditCharacterQualitiesTab : public ECTabViewBase {
 
     public:
-        EditCharacterQualitiesTab(const GameMap* inGameMap) : gameMap(inGameMap) {}
+        EditCharacterQualitiesTab(const GameMap* inGameMap, EditDialogBase* inParent) : ECTabViewBase(inParent), gameMap(inGameMap) {}
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
@@ -123,6 +129,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
     public:
 
         // Pure Virtual Functions (implemented) 
+        EditCharacterAttributesTab(EditDialogBase* inParent) : ECTabViewBase(inParent) {}
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
@@ -158,7 +165,7 @@ class EditCharacterMiscTab : public ECTabViewBase {
 
    public:
 
-        EditCharacterMiscTab(const GameMap* inGameMap) : gameMap(inGameMap) {}
+        EditCharacterMiscTab(const GameMap* inGameMap, EditDialogBase* inParent) : ECTabViewBase(inParent), gameMap(inGameMap) {}
 
         // Pure Virtual Functions (implemented) 
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}

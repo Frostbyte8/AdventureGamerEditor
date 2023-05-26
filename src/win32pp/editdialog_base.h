@@ -17,9 +17,9 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         void madeChange();
         void changesSaved();
         const bool hasSavedChanges() const { return areSavedChanges; }
+        const WindowMetrics& getWindowMetrics() const { return windowMetrics; }
 
         virtual void moveControls() { return; }
-
         virtual int askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle, bool allowCancel);
         virtual void displayErrorMessage(const std::string& inMessage, const std::string& inTitle);
 

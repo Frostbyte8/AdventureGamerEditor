@@ -44,7 +44,6 @@ class EOTabViewBase : public CWnd {
         LONG pageHeight;
         EditDialogBase*     parentWindow;
 
-    private:
 };
 
 //=============================================================================

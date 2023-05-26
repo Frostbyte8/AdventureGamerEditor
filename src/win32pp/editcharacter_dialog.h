@@ -47,13 +47,14 @@ class EditCharacterDialog : public EditDialogBase {
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
         virtual bool saveData();
 
+        virtual void moveControls();
+
     private:
 
         LONG    findLongestTab(const bool getWidth);
         
         
-        const GameMap*          gameMap;
-        int                             optionChosen;
+        const GameMap*                  gameMap;
         const bool                      isEditCharacter;
 
         GameCharacter::Builder          newCharacter;

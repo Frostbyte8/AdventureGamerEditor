@@ -61,7 +61,6 @@ class EditObjectDialog : public EditDialogBase {
         EditObjectLocationsTab*         locationsTab;
 
         const bool                      isEditObject;
-        int                             optionChosen;
 
         CButton                         btnDialogControl[3];
         CTab                            tabControl;

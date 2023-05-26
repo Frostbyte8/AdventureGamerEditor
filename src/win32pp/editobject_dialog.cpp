@@ -41,8 +41,9 @@ void EditObjectDialog::OnClose() {
     
     endModal();
 
-    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;    
+ 
     // Inform the main window we are ready to be deleted
+    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;  
     mainWindow->finishedEditObjectDialog(alterType);
 
 }
@@ -96,13 +97,12 @@ BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     const int numDialogButtons = isEditObject ? 3 : 2;
-
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
     tabControl.Create(*this); 
 
-    // Create 4 Tabs for the Tab Control.
+    // Create the tab pages for the dialog
 
     EditDialogBase* parentWindow = reinterpret_cast<EditDialogBase*>(this);
 
@@ -137,13 +137,14 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption,
                       btnDialogControl[1], caption, langMap);
 
+    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
+
+    // If we are editing an object, we can also setup the apply button.
     if(isEditObject) {
         btnDialogControl[2].SetDlgCtrlID(ControlIDs::ID_APPLY);
         EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
                           btnDialogControl[2], caption, langMap);
     }
-
-    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
 
     // The font must be set on the controls before we do any kind of sizing
     // so we can reliably test widths on the controls
@@ -151,7 +152,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    // Move the controls into place
+    // Move the controls into place, and display the first tab.
 
     moveControls();
     tabControl.SelectPage(0);
@@ -273,6 +274,7 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
 
     if(getWidth) {
 
+        // TODO: Window metrics isn't needed?
         descriptionsTab->calculatePageWidth(windowMetrics);
         qualitiesTab->calculatePageWidth(windowMetrics);
         effectsTab->calculatePageWidth(windowMetrics);
@@ -399,32 +401,37 @@ void EditObjectDialog::moveControls() {
 
 bool EditObjectDialog::saveData() {
 
-    const size_t numTabs = 4;
 
     std::vector<EOTabViewBase*> tabPages;
+    
+    const size_t numTabs = 4;
     tabPages.reserve(numTabs);
-
     tabPages.push_back(descriptionsTab);
     tabPages.push_back(qualitiesTab);
     tabPages.push_back(effectsTab);
     tabPages.push_back(locationsTab);
 
+    // Iterate over the tabs, and validate their fields.
     for(size_t i = 0; i < numTabs; ++i) {
 
         EOTabViewBase& tabPage = *tabPages[i];
-        const InputValidator* validator = tabPage.validateFields();
+        const InputValidator* validatorFailed = tabPage.validateFields();
 
-        if(validator != NULL) {
+        if(validatorFailed) {
 
             std::string errorMessage;
             std::string errorTitle;
 
-            processValidatorError(errorMessage, errorTitle, validator);
+            processValidatorError(errorMessage, errorTitle, validatorFailed);
             displayErrorMessage(errorMessage, errorTitle);
 
             tabControl.SelectPage(i);
-            if(validator->getErrorCode() != errorCodes::ControlNotFound) {
-                validator->getWindow()->SetFocus();
+
+            // TODO: Return an ID instead of a HWND
+            // Also, tell the tab what action to take (IE: if it's a textbox,
+            // hilight it)
+            if(validatorFailed->getErrorCode() != errorCodes::ControlNotFound) {
+                validatorFailed->getWindow()->SetFocus();
             }
             
             return false;

@@ -61,7 +61,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditCharacterDialog(const int& alterType, const bool& wasCanceled) = 0;
+        virtual void finishedEditCharacterDialog(const int& alterType) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Object Dialog Window is finished

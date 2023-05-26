@@ -12,7 +12,7 @@ namespace ControlIDs {
 EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inParentHandle),
 gameMap(inGameMap), descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL),
-isEditCharacter(inEditCharacter), optionChosen(IDCLOSE) {
+isEditCharacter(inEditCharacter) {
 }
 
 //=============================================================================
@@ -26,29 +26,30 @@ isEditCharacter(inEditCharacter), optionChosen(IDCLOSE) {
 
 void EditCharacterDialog::OnClose() {
 
-    const bool wasCanceled = optionChosen != IDOK ? true : false;   
-
-    if(optionChosen == IDCLOSE) {
-        // TODO: If changes have been made, prompt the user to ensure they
-        // did not accidentally close the window.
+    if(!tryClose()) {
+        return;
     }
 
     if(optionChosen == IDOK) {
-        descriptionsTab->insertData(newCharacter);
-        qualitiesTab->insertData(newCharacter);
-        attributesTab->insertData(newCharacter);
-        miscTab->insertData(newCharacter);
-    }
+        
+        if(!saveData()) {
+            // Data did not save, so don't close the dialog.
+            return;
+        }
 
-    ::EnableWindow(parentWindow, TRUE);
-    const int alterType = isEditCharacter ? AlterType::Edit : AlterType::Add;
-    CWnd::OnClose();
-    mainWindow->finishedEditCharacterDialog(alterType, wasCanceled);
+    }
+    
+    endModal();
+
+ 
+    // Inform the main window we are ready to be deleted
+    const int alterType = isEditCharacter ? AlterType::Edit : AlterType::Add;  
+    mainWindow->finishedEditCharacterDialog(alterType);
 
 }
 
 ///----------------------------------------------------------------------------
-/// OnCommnad - Processes the WM_COMMAND message.
+/// OnCommand - Processes the WM_COMMAND message.
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
@@ -57,28 +58,35 @@ BOOL EditCharacterDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD ctrlID = LOWORD(wParam);
     const WORD notifyCode = HIWORD(wParam);
 
-    if(lParam) {
-        if(notifyCode == BN_CLICKED) {
-            if(ctrlID == IDOK) {
-                 
-                
+    if(lParam && notifyCode == BN_CLICKED) {
+
+        switch(ctrlID) {
+
+            case IDOK:
                 if(saveData()) {
                     optionChosen = IDOK;
                     Close();
                 }
-                
-                return TRUE;
-                
+                break;
 
-            }
-            else if(ctrlID == IDCANCEL) {
+            case IDCANCEL:
                 optionChosen = IDCANCEL;
                 Close();
-                return TRUE;
-            }
+                break;
+
+            case ControlIDs::ID_APPLY:
+                saveData();
+                optionChosen = IDCLOSE;
+                break;
+
+            default:
+                return FALSE;
+
         }
     }
-    return FALSE;
+
+    return TRUE;
+
 }
 
 ///----------------------------------------------------------------------------
@@ -89,26 +97,31 @@ BOOL EditCharacterDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
-    const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
-    const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
     const int numDialogButtons = isEditCharacter ? 3 : 2;
-
-    tabControl.Create(*this); 
-
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
+    tabControl.Create(*this); 
+
+    // Create the tab pages for the dialog
+
+    EditDialogBase* parentWindow = reinterpret_cast<EditDialogBase*>(this);
+
     caption = AtoW(langMap.get(LanguageConstants::CharDescriptonsTab).c_str(), CP_UTF8);
-    descriptionsTab = reinterpret_cast<EditCharacterDescriptionsTab*>(tabControl.AddTabPage(new EditCharacterDescriptionsTab(), caption));
+    descriptionsTab = reinterpret_cast<EditCharacterDescriptionsTab*>(
+                      tabControl.AddTabPage(new EditCharacterDescriptionsTab(parentWindow), caption));
 
     caption = AtoW(langMap.get(LanguageConstants::CharQualitiesTab).c_str(), CP_UTF8);
-    qualitiesTab = reinterpret_cast<EditCharacterQualitiesTab*>(tabControl.AddTabPage(new EditCharacterQualitiesTab(gameMap), caption));
+    qualitiesTab = reinterpret_cast<EditCharacterQualitiesTab*>(
+                   tabControl.AddTabPage(new EditCharacterQualitiesTab(gameMap, parentWindow), caption));
 
     caption = AtoW(langMap.get(LanguageConstants::CharAttributesTab).c_str(), CP_UTF8);
-    attributesTab = reinterpret_cast<EditCharacterAttributesTab*>(tabControl.AddTabPage(new EditCharacterAttributesTab(), caption));
+    attributesTab = reinterpret_cast<EditCharacterAttributesTab*>(
+                    tabControl.AddTabPage(new EditCharacterAttributesTab(parentWindow), caption));
 
     caption = AtoW(langMap.get(LanguageConstants::CharMiscTab).c_str(), CP_UTF8);
-    miscTab = reinterpret_cast<EditCharacterMiscTab*>(tabControl.AddTabPage(new EditCharacterMiscTab(gameMap), caption));
+    miscTab = reinterpret_cast<EditCharacterMiscTab*>(
+              tabControl.AddTabPage(new EditCharacterMiscTab(gameMap, parentWindow), caption));
 
     // We also need to create the Ok, Cancel and Apply buttons too.
 
@@ -125,81 +138,23 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption,
                       btnDialogControl[1], caption, langMap);
 
+    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
+
+    // If we have an apply button, do that here too.
+
     if(isEditCharacter) {
         btnDialogControl[2].SetDlgCtrlID(ControlIDs::ID_APPLY);
         EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
                           btnDialogControl[2], caption, langMap);
     }
 
-    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
-
     // Set the font to the font specified within window metrics.
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    // Now to find the widest point. We'll see what is longer:
-    // The minimum dialog width, or the widest tab. 4 Buttons + Spacing seems like a good
-    // amount of space.
-
-    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XBUTTON_MARGIN * 2);
-    LONG widestPoint = findLongestTab(true);
-    widestPoint = std::max(widestPoint, minSize);
-
-    // We have to adjust the tab control so it's the correct dimensions first
-    // and we need to use TCM_ADJUSTRECT to do so.
-
-    RECT tabRect = {0, 0, widestPoint, 0};
-
-    tabControl.SendMessage(TCM_ADJUSTRECT, TRUE, (LPARAM)&tabRect);
-
-    const LONG adjustedPageWidth = tabRect.right + abs(tabRect.left);
-
-    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                          adjustedPageWidth, 0, FALSE);
-
-    // TODO: For some reason we have to do this or the controls are invisible. Research why.
-
-    tabControl.SelectPage(3);
-    tabControl.SelectPage(2);
-    tabControl.SelectPage(1);
+    moveControls();
     tabControl.SelectPage(0);
-
-    // Now move the controls so they fit their new width.
-
-    descriptionsTab->moveControls(windowMetrics);
-    qualitiesTab->moveControls(windowMetrics);
-    attributesTab->moveControls(windowMetrics);
-    miscTab->moveControls(windowMetrics);
-
-    // Now we can figure out how tall the tab control needs to be, and adjust
-    // the dimensions of the tab control accordingly.
-
-    const LONG tallestPage = findLongestTab(false);
-    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                          adjustedPageWidth, tallestPage, FALSE);
-
-    // Finally, we need to move the dialog buttons into place
-    CPoint cPos(CS.XWINDOW_MARGIN + adjustedPageWidth,
-                CS.YWINDOW_MARGIN + tallestPage + CS.YUNRELATED_MARGIN);
-
-    cPos.Offset(-(CD.XBUTTON), 0);
-
-    // We have to go backwards though to place them
-    for(int i = numDialogButtons - 1; i >= 0; --i) {
-        btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
-        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
-    }
-
-    // TODO: Finish calculating dimensions
-    RECT rc = {0, 0,
-               adjustedPageWidth + (CS.XWINDOW_MARGIN * 2),
-               cPos.y + CD.YBUTTON + CS.YWINDOW_MARGIN };
-
-    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
-
-    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
-                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
     return CWnd::OnCreate(cs);
 }
@@ -257,6 +212,7 @@ LONG EditCharacterDialog::findLongestTab(const bool getWidth) {
 
     if(getWidth) {
 
+        // TODO: Window metrics isn't needed?
         descriptionsTab->calculatePageWidth(windowMetrics);
         qualitiesTab->calculatePageWidth(windowMetrics);
         attributesTab->calculatePageWidth(windowMetrics);
@@ -300,9 +256,90 @@ LONG EditCharacterDialog::findLongestTab(const bool getWidth) {
 
 
 ///----------------------------------------------------------------------------
-/// okClicked - Called when the OK button is clicked. Checks to see if all the
-/// data is valid. If it is, then the action will be successful.
-/// @return true if the operation was successful, false if it was not.
+/// moveControls 
+/// dialog window.
+/// @returns a Copy of a GameObject::Builder object.
+///----------------------------------------------------------------------------
+
+void EditCharacterDialog::moveControls() {
+
+    const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
+    const int numDialogButtons = isEditCharacter ? 3 : 2;
+
+    // Now to find the widest point. We'll see what is longer:
+    // The minimum dialog width, or the widest tab. 4 Buttons + Spacing seems like a good
+    // amount of space.
+
+    LONG widestPoint = findLongestTab(true);
+    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XBUTTON_MARGIN * 2);
+    widestPoint = std::max(widestPoint, minSize);
+
+    // We have to adjust the tab control so it's the correct dimensions first
+    // and we need to use TCM_ADJUSTRECT to do so.
+
+    RECT tabRect = {0, 0, widestPoint, 0};
+
+    tabControl.SendMessage(TCM_ADJUSTRECT, TRUE, (LPARAM)&tabRect);
+
+    const LONG adjustedPageWidth = tabRect.right + abs(tabRect.left);
+
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          adjustedPageWidth, 0, FALSE);
+
+    // The tab pages won't have the correct width, so we need to change this
+    // or everything will appear to be invisible.
+
+    descriptionsTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+    qualitiesTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+    attributesTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+    miscTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+
+    // Now move the controls so they fit their new width.
+
+    descriptionsTab->moveControls(windowMetrics);
+    qualitiesTab->moveControls(windowMetrics);
+    attributesTab->moveControls(windowMetrics);
+    miscTab->moveControls(windowMetrics);
+
+    // Now we can figure out how tall the tab control needs to be, and adjust
+    // the dimensions of the tab control accordingly.
+
+    const LONG tallestPage = findLongestTab(false);
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          adjustedPageWidth, tallestPage, FALSE);
+
+    // Finally, we need to move the dialog buttons into place
+    CPoint cPos(CS.XWINDOW_MARGIN + adjustedPageWidth,
+                CS.YWINDOW_MARGIN + tallestPage + CS.YUNRELATED_MARGIN);
+
+    cPos.Offset(-(CD.XBUTTON), 0);
+
+    // We have to go backwards though to place them
+    for(int i = numDialogButtons - 1; i >= 0; --i) {
+        btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
+    }
+
+    // Finally, Resize the dialog window, but be careful not to move it or
+    // activate it in anyway. TODO: DPI may require a call to center this,
+    // so we may need monitor information of some kind.
+
+    RECT rc = {0, 0,
+               adjustedPageWidth + (CS.XWINDOW_MARGIN * 2),
+               cPos.y + CD.YBUTTON + CS.YWINDOW_MARGIN };
+
+    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
+
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
+                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+
+}
+
+///----------------------------------------------------------------------------
+/// saveData - Confirm that data in the dialog (in this case, each tab page)
+/// is valid, and if it is, save it.
+/// @return true if the data was valid, false if it was not.
 ///----------------------------------------------------------------------------
 
 bool EditCharacterDialog::saveData() {
@@ -317,25 +354,35 @@ bool EditCharacterDialog::saveData() {
     tabPages.push_back(miscTab);
 
     for(size_t i = 0; i < numTabs; ++i) {
+
         ECTabViewBase& tabPage = *tabPages[i];
-        const InputValidator* validator = tabPage.validateFields();
+        const InputValidator* validatorFailed = tabPage.validateFields();
 
-        if(validator != NULL) {
+        if(validatorFailed) {
 
-            CString errorMessage;
-            CString errorTitle;
-            processValidatorError(errorMessage, errorTitle, validator);
-
-            MessageBox(errorMessage, L"", MB_OK | MB_ICONERROR);
+            std::string     errorMessage;
+            std::string     errorTitle;
+            processValidatorError(errorMessage, errorTitle, validatorFailed);
+            displayErrorMessage(errorMessage, errorTitle);
 
             tabControl.SelectPage(i);
-            if(validator->getErrorCode() != errorCodes::ControlNotFound) {
-                validator->getWindow()->SetFocus();
+
+            // TODO: see EditObjectDialog's TODO
+            if(validatorFailed->getErrorCode() != errorCodes::ControlNotFound) {
+                validatorFailed->getWindow()->SetFocus();
             }
             
             return false;
+
         }
     }
+
+    descriptionsTab->insertData(newCharacter);
+    qualitiesTab ->insertData(newCharacter);
+    attributesTab->insertData(newCharacter);
+    miscTab->insertData(newCharacter);
+
+    changesSaved();
 
     return true;
 }
