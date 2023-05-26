@@ -95,8 +95,6 @@ BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
-    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
     const int numDialogButtons = isEditObject ? 3 : 2;
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -153,74 +151,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    // TODO: At some point, a large portion of this needs to be moved into another function
-    // to be called when the dialog window's dimensions change.
+    // Move the controls into place
 
-    // Now to find the widest point. We'll see what is longer:
-    // The minimum dialog width, or the widest tab. 4 Buttons + Spacing seems like a good
-    // amount of space.
-
-    LONG widestPoint = findLongestTab(true);
-    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
-    widestPoint = std::max(widestPoint, minSize);
-
-    // Now that we know what our widest section is, we can resize our tab control
-    // and resize the contents of the tab pages to fit.
-
-    RECT tabRect = {0, 0, widestPoint, 0};
-
-    tabControl.SendMessage(TCM_ADJUSTRECT, TRUE, (LPARAM)&tabRect);
-
-    const LONG adjustedPageWidth = tabRect.right + abs(tabRect.left);
-
-    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                          adjustedPageWidth, 0, FALSE);
-
-    // TODO: For some reason, if this is not done, the tabs never show up.
-    tabControl.SelectPage(3);
-    tabControl.SelectPage(2);
-    tabControl.SelectPage(1);
+    moveControls();
     tabControl.SelectPage(0);
-
-    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                          adjustedPageWidth, 0, FALSE);
-
-    // Move controls so they can fit into their new width.
-    descriptionsTab->moveControls(windowMetrics);
-    qualitiesTab->moveControls(windowMetrics);
-    effectsTab->moveControls(windowMetrics);
-    locationsTab->moveControls(windowMetrics);   
-
-    // Now we can figure out how tall the tab control needs to be, and adjust
-    // the dimensions of the tab control accordingly.
-
-    const LONG tallestPage = findLongestTab(false);
-    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                          adjustedPageWidth, tallestPage, FALSE);
-
-    // Finally, we need to move the dialog buttons into place
-    CPoint cPos(CS.XWINDOW_MARGIN + adjustedPageWidth,
-                CS.YWINDOW_MARGIN + tallestPage + CS.YUNRELATED_MARGIN);
-
-    cPos.Offset(-(CD.XBUTTON), 0);
-
-    // We have to go backwards though to place them
-    for(int i = numDialogButtons - 1; i >= 0; --i) {
-        btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
-        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
-    }
-
-    // Finally, Resize the dialog window, but be careful not to move it or
-    // activate it in anyway.
-
-    RECT rc = {0, 0,
-               adjustedPageWidth + (CS.XWINDOW_MARGIN * 2),
-               cPos.y + CD.YBUTTON + CS.YWINDOW_MARGIN };
-
-    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
-    
-    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
-                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
     return CWnd::OnCreate(createStruct);
 
@@ -386,6 +320,75 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
 
 void EditObjectDialog::moveControls() {
 
+    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
+    const int numDialogButtons = isEditObject ? 3 : 2;
+
+    // Find the widest point. We'll see what is longer:
+    // The minimum dialog width, or the widest tab. 4 Buttons + Spacing seems like a good
+    // amount of space.
+
+    LONG widestPoint = findLongestTab(true);
+    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
+    widestPoint = std::max(widestPoint, minSize);
+
+    // Now that we know what our widest section is, we can resize our tab control
+    // and resize the contents of the tab pages to fit.
+
+    RECT tabRect = {0, 0, widestPoint, 0};
+
+    tabControl.SendMessage(TCM_ADJUSTRECT, TRUE, (LPARAM)&tabRect);
+
+    const LONG adjustedPageWidth = tabRect.right + abs(tabRect.left);
+
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          adjustedPageWidth, 0, FALSE);
+
+    // The tab pages won't have the correct width, so we need to change this
+    // or everything will appear to be invisible.
+
+    descriptionsTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+    qualitiesTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+    effectsTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+    locationsTab->MoveWindow(0, 0, adjustedPageWidth, 0, FALSE);
+
+    // Move controls so they can fit into their new width.
+    descriptionsTab->moveControls(windowMetrics);
+    qualitiesTab->moveControls(windowMetrics);
+    effectsTab->moveControls(windowMetrics);
+    locationsTab->moveControls(windowMetrics);
+
+    // Now we can figure out how tall the tab control needs to be, and adjust
+    // the dimensions of the tab control accordingly.
+
+    const LONG tallestPage = findLongestTab(false);
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          adjustedPageWidth, tallestPage, FALSE);
+
+    // Finally, we need to move the dialog buttons into place
+    CPoint cPos(CS.XWINDOW_MARGIN + adjustedPageWidth,
+                CS.YWINDOW_MARGIN + tallestPage + CS.YUNRELATED_MARGIN);
+
+    cPos.Offset(-(CD.XBUTTON), 0);
+
+    // We have to go backwards though to place them
+    for(int i = numDialogButtons - 1; i >= 0; --i) {
+        btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
+    }
+
+    // Finally, Resize the dialog window, but be careful not to move it or
+    // activate it in anyway. TODO: DPI may require a call to center this,
+    // so we may need monitor information of some kind.
+
+    RECT rc = {0, 0,
+               adjustedPageWidth + (CS.XWINDOW_MARGIN * 2),
+               cPos.y + CD.YBUTTON + CS.YWINDOW_MARGIN };
+
+    AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
+    
+    SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
+                 SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 }
 
 ///----------------------------------------------------------------------------
