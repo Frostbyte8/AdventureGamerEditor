@@ -147,3 +147,8 @@ void EditTileDescriptionDialog::moveControls() {
                  SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
 }
+
+bool EditTileDescriptionDialog::saveData() {
+    // TODO: write function
+    return true;
+}

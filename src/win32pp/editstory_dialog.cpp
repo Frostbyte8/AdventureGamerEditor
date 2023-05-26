@@ -37,7 +37,7 @@ void EditStoryDialog::OnClose() {
             const int response = MessageBox(message, title, MB_ICONQUESTION | MB_YESNOCANCEL);
 
             if(response == IDYES) {
-                okClicked();
+                saveData();
                 optionChosen = IDOK;
             }
             else if(response == IDNO) {
@@ -84,14 +84,14 @@ BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
         if(notifyCode == BN_CLICKED) {
             if(ctrlID == IDOK) {
                  
-                okClicked();
+                saveData();
                 optionChosen = IDOK;
                 Close();
                 return TRUE;
 
             }
             else if(ctrlID == ControlIDs::ID_APPLY) {
-                okClicked();
+                saveData();
                 optionChosen = ControlIDs::ID_APPLY;
                 Close();
                 return TRUE;
@@ -239,7 +239,8 @@ void EditStoryDialog::moveControls() {
 
 }
 
-void EditStoryDialog::okClicked() {
+bool EditStoryDialog::saveData() {
     storyText = WtoA(txtStory.GetWindowText());
     summaryText = WtoA(txtSummary.GetWindowText());
+    return true;
 }

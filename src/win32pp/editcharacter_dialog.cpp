@@ -62,7 +62,7 @@ BOOL EditCharacterDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
             if(ctrlID == IDOK) {
                  
                 
-                if(okClicked()) {
+                if(saveData()) {
                     optionChosen = IDOK;
                     Close();
                 }
@@ -305,7 +305,7 @@ LONG EditCharacterDialog::findLongestTab(const bool getWidth) {
 /// @return true if the operation was successful, false if it was not.
 ///----------------------------------------------------------------------------
 
-bool EditCharacterDialog::okClicked() {
+bool EditCharacterDialog::saveData() {
 
     std::vector<ECTabViewBase*> tabPages;
 

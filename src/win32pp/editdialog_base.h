@@ -5,23 +5,28 @@
 #include "../model/gamemap.h"
 #include "../win32/window_metrics.h"
 #include "../interface/mainwindow_interface.h"
+#include "../interface/dialogbase_interface.h"
 
 class EditDialogBase : public CWnd, public DialogBaseInterface {
     
     public:
 
-        bool GoModal();
+        bool goModal();
         bool tryClose();
-
+        void endModal();
         void madeChange();
-        //void changeReset();
+        void changesSaved();
+        const bool hasSavedChanges() const { return areSavedChanges; }
 
-        virtual int askYesNoQuestion(const std::string& question, const std::string& title, bool allowCancel);
+        virtual void moveControls() { return; }
+
+        virtual int askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle, bool allowCancel);
+        virtual void displayErrorMessage(const std::string& inMessage, const std::string& inTitle);
 
     protected:
 
         EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow) : 
-                       mainWindow(inMainWindow), parentWindow(inParentWindow), changeMade(false) {}
+                       mainWindow(inMainWindow), parentWindow(inParentWindow), optionChosen(IDCLOSE), changeMade(false), areSavedChanges(false) {}
 
         static bool CALLBACK SetProperFont(HWND child, LPARAM font) {
             ::SendMessage(child, WM_SETFONT, font, true);
@@ -30,10 +35,12 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
 
         virtual void PreCreate(CREATESTRUCT& cs);
         
-        WindowMetrics               windowMetrics;
         MainWindowInterface*        mainWindow;
+        WindowMetrics               windowMetrics;
         HWND                        parentWindow;
+
         bool                        changeMade;
+        bool                        areSavedChanges;
         int                         optionChosen;
 
     private:

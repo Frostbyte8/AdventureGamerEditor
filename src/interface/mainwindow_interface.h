@@ -66,7 +66,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the Edit Object Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditObjectDialog(const int& alterType, const bool& wasCanceled, const bool& pressedApply) = 0;
+        virtual void finishedEditObjectDialog(const int& alterType) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Story Dialog Window is finished

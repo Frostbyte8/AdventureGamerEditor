@@ -277,3 +277,8 @@ void EditWorldInfoDialog::moveControls() {
                  SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
 }
+
+bool EditWorldInfoDialog::saveData() {
+    // TODO: Write function
+    return true;
+}

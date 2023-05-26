@@ -7,6 +7,7 @@
 class DialogBaseInterface {
 
     public:
+
         ///--------------------------------------------------------------------
         /// Sent when the program wants to asks a Yes/No question
         /// @param The question to ask
@@ -18,14 +19,18 @@ class DialogBaseInterface {
         virtual int askYesNoQuestion(const std::string& question, const std::string& title,
                                      bool allowCancel) = 0;
 
-        /*
         ///--------------------------------------------------------------------
         /// Sent when the program wants to display an error message
         /// @param The error message
         /// @param Title of the message box, if necessary.
         ///--------------------------------------------------------------------
-        virtual void displayErrorMessage(const std::string& message, const std::string& title) = 0;
-        */
+        virtual void displayErrorMessage(const std::string& inMessage, const std::string& inTitle) = 0;
+  
+        ///--------------------------------------------------------------------
+        /// Sent when the data of the dialog needs to be saved.
+        /// @return true if the save was successful, false if it was not.
+        ///--------------------------------------------------------------------
+        virtual bool saveData() = 0;
 };
 
 #endif // __DIALOGBASE_INTERFACE_H__

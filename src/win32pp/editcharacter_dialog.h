@@ -45,11 +45,12 @@ class EditCharacterDialog : public EditDialogBase {
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
+        virtual bool saveData();
 
     private:
 
         LONG    findLongestTab(const bool getWidth);
-        bool okClicked();
+        
         
         const GameMap*          gameMap;
         int                             optionChosen;

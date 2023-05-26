@@ -11,7 +11,7 @@ namespace ControlIDs {
 
 EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
 HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inParentHandle),
-gameMap(inGameMap), descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0), optionChosen(IDCLOSE),
+gameMap(inGameMap), descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0),
 isEditObject(inEditObject) {
 }
 
@@ -26,73 +26,25 @@ isEditObject(inEditObject) {
 
 void EditObjectDialog::OnClose() {
 
-    /*
-    if(optionChosen == IDCLOSE) {
-
-        if(changeMade) {
-
-            LanguageMapper& langMap = LanguageMapper::getInstance();
-
-            CString message = LM_toUTF8(LanguageConstants::UnsavedChangesMessage, langMap);
-            CString title = LM_toUTF8(LanguageConstants::UnsavedChangesTitle, langMap);
-
-            const int response = MessageBox(message, title, MB_ICONQUESTION | MB_YESNOCANCEL);
-
-            if(response == IDYES) {
-                if(okClicked()) {
-                    optionChosen = IDOK;
-                }
-                else {
-                    return; // Can't do anything.
-                }
-            }
-            else if(response == IDNO) {
-                optionChosen = IDCANCEL;
-            }
-            else {
-                return; // Don't do anything.
-            }
-        }
-        else {
-            optionChosen = IDCANCEL;
-        }
-    }
-    */
-
     if(!tryClose()) {
-        return; // Don't do anything
+        return;
     }
-
-    const bool wasCanceled = optionChosen != IDOK ? true : false;   
 
     if(optionChosen == IDOK) {
-        // Attempt to save data
-        //if(!saveData()) {
-        //    // Error!
-        //}
-    }
+        
+        if(!saveData()) {
+            // Data did not save, so don't close the dialog.
+            return;
+        }
 
-    // End the Dialog Routine
+    }
     
-    ::EnableWindow(parentWindow, TRUE);
-    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;
-    CWnd::OnClose();
-    mainWindow->finishedEditObjectDialog(alterType, wasCanceled, false);
+    endModal();
 
-    /*
-    if(optionChosen == IDOK || optionChosen == IDCANCEL) {
+    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;    
+    // Inform the main window we are ready to be deleted
+    mainWindow->finishedEditObjectDialog(alterType);
 
-        ::EnableWindow(parentWindow, TRUE);
-        const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;
-        CWnd::OnClose();
-        mainWindow->finishedEditObjectDialog(alterType, wasCanceled, false);
-    }
-    else if(optionChosen == ControlIDs::ID_APPLY) {
-        mainWindow->finishedEditObjectDialog(AlterType::Edit, false, true);
-        changeMade = false;
-        optionChosen = IDCLOSE;
-    }
-    */
 }
 
 ///----------------------------------------------------------------------------
@@ -102,37 +54,37 @@ void EditObjectDialog::OnClose() {
 
 BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
-    const WORD ctrlID = LOWORD(wParam);
-    const WORD notifyCode = HIWORD(wParam);
+    const WORD ctrlID       = LOWORD(wParam);
+    const WORD notifyCode   = HIWORD(wParam);
 
-    if(lParam) {
-        if(notifyCode == BN_CLICKED) {
-            if(ctrlID == IDOK) {
-                 
-                if(okClicked()) {
+    if(lParam && notifyCode == BN_CLICKED) {
+
+        switch(ctrlID) {
+            
+            case IDOK:
+                if(saveData()) {
                     optionChosen = IDOK;
                     Close();
                 }
-                
-                return TRUE;
+                break;
 
-            }
-            else if(ctrlID == ControlIDs::ID_APPLY) {
-                if(okClicked()) {
-                    optionChosen = ControlIDs::ID_APPLY;
-                    Close();
-                }
-                return TRUE;
-            }
-            else if(ctrlID == IDCANCEL) {
+            case IDCANCEL:
                 optionChosen = IDCANCEL;
-                Close();
-                return TRUE;
-            }
+                break;
+
+            case ControlIDs::ID_APPLY:
+                saveData();
+                optionChosen = IDCLOSE;
+                break;
+            
+            default:
+                return FALSE;
+
         }
+
     }
 
-    return FALSE;
+    return TRUE;
 }
 
 ///----------------------------------------------------------------------------
@@ -154,21 +106,23 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     // Create 4 Tabs for the Tab Control.
 
+    EditDialogBase* parentWindow = reinterpret_cast<EditDialogBase*>(this);
+
     caption = LM_toUTF8(LanguageConstants::DescriptionTab, langMap);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(
-                      tabControl.AddTabPage(new EditObjectDescriptionsTab(reinterpret_cast<EditDialogBase*>(this)), caption));
+                      tabControl.AddTabPage(new EditObjectDescriptionsTab(parentWindow), caption));
     
     caption = LM_toUTF8(LanguageConstants::QualitiesTab, langMap);
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(
-                   tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap, reinterpret_cast<EditDialogBase*>(this)), caption));
+                   tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap, parentWindow), caption));
 
     caption = LM_toUTF8(LanguageConstants::EffectsTab, langMap);
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(
-                 tabControl.AddTabPage(new EditObjectEffectsTab(reinterpret_cast<EditDialogBase*>(this)), caption));
+                 tabControl.AddTabPage(new EditObjectEffectsTab(parentWindow), caption));
 
     caption = LM_toUTF8(LanguageConstants::LocationsTab, langMap);
     locationsTab = reinterpret_cast<EditObjectLocationsTab*>(
-                   tabControl.AddTabPage(new EditObjectLocationsTab(gameMap, reinterpret_cast<EditDialogBase*>(this)), caption));
+                   tabControl.AddTabPage(new EditObjectLocationsTab(gameMap, parentWindow), caption));
 
     // We also need to create the Ok, Cancel and Apply buttons too.
 
@@ -228,8 +182,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     tabControl.SelectPage(1);
     tabControl.SelectPage(0);
 
-    // Move controls so they can fit into their new width.
+    tabControl.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
+                          adjustedPageWidth, 0, FALSE);
 
+    // Move controls so they can fit into their new width.
     descriptionsTab->moveControls(windowMetrics);
     qualitiesTab->moveControls(windowMetrics);
     effectsTab->moveControls(windowMetrics);
@@ -361,7 +317,6 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 ///----------------------------------------------------------------------------
 
 GameObject::Builder EditObjectDialog::getAlteredObject() {
-
     return newObject;
 }
 
@@ -426,33 +381,43 @@ LONG EditObjectDialog::findLongestTab(const bool getWidth) {
 }
 
 ///----------------------------------------------------------------------------
-/// okClicked - Called when the OK button is clicked. Checks to see if all the
-/// data is valid. If it is, then the action will be successful.
-/// @return true if the operation was successful, false if it was not.
+/// moveControls - Move the controls into their proper positions
 ///----------------------------------------------------------------------------
 
-bool EditObjectDialog::okClicked() {
+void EditObjectDialog::moveControls() {
 
-    std::vector<EOTabViewBase*> tabPages;
+}
+
+///----------------------------------------------------------------------------
+/// saveData - Confirm that data in the dialog (in this case, each tab page)
+/// is valid, and if it is, save it.
+/// @return true if the data was valid, false if it was not.
+///----------------------------------------------------------------------------
+
+bool EditObjectDialog::saveData() {
 
     const size_t numTabs = 4;
+
+    std::vector<EOTabViewBase*> tabPages;
     tabPages.reserve(numTabs);
+
     tabPages.push_back(descriptionsTab);
     tabPages.push_back(qualitiesTab);
     tabPages.push_back(effectsTab);
     tabPages.push_back(locationsTab);
 
     for(size_t i = 0; i < numTabs; ++i) {
+
         EOTabViewBase& tabPage = *tabPages[i];
         const InputValidator* validator = tabPage.validateFields();
 
         if(validator != NULL) {
 
-            CString errorMessage;
-            CString errorTitle;
-            processValidatorError(errorMessage, errorTitle, validator);
+            std::string errorMessage;
+            std::string errorTitle;
 
-            MessageBox(errorMessage, L"", MB_OK | MB_ICONERROR);
+            processValidatorError(errorMessage, errorTitle, validator);
+            displayErrorMessage(errorMessage, errorTitle);
 
             tabControl.SelectPage(i);
             if(validator->getErrorCode() != errorCodes::ControlNotFound) {
@@ -460,7 +425,9 @@ bool EditObjectDialog::okClicked() {
             }
             
             return false;
+
         }
+
     }
 
     descriptionsTab->insertData(newObject);
@@ -468,5 +435,9 @@ bool EditObjectDialog::okClicked() {
     effectsTab->insertData(newObject);
     locationsTab->insertData(newObject);
 
+    // TODO: Have this done automatically?
+    changesSaved();
+
     return true;
+
 }

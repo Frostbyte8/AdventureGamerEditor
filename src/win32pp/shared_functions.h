@@ -85,6 +85,8 @@ inline void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& w
 
 }
 
+// TODO: Depercated
+
 inline void processValidatorError(CString& errorMessage, CString& errorTitle, const InputValidator* validator) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -134,6 +136,92 @@ inline void processValidatorError(CString& errorMessage, CString& errorTitle, co
         }
     }
 
-} 
+}
+
+inline void processValidatorError(std::string& errorMessage, std::string& errorTitle, const InputValidator* validator) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    const int errorCode = validator->getErrorCode();
+
+    if(validator->getType() == validatorTypes::Integer) {
+        const IntegerValidator* intValidator = reinterpret_cast<const IntegerValidator*>(validator);
+            
+        if(errorCode == errorCodes::OutOfRange) {
+            
+            errorMessage = langMap.get(LanguageConstants::IntegerOutOfRange);
+
+            // TODO: make this a loop
+
+            size_t pos = errorMessage.find("%d", 0);
+            if(pos != std::string::npos) {
+                errorMessage.erase(pos, 2);
+                std::string intVar = std::to_string(intValidator->getMinValue());
+                errorMessage.insert(pos, intVar);
+            }
+
+            pos = errorMessage.find("%d", 0);
+            if(pos != std::string::npos) {
+                errorMessage.erase(pos, 2);
+                std::string intVar = std::to_string(intValidator->getMaxValue());
+                errorMessage.insert(pos, intVar);
+            }
+
+        }
+        else if(errorCode == errorCodes::InvalidData) {
+            errorMessage = langMap.get(LanguageConstants::ErrStringNotFound);
+            errorTitle = "TODO: Make a title";
+        }
+    }
+    else if(validator->getType() == validatorTypes::String) {
+        
+        const StringValidator* strValidator = reinterpret_cast<const StringValidator*>(validator);
+
+        if(errorCode == errorCodes::TooManyChars) {
+            errorMessage = "String has too many characters. The maximum amount of characters is %d.";
+
+            size_t pos = errorMessage.find("%d", 0);
+            if(pos != std::string::npos) {
+                errorMessage.erase(pos, 2);
+                std::string maxChars = std::to_string(strValidator->getMaxChars());
+                errorMessage.insert(pos, maxChars);
+            }
+
+        }
+        else if(errorCode == errorCodes::NotEnoughChars) {
+            
+            errorMessage = "String does not have enough chars. The minimum amount of characters is %d.";
+            size_t pos = errorMessage.find("%d", 0);
+
+            if(pos != std::string::npos) {
+                errorMessage.erase(pos, 2);
+                std::string minChars = std::to_string(strValidator->getMinChars());
+                errorMessage.insert(pos, minChars);
+            }
+
+        }
+        else if(errorCode == errorCodes::EndsWith) {
+            
+            errorMessage = "String must end in one of the following: ";
+            
+            const std::vector<std::string>& extenVec = strValidator->getEndsWith();
+            
+            const size_t numExten = extenVec.size();
+            
+            for(size_t i = 0; i < numExten; ++i) {
+                
+                errorMessage += extenVec[i].c_str();
+
+                if(i != numExten - 1) {
+                    errorMessage += ", ";
+                }
+                else {
+                    errorMessage += ".";
+                }
+            }
+        }
+
+    }
+
+}
 
 #endif // __SHARED_FUNCTIONS_H__

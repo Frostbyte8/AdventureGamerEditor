@@ -350,7 +350,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
     editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
     
     activeWindowHandle = editObjectDialog->GetHwnd();
-    editObjectDialog->GoModal();
+    editObjectDialog->goModal();
 
     CString caption;
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -405,7 +405,7 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
 
     activeWindowHandle = editCharacterDialog->GetHwnd();
-    editCharacterDialog->GoModal();
+    editCharacterDialog->goModal();
 
     // TODO: Set Caption
 
@@ -438,22 +438,18 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bo
         return;
     }
 
-    if(alterType == AlterType::Add || alterType == AlterType::Edit) {
+    if(!wasCanceled && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
    
-        if(!wasCanceled) {
+        GameCharacter::Builder bd = editCharacterDialog->getAlteredCharacter();
 
-            GameCharacter::Builder bd = editCharacterDialog->getAlteredCharacter();
-
-            if(alterType == AlterType::Add) {
-                gameWorldController->tryAddCharacter(bd);
-            }
-            else {
-                gameWorldController->tryReplaceCharacter(bd);
-            }
-
-            entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
-
+        if(alterType == AlterType::Add) {
+            gameWorldController->tryAddCharacter(bd);
         }
+        else {
+            gameWorldController->tryReplaceCharacter(bd);
+        }
+
+        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
 
     }
 
@@ -463,36 +459,30 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType, const bo
 
 }
 
-void MainWindowFrame::finishedEditObjectDialog(const int& alterType, const bool& wasCanceled, const bool& pressedApply) {
+void MainWindowFrame::finishedEditObjectDialog(const int& alterType) {
 
     if(!editObjectDialog) {
         return;
     }
 
-    if(alterType == AlterType::Add || alterType == AlterType::Edit) {
+    if(editObjectDialog->hasSavedChanges() && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
 
-        if(!wasCanceled) {
+        GameObject::Builder bd = editObjectDialog->getAlteredObject();
 
-            GameObject::Builder bd = editObjectDialog->getAlteredObject();
-
-            if(alterType == AlterType::Add) {
-                gameWorldController->tryAddObject(bd);
-            }
-            else {
-                gameWorldController->tryReplaceObject(bd);
-            }
-
-            entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
-
+        if(alterType == AlterType::Add) {
+            gameWorldController->tryAddObject(bd);
         }
+        else {
+            gameWorldController->tryReplaceObject(bd);
+        }
+
+        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
 
     }    
 
-    if(!pressedApply) {
-        delete editObjectDialog;
-        editObjectDialog = NULL;
-        activeWindowHandle = *this;
-    }
+    delete editObjectDialog;
+    editObjectDialog = NULL;
+    activeWindowHandle = *this;
 
 }
 
@@ -516,7 +506,7 @@ void MainWindowFrame::onEditWorldInfo() {
     editWorldInfoDialog->setWorldInfo(gameWorldController->getGameMap()->getGameInfo());
 
     activeWindowHandle = editWorldInfoDialog->GetHwnd();
-    editWorldInfoDialog->GoModal();
+    editWorldInfoDialog->goModal();
 
     centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
     editWorldInfoDialog->ShowWindow(SW_SHOW);
@@ -556,7 +546,7 @@ void MainWindowFrame::onEditStory() {
     editStoryDialog->setStoryAndSummary(gameWorldController->getGameMap()->getStory(), gameWorldController->getGameMap()->getSummary());
 
     activeWindowHandle = editStoryDialog->GetHwnd();
-    editStoryDialog->GoModal();
+    editStoryDialog->goModal();
 
     centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editStoryDialog));
     editStoryDialog->ShowWindow(SW_SHOW);
@@ -600,7 +590,7 @@ void MainWindowFrame::onEditTileDescription() {
     editTileDescriptionDialog->setTileDescription(gt.getName(), gt.getDescription());
 
     activeWindowHandle = editTileDescriptionDialog->GetHwnd();
-    editTileDescriptionDialog->GoModal();
+    editTileDescriptionDialog->goModal();
 
     centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
     editTileDescriptionDialog->ShowWindow(SW_SHOW);
@@ -617,6 +607,7 @@ void MainWindowFrame::finishedEditTileDescriptionDialog(const bool& wasCanceled,
     }
 
     if(!pressedApply) {
+        // TODO: Safe to do this? Technically close is still running.
         delete editTileDescriptionDialog;
         editTileDescriptionDialog = NULL;
         activeWindowHandle = *this;

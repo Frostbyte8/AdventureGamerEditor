@@ -1,4 +1,5 @@
 #include "editdialog_base.h"
+#include "../util/languagemapper.h"
 
 //=============================================================================
 // Win32++ Functions
@@ -19,11 +20,34 @@ void EditDialogBase::PreCreate(CREATESTRUCT& cs) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// GoModal - Attempts to make the Dialog window modal.
+/// changesSaved - Mark the changes are being saved.
+///----------------------------------------------------------------------------
+
+void EditDialogBase::changesSaved() {
+    changeMade = false;
+    areSavedChanges = true;
+}
+
+///----------------------------------------------------------------------------
+/// endModal - Enables the parent window and closes the dialog window.
+///----------------------------------------------------------------------------
+
+void EditDialogBase::endModal() {
+
+    if(parentWindow != NULL) {
+        ::EnableWindow(parentWindow, TRUE);
+    }
+
+    CWnd::OnClose();
+
+}
+
+///----------------------------------------------------------------------------
+/// goModal - Attempts to make the Dialog window modal.
 /// @return true if the Dialog was able to go modal, false if not.
 ///----------------------------------------------------------------------------
 
-bool EditDialogBase::GoModal() {
+bool EditDialogBase::goModal() {
 
     if(parentWindow != NULL) {
         ::EnableWindow(parentWindow, FALSE);
@@ -41,7 +65,6 @@ bool EditDialogBase::GoModal() {
 void EditDialogBase::madeChange() {
     if(!changeMade) {
         changeMade = true;
-        //markedAsChanged
     }
 }
 
@@ -64,6 +87,7 @@ bool EditDialogBase::tryClose() {
             
             if(retVal == GenericInterfaceResponses::Yes) {
                 optionChosen = IDOK; // We will now act as if the use pressed the OK button.
+                return saveData();
             }
             else if(retVal == GenericInterfaceResponses::No) {
                 // If they select no, we'll simplly act as if they had
@@ -87,7 +111,8 @@ bool EditDialogBase::tryClose() {
 // Public Interface Functions
 //=============================================================================
 
-int EditDialogBase::askYesNoQuestion(const std::string& question, const std::string& title, bool allowCancel) {
+int EditDialogBase::askYesNoQuestion(const std::string& inQuestion, 
+                                     const std::string& inTitle, bool allowCancel) {
     
     const CString question      = AtoW(inQuestion.c_str(), CP_UTF8);
     const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
@@ -103,5 +128,16 @@ int EditDialogBase::askYesNoQuestion(const std::string& question, const std::str
     }
 
     return GenericInterfaceResponses::Cancel;
+
+}
+
+void EditDialogBase::displayErrorMessage(const std::string &inMessage, 
+                                         const std::string& inTitle) {
+
+    const CString message       = AtoW(inMessage.c_str(), CP_UTF8);
+    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
+    const UINT messageBoxFlags  = MB_ICONERROR;
+
+    MessageBox(message, title, messageBoxFlags);
 
 }

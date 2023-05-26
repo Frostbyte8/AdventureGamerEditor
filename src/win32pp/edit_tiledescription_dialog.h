@@ -24,6 +24,7 @@ class EditTileDescriptionDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
+        virtual bool saveData();
 
     private:
 
