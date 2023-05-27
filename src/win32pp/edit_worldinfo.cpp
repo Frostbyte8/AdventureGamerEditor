@@ -1,6 +1,7 @@
 #include "edit_worldinfo.h"
 #include "../util/languagemapper.h"
 #include "shared_functions.h"
+#include <functional>
 
 namespace ControlIDs {
     const WORD WorldName           = 101;
@@ -21,11 +22,42 @@ namespace ControlIDs {
 // Constructors
 //=============================================================================
 
-EditWorldInfoDialog::EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle) : EditDialogBase(inMainWindow, inParentHandle),
-gameMap(inGameMap), optionChosen(IDCLOSE) {
+EditWorldInfoDialog::EditWorldInfoDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
+EditDialogBase(inMainWindow, inParentHandle) {
 }
 
+//=============================================================================
+// Accessors
+//=============================================================================
+
+GameInfo EditWorldInfoDialog::getGameInfo() {
+    return newGameInfo;
+}
+
+//=============================================================================
+// Mutators
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// setWorldInfo - Give the dialog a GameInfo object to populate its fields
+/// with.
+///----------------------------------------------------------------------------
+
+void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {
+
+    CString caption;
+
+    EOD_SetWindowText(gameInfo.getGameName(), txtProperties[0], caption);
+    EOD_SetWindowText(gameInfo.getCurrencyName(), txtProperties[1], caption);
+
+    for(int i = 0; i < 5; ++i) {
+        int base = gameInfo.getBaseAttribute(i);
+        int random = gameInfo.getRandomAttribute(i);
+        spnAttributes[i].SetPos(base);
+        spnRandomAttributes[i].SetPos(random);
+    }
+
+}
 
 //=============================================================================
 // Win32++ Functions
@@ -37,20 +69,17 @@ gameMap(inGameMap), optionChosen(IDCLOSE) {
 ///----------------------------------------------------------------------------
 
 void EditWorldInfoDialog::OnClose() {
-    const bool wasCanceled = optionChosen != IDOK ? true : false;   
-
-    if(optionChosen == IDCLOSE) {
-        // TODO: If changes have been made, prompt the user to ensure they
-        // did not accidentally close the window.
+    
+    // First we'll see if we can actually close the dialog.
+    if(!tryClose()) {
+        return;
     }
 
-    if(optionChosen == IDOK) {
-        // Insert Data
-    }
-
-    ::EnableWindow(parentWindow, TRUE);
-    CWnd::OnClose();
-    mainWindow->finishedEditWorldInfoDialog(wasCanceled);
+    // Then we'll end the dialog and inform the parent window
+    // that we are done.
+    
+    endModal();
+    mainWindow->finishedEditWorldInfoDialog();
 
 }
 
@@ -60,6 +89,20 @@ void EditWorldInfoDialog::OnClose() {
 ///----------------------------------------------------------------------------
 
 BOOL EditWorldInfoDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    const WORD ctrlID = LOWORD(wParam);
+    const WORD notifyCode = HIWORD(wParam);
+
+    if(lParam && notifyCode == BN_CLICKED) {
+        if(ctrlID == IDOK || ctrlID == IDCANCEL || 
+            ctrlID == DefControlIDs::IDAPPLY) {
+
+            dialogButtonPressed(ctrlID);
+            return TRUE;
+
+        }
+    }
+
     return FALSE;
 }
 
@@ -123,15 +166,16 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
     btnDialog[0].SetDlgCtrlID(IDOK);
     btnDialog[1].SetDlgCtrlID(IDCANCEL);
+    btnDialog[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    calculatePageWidth();
+    const LONG contentWidth = caclculateWindowWidth();
 
     // TODO: Finish calculating dimensions
     RECT rc = {0, 0,
-               pageWidth + (windowMetrics.GetControlSpacing().XWINDOW_MARGIN * 2),
+               contentWidth + (windowMetrics.GetControlSpacing().XWINDOW_MARGIN * 2),
                0};
 
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
@@ -155,53 +199,12 @@ void EditWorldInfoDialog::PreRegisterClass(WNDCLASS& wc) {
 }
 
 //=============================================================================
-// Public Functions
+// Protected Functions
 //=============================================================================
 
-void EditWorldInfoDialog::calculatePageWidth() {
-
-    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
-
-    pageWidth = 0;
-
-    // The Width will be the size of the widest control, in this case, it will be
-    // one of the labels, so we will loop through that.
-
-    for(int i = 0; i < 2; ++i) {
-        pageWidth = std::max(windowMetrics.CalculateStringWidth(
-                             lblProperties[i].GetWindowTextW().c_str()), pageWidth);
-    }
-
-    for(int i = 0; i < 5; ++i) {
-        pageWidth = std::max(windowMetrics.CalculateStringWidth(
-                             lblAttributes[i].GetWindowTextW().c_str()), pageWidth);
-    }
-
-    pageWidth += CS.XGROUPBOX_MARGIN * 2;
-    pageWidth = std::max(pageWidth, static_cast<LONG>((CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3)));
-
-}
-
-void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {
-
-    CString caption;
-
-    EOD_SetWindowText(gameInfo.getGameName(), txtProperties[0], caption);
-    EOD_SetWindowText(gameInfo.getCurrencyName(), txtProperties[1], caption);
-
-    for(int i = 0; i < 5; ++i) {
-        int base = gameInfo.getBaseAttribute(i);
-        int random = gameInfo.getRandomAttribute(i);
-        spnAttributes[i].SetPos(base);
-        spnRandomAttributes[i].SetPos(random);
-    }
-
-}
-
-//=============================================================================
-// Private Functions
-//=============================================================================
+///----------------------------------------------------------------------------
+/// moveControls - Move the controls into their proper positions
+///----------------------------------------------------------------------------
 
 void EditWorldInfoDialog::moveControls() {
 
@@ -278,7 +281,49 @@ void EditWorldInfoDialog::moveControls() {
 
 }
 
-bool EditWorldInfoDialog::saveData() {
+///----------------------------------------------------------------------------
+/// trySaveData - Confirm data is valid, and if it is save it. This function
+/// should not be called directly and instead trySave should be called instead.
+/// @return true if the data was valid, false if it was not.
+///----------------------------------------------------------------------------
+
+bool EditWorldInfoDialog::trySaveData() {
     // TODO: Write function
     return true;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// caclculateCotentWidth - Calculates how wide the content of the window
+/// needs to be. TODO: Should this add the Window margin as well?
+/// @return a LONG integer containing the width of the content.
+///----------------------------------------------------------------------------
+
+LONG EditWorldInfoDialog::caclculateWindowWidth() {
+
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
+
+    LONG contentWidth = 0;
+
+    // The Width will be the size of the widest control, in this case, it will be
+    // one of the labels, so we will loop through that.
+
+    for(int i = 0; i < 2; ++i) {
+        contentWidth = std::max(windowMetrics.CalculateStringWidth(
+                                lblProperties[i].GetWindowTextW().c_str()), contentWidth);
+    }
+
+    for(int i = 0; i < 5; ++i) {
+        contentWidth = std::max(windowMetrics.CalculateStringWidth(
+                                lblAttributes[i].GetWindowTextW().c_str()), contentWidth);
+    }
+
+    contentWidth += CS.XGROUPBOX_MARGIN * 2;
+    contentWidth = std::max(contentWidth, static_cast<LONG>((CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3)));
+    
+    return contentWidth;
 }

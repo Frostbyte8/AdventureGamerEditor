@@ -76,7 +76,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the Edit World Info Dialog is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditWorldInfoDialog(const bool& wasCanceled) = 0;
+        virtual void finishedEditWorldInfoDialog() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the edit tile description

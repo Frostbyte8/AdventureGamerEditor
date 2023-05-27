@@ -29,6 +29,46 @@ void EditDialogBase::changesSaved() {
 }
 
 ///----------------------------------------------------------------------------
+/// dialogButtonPressed - do default processing when Ok, Cancel, or Apply are
+/// pressed.
+/// @param an integer that contains IDOK, IDCANCEL, or DefControlIDs::IDAPPLY
+///----------------------------------------------------------------------------
+
+void EditDialogBase::dialogButtonPressed(const int& which) {
+
+    switch(which) {
+
+        case IDOK:
+            if(trySave()) {
+                optionChosen = IDOK;
+                Close();
+            }
+            break;
+
+        case IDCANCEL:
+            optionChosen = IDCANCEL;
+            Close();
+            break;
+
+        case DefControlIDs::IDAPPLY:
+            trySave();
+            // IDCLOSE is the default action, since
+            // apply doesn't close the window, we'll
+            // just set the option back to the default
+            optionChosen = IDCLOSE;
+            break;
+
+        #ifdef _DEBUG
+        default:
+            MessageBox(L"Warning: Invalid dialog button value was supplied.", L"Invalid Button", MB_OK | MB_ICONWARNING);
+            break;
+        #endif // _DEBUG
+
+    }
+
+}
+
+///----------------------------------------------------------------------------
 /// endModal - Enables the parent window and closes the dialog window.
 ///----------------------------------------------------------------------------
 
@@ -76,7 +116,7 @@ void EditDialogBase::madeChange() {
 
 bool EditDialogBase::tryClose() {
     
-    if(optionChosen == IDCLOSE) {
+    if(optionChosen != IDCANCEL) {
 
         if(changeMade) {
             LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -86,8 +126,12 @@ bool EditDialogBase::tryClose() {
                                                 true);
             
             if(retVal == GenericInterfaceResponses::Yes) {
-                optionChosen = IDOK; // We will now act as if the use pressed the OK button.
-                return saveData();
+                 // We will now act as if the use pressed the OK button.
+
+                if(!trySave()) {
+                    return false;
+                }
+
             }
             else if(retVal == GenericInterfaceResponses::No) {
                 // If they select no, we'll simplly act as if they had
@@ -105,6 +149,23 @@ bool EditDialogBase::tryClose() {
 
     // The user has made their choice.
     return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// trySave - Attempt to save the data up to this point.
+/// @return true if saving was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool EditDialogBase::trySave() {
+
+    if(!trySaveData()) {
+        return false;
+    }
+
+    changesSaved();
+    return true;
+
 }
 
 //=============================================================================

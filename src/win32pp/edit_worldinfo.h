@@ -9,29 +9,33 @@
 
 class EditWorldInfoDialog : public EditDialogBase {
 
-    
     public:
-        EditWorldInfoDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, HWND inParentHandle);
 
+        // Constructors
+        EditWorldInfoDialog(MainWindowInterface* inMainWindow, HWND inParentHandle);
+
+        // Accessors
+        GameInfo getGameInfo();
+
+        // Mutators
         void setWorldInfo(const GameInfo& gameInfo);
-        void calculatePageWidth();
-
+        
     protected:
 
         virtual void OnClose(); 
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual bool saveData();
+        void moveControls();
+        virtual bool trySaveData();
+
+        //virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
 
-        void moveControls();
-
-        // TODO: Random attributes
-
-        const GameMap*          gameMap;
-
+        LONG caclculateWindowWidth();
+        void insertData();
+      
         CButton         grpWorldInfo;
         CStatic         lblProperties[2]; // Name and Money
         CAnsiEdit       txtProperties[2];
@@ -41,11 +45,12 @@ class EditWorldInfoDialog : public EditDialogBase {
         CEdit           txtRandomAttributes[5];
         CSpinButton     spnRandomAttributes[5];
         CButton         btnDialog[3];
+        
+        // TODO: At some point, gameInfo needs to be passed in
+        
+        const GameMap*          gameMap;
+        GameInfo                newGameInfo;
 
-        LONG            pageWidth;
-        int             optionChosen; 
-
-        // TODO: Player Start X/Y, 
 };
 
 #endif //__EDIT_WORLDINFO_H__

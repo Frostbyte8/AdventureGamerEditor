@@ -7,21 +7,39 @@
 #include "../interface/mainwindow_interface.h"
 #include "../interface/dialogbase_interface.h"
 
+namespace DefControlIDs {
+    const WORD IDAPPLY = 1001;
+}
+
 class EditDialogBase : public CWnd, public DialogBaseInterface {
     
     public:
 
-        bool goModal();
-        bool tryClose();
-        void endModal();
-        void madeChange();
-        void changesSaved();
+        // Accessors        
         const bool hasSavedChanges() const { return areSavedChanges; }
         const WindowMetrics& getWindowMetrics() const { return windowMetrics; }
+        const int getOptionChosen() const { return optionChosen; }
+        
+        // Public Functions
+        bool goModal();         // Dialog is now modal
+        void endModal();        // Dialog is no longer modal
+        
+        void dialogButtonPressed(const int& which); 
 
-        virtual void moveControls() { return; }
+        void changesSaved();    // Indicate changes were saved
+        bool tryClose();        // Attempt to close the window
+        bool trySave();         // Attempt to Save Data
+        void madeChange();      // Indicate a change was made
+
+        // Interface functions
+       
         virtual int askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle, bool allowCancel);
         virtual void displayErrorMessage(const std::string& inMessage, const std::string& inTitle);
+        
+        // Pure virtual functions
+        virtual void moveControls() { return; } // TODO: Make PVF 
+        virtual bool trySaveData() { return true; } // TODO: Make PVF
+        
 
     protected:
 

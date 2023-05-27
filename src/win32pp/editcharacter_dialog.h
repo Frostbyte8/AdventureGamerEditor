@@ -20,52 +20,42 @@ class EditCharacterDialog : public EditDialogBase {
 
     public:
 
+        // Constructors
         EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
                             HWND inParentHandle, bool inIsEditCharacter);
 
+        // Accessors
         GameCharacter::Builder getAlteredCharacter();
 
-        void SetCharacterToEdit(const GameCharacter& gameCharacter) {
-
-            if(descriptionsTab) {
-
-                newCharacter = GameCharacter::Builder(gameCharacter);
-                descriptionsTab->populateFields(gameCharacter);
-                qualitiesTab->populateFields(gameCharacter);
-                attributesTab->populateFields(gameCharacter);
-                miscTab->populateFields(gameCharacter);
-            }
-
-        }
+        // Mutators
+        void setCharacterToEdit(const GameCharacter& gameCharacter);
 
     protected:
 
-        virtual void OnClose(); 
+        virtual void OnClose();
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
-        virtual bool saveData();
-
         virtual void moveControls();
+        virtual bool trySaveData();
+
+        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);        
 
     private:
 
         LONG    findLongestTab(const bool getWidth);
-        
-        
-        const GameMap*                  gameMap;
-        const bool                      isEditCharacter;
-
-        GameCharacter::Builder          newCharacter;
-
+        //LRESULT onSize(WPARAM& wParam, LPARAM& lParam);
+               
         EditCharacterDescriptionsTab*   descriptionsTab;
         EditCharacterQualitiesTab*      qualitiesTab;
         EditCharacterAttributesTab*     attributesTab;
         EditCharacterMiscTab*           miscTab;
+        CButton                         btnDialogControl[3];
         CTab                            tabControl;
 
-        CButton                         btnDialogControl[3];
+        const GameMap*                  gameMap;
+        const bool                      isEditCharacter;
+        GameCharacter::Builder          newCharacter;
         
 };
 

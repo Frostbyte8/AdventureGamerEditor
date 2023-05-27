@@ -113,6 +113,7 @@ void MainWindowFrame::CreateMenuBar() {
 
     ADV_ADDMENUITEM(LanguageConstants::LongDescMenuItem, editMenu);
     ADV_ADDMENUITEM(LanguageConstants::SummaryStoryMenuItem, editMenu);
+    ADV_ADDMENUITEM(LanguageConstants::EditWorldInfoMenuItem, editMenu);
 
     caption = AtoW(languageMapper.get(LanguageConstants::FileMenuItem).c_str(), CP_UTF8);
 
@@ -204,8 +205,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::OnInitialUpdate() {
-    
-    activeWindowHandle = *this; 
+    activeWindowHandle = GetHwnd(); 
 }
 
 ///----------------------------------------------------------------------------
@@ -244,8 +244,10 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     switch (LOWORD(wParam)) {
 
         // TODO: On New and Open need to be interface functions
+        // TODO: Don't use langauge constants for this.
         case LanguageConstants::NewMenuItem: return OnFileNew();
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
+        case LanguageConstants::EditWorldInfoMenuItem: onEditWorldInfo(); break;
         case LanguageConstants::SummaryStoryMenuItem: onEditStory(); break;
         case LanguageConstants::LongDescMenuItem: onEditTileDescription(); break;
         default: return FALSE;
@@ -325,7 +327,7 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 
 void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
-    if(editObjectDialog || activeWindowHandle != *this) {
+    if(editObjectDialog || activeWindowHandle != GetHwnd()) {
         return;
     }
 
@@ -340,8 +342,8 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
         }
     }
 
-    editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), *this, editingObject);
-    editObjectDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
+    editObjectDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editObjectDialog->IsWindow()) {
         // TODO: Handle error.
@@ -357,20 +359,20 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
     if(alterType == AlterType::Add) {
         GameObject::Builder bd;
-        editObjectDialog->SetObjectToEdit(bd.build());
+        editObjectDialog->setObjectToEdit(bd.build());
         EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
     }
     else if (alterType == AlterType::Edit) {
         // TODO: make sure the character exists before doing this.
         const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
         GameObject::Builder objectToEdit(gameObject);
-        editObjectDialog->SetObjectToEdit(objectToEdit.build());
+        editObjectDialog->setObjectToEdit(objectToEdit.build());
         caption = LM_toUTF8(LanguageConstants::EditObjectDialogCaption, langMap);
         caption += gameObject.getName().c_str();
         editObjectDialog->SetWindowText(caption); 
     }
 
-    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editObjectDialog));
+    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editObjectDialog));
     editObjectDialog->ShowWindow(SW_SHOW);
 
 }
@@ -380,7 +382,7 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     // Make sure that the dialog isn't already running, or that
     // another modal window isn't already running.
 
-    if(editCharacterDialog || activeWindowHandle != *this) {
+    if(editCharacterDialog || activeWindowHandle != GetHwnd()) {
         return;
     }
 
@@ -395,8 +397,8 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
         }
     }
 
-    editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), *this, editingChar);
-    editCharacterDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingChar);
+    editCharacterDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editCharacterDialog->IsWindow()) {
         // TODO: Handle error.
@@ -414,7 +416,7 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
     if(alterType == AlterType::Add) {
         GameCharacter::Builder bd;
-        editCharacterDialog->SetCharacterToEdit(bd.build());
+        editCharacterDialog->setCharacterToEdit(bd.build());
         EOD_SetWindowText(LanguageConstants::AddCharacterDialogCaption, *editCharacterDialog, caption, langMap);
     }
     else if(alterType == AlterType::Edit) {
@@ -423,11 +425,11 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
         caption = LM_toUTF8(LanguageConstants::EditCharacterDialogCaption, langMap);
         caption += gameCharacter.getName().c_str();
         GameCharacter::Builder charToEdit(gameCharacter);
-        editCharacterDialog->SetCharacterToEdit(charToEdit.build());
+        editCharacterDialog->setCharacterToEdit(charToEdit.build());
         editCharacterDialog->SetWindowText(caption); 
     }
     
-    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
+    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
     editCharacterDialog->ShowWindow(SW_SHOW);
 
 }
@@ -455,7 +457,7 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType) {
 
     delete editCharacterDialog;
     editCharacterDialog = NULL;
-    activeWindowHandle = *this;
+    activeWindowHandle = GetHwnd();
 
 }
 
@@ -482,7 +484,7 @@ void MainWindowFrame::finishedEditObjectDialog(const int& alterType) {
 
     delete editObjectDialog;
     editObjectDialog = NULL;
-    activeWindowHandle = *this;
+    activeWindowHandle = GetHwnd();
 
 }
 
@@ -491,12 +493,12 @@ void MainWindowFrame::onEditWorldInfo() {
     // Make sure that the dialog isn't already running, or that
     // another modal window isn't already running.
 
-    if(editWorldInfoDialog || activeWindowHandle != *this) {
+    if(editWorldInfoDialog || activeWindowHandle != GetHwnd()) {
         return;
     }
     
-    editWorldInfoDialog = new EditWorldInfoDialog(this, gameWorldController->getGameMap(), *this);
-    editWorldInfoDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editWorldInfoDialog = new EditWorldInfoDialog(this, GetHwnd());
+    editWorldInfoDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editWorldInfoDialog->IsWindow()) {
         // TODO: Handle error.
@@ -508,35 +510,37 @@ void MainWindowFrame::onEditWorldInfo() {
     activeWindowHandle = editWorldInfoDialog->GetHwnd();
     editWorldInfoDialog->goModal();
 
-    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
+    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
     editWorldInfoDialog->ShowWindow(SW_SHOW);
 }
 
-void MainWindowFrame::finishedEditWorldInfoDialog(const bool& wasCanceled) {
+void MainWindowFrame::finishedEditWorldInfoDialog() {
 
     if(!editWorldInfoDialog) {
         return;
     }
 
+    /*
     if(!wasCanceled) {
         // Update Information
     }
+    */
 
     delete editWorldInfoDialog;
     editWorldInfoDialog = NULL;
-    activeWindowHandle = *this;
+    activeWindowHandle = GetHwnd();
 
 }
 
 
 void MainWindowFrame::onEditStory() {
 
-    if(editStoryDialog || activeWindowHandle != *this) {
+    if(editStoryDialog || activeWindowHandle != GetHwnd()) {
         return;
     }
 
-    editStoryDialog = new EditStoryDialog(this, *this);
-    editStoryDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editStoryDialog = new EditStoryDialog(this, GetHwnd());
+    editStoryDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editStoryDialog->IsWindow()) {
         // TODO: Handle error;
@@ -548,7 +552,7 @@ void MainWindowFrame::onEditStory() {
     activeWindowHandle = editStoryDialog->GetHwnd();
     editStoryDialog->goModal();
 
-    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editStoryDialog));
+    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editStoryDialog));
     editStoryDialog->ShowWindow(SW_SHOW);
     
 }
@@ -567,19 +571,19 @@ void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled, const boo
     if(!pressedApply) {
         delete editStoryDialog;
         editStoryDialog = NULL;
-        activeWindowHandle = *this;
+        activeWindowHandle = GetHwnd();
     }
 
 }
 
 void MainWindowFrame::onEditTileDescription() {
 
-    if(editTileDescriptionDialog || activeWindowHandle != *this) {
+    if(editTileDescriptionDialog || activeWindowHandle != GetHwnd()) {
         return;
     }
 
-    editTileDescriptionDialog = new EditTileDescriptionDialog(this, *this);
-    editTileDescriptionDialog->Create(*this, WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editTileDescriptionDialog = new EditTileDescriptionDialog(this, GetHwnd());
+    editTileDescriptionDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(editTileDescriptionDialog->IsWindow()) {
         // TODO: Handle Error
@@ -592,7 +596,7 @@ void MainWindowFrame::onEditTileDescription() {
     activeWindowHandle = editTileDescriptionDialog->GetHwnd();
     editTileDescriptionDialog->goModal();
 
-    centerWindowOnCurrentMonitor(MonitorFromWindow(*this, 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
+    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
     editTileDescriptionDialog->ShowWindow(SW_SHOW);
 }
 
@@ -610,7 +614,7 @@ void MainWindowFrame::finishedEditTileDescriptionDialog(const bool& wasCanceled,
         // TODO: Safe to do this? Technically close is still running.
         delete editTileDescriptionDialog;
         editTileDescriptionDialog = NULL;
-        activeWindowHandle = *this;
+        activeWindowHandle = GetHwnd();
     }
 
 }

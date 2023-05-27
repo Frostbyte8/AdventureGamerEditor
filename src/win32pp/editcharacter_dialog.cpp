@@ -1,10 +1,6 @@
 #include "editcharacter_dialog.h"
 #include "shared_functions.h"
 
-namespace ControlIDs {
-    const WORD ID_APPLY     = 1001;
-}
-
 //=============================================================================
 // Constructors
 //=============================================================================
@@ -13,6 +9,38 @@ EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, cons
 HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inParentHandle),
 gameMap(inGameMap), descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL),
 isEditCharacter(inEditCharacter) {
+}
+
+//=============================================================================
+// Accessors
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// getAlteredCharacter - Get a copy of the object that is being built by this
+/// dialog window.
+/// @returns a Copy of a GameCharacter::Builder object.
+///----------------------------------------------------------------------------
+
+GameCharacter::Builder EditCharacterDialog::getAlteredCharacter() {
+    return newCharacter;
+}
+
+//=============================================================================
+// Mutators
+//=============================================================================
+
+void EditCharacterDialog::setCharacterToEdit(const GameCharacter& gameCharacter) {
+    
+    if(descriptionsTab) {
+
+        newCharacter = GameCharacter::Builder(gameCharacter);
+
+        descriptionsTab->populateFields(gameCharacter);
+        qualitiesTab->populateFields(gameCharacter);
+        attributesTab->populateFields(gameCharacter);
+        miscTab->populateFields(gameCharacter);
+
+    }
 }
 
 //=============================================================================
@@ -29,18 +57,8 @@ void EditCharacterDialog::OnClose() {
     if(!tryClose()) {
         return;
     }
-
-    if(optionChosen == IDOK) {
-        
-        if(!saveData()) {
-            // Data did not save, so don't close the dialog.
-            return;
-        }
-
-    }
     
     endModal();
-
  
     // Inform the main window we are ready to be deleted
     const int alterType = isEditCharacter ? AlterType::Edit : AlterType::Add;  
@@ -59,33 +77,16 @@ BOOL EditCharacterDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD notifyCode = HIWORD(wParam);
 
     if(lParam && notifyCode == BN_CLICKED) {
-
-        switch(ctrlID) {
-
-            case IDOK:
-                if(saveData()) {
-                    optionChosen = IDOK;
-                    Close();
-                }
-                break;
-
-            case IDCANCEL:
-                optionChosen = IDCANCEL;
-                Close();
-                break;
-
-            case ControlIDs::ID_APPLY:
-                saveData();
-                optionChosen = IDCLOSE;
-                break;
-
-            default:
-                return FALSE;
+        if(ctrlID == IDOK || ctrlID == IDCANCEL || 
+            ctrlID == DefControlIDs::IDAPPLY) {
+            
+            dialogButtonPressed(ctrlID);
+            return TRUE;
 
         }
     }
 
-    return TRUE;
+    return FALSE;
 
 }
 
@@ -143,7 +144,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     // If we have an apply button, do that here too.
 
     if(isEditCharacter) {
-        btnDialogControl[2].SetDlgCtrlID(ControlIDs::ID_APPLY);
+        btnDialogControl[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
         EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
                           btnDialogControl[2], caption, langMap);
     }
@@ -179,81 +180,8 @@ LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 //=============================================================================
-// Public Functions
+// Protected Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// getAlteredCharacter - Get a copy of the object that is being built by this
-/// dialog window.
-/// @returns a Copy of a GameObject::Builder object.
-///----------------------------------------------------------------------------
-
-GameCharacter::Builder EditCharacterDialog::getAlteredCharacter() {
-
-    return newCharacter;
-}
-
-//=============================================================================
-// Private Functions
-//=============================================================================
-
-///----------------------------------------------------------------------------
-/// findLongestTab - Finds the Widest/Tallest tab, and returns how long it is.
-/// @param if true, find the width, if false, find the height
-/// @returns the length of the tab in the given direction
-///----------------------------------------------------------------------------
-
-LONG EditCharacterDialog::findLongestTab(const bool getWidth) {
-
-    LONG longestTab = 0;
-    std::vector<LONG> pageDims;
-
-    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
-
-    if(getWidth) {
-
-        // TODO: Window metrics isn't needed?
-        descriptionsTab->calculatePageWidth(windowMetrics);
-        qualitiesTab->calculatePageWidth(windowMetrics);
-        attributesTab->calculatePageWidth(windowMetrics);
-        miscTab->calculatePageWidth(windowMetrics);
-
-        pageDims.push_back(descriptionsTab->getPageWidth());
-        pageDims.push_back(qualitiesTab->getPageWidth());
-        pageDims.push_back(attributesTab->getPageWidth());
-        pageDims.push_back(miscTab->getPageWidth());
-    }
-    else {
-
-        // For height, it is calculated after all the controls are moved
-        // into place.
-
-        pageDims.push_back(descriptionsTab->getPageHeight());
-        pageDims.push_back(qualitiesTab->getPageHeight());
-        pageDims.push_back(attributesTab->getPageHeight());
-        pageDims.push_back(miscTab->getPageHeight());
-    }
-
-    const size_t numTabs = pageDims.size();
-
-    for(size_t i = 0; i < numTabs; ++i) {
-        longestTab = std::max(pageDims[i], longestTab);
-    }
-
-    // Apply margins.
-
-    if(getWidth) {
-
-        longestTab += CS.XWINDOW_MARGIN * 2;
-
-    }
-    else {
-        longestTab += CS.YWINDOW_MARGIN * 2;
-    }
-
-    return longestTab;
-}
-
 
 ///----------------------------------------------------------------------------
 /// moveControls 
@@ -337,12 +265,12 @@ void EditCharacterDialog::moveControls() {
 }
 
 ///----------------------------------------------------------------------------
-/// saveData - Confirm that data in the dialog (in this case, each tab page)
+/// trySaveData - Confirm that data in the dialog (in this case, each tab page)
 /// is valid, and if it is, save it.
 /// @return true if the data was valid, false if it was not.
 ///----------------------------------------------------------------------------
 
-bool EditCharacterDialog::saveData() {
+bool EditCharacterDialog::trySaveData() {
 
     std::vector<ECTabViewBase*> tabPages;
 
@@ -385,4 +313,65 @@ bool EditCharacterDialog::saveData() {
     changesSaved();
 
     return true;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// findLongestTab - Finds the Widest/Tallest tab, and returns how long it is.
+/// @param if true, find the width, if false, find the height
+/// @returns the length of the tab in the given direction
+///----------------------------------------------------------------------------
+
+LONG EditCharacterDialog::findLongestTab(const bool getWidth) {
+
+    LONG longestTab = 0;
+    std::vector<LONG> pageDims;
+
+    const WindowMetrics::ControlSpacing CS = windowMetrics.GetControlSpacing();
+
+    if(getWidth) {
+
+        // TODO: Window metrics isn't needed?
+        descriptionsTab->calculatePageWidth(windowMetrics);
+        qualitiesTab->calculatePageWidth(windowMetrics);
+        attributesTab->calculatePageWidth(windowMetrics);
+        miscTab->calculatePageWidth(windowMetrics);
+
+        pageDims.push_back(descriptionsTab->getPageWidth());
+        pageDims.push_back(qualitiesTab->getPageWidth());
+        pageDims.push_back(attributesTab->getPageWidth());
+        pageDims.push_back(miscTab->getPageWidth());
+    }
+    else {
+
+        // For height, it is calculated after all the controls are moved
+        // into place.
+
+        pageDims.push_back(descriptionsTab->getPageHeight());
+        pageDims.push_back(qualitiesTab->getPageHeight());
+        pageDims.push_back(attributesTab->getPageHeight());
+        pageDims.push_back(miscTab->getPageHeight());
+    }
+
+    const size_t numTabs = pageDims.size();
+
+    for(size_t i = 0; i < numTabs; ++i) {
+        longestTab = std::max(pageDims[i], longestTab);
+    }
+
+    // Apply margins.
+
+    if(getWidth) {
+
+        longestTab += CS.XWINDOW_MARGIN * 2;
+
+    }
+    else {
+        longestTab += CS.YWINDOW_MARGIN * 2;
+    }
+
+    return longestTab;
 }

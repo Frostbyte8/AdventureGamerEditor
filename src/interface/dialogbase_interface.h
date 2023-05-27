@@ -30,7 +30,7 @@ class DialogBaseInterface {
         /// Sent when the data of the dialog needs to be saved.
         /// @return true if the save was successful, false if it was not.
         ///--------------------------------------------------------------------
-        virtual bool saveData() = 0;
+        virtual bool trySaveData() = 0;
 };
 
 #endif // __DIALOGBASE_INTERFACE_H__

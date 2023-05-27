@@ -21,12 +21,11 @@ class EditStoryDialog : public EditDialogBase {
         virtual int OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        bool saveData();
+        
+        virtual bool saveData();
+        virtual void moveControls();
 
     private:
-
-        void moveControls();
-        
 
         std::string     storyText;
         std::string     summaryText;

@@ -20,21 +20,15 @@ class EditObjectDialog : public EditDialogBase {
 
     public:
 
+        // Constructors
         EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
                             HWND inParentHandle, bool inEditObject);
 
+        // Accessors
         GameObject::Builder getAlteredObject();
 
-        void SetObjectToEdit(const GameObject& gameObject) {
-
-            if(descriptionsTab) {
-                newObject = GameObject::Builder(gameObject);
-                descriptionsTab->populateFields(gameObject, *gameMap);
-                qualitiesTab->populateFields(gameObject, *gameMap);
-                effectsTab->populateFields(gameObject, *gameMap);
-                locationsTab->populateFields(gameObject, *gameMap);
-            }
-        }
+        // Mutators
+        void setObjectToEdit(const GameObject& gameObject);
 
     protected:
 
@@ -42,32 +36,27 @@ class EditObjectDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
-        virtual bool saveData();
         virtual void moveControls();
+        virtual bool trySaveData();
+        
+        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
 
-        LONG    findLongestTab(const bool getWidth);
-        LRESULT OnSize(WPARAM& wParam, LPARAM& lParam);
-
-        const GameMap*                  gameMap;
-
-        GameObject::Builder             newObject;
+        LONG findLongestTab(const bool getWidth);
+        LRESULT onSize(WPARAM& wParam, LPARAM& lParam);
 
         EditObjectDescriptionsTab*      descriptionsTab;
         EditObjectQualitiesTab*         qualitiesTab;
         EditObjectEffectsTab*           effectsTab;
         EditObjectLocationsTab*         locationsTab;
-
-        const bool                      isEditObject;
-
         CButton                         btnDialogControl[3];
         CTab                            tabControl;
 
+        const GameMap*                  gameMap;
+        const bool                      isEditObject;
+        GameObject::Builder             newObject;
 
 };
-
-
 
 #endif // __EDITOBJECT_DIALOG_H__

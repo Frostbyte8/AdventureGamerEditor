@@ -32,7 +32,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedEditObjectDialog(const int& alterType);
         virtual void finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply);
         virtual void finishedEditTileDescriptionDialog(const bool& wasCanceled, const bool& pressedApply);
-        virtual void finishedEditWorldInfoDialog(const bool& wasCanceled);
+        virtual void finishedEditWorldInfoDialog();
                 
         virtual void onAlterCharacter(const int& alterType, const size_t& index);
         virtual void onAlterObject(const int& alterType, const size_t& index);
