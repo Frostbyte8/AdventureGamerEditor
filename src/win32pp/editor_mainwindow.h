@@ -28,10 +28,10 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
-        virtual void finishedEditCharacterDialog(const int& alterType);
-        virtual void finishedEditObjectDialog(const int& alterType);
-        virtual void finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply);
-        virtual void finishedEditTileDescriptionDialog(const bool& wasCanceled, const bool& pressedApply);
+        virtual void finishedEditCharacterDialog();
+        virtual void finishedEditObjectDialog();
+        virtual void finishedEditStoryDialog();
+        virtual void finishedEditTileDescriptionDialog();
         virtual void finishedEditWorldInfoDialog();
                 
         virtual void onAlterCharacter(const int& alterType, const size_t& index);

@@ -10,22 +10,29 @@
 class EditStoryDialog : public EditDialogBase {
 
     public:
+        
+        // Constructor
         EditStoryDialog(MainWindowInterface* inMainWindow, HWND inParentHandle);
-        void setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText);
 
+        // Accessors
         const std::string getStory();
         const std::string getSummary();
 
+        // Mutators
+        void setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText);
+
     protected:
+
         virtual void OnClose(); 
         virtual int OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         
-        virtual bool saveData();
-        virtual void moveControls();
+        virtual bool trySaveData();
 
     private:
+
+        void moveControls();
 
         std::string     storyText;
         std::string     summaryText;

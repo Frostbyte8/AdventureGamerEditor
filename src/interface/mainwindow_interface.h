@@ -61,17 +61,17 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditCharacterDialog(const int& alterType) = 0;
+        virtual void finishedEditCharacterDialog() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Object Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditObjectDialog(const int& alterType) = 0;
+        virtual void finishedEditObjectDialog() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Story Dialog Window is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply) = 0;
+        virtual void finishedEditStoryDialog() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit World Info Dialog is finished
@@ -82,7 +82,7 @@ class MainWindowInterface {
         /// Sent when window is being told that the edit tile description
         /// dialog is closed.
         ///--------------------------------------------------------------------
-        virtual void finishedEditTileDescriptionDialog(const bool& wasCanceled, const bool& pressedApply) = 0;
+        virtual void finishedEditTileDescriptionDialog() = 0;
 
 };
 

@@ -26,6 +26,7 @@ class EditCharacterDialog : public EditDialogBase {
 
         // Accessors
         GameCharacter::Builder getAlteredCharacter();
+        const bool isEditingCharacter() const;
 
         // Mutators
         void setCharacterToEdit(const GameCharacter& gameCharacter);

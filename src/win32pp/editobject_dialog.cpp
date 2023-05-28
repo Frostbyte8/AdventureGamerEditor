@@ -18,13 +18,23 @@ isEditObject(inEditObject) {
 ///----------------------------------------------------------------------------
 /// getAlteredObject - Get a copy of the object that is being built by this
 /// dialog window.
-/// @returns a Copy of a GameObject::Builder object.
+/// @return a Copy of a GameObject::Builder object.
 ///----------------------------------------------------------------------------
 
 GameObject::Builder EditObjectDialog::getAlteredObject() {
     return newObject;
 }
 
+///----------------------------------------------------------------------------
+/// isEditingObject - Returns whether this dialog is editing an object that
+/// already exists, or is creating a new one.
+/// @return true if it is editing an object, or false if it is creating a new
+/// one.
+///----------------------------------------------------------------------------
+
+const bool EditObjectDialog::isEditingObject() const {
+    return isEditObject;
+}
 
 //=============================================================================
 // Mutators
@@ -67,11 +77,7 @@ void EditObjectDialog::OnClose() {
     // Then we'll end the dialog and inform the parent window
     // that we are done.
     
-    endModal();
- 
-    // Inform the main window we are ready to be deleted
-    const int alterType = isEditObject ? AlterType::Edit : AlterType::Add;  
-    mainWindow->finishedEditObjectDialog(alterType);
+    endModal(&MainWindowInterface::finishedEditObjectDialog);
 
 }
 

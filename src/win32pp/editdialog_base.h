@@ -15,6 +15,7 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
     
     public:
 
+       
         // Accessors        
         const bool hasSavedChanges() const { return areSavedChanges; }
         const WindowMetrics& getWindowMetrics() const { return windowMetrics; }
@@ -22,7 +23,7 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         
         // Public Functions
         bool goModal();         // Dialog is now modal
-        void endModal();        // Dialog is no longer modal
+        void endModal(void (MainWindowInterface::*finishFunction)() = NULL);        // Dialog is no longer modal
         
         void dialogButtonPressed(const int& which); 
 

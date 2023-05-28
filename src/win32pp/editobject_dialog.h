@@ -26,6 +26,7 @@ class EditObjectDialog : public EditDialogBase {
 
         // Accessors
         GameObject::Builder getAlteredObject();
+        const bool isEditingObject() const;
 
         // Mutators
         void setObjectToEdit(const GameObject& gameObject);

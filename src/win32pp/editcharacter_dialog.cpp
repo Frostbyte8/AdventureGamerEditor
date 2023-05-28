@@ -18,11 +18,21 @@ isEditCharacter(inEditCharacter) {
 ///----------------------------------------------------------------------------
 /// getAlteredCharacter - Get a copy of the object that is being built by this
 /// dialog window.
-/// @returns a Copy of a GameCharacter::Builder object.
+/// @return a Copy of a GameCharacter::Builder object.
 ///----------------------------------------------------------------------------
 
 GameCharacter::Builder EditCharacterDialog::getAlteredCharacter() {
     return newCharacter;
+}
+
+///----------------------------------------------------------------------------
+/// isEditingCharacter - Checks if the dialog is editing a character that
+/// exists.
+/// @return try if it is editing a character, false if it's creating one
+///----------------------------------------------------------------------------
+
+const bool EditCharacterDialog::isEditingCharacter() const {
+    return isEditCharacter;
 }
 
 //=============================================================================
@@ -58,11 +68,7 @@ void EditCharacterDialog::OnClose() {
         return;
     }
     
-    endModal();
- 
-    // Inform the main window we are ready to be deleted
-    const int alterType = isEditCharacter ? AlterType::Edit : AlterType::Add;  
-    mainWindow->finishedEditCharacterDialog(alterType);
+    endModal(&MainWindowInterface::finishedEditCharacterDialog);
 
 }
 
@@ -310,9 +316,8 @@ bool EditCharacterDialog::trySaveData() {
     attributesTab->insertData(newCharacter);
     miscTab->insertData(newCharacter);
 
-    changesSaved();
-
     return true;
+
 }
 
 //=============================================================================

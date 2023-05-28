@@ -7,9 +7,46 @@
 //=============================================================================
 
 EditTileDescriptionDialog::EditTileDescriptionDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
-EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE) {
+EditDialogBase(inMainWindow, inParentHandle) {
 }
 
+//=============================================================================
+// Accessors
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// getTileName - Returns a copy of the tile's new name.
+///----------------------------------------------------------------------------
+
+const std::string EditTileDescriptionDialog::getTileName() const {
+    return tileName;
+}
+
+///----------------------------------------------------------------------------
+/// getTileDescription - Returns a copy of the tile's new description.
+///----------------------------------------------------------------------------
+
+const std::string EditTileDescriptionDialog::getTileDescription() const {
+    return tileDescription;
+}
+
+//=============================================================================
+// Mutators
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// setTileDescription - Give the dialog a copy of the the name and description
+/// the tile already has set.
+/// @param a constant reference to the tile's name.
+/// @param a constant reference to the tile's description.
+///----------------------------------------------------------------------------
+
+void EditTileDescriptionDialog::setTileDescription(const std::string& inName, const std::string& inDescription) {
+    if(txtTileName.IsWindow()) {
+        txtTileName.SetWindowText(AtoW(inName.c_str()));
+        txtTileDescription.SetWindowText(AtoW(inDescription.c_str()));
+    }
+}
 
 //=============================================================================
 // Win32++ Functions
@@ -21,10 +58,16 @@ EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE) {
 ///----------------------------------------------------------------------------
 
 void EditTileDescriptionDialog::OnClose() {
-    const bool wasCanceled = optionChosen != IDOK ? true : false;   
-    ::EnableWindow(parentWindow, TRUE);
-    CWnd::OnClose();
-    mainWindow->finishedEditTileDescriptionDialog(wasCanceled, false);
+    
+    // First we'll see if we can actually close the dialog.
+    if(!tryClose()) {
+        return;
+    }
+
+    // Then we'll end the dialog and inform the parent window
+    // that we are done.
+    
+    endModal(&MainWindowInterface::finishedEditTileDescriptionDialog);
 
 }
 
@@ -70,6 +113,9 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     }
 
     btnDialogButtons[0].SetStyle(btnDialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
+    btnDialogButtons[0].SetDlgCtrlID(IDOK);
+    btnDialogButtons[1].SetDlgCtrlID(IDCANCEL);
+    btnDialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -94,19 +140,29 @@ void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
+//=============================================================================
+// Protected Functions
+//=============================================================================
 
-void EditTileDescriptionDialog::setTileDescription(const std::string& inName, const std::string& inDescription) {
+///----------------------------------------------------------------------------
+/// trySaveData - Confirm that data in the dialog (in this case, each tab page)
+/// is valid, and if it is, save it. This function should not be called
+/// directly.
+/// @return true if the data was valid, false if it was not.
+///----------------------------------------------------------------------------
 
-    if(txtTileName.IsWindow()) {
-        txtTileName.SetWindowText(AtoW(inName.c_str()));
-        txtTileDescription.SetWindowText(AtoW(inDescription.c_str()));
-    }
-
+bool EditTileDescriptionDialog::trySaveData() {
+    // TODO: write function
+    return true;
 }
 
 //=============================================================================
 // Private Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// moveControls - Move the controls into their proper positions
+///----------------------------------------------------------------------------
 
 void EditTileDescriptionDialog::moveControls() {
 
@@ -146,9 +202,4 @@ void EditTileDescriptionDialog::moveControls() {
     SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
                  SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
-}
-
-bool EditTileDescriptionDialog::saveData() {
-    // TODO: write function
-    return true;
 }

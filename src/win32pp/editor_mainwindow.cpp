@@ -434,11 +434,13 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
 }
 
-void MainWindowFrame::finishedEditCharacterDialog(const int& alterType) {
+void MainWindowFrame::finishedEditCharacterDialog() {
 
     if(!editCharacterDialog) {
         return;
     }
+
+    const int alterType = editCharacterDialog->isEditingCharacter() ? AlterType::Add : AlterType::Edit;
 
     if(editCharacterDialog->hasSavedChanges() && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
    
@@ -461,11 +463,13 @@ void MainWindowFrame::finishedEditCharacterDialog(const int& alterType) {
 
 }
 
-void MainWindowFrame::finishedEditObjectDialog(const int& alterType) {
+void MainWindowFrame::finishedEditObjectDialog() {
 
     if(!editObjectDialog) {
         return;
     }
+
+    const int alterType = editObjectDialog->isEditingObject() ? AlterType::Edit : AlterType::Add; 
 
     if(editObjectDialog->hasSavedChanges() && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
 
@@ -557,22 +561,25 @@ void MainWindowFrame::onEditStory() {
     
 }
 
-void MainWindowFrame::finishedEditStoryDialog(const bool& wasCanceled, const bool& pressedApply) {
+void MainWindowFrame::finishedEditStoryDialog() {
 
     if(!editStoryDialog) {
         return;
     }
 
+    /*
     if(!wasCanceled) {
         gameWorldController->tryUpdateStoryAndSummary(editStoryDialog->getStory(),
                                                       editStoryDialog->getSummary()); 
     }
+    */
 
-    if(!pressedApply) {
+
+    //if(!pressedApply) {
         delete editStoryDialog;
         editStoryDialog = NULL;
         activeWindowHandle = GetHwnd();
-    }
+    //}
 
 }
 
@@ -600,21 +607,24 @@ void MainWindowFrame::onEditTileDescription() {
     editTileDescriptionDialog->ShowWindow(SW_SHOW);
 }
 
-void MainWindowFrame::finishedEditTileDescriptionDialog(const bool& wasCanceled, const bool& pressedApply) {
+void MainWindowFrame::finishedEditTileDescriptionDialog() {
     
     if(!editTileDescriptionDialog) {
         return;
     }
 
+    /*
     if(!wasCanceled) {
         gameWorldController->tryUpdateTileDescription(0, 0, "This is the Tile Name", "This is the long description");
     }
+    */
 
-    if(!pressedApply) {
-        // TODO: Safe to do this? Technically close is still running.
+    //if(!pressedApply) {
+
         delete editTileDescriptionDialog;
         editTileDescriptionDialog = NULL;
         activeWindowHandle = GetHwnd();
-    }
+
+    //}
 
 }

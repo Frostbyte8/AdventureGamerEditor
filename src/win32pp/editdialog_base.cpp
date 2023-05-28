@@ -72,13 +72,18 @@ void EditDialogBase::dialogButtonPressed(const int& which) {
 /// endModal - Enables the parent window and closes the dialog window.
 ///----------------------------------------------------------------------------
 
-void EditDialogBase::endModal() {
+void EditDialogBase::endModal(void (MainWindowInterface::*finishFunction)() ) {
 
     if(parentWindow != NULL) {
         ::EnableWindow(parentWindow, TRUE);
     }
 
     CWnd::OnClose();
+
+    // If a finish function has been set, use that to finish off the dialog.
+    if(finishFunction) {
+        (mainWindow->*finishFunction)();
+    }
 
 }
 

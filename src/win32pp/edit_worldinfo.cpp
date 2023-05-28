@@ -78,8 +78,7 @@ void EditWorldInfoDialog::OnClose() {
     // Then we'll end the dialog and inform the parent window
     // that we are done.
     
-    endModal();
-    mainWindow->finishedEditWorldInfoDialog();
+    endModal(&MainWindowInterface::finishedEditWorldInfoDialog);
 
 }
 

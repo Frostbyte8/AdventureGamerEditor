@@ -15,6 +15,47 @@ EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE), dialogCapti
 }
 
 //=============================================================================
+// Accessors
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// getStory - Get a copy of the story as it was last saved in the dialog.
+/// @return a copy of the story as it was last saved.
+///----------------------------------------------------------------------------
+
+const std::string EditStoryDialog::getStory() {
+    return storyText;
+}
+
+///----------------------------------------------------------------------------
+/// getSummary - Get a copy of the world's summary as it was last saved in the
+/// dialog.
+/// @return a copy of the summary as it was last saved.
+///----------------------------------------------------------------------------
+
+const std::string EditStoryDialog::getSummary() {
+    return summaryText;
+}
+
+//=============================================================================
+// Mutators
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// setStoryAndSummary - Set the story and summary that the Game World has so
+/// that it can be altered by the user.
+/// @param a string containing the text of the story.
+/// @param a string containing the summary of the story
+///----------------------------------------------------------------------------
+
+void EditStoryDialog::setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText) {
+    if(txtStory.IsWindow()) {
+        txtStory.SetWindowText(AtoW(inStoryText.c_str()));
+        txtSummary.SetWindowText(AtoW(inSummaryText.c_str()));
+    }
+}
+
+//=============================================================================
 // Win32++ Functions
 //=============================================================================
 
@@ -25,49 +66,15 @@ EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE), dialogCapti
 
 void EditStoryDialog::OnClose() {
 
-    if(optionChosen == IDCLOSE) {
-
-        if(changeMade) {
-
-            LanguageMapper& langMap = LanguageMapper::getInstance();
-
-            CString message = LM_toUTF8(LanguageConstants::UnsavedChangesMessage, langMap);
-            CString title = LM_toUTF8(LanguageConstants::UnsavedChangesTitle, langMap);
-
-            const int response = MessageBox(message, title, MB_ICONQUESTION | MB_YESNOCANCEL);
-
-            if(response == IDYES) {
-                saveData();
-                optionChosen = IDOK;
-            }
-            else if(response == IDNO) {
-                optionChosen = IDCANCEL;
-            }
-            else {
-                return; // Don't do anything.
-            }
-        }
-        else {
-            optionChosen = IDCANCEL;
-        }
+    // First we'll see if we can actually close the dialog.
+    if(!tryClose()) {
+        return;
     }
 
-    const bool wasCanceled = optionChosen != IDOK ? true : false;   
-
-    if(optionChosen == IDOK || optionChosen == IDCANCEL) {
-        // If either OK or Canceled are pressed, we need to give control
-        // back to the parent window
-        ::EnableWindow(parentWindow, TRUE);
-        CWnd::OnClose();
-        mainWindow->finishedEditStoryDialog(wasCanceled, false);
-    }
-    else if(optionChosen == ControlIDs::ID_APPLY) {
-        // Just apply, don't close.
-        mainWindow->finishedEditStoryDialog(false, true);
-        optionChosen = IDCLOSE;
-        changeMade = false;
-        SetWindowText(dialogCaption);
-    }
+    // Then we'll end the dialog and inform the parent window
+    // that we are done.
+    endModal(&MainWindowInterface::finishedEditStoryDialog);
+   
 }
 
 ///----------------------------------------------------------------------------
@@ -80,35 +87,25 @@ BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD ctrlID = LOWORD(wParam);
     const WORD notifyCode = HIWORD(wParam);
 
-    if(lParam) {
-        if(notifyCode == BN_CLICKED) {
-            if(ctrlID == IDOK) {
-                 
-                saveData();
-                optionChosen = IDOK;
-                Close();
-                return TRUE;
+    if(lParam && notifyCode == BN_CLICKED) {
+        if(ctrlID == IDOK || ctrlID == IDCANCEL || 
+            ctrlID == DefControlIDs::IDAPPLY) {
 
-            }
-            else if(ctrlID == ControlIDs::ID_APPLY) {
-                saveData();
-                optionChosen = ControlIDs::ID_APPLY;
-                Close();
-                return TRUE;
-            }
-            else if(ctrlID == IDCANCEL) {
-                optionChosen = IDCANCEL;
-                Close();
-                return TRUE;
-            }
+            dialogButtonPressed(ctrlID);
+            return TRUE;
+
         }
-        else if(notifyCode == EN_CHANGE) {
+    }
+
+    /*
+            else if(notifyCode == EN_CHANGE) {
             if(!changeMade) {
                 changeMade = true;
                 SetWindowText(dialogCaption + L"*");
             }
         }
-    }
+
+    */
 
     return FALSE;
 }
@@ -172,27 +169,28 @@ void EditStoryDialog::PreRegisterClass(WNDCLASS& wc) {
 }
 
 //=============================================================================
-// Public Functions
+// Protected Functions
 //=============================================================================
 
-void EditStoryDialog::setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText) {
-    if(txtStory.IsWindow()) {
-        txtStory.SetWindowText(AtoW(inStoryText.c_str()));
-        txtSummary.SetWindowText(AtoW(inSummaryText.c_str()));
-    }
-}
+///----------------------------------------------------------------------------
+/// trySaveData - Confirm data is valid, and if it is save it. This function
+/// should not be called directly and instead trySave should be called instead.
+/// @return true if the data was valid, false if it was not.
+///----------------------------------------------------------------------------
 
-const std::string EditStoryDialog::getStory() {
-    return storyText;
-}
-
-const std::string EditStoryDialog::getSummary() {
-    return summaryText;
+bool EditStoryDialog::trySaveData() {
+    storyText = WtoA(txtStory.GetWindowText());
+    summaryText = WtoA(txtSummary.GetWindowText());
+    return true;
 }
 
 //=============================================================================
 // Private Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// moveControls - Move the controls into their proper positions
+///----------------------------------------------------------------------------
 
 void EditStoryDialog::moveControls() {
 
@@ -237,10 +235,4 @@ void EditStoryDialog::moveControls() {
     SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
                  SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
-}
-
-bool EditStoryDialog::saveData() {
-    storyText = WtoA(txtStory.GetWindowText());
-    summaryText = WtoA(txtSummary.GetWindowText());
-    return true;
 }

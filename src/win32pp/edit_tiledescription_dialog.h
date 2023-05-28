@@ -11,11 +11,14 @@ class EditTileDescriptionDialog : public EditDialogBase {
 
     public:
 
+        // Constructors
         EditTileDescriptionDialog(MainWindowInterface* inMainWindow, HWND inParentHandle);
 
-        const std::string getTileName() const { return tileName; }
-        const std::string getTileDescription() const { return tileDescription; }
+        // Accessors
+        const std::string getTileName() const;
+        const std::string getTileDescription() const;
 
+        // Mutators
         void setTileDescription(const std::string& inName, const std::string& inDescription);
 
     protected:
@@ -24,7 +27,7 @@ class EditTileDescriptionDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual bool saveData();
+        virtual bool trySaveData();
 
     private:
 
@@ -39,10 +42,8 @@ class EditTileDescriptionDialog : public EditDialogBase {
 
         std::string     tileName;
         std::string     tileDescription;
-
         CString         dialogCaption;
 
-        int optionChosen;
 };
 
 #endif // __EDIT_TILEDESCRIPTION_DIALOG_H__ 
