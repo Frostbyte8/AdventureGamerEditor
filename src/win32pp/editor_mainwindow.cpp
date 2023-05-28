@@ -352,7 +352,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
     editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
     
     activeWindowHandle = editObjectDialog->GetHwnd();
-    editObjectDialog->goModal();
+
 
     CString caption;
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -374,6 +374,8 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
         editObjectDialog->setDefaultDialogTitle(caption);
     }
 
+    // Dialog is ready to go modal
+    editObjectDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editObjectDialog));
     editObjectDialog->ShowWindow(SW_SHOW);
 
@@ -408,9 +410,6 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
     editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
 
-    activeWindowHandle = editCharacterDialog->GetHwnd();
-    editCharacterDialog->goModal();
-
     // TODO: Set Caption
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -432,6 +431,7 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
         editCharacterDialog->setDefaultDialogTitle(caption);
     }
     
+    editCharacterDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
     editCharacterDialog->ShowWindow(SW_SHOW);
 
@@ -515,8 +515,8 @@ void MainWindowFrame::onEditWorldInfo() {
     editWorldInfoDialog->setWorldInfo(gameWorldController->getGameMap()->getGameInfo());
 
     activeWindowHandle = editWorldInfoDialog->GetHwnd();
+    
     editWorldInfoDialog->goModal();
-
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
     editWorldInfoDialog->ShowWindow(SW_SHOW);
 }
@@ -557,8 +557,8 @@ void MainWindowFrame::onEditStory() {
     editStoryDialog->setStoryAndSummary(gameWorldController->getGameMap()->getStory(), gameWorldController->getGameMap()->getSummary());
 
     activeWindowHandle = editStoryDialog->GetHwnd();
-    editStoryDialog->goModal();
 
+    editStoryDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editStoryDialog));
     editStoryDialog->ShowWindow(SW_SHOW);
     

@@ -20,7 +20,11 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         const bool hasSavedChanges() const { return areSavedChanges; }
         const WindowMetrics& getWindowMetrics() const { return windowMetrics; }
         const int getOptionChosen() const { return optionChosen; }
-        
+
+        // Mutators
+
+        void setDefaultDialogTitle(const CString& inTitle);
+
         // Public Functions
         bool goModal();         // Dialog is now modal
         void endModal(void (MainWindowInterface::*finishFunction)() = NULL);        // Dialog is no longer modal
@@ -30,10 +34,6 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         bool tryClose();        // Attempt to close the window
         bool trySave();         // Attempt to Save Data
         void madeChange();      // Indicate a change was made
-
-        // Mutators
-
-        void setDefaultDialogTitle(const CString& inTitle);
 
         // Interface functions
        
@@ -65,6 +65,7 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         bool                        changeMade;
         bool                        areSavedChanges;
         int                         optionChosen;
+        bool                        dialogReady;
 
     private:
 

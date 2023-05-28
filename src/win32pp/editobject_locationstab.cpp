@@ -13,6 +13,7 @@ namespace ControlIDs {
     const WORD YGroundText      = 106;
     const WORD XDoorText        = 107;
     const WORD YDoorText        = 108;
+    const WORD WhichCharacter   = 109;
 }
 
 //=============================================================================
@@ -44,6 +45,11 @@ BOOL EditObjectLocationsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
     else if(ctrlID == ControlIDs::XGroundText || ctrlID == ControlIDs::YGroundText ||
             ctrlID == ControlIDs::XDoorText || ctrlID == ControlIDs::YDoorText) {
         if(ctrlAction == EN_CHANGE) {
+            parentWindow->madeChange();
+        }
+    }
+    else if(ctrlID == ControlIDs::WhichCharacter) {
+        if(ctrlAction == CBN_SELCHANGE) {
             parentWindow->madeChange();
         }
     }
@@ -101,6 +107,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
+    cbxWhichCharacter.SetDlgCtrlID(ControlIDs::WhichCharacter);
     EOD_AddString(LanguageConstants::NoCharacterSelected, cbxWhichCharacter, caption, langMap);
 
     const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();

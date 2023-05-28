@@ -7,7 +7,8 @@
 
 EditDialogBase::EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow) : 
 mainWindow(inMainWindow), parentWindow(inParentWindow), optionChosen(IDCLOSE), 
-changeMade(false), areSavedChanges(false), originalWindowTitle("") {}
+changeMade(false), areSavedChanges(false), dialogReady(false), 
+originalWindowTitle("") {}
 
 //=============================================================================
 // Mutators
@@ -103,6 +104,8 @@ void EditDialogBase::endModal(void (MainWindowInterface::*finishFunction)() ) {
         ::EnableWindow(parentWindow, TRUE);
     }
 
+    dialogReady = false;
+
     CWnd::OnClose();
 
     // Finish function cannot be NULL. It *must* be specified.
@@ -120,6 +123,7 @@ bool EditDialogBase::goModal() {
 
     if(parentWindow != NULL) {
         ::EnableWindow(parentWindow, FALSE);
+        dialogReady = true;
         return true;
     }
 
@@ -132,7 +136,7 @@ bool EditDialogBase::goModal() {
 ///----------------------------------------------------------------------------
 
 void EditDialogBase::madeChange() {
-    if(!changeMade) {
+    if(dialogReady && !changeMade) {
         changeMade = true;
         SetWindowText(originalWindowTitle + L"*");
     }

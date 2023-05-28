@@ -19,6 +19,16 @@ namespace ControlIDs {
     const WORD MakesHearing          = 112;
     const WORD EffectsConsume        = 113;
     const WORD EffectsTemp           = 114;
+    const WORD EnergyPosBTN          = 115;
+    const WORD EnergyNegBTN          = 116;
+    const WORD SkillPosBTN           = 117;
+    const WORD SkillNegBTN           = 118;
+    const WORD WillpowerPosBTN       = 119;
+    const WORD WillpowerNegBTN       = 120;
+    const WORD LuckPosBTN            = 121;
+    const WORD LuckNegBTN            = 122;
+    const WORD TorchPosBTN           = 123;
+    const WORD TorchNegBTN           = 124;
 }
 
 //=============================================================================
@@ -56,6 +66,11 @@ BOOL EditObjectEffectsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
         }
         else if(ctrlID >= ControlIDs::MakesSight && ctrlID <= ControlIDs::MakesHearing) {
             if(notifyCode == CBN_SELCHANGE) {
+                parentWindow->madeChange();
+            }
+        }
+        else if(ctrlID >= ControlIDs::EnergyPosBTN && ctrlID <= ControlIDs::TorchNegBTN) {
+            if(notifyCode == BN_CLICKED) {
                 parentWindow->madeChange();
             }
         }
@@ -101,6 +116,9 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
         btnAttribPolarity[k*2].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
         btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_AUTORADIOBUTTON);
+
+        btnAttribPolarity[k*2].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2));
+        btnAttribPolarity[(k*2)+1].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2) + 1);
 
         EOD_SetWindowText(LanguageConstants::PositiveSignLabel,
                           btnAttribPolarity[k*2], caption, langMap);
