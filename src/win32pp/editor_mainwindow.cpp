@@ -230,6 +230,12 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     //    case WM_ERASEBKGND: return TRUE;
     //}
 
+    switch (msg) {
+        case WM_ACTIVATEAPP:
+            ::BringWindowToTop(activeWindowHandle);
+            return 0;
+    }
+
 
 	return WndProcDefault(msg, wParam, lParam);
 }
