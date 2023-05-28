@@ -360,7 +360,9 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
     if(alterType == AlterType::Add) {
         GameObject::Builder bd;
         editObjectDialog->setObjectToEdit(bd.build());
-        EOD_SetWindowText(LanguageConstants::AddObjectDialogCaption, *editObjectDialog, caption, langMap);
+        CString caption = LM_toUTF8(LanguageConstants::AddObjectDialogCaption, langMap);
+        editObjectDialog->setDefaultDialogTitle(caption);
+        
     }
     else if (alterType == AlterType::Edit) {
         // TODO: make sure the character exists before doing this.
@@ -369,7 +371,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
         editObjectDialog->setObjectToEdit(objectToEdit.build());
         caption = LM_toUTF8(LanguageConstants::EditObjectDialogCaption, langMap);
         caption += gameObject.getName().c_str();
-        editObjectDialog->SetWindowText(caption); 
+        editObjectDialog->setDefaultDialogTitle(caption);
     }
 
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editObjectDialog));
@@ -417,7 +419,8 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     if(alterType == AlterType::Add) {
         GameCharacter::Builder bd;
         editCharacterDialog->setCharacterToEdit(bd.build());
-        EOD_SetWindowText(LanguageConstants::AddCharacterDialogCaption, *editCharacterDialog, caption, langMap);
+        CString caption = LM_toUTF8(LanguageConstants::AddCharacterDialogCaption, langMap);
+        editCharacterDialog->setDefaultDialogTitle(caption);
     }
     else if(alterType == AlterType::Edit) {
 
@@ -426,7 +429,7 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
         caption += gameCharacter.getName().c_str();
         GameCharacter::Builder charToEdit(gameCharacter);
         editCharacterDialog->setCharacterToEdit(charToEdit.build());
-        editCharacterDialog->SetWindowText(caption); 
+        editCharacterDialog->setDefaultDialogTitle(caption);
     }
     
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editCharacterDialog));

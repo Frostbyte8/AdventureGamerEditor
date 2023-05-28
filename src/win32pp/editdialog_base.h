@@ -24,40 +24,44 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         // Public Functions
         bool goModal();         // Dialog is now modal
         void endModal(void (MainWindowInterface::*finishFunction)() = NULL);        // Dialog is no longer modal
-        
-        void dialogButtonPressed(const int& which); 
-
+ 
+        void dialogButtonPressed(const int& which); // Ok/Cancel/Apply were clicked
         void changesSaved();    // Indicate changes were saved
         bool tryClose();        // Attempt to close the window
         bool trySave();         // Attempt to Save Data
         void madeChange();      // Indicate a change was made
 
+        // Mutators
+
+        void setDefaultDialogTitle(const CString& inTitle);
+
         // Interface functions
        
         virtual int askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle, bool allowCancel);
         virtual void displayErrorMessage(const std::string& inMessage, const std::string& inTitle);
-        
-        // Pure virtual functions
-        virtual void moveControls() { return; } // TODO: Make PVF 
-        virtual bool trySaveData() { return true; } // TODO: Make PVF
-        
+               
 
     protected:
 
-        EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow) : 
-                       mainWindow(inMainWindow), parentWindow(inParentWindow), optionChosen(IDCLOSE), changeMade(false), areSavedChanges(false) {}
+        EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow);
+
+        // Win32 Functions
+        virtual void PreCreate(CREATESTRUCT& cs);
+
+        // Pure virtual functions
+        virtual void moveControls() = 0;
+        virtual bool trySaveData() = 0;
 
         static bool CALLBACK SetProperFont(HWND child, LPARAM font) {
             ::SendMessage(child, WM_SETFONT, font, true);
             return true;
         }
 
-        virtual void PreCreate(CREATESTRUCT& cs);
-        
         MainWindowInterface*        mainWindow;
         WindowMetrics               windowMetrics;
         HWND                        parentWindow;
 
+        CString                     originalWindowTitle;
         bool                        changeMade;
         bool                        areSavedChanges;
         int                         optionChosen;

@@ -2,6 +2,30 @@
 #include "../util/languagemapper.h"
 
 //=============================================================================
+// Constructors
+//=============================================================================
+
+EditDialogBase::EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow) : 
+mainWindow(inMainWindow), parentWindow(inParentWindow), optionChosen(IDCLOSE), 
+changeMade(false), areSavedChanges(false), originalWindowTitle("") {}
+
+//=============================================================================
+// Mutators
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// setDefaultDialogTitle - Not only sets the dialog's title, also keeps a copy
+/// of it so it can append a * when unsaved changes are made, and restore it
+/// when those changes are reverted.
+/// @param a reference to a CString containing the title to be used
+///----------------------------------------------------------------------------
+
+void EditDialogBase::setDefaultDialogTitle(const CString& inTitle) {
+    originalWindowTitle = inTitle;
+    SetWindowText(originalWindowTitle);
+}
+
+//=============================================================================
 // Win32++ Functions
 //=============================================================================
 
@@ -20,12 +44,13 @@ void EditDialogBase::PreCreate(CREATESTRUCT& cs) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// changesSaved - Mark the changes are being saved.
+/// changesSaved - Mark the changes are being saved, and reset the dialog title
 ///----------------------------------------------------------------------------
 
 void EditDialogBase::changesSaved() {
     changeMade = false;
     areSavedChanges = true;
+    SetWindowText(originalWindowTitle);
 }
 
 ///----------------------------------------------------------------------------
@@ -80,10 +105,9 @@ void EditDialogBase::endModal(void (MainWindowInterface::*finishFunction)() ) {
 
     CWnd::OnClose();
 
-    // If a finish function has been set, use that to finish off the dialog.
-    if(finishFunction) {
-        (mainWindow->*finishFunction)();
-    }
+    // Finish function cannot be NULL. It *must* be specified.
+    assert(finishFunction);
+    (mainWindow->*finishFunction)();
 
 }
 
@@ -110,6 +134,7 @@ bool EditDialogBase::goModal() {
 void EditDialogBase::madeChange() {
     if(!changeMade) {
         changeMade = true;
+        SetWindowText(originalWindowTitle + L"*");
     }
 }
 
