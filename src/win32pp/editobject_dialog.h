@@ -37,6 +37,9 @@ class EditObjectDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
+
+        virtual void notifyChangeMade();
+        virtual void notifyChangesSaved();
         virtual void moveControls();
         virtual bool trySaveData();
         

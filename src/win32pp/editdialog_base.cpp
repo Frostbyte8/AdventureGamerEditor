@@ -52,6 +52,7 @@ void EditDialogBase::changesSaved() {
     changeMade = false;
     areSavedChanges = true;
     SetWindowText(originalWindowTitle);
+    notifyChangesSaved();
 }
 
 ///----------------------------------------------------------------------------
@@ -131,6 +132,24 @@ bool EditDialogBase::goModal() {
 }
 
 ///----------------------------------------------------------------------------
+/// notifyChangeMade - By default does nothing. Override this to do stuff
+/// when the dialog makes a change
+///----------------------------------------------------------------------------
+
+void EditDialogBase::notifyChangeMade() {
+    return;
+}
+
+///----------------------------------------------------------------------------
+/// notifyChangesSaved - By default does nothing. Override this to do stuff
+/// when the dialog successfully saves the changes made to it.
+///----------------------------------------------------------------------------
+
+void EditDialogBase::notifyChangesSaved() {
+    return;
+}
+
+///----------------------------------------------------------------------------
 /// madeChange - If the dialog isn't already marked as having a change made,
 /// do so and inform the classes that derive from it that something happened.
 ///----------------------------------------------------------------------------
@@ -139,6 +158,7 @@ void EditDialogBase::madeChange() {
     if(dialogReady && !changeMade) {
         changeMade = true;
         SetWindowText(originalWindowTitle + L"*");
+        notifyChangeMade();
     }
 }
 

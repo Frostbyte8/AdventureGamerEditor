@@ -159,6 +159,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     // If we are editing an object, we can also setup the apply button.
     if(isEditObject) {
         btnDialogControl[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+        btnDialogControl[2].EnableWindow(FALSE);
         EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
                           btnDialogControl[2], caption, langMap);
     }
@@ -261,6 +262,26 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 // Protected Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// notifyChangeMade - Change the apply button to be useable.
+///----------------------------------------------------------------------------
+
+void EditObjectDialog::notifyChangeMade() {
+    if(isEditObject) {
+        btnDialogControl[2].EnableWindow(TRUE);
+    }
+}
+
+///----------------------------------------------------------------------------
+/// notifyChangesSaved - Change the apply button to be unusable.
+///----------------------------------------------------------------------------
+
+void EditObjectDialog::notifyChangesSaved() {
+    if(isEditObject) {
+        btnDialogControl[2].EnableWindow(FALSE);
+    }
+}
 
 ///----------------------------------------------------------------------------
 /// moveControls - Move the controls into their proper positions

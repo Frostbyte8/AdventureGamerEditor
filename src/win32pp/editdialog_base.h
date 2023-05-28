@@ -49,6 +49,8 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         virtual void PreCreate(CREATESTRUCT& cs);
 
         // Pure virtual functions
+        virtual void notifyChangeMade();
+        virtual void notifyChangesSaved();
         virtual void moveControls() = 0;
         virtual bool trySaveData() = 0;
 
