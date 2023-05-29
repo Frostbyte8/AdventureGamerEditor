@@ -29,6 +29,9 @@ class EditTileDescriptionDialog : public EditDialogBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual bool trySaveData();
 
+        virtual void notifyChangeMade();
+        virtual void notifyChangesSaved();
+
     private:
 
         void moveControls();

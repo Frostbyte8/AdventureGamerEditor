@@ -612,6 +612,10 @@ void MainWindowFrame::onEditTileDescription() {
     activeWindowHandle = editTileDescriptionDialog->GetHwnd();
     editTileDescriptionDialog->goModal();
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    const CString dialogCaption = LM_toUTF8(LanguageConstants::EditTileDescrtipionDialogCaption, langMap);
+    editTileDescriptionDialog->setDefaultDialogTitle(dialogCaption);
+
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
     editTileDescriptionDialog->ShowWindow(SW_SHOW);
 }

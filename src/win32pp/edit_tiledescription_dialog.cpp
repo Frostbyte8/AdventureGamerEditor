@@ -2,6 +2,12 @@
 #include "../util/languagemapper.h"
 #include "shared_functions.h"
 
+namespace ControlIDs {
+    const WORD Name                 = 101;
+    const WORD Description          = 102;
+}
+
+
 //=============================================================================
 // Constructors
 //=============================================================================
@@ -77,6 +83,26 @@ void EditTileDescriptionDialog::OnClose() {
 ///----------------------------------------------------------------------------
 
 BOOL EditTileDescriptionDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(lParam) {
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if(ctrlID == ControlIDs::Name || ctrlID == ControlIDs::Description) {
+            if(notifyCode == EN_CHANGE) {
+                madeChange();
+                return TRUE;
+            }
+        }
+        else if(ctrlID == IDOK || ctrlID == IDCANCEL || 
+            ctrlID == DefControlIDs::IDAPPLY) {
+
+            dialogButtonPressed(ctrlID);
+            return TRUE;
+
+        }
+    }
+
     return FALSE;
 }
 
@@ -98,12 +124,14 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
 
     txtTileName.Create(*this, 0, ES_AUTOHSCROLL);
     txtTileName.SetExStyle(txtTileName.GetExStyle() | WS_EX_CLIENTEDGE);
+    txtTileName.SetDlgCtrlID(ControlIDs::Name);
 
     lblTileDescription.Create(*this, 0, SS_SIMPLE);
     EOD_SetWindowText(LanguageConstants::TileDescriptionLabel, lblTileDescription, caption, langMap);
 
     txtTileDescription.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
+    txtTileDescription.SetDlgCtrlID(ControlIDs::Description);
 
     for(int i = 0; i < 3; ++i) {
 
@@ -122,10 +150,6 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
 
     moveControls();
 
-    dialogCaption = LM_toUTF8(LanguageConstants::EditTileDescrtipionDialogCaption, langMap);
-
-    SetWindowText(dialogCaption);
-
     return retVal;
 }
 
@@ -143,6 +167,22 @@ void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Protected Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// notifyChangeMade - Change the apply button to be useable.
+///----------------------------------------------------------------------------
+
+void EditTileDescriptionDialog::notifyChangeMade() {
+    btnDialogButtons[2].EnableWindow(TRUE);
+}
+
+///----------------------------------------------------------------------------
+/// notifyChangesSaved - Change the apply button to be unusable.
+///----------------------------------------------------------------------------
+
+void EditTileDescriptionDialog::notifyChangesSaved() {
+    btnDialogButtons[2].EnableWindow(FALSE);
+}
 
 ///----------------------------------------------------------------------------
 /// trySaveData - Confirm that data in the dialog (in this case, each tab page)
