@@ -75,14 +75,14 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     grpFlags.Create(*this, 0, BS_GROUPBOX);
 
-    EOD_SetWindowText(LanguageConstants::FlagsGroupLabel, grpFlags,
+    EOD_SetWindowText("FileMenu", grpFlags,
                       caption, langMap);
 
     for(int k = 0; k < GameObjectFlags1::NumFlags; ++k) {
 
         btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
         btnFlags[k].SetDlgCtrlID(ControlIDs::MasterKey + k);
-        EOD_SetWindowText(LanguageConstants::MasterKeyFlag+k, btnFlags[k],
+        EOD_SetWindowText("FileMenu", btnFlags[k],
                           caption, langMap);
 
     }
@@ -94,7 +94,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtProperties[i].LimitText(5);
 
-        EOD_SetWindowText(LanguageConstants::MonetaryLabel+i, lblProperties[i],
+        EOD_SetWindowText("FileMenu", lblProperties[i],
                           caption, langMap);
 
         // TODO: Why does WS_VISBLE have to be set? Possible bug?
@@ -106,14 +106,14 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     grpProperties.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::PropertiesGroupLabel, grpProperties, caption, langMap);
+    EOD_SetWindowText("FileMenu", grpProperties, caption, langMap);
 
     lblProperties[2].Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText(LanguageConstants::ObjectHeldLabel, lblProperties[2],
+    EOD_SetWindowText("FileMenu", lblProperties[2],
                       caption, langMap);
 
     cbxUsedWith.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
-    EOD_AddString(LanguageConstants::NoObjectSelected, cbxUsedWith,
+    EOD_AddString("FileMenu", cbxUsedWith,
                   caption, langMap);
 
     const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();

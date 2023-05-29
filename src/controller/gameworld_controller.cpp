@@ -66,10 +66,10 @@ bool GameWorldController::loadWorld(const std::string& filePath,
         }
         catch (const std::runtime_error& e) {
 
-            std::string fileReadError = LanguageMapper::getInstance().get(LanguageConstants::FileReadError) + " ";
+            std::string fileReadError = LanguageMapper::getInstance().get("FileMenu") + " ";
             fileReadError.append(e.what());
 
-            mainWindow->displayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get(LanguageConstants::FileReadErrorCaption));
+            mainWindow->displayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get("FileMenu"));
         }
     }
     else {
@@ -171,8 +171,8 @@ bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTil
         return true;
     }
     else {
-        mainWindow->displayErrorMessage(LanguageMapper::getInstance().get(LanguageConstants::TileGetError),
-                                        LanguageMapper::getInstance().get(LanguageConstants::TileGetErrorCaption));
+        mainWindow->displayErrorMessage(LanguageMapper::getInstance().get("FileMenu"),
+                                        LanguageMapper::getInstance().get("FileMenu"));
     }
 
     return false;

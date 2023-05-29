@@ -4,18 +4,23 @@
 #include <functional>
 
 namespace ControlIDs {
-    const WORD WorldName           = 101;
-    const WORD CurrencyName        = 102;
-    const WORD txtEnergy           = 103;
-    const WORD txtSkill            = 104;
-    const WORD txtWillpower        = 105;
-    const WORD txtLuck             = 106;
-    const WORD txtTorchlife        = 107;
-    const WORD spnEnergy           = 108;
-    const WORD spnSkill            = 109;
-    const WORD spnWillpower        = 110;
-    const WORD spnLuck             = 111;
-    const WORD spnTorchlife        = 112;
+    const WORD WorldName            = 101;
+    const WORD CurrencyName         = 102;
+    const WORD txtEnergy            = 103;
+    const WORD txtEnergyRandom      = 104;
+    const WORD txtSkill             = 105;
+    const WORD txtSkillRandom       = 106;
+    const WORD txtWillpower         = 107;
+    const WORD txtWillpowerRandom   = 108;
+    const WORD txtLuck              = 109;
+    const WORD txtLuckRandom        = 110;
+    const WORD txtTorchlife         = 111;
+    const WORD txtTorchlifeRandom   = 112;
+    const WORD spnEnergy            = 113;
+    const WORD spnSkill             = 114;
+    const WORD spnWillpower         = 115;
+    const WORD spnLuck              = 116;
+    const WORD spnTorchlife         = 117;
 }
 
 //=============================================================================
@@ -92,13 +97,18 @@ BOOL EditWorldInfoDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD ctrlID = LOWORD(wParam);
     const WORD notifyCode = HIWORD(wParam);
 
-    if(lParam && notifyCode == BN_CLICKED) {
-        if(ctrlID == IDOK || ctrlID == IDCANCEL || 
-            ctrlID == DefControlIDs::IDAPPLY) {
-
-            dialogButtonPressed(ctrlID);
-            return TRUE;
-
+    if(lParam) {
+        if(ctrlID == IDOK || ctrlID == IDCANCEL || ctrlID == DefControlIDs::IDAPPLY) {
+            if(notifyCode == BN_CLICKED) {
+                dialogButtonPressed(ctrlID);
+                return TRUE;
+            }
+        }
+        else if(ctrlID >= ControlIDs::WorldName && ctrlID <= ControlIDs::txtTorchlifeRandom) {
+            if(notifyCode == EN_CHANGE) {
+                madeChange();
+                return TRUE;
+            }
         }
     }
 
@@ -117,11 +127,11 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpWorldInfo.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::WorldSettingsGroup, grpWorldInfo, caption, langMap);
+    EOD_SetWindowText("FileMenu", grpWorldInfo, caption, langMap);
 
     for(int i = 0; i < 2; ++i) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
-        EOD_SetWindowText(LanguageConstants::WorldNameLabel+i, lblProperties[i], caption, langMap);
+        EOD_SetWindowText("FileMenu", lblProperties[i], caption, langMap);
         txtProperties[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtProperties[i].LimitText(128);
@@ -130,16 +140,20 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 5; ++i) {
         lblAttributes[i].Create(*this, 0, SS_SIMPLE);
-        EOD_SetWindowText(LanguageConstants::PlayerEnergy+i, lblAttributes[i], caption, langMap);
+        EOD_SetWindowText("FileMenu", lblAttributes[i], caption, langMap);
         
 
         txtAttributes[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         spnAttributes[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
+        txtAttributes[i].SetDlgCtrlID(ControlIDs::txtEnergy + (i * 2));
+
         txtRandomAttributes[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         spnRandomAttributes[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
                                       UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
+
+        txtRandomAttributes[i].SetDlgCtrlID(ControlIDs::txtEnergyRandom + (i * 2));
 
         txtAttributes[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtAttributes[i].LimitText(2);
@@ -159,13 +173,14 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 3; ++i) {
         btnDialog[i].Create(*this, 0, BS_PUSHBUTTON);
-        EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption+i, btnDialog[i], caption, langMap);
+        EOD_SetWindowText("FileMenu", btnDialog[i], caption, langMap);
     }
 
     btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
     btnDialog[0].SetDlgCtrlID(IDOK);
     btnDialog[1].SetDlgCtrlID(IDCANCEL);
     btnDialog[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+    btnDialog[2].EnableWindow(FALSE);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -200,6 +215,22 @@ void EditWorldInfoDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Protected Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// notifyChangeMade - Change the apply button to be useable.
+///----------------------------------------------------------------------------
+
+void EditWorldInfoDialog::notifyChangeMade() {
+    btnDialog[2].EnableWindow(TRUE);
+}
+
+///----------------------------------------------------------------------------
+/// notifyChangesSaved - Change the apply button to be unusable.
+///----------------------------------------------------------------------------
+
+void EditWorldInfoDialog::notifyChangesSaved() {
+    btnDialog[2].EnableWindow(FALSE);
+}
 
 ///----------------------------------------------------------------------------
 /// moveControls - Move the controls into their proper positions

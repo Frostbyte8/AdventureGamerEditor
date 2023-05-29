@@ -114,19 +114,19 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     EditDialogBase* parentWindow = reinterpret_cast<EditDialogBase*>(this);
 
-    caption = AtoW(langMap.get(LanguageConstants::CharDescriptonsTab).c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     descriptionsTab = reinterpret_cast<EditCharacterDescriptionsTab*>(
                       tabControl.AddTabPage(new EditCharacterDescriptionsTab(parentWindow), caption));
 
-    caption = AtoW(langMap.get(LanguageConstants::CharQualitiesTab).c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     qualitiesTab = reinterpret_cast<EditCharacterQualitiesTab*>(
                    tabControl.AddTabPage(new EditCharacterQualitiesTab(gameMap, parentWindow), caption));
 
-    caption = AtoW(langMap.get(LanguageConstants::CharAttributesTab).c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     attributesTab = reinterpret_cast<EditCharacterAttributesTab*>(
                     tabControl.AddTabPage(new EditCharacterAttributesTab(parentWindow), caption));
 
-    caption = AtoW(langMap.get(LanguageConstants::CharMiscTab).c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     miscTab = reinterpret_cast<EditCharacterMiscTab*>(
               tabControl.AddTabPage(new EditCharacterMiscTab(gameMap, parentWindow), caption));
 
@@ -139,10 +139,10 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     btnDialogControl[0].SetDlgCtrlID(IDOK);
     btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
 
-    EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption,
+    EOD_SetWindowText("FileMenu",
                       btnDialogControl[0], caption, langMap);
 
-    EOD_SetWindowText(LanguageConstants::GenericCancelButtonCaption,
+    EOD_SetWindowText("FileMenu",
                       btnDialogControl[1], caption, langMap);
 
     btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
@@ -151,7 +151,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     if(isEditCharacter) {
         btnDialogControl[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-        EOD_SetWindowText(LanguageConstants::GenericApplyButtonCaption,
+        EOD_SetWindowText("FileMenu",
                           btnDialogControl[2], caption, langMap);
     }
 

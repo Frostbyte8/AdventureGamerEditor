@@ -75,13 +75,13 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     grpFlags.Create(*this, 0, BS_GROUPBOX);
 
-    EOD_SetWindowText(LanguageConstants::CharFlagsGroup, grpFlags,
+    EOD_SetWindowText("FileMenu", grpFlags,
                       caption, langMap);
 
     for(int k = 0; k < GameCharacterFlags::NumFlags; ++k) {
 
         btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
-        EOD_SetWindowText(LanguageConstants::CharEnterDark+k, btnFlags[k],
+        EOD_SetWindowText("FileMenu", btnFlags[k],
                           caption, langMap);
 
         btnFlags[k].SetDlgCtrlID(ControlIDs::FlagEnterDark+k);
@@ -89,10 +89,10 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     grpProperties.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::CharPropertiesGroup, grpProperties, caption, langMap);
+    EOD_SetWindowText("FileMenu", grpProperties, caption, langMap);
 
     lblMoney.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText(LanguageConstants::CharMoneyLabel, lblMoney, caption, langMap);
+    EOD_SetWindowText("FileMenu", lblMoney, caption, langMap);
 
     txtMoney.Create(*this, 0, ES_AUTOHSCROLL);
     txtMoney.SetExStyle(WS_EX_CLIENTEDGE);
@@ -102,12 +102,12 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
                     UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
     lblType.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText(LanguageConstants::CharTypeLabel, lblType, caption, langMap);
+    EOD_SetWindowText("FileMenu", lblType, caption, langMap);
     cbxType.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     cbxType.SetDlgCtrlID(ControlIDs::CharType);
 
     for(size_t j = 0; j < 3; ++j) {
-        EOD_AddString(LanguageConstants::CharMissionaryType+j, cbxType, caption, langMap);
+        EOD_AddString("FileMenu", cbxType, caption, langMap);
     }
 
     spnMoney.SetRange(GameObjectConstants::MinMonetaryValue,

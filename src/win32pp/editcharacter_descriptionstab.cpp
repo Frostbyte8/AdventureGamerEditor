@@ -59,19 +59,19 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpDescriptions.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::CharDescriptionsGroup, grpDescriptions, caption, langMap);
+    EOD_SetWindowText("FileMenu", grpDescriptions, caption, langMap);
 
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
         lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
         txtDescriptions[i].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
         txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
 
-        EOD_SetWindowText(LanguageConstants::CharNameLabel+i, lblDescriptions[i], caption, langMap);
+        EOD_SetWindowText("FileMenu", lblDescriptions[i], caption, langMap);
 
         if(i > 3) {
             btnBrowse[i-4].Create(*this, 0, BS_PUSHBUTTON);
             btnBrowse[i-4].SetDlgCtrlID(ControlIDs::BrowseIcon + (i-4));
-            EOD_SetWindowText(LanguageConstants::CharBrowseButtonCaption, btnBrowse[i-4], caption, langMap);
+            EOD_SetWindowText("FileMenu", btnBrowse[i-4], caption, langMap);
             txtDescriptions[i].EnableWindow(FALSE);
         }
         else {

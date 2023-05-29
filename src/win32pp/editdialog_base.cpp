@@ -175,8 +175,8 @@ bool EditDialogBase::tryClose() {
         if(changeMade) {
             LanguageMapper& langMap = LanguageMapper::getInstance();
 
-            const int retVal = askYesNoQuestion(langMap.get(LanguageConstants::UnsavedChangesMessage),
-                                                langMap.get(LanguageConstants::UnsavedChangesTitle),
+            const int retVal = askYesNoQuestion(langMap.get("FileMenu"),
+                                                langMap.get("FileMenu"),
                                                 true);
             
             if(retVal == GenericInterfaceResponses::Yes) {

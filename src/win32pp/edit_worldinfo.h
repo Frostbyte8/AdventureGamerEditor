@@ -27,6 +27,9 @@ class EditWorldInfoDialog : public EditDialogBase {
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         void moveControls();
+
+        virtual void notifyChangeMade();
+        virtual void notifyChangesSaved();
         virtual bool trySaveData();
 
         //virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);

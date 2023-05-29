@@ -117,7 +117,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    dialogCaption = LM_toUTF8(LanguageConstants::EditStorySummaryDialogCaption, langMap);
+    dialogCaption = LM_toUTF8("FileMenu", langMap);
     SetWindowText(dialogCaption);
 
     lblSummary.Create(*this, 0, SS_SIMPLE);
@@ -138,7 +138,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 3; ++i) {
         dialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
-        EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption+i, dialogButtons[i], caption, langMap);
+        EOD_SetWindowText("FileMenu", dialogButtons[i], caption, langMap);
     }
 
     dialogButtons[0].SetStyle(dialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);

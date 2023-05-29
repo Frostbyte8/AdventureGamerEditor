@@ -91,7 +91,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpEffects.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::EffectsOnAttribGroup, grpEffects,
+    EOD_SetWindowText("FileMenu", grpEffects,
                       caption, langMap);
 
     btnEffect[0].Create(*this, 0, BS_AUTORADIOBUTTON | WS_GROUP);
@@ -100,18 +100,18 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     btnEffect[1].SetDlgCtrlID(ControlIDs::EffectsTemp);
 
     for(int i = 0; i < 2; ++i) {
-        EOD_SetWindowText(LanguageConstants::ConsumpativeLabel+i, btnEffect[i],
+        EOD_SetWindowText("FileMenu", btnEffect[i],
                           caption, langMap);
     }
 
     grpAttrib.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText(LanguageConstants::ObjectAttributesGroup, grpAttrib,
+    EOD_SetWindowText("FileMenu", grpAttrib,
                       caption, langMap);
 
     for(int k = 0; k < 5; ++k) {
 
         lblAttribType[k].Create(*this, 0, SS_CENTER);
-        EOD_SetWindowText(LanguageConstants::ObjectEnergyLabel+k,
+        EOD_SetWindowText("FileMenu",
                           lblAttribType[k], caption, langMap);
 
         btnAttribPolarity[k*2].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
@@ -120,10 +120,10 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         btnAttribPolarity[k*2].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2));
         btnAttribPolarity[(k*2)+1].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2) + 1);
 
-        EOD_SetWindowText(LanguageConstants::PositiveSignLabel,
+        EOD_SetWindowText("FileMenu",
                           btnAttribPolarity[k*2], caption, langMap);
 
-        EOD_SetWindowText(LanguageConstants::NegativeSignLabel,
+        EOD_SetWindowText("FileMenu",
                           btnAttribPolarity[(k*2)+1], caption, langMap);
 
         for(int l = 0; l < 2; ++l) {
@@ -143,7 +143,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 2; ++i) {
         lblAttribHeading[i].Create(*this, 0, SS_CENTER);
-        EOD_SetWindowText(LanguageConstants::ObjectBaseAmountLabel+i,
+        EOD_SetWindowText("FileMenu",
                           lblAttribHeading[i], caption, langMap);
     }
 
@@ -154,18 +154,18 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     for(int n = 0; n < 4; ++n) {
-        EOD_AddString(LanguageConstants::SightNoEffectOption+n, cbxSenses[0],
+        EOD_AddString("FileMenu", cbxSenses[0],
                       caption, langMap);
 
-        EOD_AddString(LanguageConstants::HearingNoEffectOption+n, cbxSenses[1],
+        EOD_AddString("FileMenu", cbxSenses[1],
                       caption, langMap);
     }
 
-    EOD_SetWindowText(LanguageConstants::MakesPlayersSightLabel, lblSenses[0],
+    EOD_SetWindowText("FileMenu", lblSenses[0],
                       caption, langMap);
 
     
-    EOD_SetWindowText(LanguageConstants::MakesPlayersHearingLabel,
+    EOD_SetWindowText("FileMenu",
                       lblSenses[1], caption, langMap);
 
     return retVal;

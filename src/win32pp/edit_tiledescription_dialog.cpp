@@ -120,14 +120,14 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     lblTileName.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText(LanguageConstants::TileNameLabel, lblTileName, caption, langMap);
+    EOD_SetWindowText("FileMenu", lblTileName, caption, langMap);
 
     txtTileName.Create(*this, 0, ES_AUTOHSCROLL);
     txtTileName.SetExStyle(txtTileName.GetExStyle() | WS_EX_CLIENTEDGE);
     txtTileName.SetDlgCtrlID(ControlIDs::Name);
 
     lblTileDescription.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText(LanguageConstants::TileDescriptionLabel, lblTileDescription, caption, langMap);
+    EOD_SetWindowText("FileMenu", lblTileDescription, caption, langMap);
 
     txtTileDescription.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
@@ -136,7 +136,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     for(int i = 0; i < 3; ++i) {
 
         btnDialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
-        EOD_SetWindowText(LanguageConstants::GenericOKButtonCaption + i, btnDialogButtons[i], caption, langMap);
+        EOD_SetWindowText("FileMenu", btnDialogButtons[i], caption, langMap);
 
     }
 

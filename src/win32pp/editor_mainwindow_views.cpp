@@ -60,12 +60,12 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    CString caption = AtoW(langMap.get(LanguageConstants::ObjectGroupboxCaption).c_str(), CP_UTF8);
+    CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
 
     objectsGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
     objectsGroup.SetWindowText(caption);
 
-    caption = AtoW(langMap.get(LanguageConstants::CharacterGroupboxCaption).c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
 
     charactersGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
     charactersGroup.SetWindowText(caption);
@@ -75,12 +75,12 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 4; ++i) {
 
-        caption = AtoW(langMap.get(LanguageConstants::ObjectAddButton + i).c_str(), CP_UTF8);
+        caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
         alterObjectButton[i].Create(*this, 0, BS_PUSHBUTTON);
         alterObjectButton[i].SetWindowText(caption);
         alterObjectButton[i].SetDlgCtrlID(ControlIDs::AddObjectButton+i);
 
-        caption = AtoW(langMap.get(LanguageConstants::CharacterAddButton + i).c_str(), CP_UTF8);
+        caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
         alterCharacterButton[i].Create(*this, 0, BS_PUSHBUTTON);
         alterCharacterButton[i].SetWindowText(caption);
         alterCharacterButton[i].SetDlgCtrlID(ControlIDs::AddCharacterButton+i);

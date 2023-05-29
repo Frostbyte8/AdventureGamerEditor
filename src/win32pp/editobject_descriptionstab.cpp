@@ -72,7 +72,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
             txtDescriptions[i].LimitText(GameObjectConstants::MaxDescriptionLength);
         }
         
-        EOD_SetWindowText(LanguageConstants::NameLabel+i, lblDescriptions[i],
+        EOD_SetWindowText("FileMenu", lblDescriptions[i],
                           caption, langMap);
 
         // For the last two fields, we need browse buttons
@@ -83,7 +83,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
             btnBrowse[currentButton].Create(*this, 0,
                                             WS_TABSTOP | BS_PUSHBUTTON);
 
-            EOD_SetWindowText(LanguageConstants::BrowseButton,
+            EOD_SetWindowText("FileMenu",
                               btnBrowse[currentButton], caption, langMap);
         }
         else {

@@ -92,7 +92,7 @@ HWND MainWindowFrame::Create(HWND parent) {
 /// CreateMenuBar - Creates the menu bar.
 ///----------------------------------------------------------------------------
 
-#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.get(ID).c_str(), CP_UTF8); \
+#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.get("FileMenu").c_str(), CP_UTF8); \
     MENUOBJ.AppendMenu(MF_STRING, ID, caption);
 
 void MainWindowFrame::CreateMenuBar() {
@@ -115,12 +115,12 @@ void MainWindowFrame::CreateMenuBar() {
     ADV_ADDMENUITEM(LanguageConstants::SummaryStoryMenuItem, editMenu);
     ADV_ADDMENUITEM(LanguageConstants::EditWorldInfoMenuItem, editMenu);
 
-    caption = AtoW(languageMapper.get(LanguageConstants::FileMenuItem).c_str(), CP_UTF8);
+    caption = AtoW(languageMapper.get("FileMenu").c_str(), CP_UTF8);
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
 
-    caption = AtoW(languageMapper.get(LanguageConstants::EditMenuItem).c_str(), CP_UTF8);
+    caption = AtoW(languageMapper.get("FileMenu").c_str(), CP_UTF8);
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(editMenu.GetHandle()), caption);
@@ -147,7 +147,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	const int retVal = CDockFrame::OnCreate(cs);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
-    CString caption = AtoW(langMap.get(LanguageConstants::MainWindowCaption).c_str(), CP_UTF8);
+    CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     SetWindowText(caption);
 
     CreateMenuBar();
@@ -366,7 +366,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
     if(alterType == AlterType::Add) {
         GameObject::Builder bd;
         editObjectDialog->setObjectToEdit(bd.build());
-        CString caption = LM_toUTF8(LanguageConstants::AddObjectDialogCaption, langMap);
+        CString caption = LM_toUTF8("FileMenu", langMap);
         editObjectDialog->setDefaultDialogTitle(caption);
         
     }
@@ -375,7 +375,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
         const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
         GameObject::Builder objectToEdit(gameObject);
         editObjectDialog->setObjectToEdit(objectToEdit.build());
-        caption = LM_toUTF8(LanguageConstants::EditObjectDialogCaption, langMap);
+        caption = LM_toUTF8("FileMenu", langMap);
         caption += gameObject.getName().c_str();
         editObjectDialog->setDefaultDialogTitle(caption);
     }
@@ -424,13 +424,13 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     if(alterType == AlterType::Add) {
         GameCharacter::Builder bd;
         editCharacterDialog->setCharacterToEdit(bd.build());
-        CString caption = LM_toUTF8(LanguageConstants::AddCharacterDialogCaption, langMap);
+        CString caption = LM_toUTF8("FileMenu", langMap);
         editCharacterDialog->setDefaultDialogTitle(caption);
     }
     else if(alterType == AlterType::Edit) {
 
         const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(index);
-        caption = LM_toUTF8(LanguageConstants::EditCharacterDialogCaption, langMap);
+        caption = LM_toUTF8("FileMenu", langMap);
         caption += gameCharacter.getName().c_str();
         GameCharacter::Builder charToEdit(gameCharacter);
         editCharacterDialog->setCharacterToEdit(charToEdit.build());
@@ -522,6 +522,7 @@ void MainWindowFrame::onEditWorldInfo() {
 
     activeWindowHandle = editWorldInfoDialog->GetHwnd();
     
+    editWorldInfoDialog->setDefaultDialogTitle(L"TODO: Caption this dialog!");
     editWorldInfoDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
     editWorldInfoDialog->ShowWindow(SW_SHOW);
@@ -565,7 +566,7 @@ void MainWindowFrame::onEditStory() {
     activeWindowHandle = editStoryDialog->GetHwnd();
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
-    const CString dialogCaption = LM_toUTF8(LanguageConstants::EditStorySummaryDialogCaption, langMap);
+    const CString dialogCaption = LM_toUTF8("FileMenu", langMap);
     editStoryDialog->setDefaultDialogTitle(dialogCaption);
 
     editStoryDialog->goModal();
@@ -620,7 +621,7 @@ void MainWindowFrame::onEditTileDescription() {
     // Or even move this to OnCreate since that function already needs languagemapper and
     // that's one less "getInstance".
     LanguageMapper& langMap = LanguageMapper::getInstance();
-    const CString dialogCaption = LM_toUTF8(LanguageConstants::EditTileDescrtipionDialogCaption, langMap);
+    const CString dialogCaption = LM_toUTF8("FileMenu", langMap);
     editTileDescriptionDialog->setDefaultDialogTitle(dialogCaption);
 
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));

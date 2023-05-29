@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include "../compat/stdint_compat.h"
 #include "../compat/std_extras_compat.h"
 #include "../thirdparty/simpleson/json.h"
 
@@ -254,6 +255,7 @@ class LanguageMapper {
             return mapper;
         }
 
+        /*
 		std::string get(const unsigned int& key) const {
 			
 			std::string outString;
@@ -279,11 +281,28 @@ class LanguageMapper {
 
 			return outString;
 		}
+        */
+
+        std::string get(const std::string& key) const {
+			
+			std::string outString;
+
+            std::map<uint32_t, std::string>::const_iterator it = languageMap.find(keyToHash(key));
+					
+			if(it != languageMap.end()) {
+				outString = it->second;
+			}
+            else {
+                outString = "Error: String not found.";
+            }
+
+			return outString;
+		}
 
 	private:
 
-		bool add(const unsigned int& key, const std::string& value) {
-			languageMap[key] = value;
+        bool add(const std::string& key, const std::string& value) {
+			languageMap[keyToHash(key)] = value;
 			return true;
 		}
 
@@ -305,9 +324,10 @@ class LanguageMapper {
 		        json::key_list_t keyList = result.list_keys();
 		        json::key_list_t::iterator it;
 
+                std::string key;
+
 		        for(it = keyList.begin(); it != keyList.end(); ++it) {
-			        int key = std::stoi(*it);
-			        add(key, result.get(*it));
+			        add(*it, result.get(*it));
 		        }
 
                 return true;
@@ -317,13 +337,25 @@ class LanguageMapper {
 
         }
 
+        static uint32_t keyToHash(const std::string& key) {
+            uint32_t hashValue = 0;
+            const size_t stringLength = key.length();
+            
+            // TODO: We can do 4 of these at a time
+            for(size_t i = 0; i < stringLength; ++i) {
+                hashValue = (hashValue * 31) + key[i];
+            }
+
+            return hashValue;
+        }
+
         LanguageMapper() {
             LoadLanguageFile("","");
         }
 
         LanguageMapper(const LanguageMapper&) {};
         void operator=(const LanguageMapper&) {};
-		std::map<unsigned int, std::string> languageMap;
+		std::map<uint32_t, std::string> languageMap;
 };
 
 #endif // __LANGUAGEMAPPER_H__

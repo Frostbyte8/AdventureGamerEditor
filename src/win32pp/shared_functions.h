@@ -17,8 +17,9 @@
 /// LM_toUTF8 - Converts a Language Mapper string to a CString.
 ///----------------------------------------------------------------------------
 
-inline CString LM_toUTF8(const unsigned int& ID, const LanguageMapper& langMap) {
-    CString retVal = AtoW(langMap.get(ID).c_str(), CP_UTF8);
+inline CString LM_toUTF8(const std::string& ID, const LanguageMapper& langMap) {
+    // TODO: Update string
+    CString retVal = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     return retVal;
 }
 
@@ -31,8 +32,9 @@ inline CString LM_toUTF8(const unsigned int& ID, const LanguageMapper& langMap) 
 /// @param ID of the string to be used.
 ///----------------------------------------------------------------------------
 
-inline void EOD_SetWindowText(const unsigned int& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
-    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
+inline void EOD_SetWindowText(const std::string& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
+    // TODO: Update String
+    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     widget.SetWindowTextW(caption);
 }
 
@@ -57,8 +59,9 @@ inline void EOD_SetWindowText(const std::string& str, CWnd& widget, CString& cap
 /// @param ID of the string to be used.
 ///----------------------------------------------------------------------------
 
-inline void EOD_AddString(const unsigned int& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
-    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
+inline void EOD_AddString(const std::string& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
+    // TODO: Update String
+    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
     widget.AddString(caption);
 }
 
@@ -97,7 +100,8 @@ inline void processValidatorError(std::string& errorMessage, std::string& errorT
             
         if(errorCode == errorCodes::OutOfRange) {
             
-            errorMessage = langMap.get(LanguageConstants::IntegerOutOfRange);
+            // TODO: Update String
+            errorMessage = langMap.get("FileMenu");
 
             // TODO: make this a loop
 
@@ -117,7 +121,8 @@ inline void processValidatorError(std::string& errorMessage, std::string& errorT
 
         }
         else if(errorCode == errorCodes::InvalidData) {
-            errorMessage = langMap.get(LanguageConstants::ErrStringNotFound);
+            // TODO: Update String
+            errorMessage = langMap.get("FileMenu");
             errorTitle = "TODO: Make a title";
         }
     }
