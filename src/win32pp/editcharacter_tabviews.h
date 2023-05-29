@@ -95,7 +95,7 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual InputValidator* validateFields() { return NULL; }
+        virtual InputValidator* validateFields();
 
     protected:
 
@@ -117,6 +117,8 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
         CStatic             lblType;
         CComboBox           cbxType;
 
+        IntegerValidator    moneyValidator;
+
 
 };
 
@@ -134,7 +136,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
         virtual void moveControls(const WindowMetrics& windowMetrics);
-        virtual InputValidator* validateFields() { return NULL; }
+        virtual InputValidator* validateFields();
 
     protected:
 
@@ -154,6 +156,7 @@ class EditCharacterAttributesTab : public ECTabViewBase {
         CStatic             lblSight;
         CComboBox           cbxSight;
 
+        IntegerValidator    attributeValidator[4];
 
 };
 

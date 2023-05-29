@@ -449,7 +449,7 @@ void MainWindowFrame::finishedEditCharacterDialog() {
         return;
     }
 
-    const int alterType = editCharacterDialog->isEditingCharacter() ? AlterType::Add : AlterType::Edit;
+    const int alterType = editCharacterDialog->isEditingCharacter() ? AlterType::Edit : AlterType::Add;
 
     if(editCharacterDialog->hasSavedChanges() && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
    

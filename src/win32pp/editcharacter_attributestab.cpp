@@ -84,6 +84,10 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
         spnAttribType[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
         spnAttribType[i].SetRange(0, 12);
+
+        // TOOD: Attribute limits Namespace or something
+        attributeValidator[i] = IntegerValidator(&txtAttribType[i], 0, 12);
+
     }
 
     lblSight.Create(*this, 0, SS_SIMPLE);
@@ -209,4 +213,26 @@ void EditCharacterAttributesTab::populateFields(const GameCharacter& gameCharact
 
     cbxSight.SetCurSel(gameCharacter.getSight());
 
+}
+
+//=============================================================================
+// Protected Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// validateFields - Ensures that the data given by the user is valid, and if
+/// is not, gives the user a chance to correct it.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
+///----------------------------------------------------------------------------
+
+InputValidator* EditCharacterAttributesTab::validateFields() {
+
+    for(int i = 0; i < 4; ++i) {
+        if(!attributeValidator[i].validate()) {
+            return &attributeValidator[i];
+        }
+    }
+
+    return NULL;
 }

@@ -113,7 +113,8 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     spnMoney.SetRange(GameObjectConstants::MinMonetaryValue,
                       GameObjectConstants::MaxMonetaryValue);
                       
-   
+    // TODO: These Money constants should be moved to "GameWorldConstants" namespace
+    moneyValidator = IntegerValidator(&txtMoney, GameObjectConstants::MinMonetaryValue, GameObjectConstants::MaxMonetaryValue);
 
     return retVal;
 }
@@ -270,7 +271,23 @@ void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacte
     }
 
     spnMoney.SetPos(gameCharacter.getMoney());
-
     cbxType.SetCurSel(gameCharacter.getType());
+
 }
  
+///----------------------------------------------------------------------------
+/// validateFields - Ensures that the data given by the user is valid, and if
+/// is not, gives the user a chance to correct it.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
+///----------------------------------------------------------------------------
+
+InputValidator* EditCharacterQualitiesTab::validateFields() {
+
+    if(!moneyValidator.validate()) {
+        return &moneyValidator;
+    }
+
+    return NULL;
+
+}
