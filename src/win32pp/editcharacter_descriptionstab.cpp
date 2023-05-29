@@ -5,8 +5,13 @@
 #include "shared_functions.h"
 
 namespace ControlIDs {
-    const WORD BrowseIcon   = 101;
-    const WORD BrowseSound  = 102;
+    const WORD NameText     = 101;
+    const WORD OnSightText  = 102;
+    const WORD OnFightText  = 103;
+    const WORD OnDeathText  = 104;
+    const WORD BrowseIcon   = 105;
+    const WORD BrowseSound  = 106;
+    
 }
 
 //=============================================================================
@@ -25,9 +30,15 @@ BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
         const WORD ctrlID = LOWORD(wParam);
         const WORD ctrlAction = HIWORD(wParam);
 
-        if(ctrlAction == BN_CLICKED && 
-          (ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound)) {
+        if(ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound) {
+            if(ctrlAction == BN_CLICKED) {
                 return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
+            }
+        }
+        else if(ctrlID >= ControlIDs::NameText && ctrlID <= ControlIDs::OnDeathText) {
+            if(ctrlAction == EN_CHANGE) {
+                parentWindow->madeChange();
+            }
         }
 
     }
@@ -63,6 +74,9 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
             EOD_SetWindowText(LanguageConstants::CharBrowseButtonCaption, btnBrowse[i-4], caption, langMap);
             txtDescriptions[i].EnableWindow(FALSE);
         }
+        else {
+            txtDescriptions[i].SetDlgCtrlID(ControlIDs::NameText+i);
+        }
     } 
 
     std::vector<std::string> imageExtensions;
@@ -90,7 +104,7 @@ void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// calculateWidth -
+/// calculateWidth - Calculates the width of the tab page.
 ///----------------------------------------------------------------------------
 
 void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
@@ -267,6 +281,8 @@ BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
         fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash); 
 
         txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);
+
+        parentWindow->madeChange();
 	}
 
     return TRUE;

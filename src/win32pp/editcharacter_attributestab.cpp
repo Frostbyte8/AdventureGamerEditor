@@ -8,6 +8,7 @@ namespace ControlIDs {
     const WORD Skill        = 102;
     const WORD Willpower    = 103;
     const WORD Luck         = 104;
+    const WORD SightType    = 105;
 }
 
 //=============================================================================
@@ -30,16 +31,29 @@ BOOL EditCharacterAttributesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
            ctrlID <= ControlIDs::Luck) {
 
             const WORD index = ctrlID - ControlIDs::Energy;
+            
             if(notifyCode == EN_KILLFOCUS) {
                 const int newValue = std::stoi(WtoA(txtAttribType[index].GetWindowText()).c_str());
                 spnAttribType[index].SetPos(newValue);
-                return TRUE;
+                parentWindow->madeChange();
+
+            }
+            else if(notifyCode == EN_CHANGE) {
+                parentWindow->madeChange();
             }
 
         }
+        else if(ctrlID == ControlIDs::SightType) {
+            if(notifyCode == CBN_SELCHANGE) {
+                parentWindow->madeChange();
+            }
+        }
+    }
+    else {
+        return FALSE;
     }
 
-    return FALSE;
+    return TRUE;
 }
 
 ///----------------------------------------------------------------------------
@@ -76,6 +90,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText(LanguageConstants::CharSightLabel, lblSight, caption, langMap);
 
     cbxSight.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
+    cbxSight.SetDlgCtrlID(ControlIDs::SightType);
 
     for(int i = 0; i < 3; ++i) {
         EOD_AddString(LanguageConstants::CharSightNormal+i, cbxSight, caption, langMap);

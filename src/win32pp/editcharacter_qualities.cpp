@@ -4,7 +4,16 @@
 #include "shared_functions.h"
 
 namespace ControlIDs {
-    const WORD MoneyOnHand = 101;
+    const WORD MoneyOnHand      = 101;
+    const WORD CharType         = 102;
+    const WORD FlagEnterDark    = 103;
+    const WORD FlagEnterHazard  = 104;
+    const WORD FlagCanJump      = 105;
+    const WORD FlagBypassGates  = 106;
+    const WORD FlagBypassDoors  = 107;
+    const WORD FlagCanClimb     = 108;
+    const WORD FlagWanderer     = 109;
+    const WORD FlagStalker      = 110;
 }
 
 //=============================================================================
@@ -29,6 +38,19 @@ BOOL EditCharacterQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
         if(ctrlAction == EN_KILLFOCUS) {
             const int newValue = std::stoi(WtoA(txtMoney.GetWindowText()).c_str());
             spnMoney.SetPos(newValue);
+        }
+        else if(ctrlAction == EN_CHANGE) {
+            parentWindow->madeChange();
+        }
+    }
+    else if(ctrlID >= ControlIDs::FlagEnterDark && ctrlID <= ControlIDs::FlagStalker) {
+        if(ctrlAction == BN_CLICKED) {
+            parentWindow->madeChange();
+        }
+    }
+    else if(ctrlID == ControlIDs::CharType) {
+        if(ctrlAction == CBN_SELCHANGE) {
+            parentWindow->madeChange();
         }
     }
     else {
@@ -62,6 +84,8 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         EOD_SetWindowText(LanguageConstants::CharEnterDark+k, btnFlags[k],
                           caption, langMap);
 
+        btnFlags[k].SetDlgCtrlID(ControlIDs::FlagEnterDark+k);
+
     }
 
     grpProperties.Create(*this, 0, BS_GROUPBOX);
@@ -80,6 +104,7 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     lblType.Create(*this, 0, SS_SIMPLE);
     EOD_SetWindowText(LanguageConstants::CharTypeLabel, lblType, caption, langMap);
     cbxType.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
+    cbxType.SetDlgCtrlID(ControlIDs::CharType);
 
     for(size_t j = 0; j < 3; ++j) {
         EOD_AddString(LanguageConstants::CharMissionaryType+j, cbxType, caption, langMap);
@@ -247,6 +272,5 @@ void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacte
     spnMoney.SetPos(gameCharacter.getMoney());
 
     cbxType.SetCurSel(gameCharacter.getType());
-
 }
  

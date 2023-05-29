@@ -13,6 +13,31 @@ namespace ControlIDs {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL EditCharacterMiscTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if(ctrlID >= ControlIDs::XTextCoord && ctrlID <= ControlIDs::YTextCoord) {
+            if(notifyCode == EN_CHANGE) {
+                parentWindow->madeChange();
+            }
+        }
+    }
+    else {
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the tab, and create remaining child
 /// controls.
 /// Refer to the Win32++ documentation for more information.

@@ -190,6 +190,26 @@ LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// notifyChangeMade - Change the apply button to be useable.
+///----------------------------------------------------------------------------
+
+void EditCharacterDialog::notifyChangeMade() {
+    if(isEditCharacter) {
+        btnDialogControl[2].EnableWindow(TRUE);
+    }
+}
+
+///----------------------------------------------------------------------------
+/// notifyChangesSaved - Change the apply button to be unusable.
+///----------------------------------------------------------------------------
+
+void EditCharacterDialog::notifyChangesSaved() {
+    if(isEditCharacter) {
+        btnDialogControl[2].EnableWindow(FALSE);
+    }
+}
+
+///----------------------------------------------------------------------------
 /// moveControls 
 /// dialog window.
 /// @returns a Copy of a GameObject::Builder object.
