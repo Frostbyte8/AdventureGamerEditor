@@ -133,7 +133,10 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     spnProperties[1].SetRange(GameObjectConstants::MaxNumUses,
                               GameObjectConstants::MinNumUses);
     
-    flagValidator = GenericValidator(&btnFlags[0]);
+    // TODO: Money constants need to be in their own namespace. See comment in EditCharacterDialog for more information.
+
+    moneyValidator = IntegerValidator(&txtProperties[0], GameObjectConstants::MinMonetaryValue, GameObjectConstants::MaxMonetaryValue);
+    usesValidator = IntegerValidator(&txtProperties[1], GameObjectConstants::MinNumUses, GameObjectConstants::MaxNumUses);
 
     return retVal;
 
@@ -462,41 +465,21 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
 
 InputValidator* EditObjectQualitiesTab::validateFields() {
 
-    flagValidator.setError();
-    flagValidator.setLangMsgID(101);
-    flagValidator.setLangTitleID(102);
-
-    return &flagValidator;
-
-    /*
-    // TODO: Pretty sure this is wrong.
-
-    // Check to see if the object is in a fixed position.
-    if(btnFlags[6].IsWindowEnabled() && btnFlags[6].GetCheck() != BST_CHECKED) {
+    // if the object is not in a fixed position, we need to validate it's worth
+    if(btnFlags[6].GetCheck() != BST_CHECKED) {
     
-        const int numUses = spnProperties[1].GetPos();
-        if(numUses < GameObjectConstants::MinNumUses || 
-           numUses > GameObjectConstants::MaxNumUses) {
-            MessageBox(L"Number of uses must be between 1 and 10000 uses.", L"Validation Error", MB_OK | MB_ICONERROR);
-            return ControlIDs::UsesBox;
+        if(!moneyValidator.validate()) {
+            return &moneyValidator;
         }
 
     }
 
-
-    // Check to see if the object is money
-    if(btnFlags[7].IsWindowEnabled() && btnFlags[7].GetCheck() != BST_CHECKED) {
-
-        const int monetaryValue = spnProperties[0].GetPos();
-        if(monetaryValue < GameObjectConstants::MinMonetaryValue ||
-           monetaryValue > GameObjectConstants::MaxMonetaryValue) {
-            MessageBox(L"Value must be between 0 and 10000.", L"Validation Error", MB_OK | MB_ICONERROR);
-            return ControlIDs::MoneyBox;
+    // If the object is not money, we need to validate the number of uses
+    if(btnFlags[7].GetCheck() != BST_CHECKED) {
+        if(!usesValidator.validate()) {
+            return &usesValidator;
         }
     }
-
-    return 0;
-    */
 
     return NULL;
 

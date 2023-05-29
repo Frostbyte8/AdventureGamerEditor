@@ -129,7 +129,8 @@ class EditObjectQualitiesTab : public EOTabViewBase {
 
         CComboBox               cbxUsedWith;
 
-        GenericValidator        flagValidator;
+        IntegerValidator        moneyValidator;
+        IntegerValidator        usesValidator;
 };
 
 //=============================================================================
