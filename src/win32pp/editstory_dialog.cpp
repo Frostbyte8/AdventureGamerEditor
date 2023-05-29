@@ -3,7 +3,8 @@
 #include "shared_functions.h"
 
 namespace ControlIDs {
-    const WORD ID_APPLY = 101;
+    const WORD SummaryText  = 101;
+    const WORD StoryText    = 102;
 }
 
 //=============================================================================
@@ -87,25 +88,20 @@ BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD ctrlID = LOWORD(wParam);
     const WORD notifyCode = HIWORD(wParam);
 
-    if(lParam && notifyCode == BN_CLICKED) {
-        if(ctrlID == IDOK || ctrlID == IDCANCEL || 
-            ctrlID == DefControlIDs::IDAPPLY) {
-
-            dialogButtonPressed(ctrlID);
-            return TRUE;
-
-        }
-    }
-
-    /*
-            else if(notifyCode == EN_CHANGE) {
-            if(!changeMade) {
-                changeMade = true;
-                SetWindowText(dialogCaption + L"*");
+    if(lParam) {
+        if(ctrlID == IDOK || ctrlID == IDCANCEL || ctrlID == DefControlIDs::IDAPPLY) {
+            if(notifyCode == BN_CLICKED) {
+                dialogButtonPressed(ctrlID);
+                return TRUE;
             }
         }
-
-    */
+        else if(ctrlID == ControlIDs::SummaryText || ctrlID == ControlIDs::StoryText) {
+            if(notifyCode == EN_CHANGE) {
+                madeChange();
+                return TRUE;
+            }
+        }
+    }
 
     return FALSE;
 }
@@ -130,6 +126,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     txtSummary.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtSummary.SetExStyle(WS_EX_CLIENTEDGE);
     txtSummary.LimitText(8192); // TODO: Figure out a reasonable limit.
+    txtSummary.SetDlgCtrlID(ControlIDs::SummaryText);
 
     lblStory.Create(*this, 0, SS_SIMPLE);
     lblStory.SetWindowText(L"Story");
@@ -137,6 +134,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     txtStory.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtStory.SetExStyle(WS_EX_CLIENTEDGE);
     txtStory.LimitText(8192); // TODO: Figure out a reasonable limit.
+    txtStory.SetDlgCtrlID(ControlIDs::SummaryText);
 
     for(int i = 0; i < 3; ++i) {
         dialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
@@ -147,7 +145,8 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 
     dialogButtons[0].SetDlgCtrlID(IDOK);
     dialogButtons[1].SetDlgCtrlID(IDCANCEL);
-    dialogButtons[2].SetDlgCtrlID(ControlIDs::ID_APPLY);
+    dialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+    dialogButtons[2].EnableWindow(FALSE);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -171,6 +170,22 @@ void EditStoryDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Protected Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// notifyChangeMade - Change the apply button to be useable.
+///----------------------------------------------------------------------------
+
+void EditStoryDialog::notifyChangeMade() {
+    dialogButtons[2].EnableWindow(TRUE);
+}
+
+///----------------------------------------------------------------------------
+/// notifyChangesSaved - Change the apply button to be unusable.
+///----------------------------------------------------------------------------
+
+void EditStoryDialog::notifyChangesSaved() {
+    dialogButtons[2].EnableWindow(FALSE);
+}
 
 ///----------------------------------------------------------------------------
 /// trySaveData - Confirm data is valid, and if it is save it. This function

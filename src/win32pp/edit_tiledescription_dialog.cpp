@@ -144,6 +144,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     btnDialogButtons[0].SetDlgCtrlID(IDOK);
     btnDialogButtons[1].SetDlgCtrlID(IDCANCEL);
     btnDialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+    btnDialogButtons[2].EnableWindow(FALSE);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);

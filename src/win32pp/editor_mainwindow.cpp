@@ -564,6 +564,10 @@ void MainWindowFrame::onEditStory() {
 
     activeWindowHandle = editStoryDialog->GetHwnd();
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    const CString dialogCaption = LM_toUTF8(LanguageConstants::EditStorySummaryDialogCaption, langMap);
+    editStoryDialog->setDefaultDialogTitle(dialogCaption);
+
     editStoryDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editStoryDialog));
     editStoryDialog->ShowWindow(SW_SHOW);
@@ -612,6 +616,9 @@ void MainWindowFrame::onEditTileDescription() {
     activeWindowHandle = editTileDescriptionDialog->GetHwnd();
     editTileDescriptionDialog->goModal();
 
+    // TODO: Maybe make the dialog title part of the Constructor?
+    // Or even move this to OnCreate since that function already needs languagemapper and
+    // that's one less "getInstance".
     LanguageMapper& langMap = LanguageMapper::getInstance();
     const CString dialogCaption = LM_toUTF8(LanguageConstants::EditTileDescrtipionDialogCaption, langMap);
     editTileDescriptionDialog->setDefaultDialogTitle(dialogCaption);

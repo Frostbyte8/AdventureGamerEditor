@@ -28,6 +28,8 @@ class EditStoryDialog : public EditDialogBase {
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
         
+        virtual void notifyChangeMade();
+        virtual void notifyChangesSaved();
         virtual bool trySaveData();
 
     private:
