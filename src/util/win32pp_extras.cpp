@@ -91,6 +91,22 @@ void CAnsiEdit::OnPaste() {
 // Validators
 //=============================================================================
 
+bool GenericValidator::validate() {
+
+    const CWnd* window = getWindow();
+
+    if(window != NULL && window->IsWindow()) {
+    }
+    else {
+        lastError = errorCodes::ControlNotFound;
+        return false;
+    }
+
+    lastError = errorCodes::NoError;
+    return true;
+
+}
+
 bool IntegerValidator::validate() {
 
     const CWnd* window = getWindow();

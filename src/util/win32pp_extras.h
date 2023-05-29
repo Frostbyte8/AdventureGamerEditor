@@ -30,7 +30,8 @@ namespace errorCodes {
         TooManyChars    = 4,
         StartsWith      = 5,
         EndsWith        = 6,
-        NotEnoughChars  = 7
+        NotEnoughChars  = 7,
+        GenericError    = 8
     };
 }
 
@@ -38,7 +39,8 @@ namespace validatorTypes {
     enum vt {
         None            = 0,
         Integer         = 1,
-        String          = 2
+        String          = 2,
+        Generic         = 3
     };
 }
 
@@ -67,6 +69,20 @@ class InputValidator {
     private:
 
         const CWnd* ctrlWindow;
+};
+
+class GenericValidator : public InputValidator {
+
+    public:
+        GenericValidator() : InputValidator(NULL, validatorTypes::Generic) {}
+        GenericValidator(const CWnd* wnd) : InputValidator(wnd, validatorTypes::Generic) {}
+
+        virtual bool validate();
+        void setError() { lastError = errorCodes::GenericError; }
+        void setLangMsgID(const WORD& langID) { langMessageID = langID; }
+        void setLangTitleID(const WORD& langID) { langTitleID = langID; }
+
+
 };
 
 class IntegerValidator : public InputValidator {

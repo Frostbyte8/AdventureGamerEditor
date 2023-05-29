@@ -85,58 +85,7 @@ inline void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& w
 
 }
 
-// TODO: Depercated
-
-inline void processValidatorError(CString& errorMessage, CString& errorTitle, const InputValidator* validator) {
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    const int errorCode = validator->getErrorCode();
-
-    if(validator->getType() == validatorTypes::Integer) {
-        const IntegerValidator* intValidator = reinterpret_cast<const IntegerValidator*>(validator);
-            
-        if(errorCode == errorCodes::OutOfRange) {
-            errorMessage = LM_toUTF8(LanguageConstants::IntegerOutOfRange, langMap);
-            errorMessage.Format(errorMessage, intValidator->getMinValue(), intValidator->getMaxValue());
-        }
-        else if(errorCode == errorCodes::InvalidData) {
-            errorMessage = LM_toUTF8(LanguageConstants::ErrStringNotFound, langMap);
-        }
-    }
-    else if(validator->getType() == validatorTypes::String) {
-        const StringValidator* strValidator = reinterpret_cast<const StringValidator*>(validator);
-
-        if(errorCode == errorCodes::TooManyChars) {
-            errorMessage = L"String has too many characters. The maximum amount of characters is %d.";
-            errorMessage.Format(errorMessage, strValidator->getMaxChars());
-        }
-        else if(errorCode == errorCodes::NotEnoughChars) {
-            errorMessage = L"String does not have enough chars. The minimum amount of characters is %d.";
-            errorMessage.Format(errorMessage, strValidator->getMinChars());
-        }
-        else if(errorCode == errorCodes::EndsWith) {
-            
-            errorMessage = L"String must end in one of the following: ";
-            
-            const std::vector<std::string>& extenVec = strValidator->getEndsWith();
-            
-            const size_t numExten = extenVec.size();
-            
-            for(size_t i = 0; i < numExten; ++i) {
-                
-                errorMessage += AtoW(extenVec[i].c_str(), CP_UTF8);
-
-                if(i != numExten - 1) {
-                    errorMessage += L", ";
-                }
-                else {
-                    errorMessage += L".";
-                }
-            }
-        }
-    }
-
-}
+// TODO: This shouldn't be inline, but removing the inline keyword prevents this from compiling, do this at some point.
 
 inline void processValidatorError(std::string& errorMessage, std::string& errorTitle, const InputValidator* validator) {
 

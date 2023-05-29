@@ -128,6 +128,8 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         CSpinButton             spnProperties[2];
 
         CComboBox               cbxUsedWith;
+
+        GenericValidator        flagValidator;
 };
 
 //=============================================================================

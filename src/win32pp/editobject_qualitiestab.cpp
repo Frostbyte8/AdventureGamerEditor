@@ -133,6 +133,8 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     spnProperties[1].SetRange(GameObjectConstants::MaxNumUses,
                               GameObjectConstants::MinNumUses);
     
+    flagValidator = GenericValidator(&btnFlags[0]);
+
     return retVal;
 
 }
@@ -459,6 +461,12 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
 ///----------------------------------------------------------------------------
 
 InputValidator* EditObjectQualitiesTab::validateFields() {
+
+    flagValidator.setError();
+    flagValidator.setLangMsgID(101);
+    flagValidator.setLangTitleID(102);
+
+    return &flagValidator;
 
     /*
     // TODO: Pretty sure this is wrong.
