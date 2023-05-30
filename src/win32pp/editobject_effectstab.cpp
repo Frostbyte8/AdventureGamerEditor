@@ -91,7 +91,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpEffects.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("FileMenu", grpEffects,
+    EOD_SetWindowText("EffectsOnPlayerGroupLabel", grpEffects,
                       caption, langMap);
 
     btnEffect[0].Create(*this, 0, BS_AUTORADIOBUTTON | WS_GROUP);
@@ -99,20 +99,15 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     btnEffect[0].SetDlgCtrlID(ControlIDs::EffectsConsume);
     btnEffect[1].SetDlgCtrlID(ControlIDs::EffectsTemp);
 
-    for(int i = 0; i < 2; ++i) {
-        EOD_SetWindowText("FileMenu", btnEffect[i],
-                          caption, langMap);
-    }
+    EOD_SetWindowText("EffectsConsumpativeLabel", btnEffect[0], caption, langMap);
+    EOD_SetWindowText("EffectsReversedLabel", btnEffect[1], caption, langMap);
 
     grpAttrib.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("FileMenu", grpAttrib,
-                      caption, langMap);
+    EOD_SetWindowText("AttributesGroupLabel", grpAttrib, caption, langMap);
 
     for(int k = 0; k < 5; ++k) {
 
         lblAttribType[k].Create(*this, 0, SS_CENTER);
-        EOD_SetWindowText("FileMenu",
-                          lblAttribType[k], caption, langMap);
 
         btnAttribPolarity[k*2].Create(*this, 0, WS_GROUP | BS_AUTORADIOBUTTON);
         btnAttribPolarity[(k*2)+1].Create(*this, 0, BS_AUTORADIOBUTTON);
@@ -120,11 +115,9 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         btnAttribPolarity[k*2].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2));
         btnAttribPolarity[(k*2)+1].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2) + 1);
 
-        EOD_SetWindowText("FileMenu",
-                          btnAttribPolarity[k*2], caption, langMap);
+        EOD_SetWindowText("PositiveSignLabel", btnAttribPolarity[k*2], caption, langMap);
 
-        EOD_SetWindowText("FileMenu",
-                          btnAttribPolarity[(k*2)+1], caption, langMap);
+        EOD_SetWindowText("NegativeSignLabel", btnAttribPolarity[(k*2)+1], caption, langMap);
 
         for(int l = 0; l < 2; ++l) {
             txtAttribAmount[(k*2)+l].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
@@ -141,11 +134,17 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         }
     }
 
+    EOD_SetWindowText("EnergyLabel", lblAttribType[0], caption, langMap);
+    EOD_SetWindowText("SkillLabel", lblAttribType[1], caption, langMap);
+    EOD_SetWindowText("WillpowerLabel", lblAttribType[2], caption, langMap);
+    EOD_SetWindowText("LuckLabel", lblAttribType[3], caption, langMap);
+    EOD_SetWindowText("TorchLifeLabel", lblAttribType[4], caption, langMap);
+
     for(int i = 0; i < 2; ++i) {
         lblAttribHeading[i].Create(*this, 0, SS_CENTER);
-        EOD_SetWindowText("FileMenu",
-                          lblAttribHeading[i], caption, langMap);
     }
+    EOD_SetWindowText("BaseAttribLabel", lblAttribHeading[0], caption, langMap);
+    EOD_SetWindowText("RandomAttribLabel", lblAttribHeading[1], caption, langMap);
 
     for(int m = 0; m < 2; ++m) {
         lblSenses[m].Create(*this, 0, SS_SIMPLE);
@@ -153,20 +152,19 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         cbxSenses[m].SetDlgCtrlID(ControlIDs::MakesSight+m);
     }
 
-    for(int n = 0; n < 4; ++n) {
-        EOD_AddString("FileMenu", cbxSenses[0],
-                      caption, langMap);
+    EOD_AddString("SightNoEffectOption", cbxSenses[0], caption, langMap);
+    EOD_AddString("SightBlindOption", cbxSenses[0], caption, langMap);
+    EOD_AddString("SightNormalOption", cbxSenses[0], caption, langMap);
+    EOD_AddString("SightInfraredOption", cbxSenses[0], caption, langMap);
 
-        EOD_AddString("FileMenu", cbxSenses[1],
-                      caption, langMap);
-    }
+    EOD_AddString("HearingNoEffectOption", cbxSenses[1], caption, langMap);
+    EOD_AddString("HearingDeafOption", cbxSenses[1], caption, langMap);
+    EOD_AddString("HearingNormalOption", cbxSenses[1], caption, langMap);
+    EOD_AddString("HearingUltrasonicOption", cbxSenses[1], caption, langMap);
 
-    EOD_SetWindowText("FileMenu", lblSenses[0],
-                      caption, langMap);
-
+    EOD_SetWindowText("MakesPlayerSightLabel", lblSenses[0], caption, langMap);
     
-    EOD_SetWindowText("FileMenu",
-                      lblSenses[1], caption, langMap);
+    EOD_SetWindowText("MakesPlayerHaeringLabel", lblSenses[1], caption, langMap);
 
     return retVal;
 

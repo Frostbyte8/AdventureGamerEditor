@@ -92,7 +92,9 @@ HWND MainWindowFrame::Create(HWND parent) {
 /// CreateMenuBar - Creates the menu bar.
 ///----------------------------------------------------------------------------
 
-#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.get("FileMenu").c_str(), CP_UTF8); \
+// TODO: Remove macro
+
+#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.get(ID).c_str(), CP_UTF8); \
     MENUOBJ.AppendMenu(MF_STRING, ID, caption);
 
 void MainWindowFrame::CreateMenuBar() {
@@ -101,26 +103,24 @@ void MainWindowFrame::CreateMenuBar() {
     fileMenu.CreatePopupMenu();
     editMenu.CreatePopupMenu();
 
-    LanguageMapper& languageMapper = LanguageMapper::getInstance();
+    LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    CStringW caption;
+    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("NewMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("OpenMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SaveMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SaveAsMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("ExitMenuItem", langMap));
 
-    ADV_ADDMENUITEM(LanguageConstants::NewMenuItem, fileMenu);
-    ADV_ADDMENUITEM(LanguageConstants::OpenMenuItem, fileMenu);
-    ADV_ADDMENUITEM(LanguageConstants::SaveMenuItem, fileMenu);
-    ADV_ADDMENUITEM(LanguageConstants::SaveAsMenuItem, fileMenu);
-    ADV_ADDMENUITEM(LanguageConstants::ExitMenuItem, fileMenu);
+    editMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("LongTileMenuItem", langMap));
+    editMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SummaryMenuItem", langMap));
+    editMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("WorldMenuItem", langMap));
 
-    ADV_ADDMENUITEM(LanguageConstants::LongDescMenuItem, editMenu);
-    ADV_ADDMENUITEM(LanguageConstants::SummaryStoryMenuItem, editMenu);
-    ADV_ADDMENUITEM(LanguageConstants::EditWorldInfoMenuItem, editMenu);
-
-    caption = AtoW(languageMapper.get("FileMenu").c_str(), CP_UTF8);
+    CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
 
-    caption = AtoW(languageMapper.get("FileMenu").c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("EditMenu").c_str(), CP_UTF8);
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(editMenu.GetHandle()), caption);
@@ -147,7 +147,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	const int retVal = CDockFrame::OnCreate(cs);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
-    CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
+    CString caption = AtoW(langMap.get("MainWindowTitle").c_str(), CP_UTF8);
     SetWindowText(caption);
 
     CreateMenuBar();
@@ -366,7 +366,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
     if(alterType == AlterType::Add) {
         GameObject::Builder bd;
         editObjectDialog->setObjectToEdit(bd.build());
-        CString caption = LM_toUTF8("FileMenu", langMap);
+        CString caption = LM_toUTF8("CreateObjectTitle", langMap);
         editObjectDialog->setDefaultDialogTitle(caption);
         
     }
@@ -375,7 +375,7 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
         const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
         GameObject::Builder objectToEdit(gameObject);
         editObjectDialog->setObjectToEdit(objectToEdit.build());
-        caption = LM_toUTF8("FileMenu", langMap);
+        caption = LM_toUTF8("EditObjectTitle", langMap);
         caption += gameObject.getName().c_str();
         editObjectDialog->setDefaultDialogTitle(caption);
     }

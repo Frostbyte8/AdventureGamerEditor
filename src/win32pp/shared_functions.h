@@ -19,7 +19,7 @@
 
 inline CString LM_toUTF8(const std::string& ID, const LanguageMapper& langMap) {
     // TODO: Update string
-    CString retVal = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
+    CString retVal = AtoW(langMap.get(ID).c_str(), CP_UTF8);
     return retVal;
 }
 
@@ -34,7 +34,7 @@ inline CString LM_toUTF8(const std::string& ID, const LanguageMapper& langMap) {
 
 inline void EOD_SetWindowText(const std::string& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
     // TODO: Update String
-    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
+    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
     widget.SetWindowTextW(caption);
 }
 
@@ -61,7 +61,7 @@ inline void EOD_SetWindowText(const std::string& str, CWnd& widget, CString& cap
 
 inline void EOD_AddString(const std::string& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
     // TODO: Update String
-    caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
+    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
     widget.AddString(caption);
 }
 

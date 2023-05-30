@@ -123,19 +123,19 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     EditDialogBase* parentWindow = reinterpret_cast<EditDialogBase*>(this);
 
-    caption = LM_toUTF8("FileMenu", langMap);
+    caption = LM_toUTF8("DescriptionTabLabel", langMap);
     descriptionsTab = reinterpret_cast<EditObjectDescriptionsTab*>(
                       tabControl.AddTabPage(new EditObjectDescriptionsTab(parentWindow), caption));
     
-    caption = LM_toUTF8("FileMenu", langMap);
+    caption = LM_toUTF8("QualitiesTabLabel", langMap);
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(
                    tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap, parentWindow), caption));
 
-    caption = LM_toUTF8("FileMenu", langMap);
+    caption = LM_toUTF8("EffectsTabLabel", langMap);
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(
                  tabControl.AddTabPage(new EditObjectEffectsTab(parentWindow), caption));
 
-    caption = LM_toUTF8("FileMenu", langMap);
+    caption = LM_toUTF8("LocationsTabLabel", langMap);
     locationsTab = reinterpret_cast<EditObjectLocationsTab*>(
                    tabControl.AddTabPage(new EditObjectLocationsTab(gameMap, parentWindow), caption));
 
@@ -148,10 +148,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     btnDialogControl[0].SetDlgCtrlID(IDOK);
     btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
 
-    EOD_SetWindowText("FileMenu",
+    EOD_SetWindowText("OKButton",
                       btnDialogControl[0], caption, langMap);
 
-    EOD_SetWindowText("FileMenu",
+    EOD_SetWindowText("CancelButton",
                       btnDialogControl[1], caption, langMap);
 
     btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
@@ -160,7 +160,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     if(isEditObject) {
         btnDialogControl[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
         btnDialogControl[2].EnableWindow(FALSE);
-        EOD_SetWindowText("FileMenu",
+        EOD_SetWindowText("ApplyButton",
                           btnDialogControl[2], caption, langMap);
     }
 
