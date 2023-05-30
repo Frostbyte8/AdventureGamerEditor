@@ -51,18 +51,20 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     grpLocations.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("FileMenu", grpLocations, caption, langMap);
+    EOD_SetWindowText("CharLocationGroup", grpLocations, caption, langMap);
 
     for(int i = 0; i < 2; ++i) {
         lblCoords[i].Create(*this, 0, SS_SIMPLE);
-        EOD_SetWindowText("FileMenu", lblCoords[i], caption, langMap);
         txtCoords[i].Create(*this, 0, ES_AUTOHSCROLL);
         txtCoords[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtCoords[i].SetDlgCtrlID(ControlIDs::XTextCoord+i);
     }
 
+    EOD_SetWindowText("XCoord", lblCoords[0], caption, langMap);
+    EOD_SetWindowText("YCoord", lblCoords[1], caption, langMap);
+
     grpInventory.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("FileMenu", grpInventory, caption, langMap);
+    EOD_SetWindowText("CharInventoryLabel", grpInventory, caption, langMap);
 
     lsbInventory.Create(*this, 0, LBS_STANDARD | WS_VSCROLL | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL);
 

@@ -117,11 +117,9 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    dialogCaption = LM_toUTF8("FileMenu", langMap);
-    SetWindowText(dialogCaption);
 
     lblSummary.Create(*this, 0, SS_SIMPLE);
-    lblSummary.SetWindowText(L"Summary");
+    EOD_SetWindowText("SummaryLabel", lblSummary, caption, langMap);
 
     txtSummary.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtSummary.SetExStyle(WS_EX_CLIENTEDGE);
@@ -129,7 +127,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     txtSummary.SetDlgCtrlID(ControlIDs::SummaryText);
 
     lblStory.Create(*this, 0, SS_SIMPLE);
-    lblStory.SetWindowText(L"Story");
+    EOD_SetWindowText("StoryLabel", lblStory, caption, langMap);
 
     txtStory.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtStory.SetExStyle(WS_EX_CLIENTEDGE);
@@ -138,8 +136,11 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 
     for(int i = 0; i < 3; ++i) {
         dialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
-        EOD_SetWindowText("FileMenu", dialogButtons[i], caption, langMap);
     }
+
+    EOD_SetWindowText("OKButton", dialogButtons[0], caption, langMap);
+    EOD_SetWindowText("CancelButton", dialogButtons[1], caption, langMap);
+    EOD_SetWindowText("ApplyButton", dialogButtons[2], caption, langMap);
 
     dialogButtons[0].SetStyle(dialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
 

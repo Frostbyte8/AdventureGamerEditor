@@ -71,8 +71,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
     grpAttrib.Create(*this, 0, BS_GROUPBOX);
 
-    EOD_SetWindowText("FileMenu", grpAttrib,
-                      caption, langMap);
+    EOD_SetWindowText("CharacterAttributesGroup", grpAttrib, caption, langMap);
 
     for(int i = 0; i < 4; ++i) {
         lblAttribType[i].Create(*this, 0, SS_SIMPLE);
@@ -80,7 +79,6 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
         txtAttribType[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtAttribType[i].LimitText(2);
         txtAttribType[i].SetDlgCtrlID(ControlIDs::Energy + i);
-        EOD_SetWindowText("FileMenu", lblAttribType[i], caption, langMap);
         spnAttribType[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
         spnAttribType[i].SetRange(0, 12);
@@ -90,15 +88,20 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
     }
 
+    EOD_SetWindowText("EnergyCharacter", lblAttribType[0], caption, langMap);
+    EOD_SetWindowText("SkillCharacter", lblAttribType[1], caption, langMap);
+    EOD_SetWindowText("WillpowerCharacter", lblAttribType[2], caption, langMap);
+    EOD_SetWindowText("LuckCharacter", lblAttribType[3], caption, langMap);
+
     lblSight.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("FileMenu", lblSight, caption, langMap);
+    EOD_SetWindowText("CharacterSightLabel", lblSight, caption, langMap);
 
     cbxSight.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     cbxSight.SetDlgCtrlID(ControlIDs::SightType);
 
-    for(int i = 0; i < 3; ++i) {
-        EOD_AddString("FileMenu", cbxSight, caption, langMap);
-    }
+    EOD_AddString("SightCharNormalOption", cbxSight, caption, langMap);
+    EOD_AddString("SightCharBlindOption", cbxSight, caption, langMap);
+    EOD_AddString("SightCharInfraredOption", cbxSight, caption, langMap);
 
     return retVal;
 }

@@ -75,24 +75,31 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     grpFlags.Create(*this, 0, BS_GROUPBOX);
 
-    EOD_SetWindowText("FileMenu", grpFlags,
+    EOD_SetWindowText("ChararacterFlagsGroup", grpFlags,
                       caption, langMap);
 
     for(int k = 0; k < GameCharacterFlags::NumFlags; ++k) {
 
         btnFlags[k].Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
-        EOD_SetWindowText("FileMenu", btnFlags[k],
-                          caption, langMap);
 
         btnFlags[k].SetDlgCtrlID(ControlIDs::FlagEnterDark+k);
 
     }
 
+    EOD_SetWindowText("CanEnterDarkSpaces", btnFlags[0], caption, langMap);
+    EOD_SetWindowText("CanEnterHazardSpaces", btnFlags[1], caption, langMap);
+    EOD_SetWindowText("CanUseJumppads", btnFlags[2], caption, langMap);
+    EOD_SetWindowText("CanBypassGates", btnFlags[3], caption, langMap);
+    EOD_SetWindowText("CanBypassDoors", btnFlags[4], caption, langMap);
+    EOD_SetWindowText("CanClimbThings", btnFlags[5], caption, langMap);
+    EOD_SetWindowText("CharacterWanders", btnFlags[6], caption, langMap);
+    EOD_SetWindowText("CharacterStalksPlayer", btnFlags[7], caption, langMap);
+
     grpProperties.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("FileMenu", grpProperties, caption, langMap);
+    EOD_SetWindowText("CharPropertiesGroup", grpProperties, caption, langMap);
 
     lblMoney.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("FileMenu", lblMoney, caption, langMap);
+    EOD_SetWindowText("MoneyCharHas", lblMoney, caption, langMap);
 
     txtMoney.Create(*this, 0, ES_AUTOHSCROLL);
     txtMoney.SetExStyle(WS_EX_CLIENTEDGE);
@@ -102,13 +109,13 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
                     UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
     lblType.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("FileMenu", lblType, caption, langMap);
+    EOD_SetWindowText("TypeOfCharacter", lblType, caption, langMap);
     cbxType.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     cbxType.SetDlgCtrlID(ControlIDs::CharType);
 
-    for(size_t j = 0; j < 3; ++j) {
-        EOD_AddString("FileMenu", cbxType, caption, langMap);
-    }
+    EOD_AddString("TypeMissionary", cbxType, caption, langMap);
+    EOD_AddString("TypeTrader", cbxType, caption, langMap);
+    EOD_AddString("TypeFighter", cbxType, caption, langMap);
 
     spnMoney.SetRange(GameObjectConstants::MinMonetaryValue,
                       GameObjectConstants::MaxMonetaryValue);

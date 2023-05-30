@@ -59,25 +59,32 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpDescriptions.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("FileMenu", grpDescriptions, caption, langMap);
+    EOD_SetWindowText("CharDescriptionsGroup", grpDescriptions, caption, langMap);
 
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
         lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
         txtDescriptions[i].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
         txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
 
-        EOD_SetWindowText("FileMenu", lblDescriptions[i], caption, langMap);
-
         if(i > 3) {
             btnBrowse[i-4].Create(*this, 0, BS_PUSHBUTTON);
             btnBrowse[i-4].SetDlgCtrlID(ControlIDs::BrowseIcon + (i-4));
-            EOD_SetWindowText("FileMenu", btnBrowse[i-4], caption, langMap);
+            
             txtDescriptions[i].EnableWindow(FALSE);
         }
         else {
             txtDescriptions[i].SetDlgCtrlID(ControlIDs::NameText+i);
         }
     } 
+    
+    EOD_SetWindowText("CharNameLabel", lblDescriptions[0], caption, langMap);
+    EOD_SetWindowText("CharOnSightLabel", lblDescriptions[1], caption, langMap);
+    EOD_SetWindowText("CharOnFightLabel", lblDescriptions[2], caption, langMap);
+    EOD_SetWindowText("CharOnDeathLabel", lblDescriptions[3], caption, langMap);
+    EOD_SetWindowText("CharIconLabel", lblDescriptions[4], caption, langMap);
+    EOD_SetWindowText("CharSoundLabel", lblDescriptions[5], caption, langMap);
+    EOD_SetWindowText("BrowseButton", btnBrowse[0], caption, langMap);
+    EOD_SetWindowText("BrowseButton", btnBrowse[1], caption, langMap);
 
     std::vector<std::string> imageExtensions;
     imageExtensions.push_back(".ICO");

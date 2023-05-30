@@ -127,21 +127,21 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpWorldInfo.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("FileMenu", grpWorldInfo, caption, langMap);
+    EOD_SetWindowText("WorldSettingsGroup", grpWorldInfo, caption, langMap);
 
     for(int i = 0; i < 2; ++i) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
-        EOD_SetWindowText("FileMenu", lblProperties[i], caption, langMap);
         txtProperties[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtProperties[i].LimitText(128);
         txtProperties[i].SetDlgCtrlID(ControlIDs::WorldName+i);
     }
 
+    EOD_SetWindowText("WorldNameLabel", lblProperties[0], caption, langMap);
+    EOD_SetWindowText("CurrencyNameLabel", lblProperties[1], caption, langMap);
+
     for(int i = 0; i < 5; ++i) {
-        lblAttributes[i].Create(*this, 0, SS_SIMPLE);
-        EOD_SetWindowText("FileMenu", lblAttributes[i], caption, langMap);
-        
+        lblAttributes[i].Create(*this, 0, SS_SIMPLE);       
 
         txtAttributes[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
         spnAttributes[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY |
@@ -171,10 +171,19 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
 
     }
 
+    EOD_SetWindowText("EnergyLabel", lblAttributes[0], caption, langMap);
+    EOD_SetWindowText("SkillLabel", lblAttributes[1], caption, langMap);
+    EOD_SetWindowText("WillpowerLabel", lblAttributes[2], caption, langMap);
+    EOD_SetWindowText("LuckLabel", lblAttributes[3], caption, langMap);
+    EOD_SetWindowText("TorchLifeLabel", lblAttributes[4], caption, langMap);
+
     for(int i = 0; i < 3; ++i) {
         btnDialog[i].Create(*this, 0, BS_PUSHBUTTON);
-        EOD_SetWindowText("FileMenu", btnDialog[i], caption, langMap);
     }
+
+    EOD_SetWindowText("OKButton", btnDialog[0], caption, langMap);
+    EOD_SetWindowText("CancelButton", btnDialog[1], caption, langMap);
+    EOD_SetWindowText("ApplyButton", btnDialog[2], caption, langMap);
 
     btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
     btnDialog[0].SetDlgCtrlID(IDOK);

@@ -45,7 +45,6 @@
     "OnLastUseLabel"            : "Description on Last Use",
     "ObjectIconLabel"           : "Icon File",
     "ObjectSoundLabel"          : "Sound File (Unused)",
-    "ObjectBrowseButton"        : "Browse...",
 
     "FlagsGroupLabel"           : "Flags",
     "IsMasterKeyLabel"          : "Is Master Key",
@@ -71,11 +70,7 @@
     "RandomAttribLabel"         : "Random (0 - 12)",
     "PositiveSignLabel"         : "+",
     "NegativeSignLabel"         : "-",
-    "EnergyLabel"               : "Energy",
-    "SkillLabel"                : "Skill",
-    "WillpowerLabel"            : "Willpower",
-    "LuckLabel"                 : "Luck",
-    "TorchLifeLabel"            : "Torch Life",
+
 
     "MakesPlayerSightLabel"     : "Makes Player's Sight",
     "SightNoEffectOption"       : "No Effect",
@@ -96,15 +91,106 @@
     "UnlocksDoorAtLabel"        : "Object unlocks door at:",
 
     "NoObjectSelectedOption"    : "(No Object)",
-    "NoCharacterSelectedOption" : "(No Character)",   
+    "NoCharacterSelectedOption" : "(No Character)",
+
+    // Edit Character Dialog
+
+    "CharDescriptionsTabLabel"  : "Descriptions",
+    "CharQualitiesTabLabel"     : "Qualities",
+    "CharAttributesTabLabel"    : "Attributes",
+    "CharMiscTabLabel"          : "Misc.",
+
+    "CharDescriptionsGroup"     : "Descriptions",
+    "CharNameLabel"             : "Name",
+    "CharOnSightLabel"          : "On Sight",
+    "CharOnFightLabel"          : "On Fight",
+    "CharOnDeathLabel"          : "On Death",
+    "CharIconLabel"             : "Icon",
+    "CharSoundLabel"            : "Sound (Unused)",
+
+    "ChararacterFlagsGroup"     : "Flags",
+    "CanEnterDarkSpaces"        : "Can enter dark spaces",
+    "CanEnterHazardSpaces"      : "Can enter hazard spaces",
+    "CanUseJumppads"            : "Can use Jumppads",
+    "CanBypassGates"            : "Can bypass locked gates",
+    "CanBypassDoors"            : "Can bypass locked doors",
+    "CanClimbThings"            : "Can climb one-way barriers",
+    "CharacterWanders"          : "Wanders when the player is not near",
+    "CharacterStalksPlayer"     : "Follows player after seeing them",
+
+    "CharPropertiesGroup"       : "Properties",
+    "MoneyCharHas"              : "Money",
+    "TypeOfCharacter"           : "Character Behavior",
+    "TypeMissionary"            : "Missionary",
+    "TypeTrader"                : "Trader",
+    "TypeFighter"               : "Fighter",
+
+    "CharacterAttributesGroup"  : "Attributes",
+    "EnergyCharacter"           : "Energy (Max 12)",
+    "SkillCharacter"            : "Skill (Max 12)",
+    "WillpowerCharacter"        : "Willpower (Max 12)",
+    "LuckCharacter"             : "Luck (Max 12)",
+
+    "CharacterSightLabel"       : "Character's Sight",
+    "SightCharNormalOption"     : "Normal",
+    "SightCharBlindOption"      : "Blind",
+    "SightCharInfraredOption"   : "Infrared",
+
+    "CharLocationGroup"         : "Location",
+    "CharInventoryLabel"        : "Character Inventory",
+
+    // Edit World Info Dialog
+
+    "WorldSettingsGroup"        : "World Settings",
+    "WorldNameLabel"            : "World Name",
+    "CurrencyNameLabel"         : "Currency Name",
+
+    // Edit Story/Summary Dialog
+
+    "SummaryLabel"              : "Summary",
+    "StoryLabel"                : "Story",
+
+    // Edit Tile Description Dialog
+
+    "TileNameLabel"             : "Tile Name",
+    "TileDescriptionLabel"      : "Tile Description",
+
+    // Shared
+
+    "EnergyLabel"               : "Energy",
+    "SkillLabel"                : "Skill",
+    "WillpowerLabel"            : "Willpower",
+    "LuckLabel"                 : "Luck",
+    "TorchLifeLabel"            : "Torch Life",
+    "XCoord"                    : "X",
+    "YCoord"                    : "Y",
+
+    // Generic Buttons
 
     "OKButton"                  : "OK",
     "CancelButton"              : "Cancel",
     "ApplyButton"               : "Apply",
+    "BrowseButton"              : "Browse...",
 
-    "XCoord"                    : "X",
-    "YCoord"                    : "Y",
+    // Program Messages
 
-    "A" : "A"
+    "UnsavedChangesText"        : "You have unsaved changes. Do you want to save them now?",
+    "UnsavedChangesTitle"       : "Save Changes?",
+
+    // Error Messages
+
+    "ErrTileInvalidRowColText"  : "Unable to get tile: Invalid row or column was given",
+    "ErrTileInvalidRowColTitle" : "Error getting tile",
+    "ErrGamerFileReadText"      : "Unable to read Aventure Gamer File: %s",
+    "ErrGamerFileReadTitle"     : "Error reading file",
+    
+    // Validators
+
+    "VAL_OutOfRangeText"        : "Value out of range. Must be between %d, and %d.",
+    "VAL_OutOfRangeTitle"       : "Out of Range",
+
+    // Language Mapper Specific
+
+    "StrNotFoundErr" : "Err: String not found."
 
 }

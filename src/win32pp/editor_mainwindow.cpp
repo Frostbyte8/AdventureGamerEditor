@@ -7,6 +7,14 @@
 
 #include "shared_functions.h"
 
+namespace MenuIDs {
+    const WORD LongDescription      = 201;
+    const WORD SummaryAndStory      = 202;
+    const WORD WorldProperties      = 203;
+    const WORD NewFile              = 204;
+    const WORD OpenFile             = 205;
+}
+
 //=============================================================================
 // Constructors / Destructor
 //=============================================================================
@@ -105,15 +113,15 @@ void MainWindowFrame::CreateMenuBar() {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("NewMenuItem", langMap));
-    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("OpenMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, MenuIDs::NewFile, LM_toUTF8("NewMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, MenuIDs::OpenFile, LM_toUTF8("OpenMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SaveMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SaveAsMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("ExitMenuItem", langMap));
 
-    editMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("LongTileMenuItem", langMap));
-    editMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SummaryMenuItem", langMap));
-    editMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("WorldMenuItem", langMap));
+    editMenu.AppendMenu(MF_STRING, MenuIDs::LongDescription, LM_toUTF8("LongTileMenuItem", langMap));
+    editMenu.AppendMenu(MF_STRING, MenuIDs::SummaryAndStory, LM_toUTF8("SummaryMenuItem", langMap));
+    editMenu.AppendMenu(MF_STRING, MenuIDs::WorldProperties, LM_toUTF8("WorldMenuItem", langMap));
 
     CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
 
@@ -258,6 +266,13 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case LanguageConstants::SummaryStoryMenuItem: onEditStory(); break;
         case LanguageConstants::LongDescMenuItem: onEditTileDescription(); break;
         */
+
+        case MenuIDs::NewFile: return OnFileNew();
+        case MenuIDs::OpenFile: return OnFileOpen();
+        case MenuIDs::SummaryAndStory: onEditStory(); break;
+        case MenuIDs::LongDescription: onEditTileDescription(); break;
+        case MenuIDs::WorldProperties: onEditWorldInfo(); break;
+
         default: return FALSE;
 
     }
@@ -524,7 +539,8 @@ void MainWindowFrame::onEditWorldInfo() {
 
     activeWindowHandle = editWorldInfoDialog->GetHwnd();
     
-    editWorldInfoDialog->setDefaultDialogTitle(L"TODO: Caption this dialog!");
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    editWorldInfoDialog->setDefaultDialogTitle(LM_toUTF8("EditWorldInfoTitle", langMap));
     editWorldInfoDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
     editWorldInfoDialog->ShowWindow(SW_SHOW);
