@@ -251,11 +251,13 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         // TODO: On New and Open need to be interface functions
         // TODO: Don't use langauge constants for this.
+        /*
         case LanguageConstants::NewMenuItem: return OnFileNew();
         case LanguageConstants::OpenMenuItem: return OnFileOpen();
         case LanguageConstants::EditWorldInfoMenuItem: onEditWorldInfo(); break;
         case LanguageConstants::SummaryStoryMenuItem: onEditStory(); break;
         case LanguageConstants::LongDescMenuItem: onEditTileDescription(); break;
+        */
         default: return FALSE;
 
     }

@@ -1,199 +1,110 @@
 {
+
+    "FileMenu"                  : "&File",
+    "NewMenuItem"               : "&New...",
+    "OpenMenuItem"              : "&Open...",
+    "SaveMenuItem"              : "&Save",
+    "SaveAsMenuItem"            : "Save &As...",
+    "ExitMenuItem"              : "E&xit",
+
+    "EditMenu"                  : "&Edit",
+    "LongTileMenuItem"          : "&Long Tile Description...",
+    "SummaryMenuItem"           : "&Summary and Story...",
+    "WorldMenuItem"             : "&World Properties...",
+
+    "AddButton"                 : "Add",
+    "EditButton"                : "Edit",
+    "PlaceButton"               : "Place",
+    "DeleteButton"              : "Delete",
+
+    "ObjectsGroup"              : "Objects",
+    "CharactersGroup"           : "Characters",
+
+    // Window Titles
+
+    "MainWindowTitle"           : "Adventure Gamer Editor++",
+    "CreateObjectTitle"         : "Create a Game Object",
+    "EditObjectTitle"           : "Editing Game Object: %s",
+    "CreateCharacterTitle"      : "Create a Game Character",
+    "EditCharacterTitle"        : "Editing Game Character: %s",
+    "EditWorldInfoTitle"        : "Editing World Properties",
+    "EditTileDescTitle"         : "Editing Tile Description",
+    "ShowPlayerInventoryTitle"  : "Player Inventory",
     
-	"100" : "&File",                    // Menu Items
-    "101" : "&New...",
-    "102" : "&Open...",
-    "103" : "&Save...",
-    "104" : "Save &As...",
-    "105" : "E&xit",
-
-    "110" : "&Edit",
-    "111" : "&Long Tile Description...",
-    "112" : "&Summary and Story...",
-	
-	"201" : "Add",						// Buttons in the "Objects" Groupbox
-	"202" : "Edit",
-	"203" : "Place",
-	"204" : "Delete",
-
-	"205" : "Add",						// Buttons in the "Characters" Groupbox
-	"206" : "Edit",
-	"207" : "Place",
-	"208" : "Delete",
-
-	"209" : "Objects",                  // Objects and Characters Group Box
-	"210" : "Characters",
-	
-	"301" : "Adventure Gamer Editor++",
-    "302" : "Create a Game Object",
-    "303" : "Editing Game Object: ",
-    "304" : "Create a Game Character",
-    "305" : "Editing Game Character: ",
-    "306" : "Editing World Properties",
-    "307" : "Editing Summary and Story",
-    "308" : "Player Inventory",
-    "309" : "Editing Tile Description",
-
-    // Edit Object Dialog
-
-    "400" : "Descriptions",             // Description Tab Label
-    "401" : "Qualities",                // Qualities Tab Label
-    "402" : "Effects",                  // Effects Tab Label
-    "403" : "Locations",                // Locations Tab Label
-
-    "404" : "Descriptions",
-    "405" : "Name",                     // Name Label
-    "406" : "Description on Sight",
-    "407" : "Description on Use",
-    "408" : "Description on Last Use",
-    "409" : "Icon File",
-	"410" : "Sound File (Unused)",
-    "411" : "Browse...",
-	
-    "412" : "Flags",                    // Flags Groupbox Label
-
-    "413" : "Is Master Key",
-    "414" : "Is Invisible, and can only been seen with infrared vision",
-    "415" : "Can be used to climb obstacles",            
-    "416" : "Protects player from invisible hazards",
-    "417" : "Is Torch, or similar object",
-    "418" : "Is Worn, and its use is continuous",
-    "419" : "Cannot be moved from its location",
-    "420" : "Is Money, and can only be used to buy other objects",
+    // Edit Object Dialog 
     
-    "421" : "Properties",                               // Properties Groupbox Label
-    "422" : "Monetary Value",
-    "423" : "Number of Uses",
-    "424" : "Can only be used when this object is held",
+    "DescriptionTabLabel"       : "Descriptions",
+    "QualitiesTabLabel"         : "Qualities",
+    "EffectsTabLabel"           : "Effects",
+    "LocationsTabLabel"         : "Locations",
+
+    "DescriptionsGroupLabel"    : "Descriptions",
+    "ObjectNameLabel"           : "Name",
+    "OnObjectSightLabel"        : "Description on Sight",
+    "OnUseLabel"                : "Description on Use",
+    "OnLastUseLabel"            : "Description on Last Use",
+    "ObjectIconLabel"           : "Icon File",
+    "ObjectSoundLabel"          : "Sound File (Unused)",
+    "ObjectBrowseButton"        : "Browse...",
+
+    "FlagsGroupLabel"           : "Flags",
+    "IsMasterKeyLabel"          : "Is Master Key",
+    "IsInvisibleLabel"          : "Is Invisible, and can only been seen with infrared vision",
+    "IsLadderLabel"             : "Can be used to climb obstacles",            
+    "ProtectsPlayerLabel"       : "Protects player from invisible hazards",
+    "IsFlashlightLabel"         : "Is Torch, or similar object",
+    "IsWornLabel"               : "Is Worn, and its use is continuous",
+    "IsFixedPosLabel"           : "Cannot be moved from its location",
+    "IsMoneyLabel"              : "Is Money, and can only be used to buy other objects",
+
+    "PropertiesGroupLabel"      : "Properties",
+    "ObjectWorthLabel"          : "Monetary Value",
+    "ObjectNumUsesLabel"        : "Number of Uses",
+    "ObjectHeldLabel"           : "Can only be used when this object is held",
     
-    "425" : "Effects on Player Attributes",             // Effects Groupbox Label
-    "426" : "Consumptive effect on each use",
-    "427" : "Effects are reversed after use",
+    "EffectsOnPlayerGroupLabel" : "Effects on Player Attributes",
+    "EffectsConsumpativeLabel"  : "Consumptive effect on each use",
+    "EffectsReversedLabel"      : "Effects are reversed after use",
 
-    "428" : "Attributes",                               // Attribtues Groupbox Label
-    "429" : "Base (0 - 12)",
-    "430" : "Random (0 - 12)",
-    "431" : "+",
-    "432" : "-",
-    "433" : "Energy",                                   // Energy Label
-    "434" : "Skill",
-    "435" : "Willpower",
-    "436" : "Luck",
-    "437" : "Torch Life",
+    "AttributesGroupLabel"      : "Attributes",
+    "BaseAttribLabel"           : "Base (0 - 12)",
+    "RandomAttribLabel"         : "Random (0 - 12)",
+    "PositiveSignLabel"         : "+",
+    "NegativeSignLabel"         : "-",
+    "EnergyLabel"               : "Energy",
+    "SkillLabel"                : "Skill",
+    "WillpowerLabel"            : "Willpower",
+    "LuckLabel"                 : "Luck",
+    "TorchLifeLabel"            : "Torch Life",
 
-    "438" : "Makes Player's Sight",
-    "439" : "No Effect",                                // No Effect option in Sight Combo Box
-    "440" : "Blind",
-    "441" : "Normal",
-    "442" : "Infrared",
+    "MakesPlayerSightLabel"     : "Makes Player's Sight",
+    "SightNoEffectOption"       : "No Effect",
+    "SightBlindOption"          : "Blind",
+    "SightNormalOption"         : "Normal",
+    "SightInfraredOption"       : "Infrared",
 
-    "443" : "Make's Player's Hearing",
-    "444" : "No Effect",                                // No Effect option in Hearing Combo Box
-    "445" : "Deaf",
-    "446" : "Normal",
-    "447" : "Ultra-Sonic",
+    "MakesPlayerHearingLabel"   : "Make's Player's Hearing",
+    "HearingNoEffectOption"     : "No Effect",
+    "HearingDeafOption"         : "Deaf",
+    "HearingNormalOption"       : "Normal",
+    "HearingUltrasonicOption"   : "Ultra-Sonic",
     
-    "448" : "Locations",                                // Locations Groupbox Label
-    "449" : "On Ground At:",
-    "450" : "Player starts with it",
-    "451" : "Character has it",
-    "452" : "Object unlocks door at:",
+    "LocationsGroupLabel"       : "Locations",
+    "OnGroundAtLabel"           : "On Ground At:",
+    "PlayerStartsWithLabel"     : "Player starts with it",
+    "CharacterHasItLabel"       : "Character has it",
+    "UnlocksDoorAtLabel"        : "Object unlocks door at:",
 
-    "453" : "(No Object)",
-    "454" : "(No Character)",
+    "NoObjectSelectedOption"    : "(No Object)",
+    "NoCharacterSelectedOption" : "(No Character)",   
 
-    // Edit Character Dialog
+    "OKButton"                  : "OK",
+    "CancelButton"              : "Cancel",
+    "ApplyButton"               : "Apply",
 
-    "500" : "Descriptions",
-    "501" : "Qualities",
-    "502" : "Attributes",
-    "503" : "Misc.",
+    "XCoord"                    : "X",
+    "YCoord"                    : "Y",
 
-    "504" : "Descriptions",
-    "505" : "Name",
-    "506" : "On Sight",
-    "507" : "On Fight",
-    "508" : "On Death",
-    "509" : "Icon",
-    "510" : "Sound (Unused)",
-    "511" : "Browse...",
+    "A" : "A"
 
-    "512" : "Flags",
-    "513" : "Can enter dark spaces",
-    "514" : "Can enter hazard spaces",
-    "515" : "Can use Jumppads",
-    "516" : "Can bypass locked gates",
-    "517" : "Can bypass locked doors",
-    "518" : "Can climb one-way barriers",
-    "519" : "Wanders when the player is not near",
-    "520" : "Follows player after seeing them",
-
-    "521" : "Properties",
-    "522" : "Money",
-    "523" : "Character Behavior",
-    "524" : "Missionary",
-    "525" : "Trader",
-    "526" : "Fighter",
-
-    "527" : "Attributes",
-
-    "529" : "Energy (Max 12)",
-    "530" : "Skill (Max 12)",
-    "531" : "Willpower (Max 12)",
-    "532" : "Luck (Max 12)",
-
-    "533" : "Character's Sight",
-    "534" : "Normal",
-    "535" : "Blind",
-    "536" : "Infrared",
-
-    "537" : "Location",
-    "538" : "Character Inventory",
-
-    // Edit World Info Dialog
-
-    "600" : "World Settings",
-    "601" : "World Name",
-    "602" : "Currency Name",
-    "603" : "Energy",
-    "604" : "Skill",
-    "605" : "Willpower",
-    "606" : "Luck",
-    "607" : "Torch Life",
-
-    // Edit World Info Dialog
-
-    "650" : "Summary",
-    "651" : "Story",
-
-    // Edit Tile Description Dialog
-
-    "700" : "Tile Name",
-    "701" : "Tile Description",
-
-    // Shared Strings
-
-    // Generic Labels/Captions
-
-    "801" : "X",                                        // X-Coordinate Label
-    "802" : "Y",                                        // Y-Coordinate Label
-    "803" : "OK",
-    "804" : "Cancel",
-    "805" : "Apply",
-
-    // Program Messages
-
-    "5000" : "You have unsaved changes. Do you want to save them now?",
-    "5001" : "Save Changes?",
-
-    // Error Messages
-    
-	"10001" : "Unable to get tile: Invalid row or column was given.",
-	"10002" : "Error getting tile",
-	"10003" : "Unable to read Adventure Gamer File:",
-	"10004" : "Error reading file",
-    "10005" : "Value out of range. Must be between %d and %d.",
-    "10006" : "Out of Range",
-	
-    "32767" : "Err: String not Found"        // String was not found
 }
