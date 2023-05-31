@@ -21,34 +21,6 @@ class LanguageMapper {
             return mapper;
         }
 
-        /*
-		std::string get(const unsigned int& key) const {
-			
-			std::string outString;
-			
-			std::map<unsigned int, std::string>::const_iterator it;
-			
-			it = languageMap.find(key);
-			
-			if(it != languageMap.end()) {
-				outString = it->second;
-			}
-            else {
-
-                it = languageMap.find(LanguageConstants::ErrStringNotFound);
-
-                if(it != languageMap.end()) {
-                    outString = it->second;
-                }
-                else {
-                    outString = "Err: String not found, and Language File is missing strings!";
-                }
-            }
-
-			return outString;
-		}
-        */
-
         std::string get(const std::string& key) const {
 			
 			std::string outString;
@@ -104,12 +76,29 @@ class LanguageMapper {
         }
 
         static uint32_t keyToHash(const std::string& key) {
+
             uint32_t hashValue = 0;
             const size_t stringLength = key.length();
+            size_t i = 0;
             
             // TODO: We can do 4 of these at a time
-            for(size_t i = 0; i < stringLength; ++i) {
-                hashValue = (hashValue * 31) + key[i];
+            for(i = 0; i + 3 < stringLength; i+=4) {
+                hashValue = (hashValue * 31) + (key[i] | (key[i+1] << 8) | 
+                                               (key[i+2] << 16) | (key[i+3] << 24));
+            }
+
+            const size_t remainder = stringLength - i;
+
+            if(remainder) {
+                if(remainder == 3) {
+                    hashValue = (hashValue * 31) + (key[i] | (key[i+1] << 8) | (key[i+2] << 16));
+                }
+                else if(remainder == 2) {
+                    hashValue = (hashValue * 31) + (key[i] | (key[i+1] << 8));
+                }
+                else {
+                    hashValue = (hashValue * 31) + key[i];
+                }
             }
 
             return hashValue;
