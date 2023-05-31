@@ -14,6 +14,12 @@
 
 namespace GameCharacterConstants {
     const int NoID              = -1;
+
+    const unsigned int MaxCharacterName         = 128;
+    const unsigned int MaxDescriptionLength     = 1024;
+    const unsigned int MaxFightText             = 1024;
+    const unsigned int MaxDeathText             = 1024;
+
 }
 
 //-----------------------------------------------------------------------------

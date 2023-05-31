@@ -81,7 +81,6 @@ class LanguageMapper {
             const size_t stringLength = key.length();
             size_t i = 0;
             
-            // TODO: We can do 4 of these at a time
             for(i = 0; i + 3 < stringLength; i+=4) {
                 hashValue = (hashValue * 31) + (key[i] | (key[i+1] << 8) | 
                                                (key[i+2] << 16) | (key[i+3] << 24));

@@ -2,6 +2,7 @@
 #include "../model/gamecharacter.h"
 
 #include "shared_functions.h"
+#include "../adventuregamer_constants.h"
 
 namespace ControlIDs {
     const WORD Energy       = 101;
@@ -81,7 +82,9 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
         txtAttribType[i].SetDlgCtrlID(ControlIDs::Energy + i);
         spnAttribType[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
-        spnAttribType[i].SetRange(0, 12);
+        
+        spnAttribType[i].SetRange(AdventureGamerConstants::MinAttributeValue,
+                                  AdventureGamerConstants::MaxAttributeValue);
 
         // TOOD: Attribute limits Namespace or something
         attributeValidator[i] = IntegerValidator(&txtAttribType[i], 0, 12);

@@ -123,7 +123,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 
     txtSummary.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtSummary.SetExStyle(WS_EX_CLIENTEDGE);
-    txtSummary.LimitText(8192); // TODO: Figure out a reasonable limit.
+    txtSummary.LimitText(GameMapConstants::MaxSummaryText);
     txtSummary.SetDlgCtrlID(ControlIDs::SummaryText);
 
     lblStory.Create(*this, 0, SS_SIMPLE);
@@ -131,7 +131,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 
     txtStory.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtStory.SetExStyle(WS_EX_CLIENTEDGE);
-    txtStory.LimitText(8192); // TODO: Figure out a reasonable limit.
+    txtStory.LimitText(GameMapConstants::MaxStoryText);
     txtStory.SetDlgCtrlID(ControlIDs::SummaryText);
 
     for(int i = 0; i < 3; ++i) {

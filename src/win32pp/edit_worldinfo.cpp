@@ -1,7 +1,8 @@
 #include "edit_worldinfo.h"
 #include "../util/languagemapper.h"
 #include "shared_functions.h"
-#include <functional>
+#include "../adventuregamer_constants.h"
+
 
 namespace ControlIDs {
     const WORD WorldName            = 101;
@@ -133,9 +134,11 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
         txtProperties[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
-        txtProperties[i].LimitText(128);
         txtProperties[i].SetDlgCtrlID(ControlIDs::WorldName+i);
     }
+
+    txtProperties[0].SetLimitText(GameInfoConstants::MaxWorldName);
+    txtProperties[1].SetLimitText(GameInfoConstants::MaxCurrencyName);
 
     EOD_SetWindowText("WorldNameLabel", lblProperties[0], caption, langMap);
     EOD_SetWindowText("CurrencyNameLabel", lblProperties[1], caption, langMap);
@@ -160,11 +163,11 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
         txtRandomAttributes[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtRandomAttributes[i].LimitText(2);
 
-        spnAttributes[i].SetRange(GameObjectConstants::MinAttributeValue,
-                                  GameObjectConstants::MaxAttributeValue);
+        spnAttributes[i].SetRange(AdventureGamerConstants::MinAttributeValue,
+                                  AdventureGamerConstants::MaxAttributeValue);
 
-        spnRandomAttributes[i].SetRange(GameObjectConstants::MinAttributeValue,
-                                        GameObjectConstants::MaxAttributeValue);
+        spnRandomAttributes[i].SetRange(AdventureGamerConstants::MinAttributeValue,
+                                        AdventureGamerConstants::MaxAttributeValue);
 
         txtAttributes[i].SetDlgCtrlID(ControlIDs::txtEnergy+i);
         spnAttributes[i].SetDlgCtrlID(ControlIDs::spnEnergy+i);

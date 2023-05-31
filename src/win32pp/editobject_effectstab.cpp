@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "shared_functions.h"
+#include "../adventuregamer_constants.h"
 
 namespace ControlIDs {
     const WORD EnergyBase            = 101;
@@ -127,8 +128,8 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
             txtAttribAmount[(k*2)+l].SetExStyle(WS_EX_CLIENTEDGE);
             txtAttribAmount[(k*2)+l].LimitText(2);
 
-            spnAttribAmount[(k*2)+l].SetRange(GameObjectConstants::MinAttributeValue,
-                                        GameObjectConstants::MaxAttributeValue);
+            spnAttribAmount[(k*2)+l].SetRange(AdventureGamerConstants::MinAttributeValue,
+                                        AdventureGamerConstants::MaxAttributeValue);
 
             txtAttribAmount[(k*2)+l].SetDlgCtrlID(ControlIDs::EnergyBase+((k*2)+l));
         }

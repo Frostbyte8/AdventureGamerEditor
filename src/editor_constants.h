@@ -12,6 +12,9 @@ namespace EditorConstants {
     unsigned int const TilesPerRow          = 16;
     unsigned int const TilesPerCol          = 16;
     unsigned int const DirtroadStartRow     = 8;
+
+	const unsigned int DefaultCols			= 10;
+	const unsigned int DefaultRows			= 10;
 }
 
 // TODO: Below this line are Adventure Gamer Constants, not editor ones, so
@@ -46,44 +49,6 @@ class AttributeTypes {
 };
 
 #undef ATTRIBUTETYPES
-
-///----------------------------------------------------------------------------
-/// AdventureGamerConstants - Hard limits of the game itself
-///----------------------------------------------------------------------------
-
-namespace AdventureGamerConstants {
-
-    // Rows definately cannot exceed 100, but columns? I think it may be
-    // dependant on memory, which given that it was written in Visual Basic 3,
-    // is probably not much.
-    const unsigned int MaxCols              = 100;
-    const unsigned int MaxRows              = 100; // That's 0 to 99.
-	const unsigned int DefaultCols			= 10;
-	const unsigned int DefaultRows			= 10;
-	const std::string FileNameExtension     = "SG0";
-}
-
-///----------------------------------------------------------------------------
-/// AdventureGamerHeadings - Various headings the File format uses
-///----------------------------------------------------------------------------
-
-namespace AdventureGamerHeadings {
-    const std::string Row           = "{row ";      // Space is intentional.
-    const std::string Jumps         = "{jumps";
-    const std::string Switches      = "{swtchs";
-    const std::string Attributes    = "{attrb";
-    const std::string Objects       = "{objct";
-    const std::string Characters    = "{cretr";
-}
-
-///----------------------------------------------------------------------------
-/// AdventureGamerSubHeadings - Some headings even have sub headings
-///----------------------------------------------------------------------------
-
-namespace AdventureGamerSubHeadings {
-    const unsigned int NumAttributeSubHeadings = AttributeTypes::NumTypes;
-    const std::string Attributes[NumAttributeSubHeadings] = { "Stamina", "Skill", "Willpower", "Luck", "Torch Life" };
-}
 
 ///----------------------------------------------------------------------------
 /// HearingTypes - How an object alters the player's hearing, or in the case

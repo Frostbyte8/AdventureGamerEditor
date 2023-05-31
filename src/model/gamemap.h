@@ -11,6 +11,25 @@
 #include "connection_point.h"
 #include "../compat/stdint_compat.h"
 
+//-----------------------------------------------------------------------------
+// GameMapConstants
+//-----------------------------------------------------------------------------
+
+namespace GameMapConstants {
+
+    // TODO: Test these values. Rows for sure cannot go beyond 100,
+    // but the limit might be sooner than that.
+    const unsigned int MaxCols              = 100;
+    const unsigned int MaxRows              = 100;
+
+    const unsigned int MaxTileName          = 192;
+    const unsigned int MaxTileDescription   = 1024;
+    const unsigned int MaxObjects           = 100;
+    const unsigned int MaxCharacters        = 30;
+
+    const unsigned int MaxStoryText         = 2048;
+    const unsigned int MaxSummaryText       = 8192;
+}
 
 class GameMap {
 

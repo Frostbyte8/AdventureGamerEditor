@@ -6,6 +6,37 @@
 #include "../compat/stdint_compat.h"
 #include "../editor_constants.h"
 
+//-----------------------------------------------------------------------------
+// GameInfoConstants - Game Info Constants. They're Constant!
+//-----------------------------------------------------------------------------
+
+namespace GameInfoConstants {
+    const unsigned int MaxWorldName         = 192;
+    const unsigned int MaxCurrencyName      = 64;
+}
+
+///----------------------------------------------------------------------------
+/// AdventureGamerHeadings - Various headings the File format uses
+///----------------------------------------------------------------------------
+
+namespace AdventureGamerHeadings {
+    const std::string Row           = "{row ";      // Space is intentional.
+    const std::string Jumps         = "{jumps";
+    const std::string Switches      = "{swtchs";
+    const std::string Attributes    = "{attrb";
+    const std::string Objects       = "{objct";
+    const std::string Characters    = "{cretr";
+}
+
+///----------------------------------------------------------------------------
+/// AdventureGamerSubHeadings - Some headings even have sub headings
+///----------------------------------------------------------------------------
+
+namespace AdventureGamerSubHeadings {
+    const unsigned int NumAttributeSubHeadings = AttributeTypes::NumTypes;
+    const std::string Attributes[NumAttributeSubHeadings] = { "Stamina", "Skill", "Willpower", "Luck", "Torch Life" };
+}
+
 class GameMap;
 
 class GameInfo {

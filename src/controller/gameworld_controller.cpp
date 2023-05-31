@@ -9,7 +9,7 @@
 //=============================================================================
 
 GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {
-    gameMap = new GameMap(AdventureGamerConstants::DefaultRows, AdventureGamerConstants::DefaultCols);
+    gameMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
 }
 
 GameWorldController::~GameWorldController() {
@@ -102,7 +102,7 @@ bool GameWorldController::newWorld() {
 
     try {
 		
-        newMap = new GameMap(AdventureGamerConstants::DefaultRows, AdventureGamerConstants::DefaultCols);		
+        newMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);		
 
 		if(gameMap) {
 			delete gameMap;

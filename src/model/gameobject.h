@@ -25,9 +25,6 @@ namespace GameObjectConstants {
     const int MaxNumUses        = 10000;
     const int MinNumUses        = 1;
 
-    const int MinAttributeValue = 0;
-    const int MaxAttributeValue = 12;
-
     // The original game has no apparent limit, so we'll make a
     // sensible one up.
 
