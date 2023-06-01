@@ -11,7 +11,6 @@ namespace ControlIDs {
     const WORD OnDeathText  = 104;
     const WORD BrowseIcon   = 105;
     const WORD BrowseSound  = 106;
-    
 }
 
 //=============================================================================
@@ -66,6 +65,7 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
         txtDescriptions[i].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
         txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
 
+        // For the last two in the range, we will give them browse buttons.
         if(i > 3) {
             btnBrowse[i-4].Create(*this, 0, BS_PUSHBUTTON);
             btnBrowse[i-4].SetDlgCtrlID(ControlIDs::BrowseIcon + (i-4));
@@ -125,6 +125,9 @@ void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windo
                              lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
     }
 
+    // And we need to makes sure that we indicate that there is a margin for the groupbox
+    // and a margin for the window edge.
+
     const WindowMetrics::ControlSpacing cs = windowMetrics.GetControlSpacing();
     pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
 }
@@ -142,7 +145,7 @@ void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
     CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameObjectConstants::MaxNameLength);
     builder.description(WtoA(wideDesc).c_str(), 0);  
 
-    for(int i = 1; i < 6; ++i) {
+    for(int i = 1; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
         wideDesc = txtDescriptions[i].GetWindowText().Left(GameObjectConstants::MaxDescriptionLength);
         builder.description(WtoA(wideDesc).c_str(), i);
     }
@@ -150,7 +153,9 @@ void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
 }
 
 ///----------------------------------------------------------------------------
-/// moveControls -
+/// moveControls - Move/resize the controls to their desired positions
+/// @param a constant refrence to the dialog's window metrics object to be used
+/// to move and size the controls.
 ///----------------------------------------------------------------------------
 
 void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetrics) {
@@ -164,11 +169,18 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
     const int maxGroupBoxWidth  = GetClientRect().right - (CS.XWINDOW_MARGIN * 2);
     const int maxRowWidth       = maxGroupBoxWidth - (CS.XGROUPBOX_MARGIN * 2);
 
+    // Since we have many labels and edit boxes on this tab page that take up 
+    // the full width, we'll calculate their size here.
+    
     const CSize defaultLabelSize(maxRowWidth, CD.YLABEL);
     const CSize defaultEditSize(maxRowWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
 
+    // Start positioning them at the top of the groupbox past it's margins.
+
     CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN, 
                 CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
+
+    // Now loop through the 6 labels/edit boxes and move them
 
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
 
@@ -181,6 +193,8 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
                                       defaultEditSize.cx, defaultEditSize.cy);
 
         cPos.Offset(0, defaultEditSize.cy + CS.YRELATED_MARGIN);
+
+        // For the last 2, we also need to make sure their buttons are moved too.
 
         if(i > GameCharacterDescriptions::NumDescriptions - 1) {
 
@@ -200,6 +214,9 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
 
     }
 
+    // Finally resize the groupbox, and update how tall the content on the tab page
+    // is.
+
     grpDescriptions.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
                                maxGroupBoxWidth, cPos.y);
 
@@ -208,7 +225,10 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
 }
 
 ///----------------------------------------------------------------------------
-/// populateFields -
+/// populateFields - Fill the tab page with the relevenat data from the
+/// Game Character being worked on.
+/// @param a constant reference to the Game Character containing the data to be
+/// used to fill out the fields.
 ///----------------------------------------------------------------------------
 
 void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameCharacter) {
@@ -218,6 +238,7 @@ void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameChara
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
         EOD_SetWindowText(gameCharacter.getDescription(i), txtDescriptions[i], caption);
     }
+
 }
 
 ///----------------------------------------------------------------------------
@@ -229,6 +250,8 @@ void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameChara
 
 InputValidator* EditCharacterDescriptionsTab::validateFields() {
    
+    // For this tab page, only the last two text boxes need to be validated.
+
     if(txtDescriptions[4].GetTextLength() != 0) {
         if(!iconDescValidator.validate()) {
             return &iconDescValidator;
@@ -252,9 +275,10 @@ InputValidator* EditCharacterDescriptionsTab::validateFields() {
 /// onBrowseForMedia - When the Browse for Icon or Sound icon is pressed,
 /// search for one.
 /// @param if true, it will search for an icon, otherwise, search for a sound.
+/// @return always TRUE.
 ///----------------------------------------------------------------------------
 
-// TODO: Split this into a shared function
+// TODO: Split this into a shared function?
 
 BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
 

@@ -185,7 +185,9 @@ void EditObjectDescriptionsTab::insertData(GameObject::Builder& builder) {
 }
 
 ///----------------------------------------------------------------------------
-/// moveControls - Move the controls to their desired positions
+/// moveControls - Move/resize the controls to their desired positions
+/// @param a constant refrence to the dialog's window metrics object to be used
+/// to move and size the controls.
 ///----------------------------------------------------------------------------
 
 void EditObjectDescriptionsTab::moveControls(const WindowMetrics& windowMetrics) {

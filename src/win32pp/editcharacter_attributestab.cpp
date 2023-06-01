@@ -34,7 +34,21 @@ BOOL EditCharacterAttributesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
             const WORD index = ctrlID - ControlIDs::Energy;
             
             if(notifyCode == EN_KILLFOCUS) {
-                const int newValue = std::stoi(WtoA(txtAttribType[index].GetWindowText()).c_str());
+
+                int newValue = 0;
+
+                // If the user enters a bogus value, we'll just set it to 0.
+
+                try {
+                    newValue = std::stoi(WtoA(txtAttribType[index].GetWindowText()).c_str());
+                }
+                catch(const std::invalid_argument&) {
+                    newValue = 0;
+                }
+                catch(const std::out_of_range&) {
+                    newValue = 0;
+                }
+               
                 spnAttribType[index].SetPos(newValue);
                 parentWindow->madeChange();
 
@@ -74,7 +88,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
     EOD_SetWindowText("CharacterAttributesGroup", grpAttrib, caption, langMap);
 
-    for(int i = 0; i < 4; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
         lblAttribType[i].Create(*this, 0, SS_SIMPLE);
         txtAttribType[i].Create(*this, 0, ES_AUTOHSCROLL);
         txtAttribType[i].SetExStyle(WS_EX_CLIENTEDGE);
@@ -145,8 +159,27 @@ void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowM
 
 void EditCharacterAttributesTab::insertData(GameCharacter::Builder& builder) {
 
-    for(int i = 0; i < 4; ++i) {
-        const int amount = std::stoi(WtoA(txtAttribType[i].GetWindowText()).c_str());
+    int amount = 0;
+
+    for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
+
+        try {
+            amount = std::stoi(WtoA(txtAttribType[i].GetWindowText()).c_str());
+        }
+        catch(const std::invalid_argument&) {
+            amount = 0;
+        }
+        catch(const std::out_of_range&) {
+            amount = 0;
+        }
+
+        if(amount > AdventureGamerConstants::MaxAttributeValue) {
+            amount = AdventureGamerConstants::MaxAttributeValue;
+        }
+        else if(amount < AdventureGamerConstants::MinAttributeValue) {
+            amount = AdventureGamerConstants::MinAttributeValue;
+        }
+
         builder.attribute(amount, i);
     }
 
@@ -174,7 +207,7 @@ void EditCharacterAttributesTab::moveControls(const WindowMetrics& windowMetrics
     CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN,
         CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
 
-    for(int i = 0; i < 4; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
 
         lblAttribType[i].MoveWindow(cPos.x, cPos.y, 
                                     defaultLabelSize.cx, defaultLabelSize.cy);
@@ -213,7 +246,7 @@ void EditCharacterAttributesTab::moveControls(const WindowMetrics& windowMetrics
 
 void EditCharacterAttributesTab::populateFields(const GameCharacter& gameCharacter) {
 
-    for(int i = 0; i < 4; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
         spnAttribType[i].SetPos(gameCharacter.getAttribute(i));
     }
 
@@ -234,7 +267,7 @@ void EditCharacterAttributesTab::populateFields(const GameCharacter& gameCharact
 
 InputValidator* EditCharacterAttributesTab::validateFields() {
 
-    for(int i = 0; i < 4; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
         if(!attributeValidator[i].validate()) {
             return &attributeValidator[i];
         }

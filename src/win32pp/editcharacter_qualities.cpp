@@ -35,29 +35,53 @@ BOOL EditCharacterQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD ctrlAction = HIWORD(wParam);
 
     if(ctrlID == ControlIDs::MoneyOnHand) {
+
         if(ctrlAction == EN_KILLFOCUS) {
-            const int newValue = std::stoi(WtoA(txtMoney.GetWindowText()).c_str());
+
+            int newValue = 0;
+
+            // If the user enters a bogus value, we'll just set the value to 0.
+
+            try {
+                newValue = std::stoi(WtoA(txtMoney.GetWindowText()).c_str());
+            }
+            catch(const std::invalid_argument&) {
+                newValue = 0;
+            }
+            catch(const std::out_of_range&) {
+                newValue = 0;
+            }
+
             spnMoney.SetPos(newValue);
         }
         else if(ctrlAction == EN_CHANGE) {
             parentWindow->madeChange();
         }
+
     }
-    else if(ctrlID >= ControlIDs::FlagEnterDark && ctrlID <= ControlIDs::FlagStalker) {
+    else if(ctrlID >= ControlIDs::FlagEnterDark && ctrlID <= 
+            ControlIDs::FlagStalker) {
+
         if(ctrlAction == BN_CLICKED) {
             parentWindow->madeChange();
         }
+
     }
     else if(ctrlID == ControlIDs::CharType) {
+
         if(ctrlAction == CBN_SELCHANGE) {
             parentWindow->madeChange();
         }
+
     }
     else {
+
         return FALSE;
+
     }
 
     return TRUE;
+
 }
 
 ///----------------------------------------------------------------------------
@@ -110,7 +134,10 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     lblType.Create(*this, 0, SS_SIMPLE);
     EOD_SetWindowText("TypeOfCharacter", lblType, caption, langMap);
-    cbxType.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
+
+    cbxType.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | 
+                   WS_VSCROLL | WS_TABSTOP);
+
     cbxType.SetDlgCtrlID(ControlIDs::CharType);
 
     EOD_AddString("TypeMissionary", cbxType, caption, langMap);
@@ -121,7 +148,9 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
                       GameObjectConstants::MaxMonetaryValue);
                       
     // TODO: These Money constants should be moved to "GameWorldConstants" namespace
-    moneyValidator = IntegerValidator(&txtMoney, GameObjectConstants::MinMonetaryValue, GameObjectConstants::MaxMonetaryValue);
+    moneyValidator = IntegerValidator(&txtMoney,
+                                      GameObjectConstants::MinMonetaryValue,
+                                      GameObjectConstants::MaxMonetaryValue);
 
     return retVal;
 }
@@ -177,10 +206,12 @@ void EditCharacterQualitiesTab::insertData(GameCharacter::Builder& builder) {
 
     uint8_t newFlags = 0;
 
-    for(int i = 0; i < 6; ++i) {
+    for(int i = 0; i < GameCharacterFlags::NumFlags; ++i) {
+
         if(btnFlags[i].GetCheck() == BST_CHECKED) {
             newFlags += (1<<i);
         }
+
     }
 
     builder.flags(newFlags);
@@ -272,9 +303,11 @@ void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacte
     const uint8_t flags = gameCharacter.getFlags();
 
     for(int i = 0; i < GameCharacterFlags::NumFlags; ++i) {
+
         if(flags & (1<<i)) {
             btnFlags[i].SetCheck(BST_CHECKED);
         }
+
     }
 
     spnMoney.SetPos(gameCharacter.getMoney());
