@@ -95,8 +95,29 @@ void EditCharacterMiscTab::PreRegisterClass(WNDCLASS& wc) {
 
 void EditCharacterMiscTab::insertData(GameCharacter::Builder& builder) {
 
-    int groundX = std::stoi(WtoA(txtCoords[0].GetWindowText()).c_str());
-    int groundY = std::stoi(WtoA(txtCoords[1].GetWindowText()).c_str());
+    int groundX = 0;
+    int groundY = 0;
+
+    try {
+        groundX = std::stoi(WtoA(txtCoords[0].GetWindowText()).c_str());
+    }
+    catch(const std::invalid_argument&) {
+        groundX = 0;
+    }
+    catch(const std::out_of_range&) {
+        groundX = 0;
+    }
+
+    try {
+        groundY = std::stoi(WtoA(txtCoords[1].GetWindowText()).c_str());
+    }
+    catch(const std::invalid_argument&) {
+        groundY = 0;
+    }
+    catch(const std::out_of_range&) {
+        groundY = 0;
+    }
+   
     builder.location(groundX, groundY);
 
 }

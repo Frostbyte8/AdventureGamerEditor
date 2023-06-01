@@ -142,13 +142,23 @@ void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
     // TODO: For the controller version of this, send the text and let the controller
     // do the string capping.
 
-    CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameObjectConstants::MaxNameLength);
-    builder.description(WtoA(wideDesc).c_str(), 0);  
+    CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameCharacterConstants::MaxCharacterName);
+    builder.description(WtoA(wideDesc).c_str(), 0);
 
-    for(int i = 1; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
-        wideDesc = txtDescriptions[i].GetWindowText().Left(GameObjectConstants::MaxDescriptionLength);
-        builder.description(WtoA(wideDesc).c_str(), i);
-    }
+    wideDesc = txtDescriptions[1].GetWindowText().Left(GameCharacterConstants::MaxDescriptionLength);
+    builder.description(WtoA(wideDesc).c_str(), 1);
+
+    wideDesc = txtDescriptions[2].GetWindowText().Left(GameCharacterConstants::MaxFightText);
+    builder.description(WtoA(wideDesc).c_str(), 2);
+
+    wideDesc = txtDescriptions[3].GetWindowText().Left(GameCharacterConstants::MaxDeathText);
+    builder.description(WtoA(wideDesc).c_str(), 3);
+
+    wideDesc = txtDescriptions[4].GetWindowText();
+    builder.description(WtoA(wideDesc).c_str(), 4);
+
+    wideDesc = txtDescriptions[5].GetWindowText();
+    builder.description(WtoA(wideDesc).c_str(), 5);
 
 }
 

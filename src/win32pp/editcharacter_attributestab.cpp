@@ -173,13 +173,6 @@ void EditCharacterAttributesTab::insertData(GameCharacter::Builder& builder) {
             amount = 0;
         }
 
-        if(amount > AdventureGamerConstants::MaxAttributeValue) {
-            amount = AdventureGamerConstants::MaxAttributeValue;
-        }
-        else if(amount < AdventureGamerConstants::MinAttributeValue) {
-            amount = AdventureGamerConstants::MinAttributeValue;
-        }
-
         builder.attribute(amount, i);
     }
 

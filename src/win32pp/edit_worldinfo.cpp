@@ -56,7 +56,7 @@ void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {
     EOD_SetWindowText(gameInfo.getGameName(), txtProperties[0], caption);
     EOD_SetWindowText(gameInfo.getCurrencyName(), txtProperties[1], caption);
 
-    for(int i = 0; i < 5; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
         int base = gameInfo.getBaseAttribute(i);
         int random = gameInfo.getRandomAttribute(i);
         spnAttributes[i].SetPos(base);
@@ -143,7 +143,7 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     EOD_SetWindowText("WorldNameLabel", lblProperties[0], caption, langMap);
     EOD_SetWindowText("CurrencyNameLabel", lblProperties[1], caption, langMap);
 
-    for(int i = 0; i < 5; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
         lblAttributes[i].Create(*this, 0, SS_SIMPLE);       
 
         txtAttributes[i].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
@@ -278,7 +278,7 @@ void EditWorldInfoDialog::moveControls() {
 
     }
 
-    for(int i = 0; i < 5; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
 
         lblAttributes[i].MoveWindow(cPos.x, cPos.y, defaultLabelSize.cx, defaultLabelSize.cy);
 
@@ -359,7 +359,7 @@ LONG EditWorldInfoDialog::caclculateWindowWidth() {
                                 lblProperties[i].GetWindowTextW().c_str()), contentWidth);
     }
 
-    for(int i = 0; i < 5; ++i) {
+    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
         contentWidth = std::max(windowMetrics.CalculateStringWidth(
                                 lblAttributes[i].GetWindowTextW().c_str()), contentWidth);
     }
