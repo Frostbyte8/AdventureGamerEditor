@@ -35,19 +35,16 @@ BOOL EditCharacterAttributesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
             
             if(notifyCode == EN_KILLFOCUS) {
 
-                int newValue = 0;
+                // If the user inputs a bogus value, we will reset the field to the
+                // minimum attribute value.
 
-                // If the user enters a bogus value, we'll just set it to 0.
+                int newValue = AdventureGamerConstants::MinAttributeValue;
 
                 try {
                     newValue = std::stoi(WtoA(txtAttribType[index].GetWindowText()).c_str());
                 }
-                catch(const std::invalid_argument&) {
-                    newValue = 0;
-                }
-                catch(const std::out_of_range&) {
-                    newValue = 0;
-                }
+                catch(const std::invalid_argument&) {}
+                catch(const std::out_of_range&) {}
                
                 spnAttribType[index].SetPos(newValue);
                 parentWindow->madeChange();
@@ -159,21 +156,28 @@ void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowM
 
 void EditCharacterAttributesTab::insertData(GameCharacter::Builder& builder) {
 
-    int amount = 0;
-
     for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
+        
+        int amount = 0;
 
+#ifdef _DEBUG
+        // The data was previously validated, so unless a programming error occured
+        // this should not fail.
         try {
+#endif // _DEBUG
             amount = std::stoi(WtoA(txtAttribType[i].GetWindowText()).c_str());
+#ifdef _DEBUG
         }
         catch(const std::invalid_argument&) {
-            amount = 0;
+            assert(0);
         }
         catch(const std::out_of_range&) {
-            amount = 0;
+            assert(0);
         }
+#endif // _DEBUG 
 
         builder.attribute(amount, i);
+
     }
 
     builder.sight(cbxSight.GetCurSel());

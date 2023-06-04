@@ -11,6 +11,8 @@ namespace AdventureGamerConstants {
 
     const int MinAttributeValue             = 0;
     const int MaxAttributeValue             = 12;
+    const int MinAmountOfMoney              = 0;
+    const int MaxAmountOfMoney              = 10000;
 }
 
 #endif //  __ADVENTUREGAMER_CONSTANTS_H__

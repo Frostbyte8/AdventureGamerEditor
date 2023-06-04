@@ -262,9 +262,29 @@ void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
         builder.flags2(builder.getFlags2() | GameObjectFlags2::EffectsTemporary);
     }
 
+    int baseAmount = 0;
+    int randAmount = 0;
+
     for(int i = 0; i < 5; ++i) {
-        int baseAmount = std::stoi(WtoA(txtAttribAmount[i*2].GetWindowText()).c_str());
-        int randAmount = std::stoi(WtoA(txtAttribAmount[(i*2)+1].GetWindowText()).c_str());
+
+#ifdef _DEBUG
+        // The data was previously validated, so unless a programming error occured
+        // this should not fail.
+        try {
+#endif // _DEBUG
+
+            baseAmount = std::stoi(WtoA(txtAttribAmount[i*2].GetWindowText()).c_str());
+            randAmount = std::stoi(WtoA(txtAttribAmount[(i*2)+1].GetWindowText()).c_str());
+
+#ifdef _DEBUG
+        }
+        catch(const std::invalid_argument&) {
+            assert(0);
+        }
+        catch(const std::out_of_range&) {
+            assert(0);
+        }
+#endif // _DEBUG 
 
         if(btnAttribPolarity[i*2].GetCheck() == BST_CHECKED) {
             baseAmount *= -1;
@@ -273,6 +293,7 @@ void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
 
         builder.attributeBase(baseAmount, i);
         builder.attributeRandom(randAmount, i);
+
     } 
 
     builder.makesSight(cbxSenses[0].GetCurSel());
@@ -446,8 +467,16 @@ void EditObjectEffectsTab::updateAttributeValue(const WORD& ctrlID) {
 
     const int ctrlIndex = ctrlID - ControlIDs::EnergyBase; 
 
-    int newValue = std::stoi(WtoA(
-                   txtAttribAmount[ctrlIndex].GetWindowText()).c_str());
+    // If the user some how inputs an invalid number, we will reset
+    // the value back to the minimum attribute value.
+
+    int newValue = AdventureGamerConstants::MinAttributeValue;
+
+    try {
+        newValue = std::stoi(WtoA(txtAttribAmount[ctrlIndex].GetWindowText()).c_str());
+    }
+    catch(const std::invalid_argument&) {}
+    catch(const std::out_of_range&) {}
 
     spnAttribAmount[ctrlIndex].SetPos(newValue);
 

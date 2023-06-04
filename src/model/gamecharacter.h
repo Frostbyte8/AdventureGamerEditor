@@ -7,6 +7,7 @@
 #include "../compat/std_extras_compat.h"
 #include "../compat/stdint_compat.h"
 #include "../editor_constants.h"
+#include "../adventuregamer_constants.h"
 
 //-----------------------------------------------------------------------------
 // GameCharacterConstants - Exactly what it says
@@ -111,7 +112,7 @@ class GameCharacter {
                     base.flags      = 0;
                     base.ID         = GameCharacterConstants::NoID;
                     base.location   = "0,0";
-                    base.money      = 0;
+                    base.money      = AdventureGamerConstants::MinAmountOfMoney;
                     base.sight      = 0;
                     base.type       = 0;
                     base.unused     = 0;

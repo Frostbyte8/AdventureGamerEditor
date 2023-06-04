@@ -498,7 +498,15 @@ void EditObjectQualitiesTab::updatePropertyValue(const WORD& ctrlID) {
 
     const int ctrlIndex = ctrlID - ControlIDs::UsesBox;
 
-    int newValue = std::stoi(WtoA(txtProperties[ctrlIndex].GetWindowText()).c_str());
+    // If the value can't be determined, reset it to 0.
+    int newValue = 0;
+
+    try {
+        newValue = std::stoi(WtoA(txtProperties[ctrlIndex].GetWindowText()).c_str());
+    }
+    catch(const std::invalid_argument&) {}
+    catch(const std::out_of_range&) {}
+
     spnProperties[ctrlIndex].SetPos(newValue);
 
 }

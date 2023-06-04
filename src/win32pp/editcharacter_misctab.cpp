@@ -98,26 +98,23 @@ void EditCharacterMiscTab::insertData(GameCharacter::Builder& builder) {
     int groundX = 0;
     int groundY = 0;
 
+#ifdef _DEBUG
+    // The data was previously validated, so unless a programming error occured
+    // this should not fail.
     try {
+#endif // _DEBUG
         groundX = std::stoi(WtoA(txtCoords[0].GetWindowText()).c_str());
-    }
-    catch(const std::invalid_argument&) {
-        groundX = 0;
-    }
-    catch(const std::out_of_range&) {
-        groundX = 0;
-    }
-
-    try {
         groundY = std::stoi(WtoA(txtCoords[1].GetWindowText()).c_str());
+#ifdef _DEBUG
     }
     catch(const std::invalid_argument&) {
-        groundY = 0;
+        assert(0);
     }
     catch(const std::out_of_range&) {
-        groundY = 0;
+        assert(0);
     }
-   
+#endif // _DEBUG 
+
     builder.location(groundX, groundY);
 
 }

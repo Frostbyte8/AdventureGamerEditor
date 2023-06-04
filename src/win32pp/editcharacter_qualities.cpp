@@ -38,19 +38,15 @@ BOOL EditCharacterQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 
         if(ctrlAction == EN_KILLFOCUS) {
 
-            int newValue = 0;
-
-            // If the user enters a bogus value, we'll just set the value to 0.
+            // If the user enters a bogus value, we'll just reset the value to the
+            // minimum amount of money a character can have.
+            int newValue = AdventureGamerConstants::MinAmountOfMoney;
 
             try {
                 newValue = std::stoi(WtoA(txtMoney.GetWindowText()).c_str());
             }
-            catch(const std::invalid_argument&) {
-                newValue = 0;
-            }
-            catch(const std::out_of_range&) {
-                newValue = 0;
-            }
+            catch(const std::invalid_argument&) {}
+            catch(const std::out_of_range&) {}
 
             spnMoney.SetPos(newValue);
         }

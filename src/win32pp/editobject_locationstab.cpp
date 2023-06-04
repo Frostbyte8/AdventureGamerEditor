@@ -210,9 +210,25 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
 
     if(btnLocatedAt[0].GetCheck() == BST_CHECKED) {
 
+#ifdef _DEBUG
+        // The data was previously validated, so unless a programming error occured
+        // this should not fail.
+        try {
+#endif // _DEBUG
+
         int groundX = std::stoi(WtoA(txtGroundCoord[0].GetWindowText()).c_str());
         int groundY = std::stoi(WtoA(txtGroundCoord[1].GetWindowText()).c_str());
         builder.location(groundX, groundY);
+
+#ifdef _DEBUG
+        }
+        catch (const std::invalid_argument&) {
+            assert(0);
+        }
+        catch (const std::out_of_range&) {
+            assert(0);
+        }
+#endif // _DEBUG
 
     }
     else if(btnLocatedAt[1].GetCheck() == BST_CHECKED) {
@@ -236,8 +252,26 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
 
     if(btnUnlocksDoor.GetCheck() == BST_CHECKED) {
 
-        int doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
-        int doorY = std::stoi(WtoA(txtDoorCoord[1].GetWindowText()).c_str());   
+        int doorX = 0;
+        int doorY = 0;
+#ifdef _DEBUG
+        // The data was previously validated, so unless a programming error occured
+        // this should not fail.
+        try {
+#endif // _DEBUG
+
+        doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
+        doorY = std::stoi(WtoA(txtDoorCoord[1].GetWindowText()).c_str());   
+
+#ifdef _DEBUG
+        }
+        catch (const std::invalid_argument&) {
+            assert(0);
+        }
+        catch (const std::out_of_range&) {
+            assert(0);
+        }
+#endif // _DEBUG
 
         // Only set this if the value is valid
         if((doorX > -1 && doorX <= gameMap->getWidth()) &&
