@@ -61,7 +61,7 @@ endif(MSVC)
 # Misc Things
 #==============================================================================
 
-execute_process(COMMAND python updategitinfo.py WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+execute_process(COMMAND lua updategitinfo.lua WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
 #------------------------------------------------------------------------------
 # Setup Platform independent sources and libraries
@@ -217,6 +217,9 @@ if(MSVC)
     # TODO: Confirm that this works with a newer VC.
     # NOMINMAX is so std::max and std::min can be used
 	add_definitions(-D_UNICODE -DNOMINMAX -D__WIN32PP__HELPERFUNCTIONS__)
+    
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 	
 	# Get rid of "ZERO_CHECK" in the project file
 	set(CMAKE_SUPPRESS_REGENERATION true)
@@ -254,9 +257,10 @@ if(MSVC)
 
         # Get rid of the annoying ALL_BUILD project that gets added to the solution.
         if(NO_ALLBUILD)
-            execute_process(COMMAND python strip_allbuild.py WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+            execute_process(COMMAND lua "strip_allbuild.lua" WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+            message(STATUS "Press Configure again after Generate to remove ALL_BUILD, or run lua strip_allbuild.lua")
         endif(NO_ALLBUILD)
-
+        
     #endif()
 
 
