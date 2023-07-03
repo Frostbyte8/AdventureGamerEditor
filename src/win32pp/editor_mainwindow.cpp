@@ -392,8 +392,8 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
         const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
         GameObject::Builder objectToEdit(gameObject);
         editObjectDialog->setObjectToEdit(objectToEdit.build());
-        caption = LM_toUTF8("EditObjectTitle", langMap);
-        caption += gameObject.getName().c_str();
+        caption = LM_toUTF8("EditObjectTitle", langMap);       
+        caption.Format(caption, AtoW(gameObject.getName().c_str(), CP_UTF8).c_str());
         editObjectDialog->setDefaultDialogTitle(caption);
     }
 
@@ -441,14 +441,14 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     if(alterType == AlterType::Add) {
         GameCharacter::Builder bd;
         editCharacterDialog->setCharacterToEdit(bd.build());
-        CString caption = LM_toUTF8("FileMenu", langMap);
+        CString caption = LM_toUTF8("CreateCharacterTitle", langMap);
         editCharacterDialog->setDefaultDialogTitle(caption);
     }
     else if(alterType == AlterType::Edit) {
 
         const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(index);
-        caption = LM_toUTF8("FileMenu", langMap);
-        caption += gameCharacter.getName().c_str();
+        caption = LM_toUTF8("EditCharacterTitle", langMap);
+		caption.Format(caption, AtoW(gameCharacter.getName().c_str(), CP_UTF8).c_str());
         GameCharacter::Builder charToEdit(gameCharacter);
         editCharacterDialog->setCharacterToEdit(charToEdit.build());
         editCharacterDialog->setDefaultDialogTitle(caption);

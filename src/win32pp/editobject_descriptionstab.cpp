@@ -79,7 +79,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
             btnBrowse[currentButton].Create(*this, 0,
                                             WS_TABSTOP | BS_PUSHBUTTON);
-            EOD_SetWindowText("ObjectBrowseButton", btnBrowse[currentButton], caption, langMap);
+            EOD_SetWindowText("BrowseButton", btnBrowse[currentButton], caption, langMap);
         }
         else {
             txtDescriptions[i].SetDlgCtrlID(ControlIDs::Name+i);
