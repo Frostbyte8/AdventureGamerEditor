@@ -29,6 +29,7 @@
     "EditCharacterTitle"        : "Editing Game Character: %s",
     "EditWorldInfoTitle"        : "Editing World Properties",
     "EditTileDescTitle"         : "Editing Tile Description",
+    "EditWorldStoryTitle"       : "Editing Story and Summary",
     "ShowPlayerInventoryTitle"  : "Player Inventory",
     
     // Edit Object Dialog 

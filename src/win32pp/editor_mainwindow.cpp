@@ -584,7 +584,7 @@ void MainWindowFrame::onEditStory() {
     activeWindowHandle = editStoryDialog->GetHwnd();
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
-    const CString dialogCaption = LM_toUTF8("FileMenu", langMap);
+    const CString dialogCaption = LM_toUTF8("EditWorldStoryTitle", langMap);
     editStoryDialog->setDefaultDialogTitle(dialogCaption);
 
     editStoryDialog->goModal();
@@ -639,7 +639,7 @@ void MainWindowFrame::onEditTileDescription() {
     // Or even move this to OnCreate since that function already needs languagemapper and
     // that's one less "getInstance".
     LanguageMapper& langMap = LanguageMapper::getInstance();
-    const CString dialogCaption = LM_toUTF8("FileMenu", langMap);
+    const CString dialogCaption = LM_toUTF8("EditTileDescTitle", langMap);
     editTileDescriptionDialog->setDefaultDialogTitle(dialogCaption);
 
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
