@@ -184,6 +184,12 @@
     "ErrTileInvalidRowColTitle" : "Error getting tile",
     "ErrGamerFileReadText"      : "Unable to read Aventure Gamer File: %s",
     "ErrGamerFileReadTitle"     : "Error reading file",
+    "ErrAllocatingDialogText"   : "The dialog could not be created because there is not enough memory to allocate it.",
+    "ErrAllocatingDialogTitle"  : "Allocating Dialog Failed",
+    "ErrCreatingDialogText"     : "Dialog Window creation failed for an unknown reason.",
+    "ErrCreatingDialogTitle"    : "Window Creation Failed",
+    "ErrInvalidObjIndexText"    : "Invalid object index given.",
+    "ErrInvalidObjIndexTitle"   : "Invalid object",
     
     // Validators
 

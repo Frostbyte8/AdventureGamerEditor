@@ -357,19 +357,29 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
     const std::vector<GameObject>& gameObjects = gameWorldController->getGameMap()->getGameObjects();
     const bool editingObject = (alterType == AlterType::Edit) ? true : false;
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
     if(editingObject) {
         
         if(gameObjects.empty() || index > gameObjects.size() - 1) {
-            displayErrorMessage("Invalid object index", "error");
+            displayErrorMessage(langMap.get("ErrInvalidObjIndexText"), langMap.get("ErrInvalidObjIndexTitle"));
             return;
         }
     }
 
-    editObjectDialog = new EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
+    editObjectDialog = new (std::nothrow) EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
+
+    if(!editObjectDialog) {
+        displayErrorMessage(langMap.get("ErrAllocatingDialogText"), langMap.get("ErrAllocatingDialogTitle"));
+        return;
+    }
+
     editObjectDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editObjectDialog->IsWindow()) {
-        // TODO: Handle error.
+        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
+        delete editObjectDialog;
+        return;
     }
 
     editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
@@ -378,7 +388,6 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
 
     CString caption;
-    LanguageMapper& langMap = LanguageMapper::getInstance();
 
     if(alterType == AlterType::Add) {
         GameObject::Builder bd;
