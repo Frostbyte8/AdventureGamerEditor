@@ -261,9 +261,10 @@ bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, c
 
 bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuilder) {
 
-    // Find out if Adventuer Gamer has a hard limit on the number of Characters.
+    // Find out if Adventure Gamer has a hard limit on the number of Characters.
     // TODO: Reuse unused IDs first.
     const int nextID = gameMap->getLastCharacterID() + 1;
+
     characterBuilder.ID(nextID);
     try {
         gameMap->addCharacter(gmKey, characterBuilder.build());
@@ -291,7 +292,7 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 
     if(gameObject.getID() == GameObjectConstants::NoID) {
 
-        const int nextID = gameMap->getLastObjectID() + 1;
+        const int nextID = gameMap->getFirstUnusedObjectID();
         gameObject.ID(nextID);
 
         try {

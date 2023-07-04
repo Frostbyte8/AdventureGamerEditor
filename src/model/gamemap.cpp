@@ -47,6 +47,25 @@ const std::vector<size_t> GameMap::getCharacterInventory(const size_t& charID) c
 }
 
 ///----------------------------------------------------------------------------
+/// getFirstUnusedObjectID - Get the first ID not used by any object
+/// @return an integer specifying the ID
+///----------------------------------------------------------------------------
+
+const int GameMap::getFirstUnusedObjectID() const {
+
+    const size_t goSize = gameObjects.size();
+
+    for(size_t i = 0; i < goSize; ++i) {
+
+        if(gameObjects[i].getID() != static_cast<int>(i+1)) {
+            return i+1;            
+        }
+    }
+
+    return goSize+1;
+}
+
+///----------------------------------------------------------------------------
 /// getGameCharacters - Return a vector containing Game Characters within the
 /// current map.
 /// @return a vector containing the Game Objects.
@@ -189,10 +208,12 @@ void GameMap::addCharacter(GMKey, GameCharacter& gameCharacter) {
 ///----------------------------------------------------------------------------
 
 void GameMap::addObject(GMKey, GameObject& gameObject) {
-    gameObjects.push_back(gameObject);
 
-    if(gameObject.getID() > lastObjectID) {
-        lastObjectID = gameObject.getID();
+    if(gameObject.getID() < static_cast<int>(gameObjects.size())) {
+        gameObjects.insert(gameObjects.begin()+gameObject.getID() - 1, 1, gameObject); 
+    }
+    else {
+        gameObjects.push_back(gameObject);
     }
 }
 
@@ -763,8 +784,6 @@ void GameMap::readObjects(std::ifstream& mapFile) {
 
 void GameMap::readStory(const std::string& storyFilePath) {
 	
-    // TODO: Use the new Frost functions regarding strings and CRLF
-
     std::ifstream ifs;
 	ifs.open(storyFilePath.c_str(), std::ifstream::in | std::ios::binary);
 
@@ -783,7 +802,8 @@ void GameMap::readStory(const std::string& storyFilePath) {
     
     // Story files aren't mandatory, so if they're not found, there is no
     // error.
-    story = Frost::rtrim(Frost::ltrim(story, "\""), "\n\r");
+
+    story = Frost::rtrim(Frost::ltrim(story, "\""), "\"\n\r");
     summary =  Frost::rtrim(Frost::ltrim(summary, "\""), "\n\r");
 
 }

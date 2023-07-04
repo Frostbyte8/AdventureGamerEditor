@@ -52,6 +52,7 @@ class GameMap {
         const int& getHeight() const;
         const int& getLastCharacterID() const;
         const int& getLastObjectID() const;
+        const int getFirstUnusedObjectID() const;
 		inline const int getNumTiles() const;
         const std::string& getStory() const { return story; }
         const std::string& getSummary() const { return summary; }
@@ -108,7 +109,7 @@ class GameMap {
         int numRows;
         int lastObjectID;
         int lastCharacterID;
-        int lastUnusedObjectID;
+        int firstUnusedObjectID;
         int lastUnusedCharacterID;
 
         std::string summary;

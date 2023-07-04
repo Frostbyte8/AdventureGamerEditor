@@ -121,7 +121,10 @@ void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects, c
 
     for(std::vector<GameObject>::const_iterator it = gameObjects.begin();
         it != gameObjects.end(); ++it) {
-            CString objectName = AtoW(it->getName().c_str(), CP_UTF8);
+            CString objectName = AtoW(std::to_string(it->getID()).c_str(), CP_UTF8);
+            objectName += ". ";
+            objectName += AtoW(it->getName().c_str(), CP_UTF8);
+            //CString objectName = AtoW(it->getName().c_str(), CP_UTF8);
             objectsListBox.AddString(objectName);
     }
 
