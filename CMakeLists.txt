@@ -61,7 +61,7 @@ endif(MSVC)
 # Misc Things
 #==============================================================================
 
-execute_process(COMMAND lua updategitinfo.lua WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+#execute_process(COMMAND lua updategitinfo.lua WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 
 #------------------------------------------------------------------------------
 # Setup Platform independent sources and libraries
@@ -69,11 +69,12 @@ execute_process(COMMAND lua updategitinfo.lua WORKING_DIRECTORY ${CMAKE_CURRENT_
 
 set(SOURCES
     src/main.cpp
+    src/gitinfo.h
 )
 
-if (EXISTS ${CMAKE_SOURCE_DIR}/src/gitinfo.h)
-    set(SOURCES ${SOURCES} src/gitinfo.h)
-endif()
+#if (EXISTS ${CMAKE_SOURCE_DIR}/src/gitinfo.h)
+#    set(SOURCES ${SOURCES} src/gitinfo.h)
+#endif()
 
 file(GLOB JSON_LIB
     src/thirdparty/simpleson/*.h
@@ -216,7 +217,7 @@ if(MSVC)
 
     # TODO: Confirm that this works with a newer VC.
     # NOMINMAX is so std::max and std::min can be used
-	add_definitions(-D_UNICODE -DNOMINMAX -D__WIN32PP__HELPERFUNCTIONS__)
+    add_definitions(-D_UNICODE -DNOMINMAX -D__WIN32PP__HELPERFUNCTIONS__)
     
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
@@ -262,6 +263,8 @@ if(MSVC)
         endif(NO_ALLBUILD)
         
     #endif()
+
+    add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND lua "${CMAKE_CURRENT_LIST_DIR}/updategitinfo.lua" DEPENDS ${PROJECT_NAME} VERBATIM)
 
 
 endif(MSVC)

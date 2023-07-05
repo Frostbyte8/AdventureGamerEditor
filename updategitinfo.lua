@@ -7,7 +7,13 @@ gitInfo = string.sub(gitInfo, 1, 10)
 
 -- Now Generate the File
 
-local fileOut = io.open("src/gitinfo.h", "w")
+localFilePath = string.gsub(arg[0], "updategitinfo.lua", "")
+localFilePath = localFilePath .. ".\\src\\gitinfo.h"
+local fileOut, err = io.open(localFilePath, "w")
+
+if fileOut==nil then
+    print(err)
+end
 
 fileOut:write("#ifndef __GITINFO_H__\n")
 fileOut:write("#define __GITINFO_H__\n\n")
