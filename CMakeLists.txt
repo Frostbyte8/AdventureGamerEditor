@@ -265,7 +265,8 @@ if(MSVC)
     #endif()
 
     add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND lua "${CMAKE_CURRENT_LIST_DIR}/updategitinfo.lua" DEPENDS ${PROJECT_NAME} VERBATIM)
-
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND XCOPY $(SolutionDir)..\\assets\\tileset.bmp $(TargetDir)tileset.bmp /Y /D)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND XCOPY $(SolutionDir)..\\assets\\lang_en.json $(TargetDir)lang_en.json /Y /D)
 
 endif(MSVC)
 
