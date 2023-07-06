@@ -263,9 +263,10 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 
     // TODO: Add a cap for number of Characters
 
-    const int nextID = gameMap->getLastCharacterID() + 1;
+    const int nextID = gameMap->getFirstUnusedCharacterID();
 
     characterBuilder.ID(nextID);
+
     try {
         gameMap->addCharacter(gmKey, characterBuilder.build());
     }
@@ -286,8 +287,8 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 
     // Find out if Adventuer Gamer has a hard limit on the number of Objects.
-    // TODO: Check if the user wanted to add or replace, and catch that if
-    // necessary.
+    // TODO: Cap number of objects, or at least a warning
+    // TODO: Language Strings
 
     if(gameObject.getID() == GameObjectConstants::NoID) {
 
@@ -303,7 +304,7 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
         }
     }
     else {
-        mainWindow->displayErrorMessage("Could not add object: Object had an ID.", "Object add error");
+        mainWindow->displayErrorMessage("Could not add object: Object had no ID.", "Object add error");
         return false;
     }
 

@@ -66,6 +66,25 @@ const int GameMap::getFirstUnusedObjectID() const {
 }
 
 ///----------------------------------------------------------------------------
+/// getFirstUnusedCharacterID - Get the first ID not used by any character
+/// @return an integer specifying the ID
+///----------------------------------------------------------------------------
+
+const int GameMap::getFirstUnusedCharacterID() const {
+
+    const size_t gcSize = gameCharacters.size();
+
+    for(size_t i = 0; i < gcSize; ++i) {
+
+        if(gameCharacters[i].getID() != static_cast<int>(i+1)) {
+            return i+1;            
+        }
+    }
+
+    return gcSize+1;
+}
+
+///----------------------------------------------------------------------------
 /// getGameCharacters - Return a vector containing Game Characters within the
 /// current map.
 /// @return a vector containing the Game Objects.
@@ -146,7 +165,8 @@ const std::vector<GameTile::DrawInfo> GameMap::getTileDrawData() const {
     std::vector<GameTile::DrawInfo> drawDataVec;
     drawDataVec.reserve(tiles.size());
 
-    for(std::vector<GameTile>::const_iterator it = tiles.begin(); it != tiles.end(); ++it) {
+    for(std::vector<GameTile>::const_iterator it = tiles.begin();
+        it != tiles.end(); ++it) {
         drawDataVec.push_back(it->getDrawInfo());
     }
 
@@ -194,11 +214,15 @@ const int& GameMap::getWidth() const {
 ///----------------------------------------------------------------------------
 
 void GameMap::addCharacter(GMKey, GameCharacter& gameCharacter) {
-    gameCharacters.push_back(gameCharacter);
-    
-    if(gameCharacter.getID() > lastCharacterID) {
-        lastCharacterID = gameCharacter.getID();
+
+    if(gameCharacter.getID() < static_cast<int>(gameCharacters.size())) {
+        gameCharacters.insert(gameCharacters.begin()+gameCharacter.getID() - 1,
+                             1, gameCharacter);
     }
+    else {
+        gameCharacters.push_back(gameCharacter);
+    }
+
 }
 
 ///----------------------------------------------------------------------------
@@ -210,7 +234,8 @@ void GameMap::addCharacter(GMKey, GameCharacter& gameCharacter) {
 void GameMap::addObject(GMKey, GameObject& gameObject) {
 
     if(gameObject.getID() < static_cast<int>(gameObjects.size())) {
-        gameObjects.insert(gameObjects.begin()+gameObject.getID() - 1, 1, gameObject); 
+        gameObjects.insert(gameObjects.begin()+gameObject.getID() - 1, 1,
+                           gameObject); 
     }
     else {
         gameObjects.push_back(gameObject);
@@ -287,7 +312,9 @@ void GameMap::setSummary(GMKey, const std::string& inSummary) {
 /// @param new description of the tile.
 ///----------------------------------------------------------------------------
 
-void GameMap::updateTileDescription(GMKey, const size_t& index, const std::string& tileName, const std::string& tileDescription) {
+void GameMap::updateTileDescription(GMKey, const size_t& index,
+                                    const std::string& tileName,
+                                    const std::string& tileDescription) {
 
     GameTile::Builder bd = GameTile::Builder(tiles[index]);
 
@@ -395,7 +422,8 @@ const int& GameMap::objectIDFromIndex(const size_t& objectIndex) const {
 /// @return the index of the tile specified
 ///----------------------------------------------------------------------------
 
-const unsigned int GameMap::indexFromRowCol(const int& row, const int& col) const {
+const unsigned int GameMap::indexFromRowCol(const int& row, 
+                                            const int& col) const {
     return (row * numCols) + col;
 }
 
