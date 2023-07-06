@@ -180,16 +180,25 @@
 
     // Error Messages
 
-    "ErrTileInvalidRowColText"  : "Unable to get tile: Invalid row or column was given",
-    "ErrTileInvalidRowColTitle" : "Error getting tile",
-    "ErrGamerFileReadText"      : "Unable to read Aventure Gamer File: %s",
-    "ErrGamerFileReadTitle"     : "Error reading file",
-    "ErrAllocatingDialogText"   : "The dialog could not be created because there is not enough memory to allocate it.",
-    "ErrAllocatingDialogTitle"  : "Allocating Dialog Failed",
-    "ErrCreatingDialogText"     : "Dialog Window creation failed for an unknown reason.",
-    "ErrCreatingDialogTitle"    : "Window Creation Failed",
-    "ErrInvalidObjIndexText"    : "Invalid object index given.",
-    "ErrInvalidObjIndexTitle"   : "Invalid object",
+    "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
+    "ErrTileInvalidRowColTitle"     : "Error getting tile",
+    "ErrGamerFileReadText"          : "Unable to read Aventure Gamer File: %s",
+    "ErrGamerFileReadTitle"         : "Error reading file",
+    "ErrAllocatingDialogText"       : "The dialog could not be created because there is not enough memory to allocate it.",
+    "ErrAllocatingDialogTitle"      : "Allocating Dialog Failed",
+    "ErrCreatingDialogText"         : "Dialog Window creation failed for an unknown reason.",
+    "ErrCreatingDialogTitle"        : "Window Creation Failed",
+    "ErrInvalidObjIndexText"        : "Invalid object index given.",
+    "ErrInvalidObjIndexTitle"       : "Invalid object",
+
+    "ErrAddCharOutOfMemoryText"     : "Error Adding Character: Out of Memory",
+    "ErrAddCharOutOfMemoryTitle"    : "Add Character: Out of Memory",
+
+    "ErrAddObjOutOfMemoryText"      : "Error Adding Object: Out of Memory",
+    "ErrAddObjOutOfMemoryTitle"     : "Add Object: Out of Memory",
+
+    "ErrObjNoIDText"                : "Could not add object: Object had no ID set.",
+    "ErrObjNoIDTitle"               : "Error no Object ID",
     
     // Validators
 

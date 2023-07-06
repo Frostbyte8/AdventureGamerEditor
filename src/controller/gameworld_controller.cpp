@@ -266,12 +266,14 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
     const int nextID = gameMap->getFirstUnusedCharacterID();
 
     characterBuilder.ID(nextID);
+    LanguageMapper& langMap = LanguageMapper::getInstance();
 
     try {
         gameMap->addCharacter(gmKey, characterBuilder.build());
     }
     catch (const std::bad_alloc&) {
-        mainWindow->displayErrorMessage("Could not add character: Out of memory.", "Out of Memory");
+        mainWindow->displayErrorMessage(langMap.get("ErrAddCharOutOfMemoryText"),
+                                        langMap.get("ErrAddCharOutOfMemoryTitle"));
         return false;
     }
     return true;
@@ -288,7 +290,8 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 
     // Find out if Adventuer Gamer has a hard limit on the number of Objects.
     // TODO: Cap number of objects, or at least a warning
-    // TODO: Language Strings
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
 
     if(gameObject.getID() == GameObjectConstants::NoID) {
 
@@ -299,12 +302,14 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
             gameMap->addObject(gmKey, gameObject.build());
         }
         catch (const std::bad_alloc&) {
-            mainWindow->displayErrorMessage("Could not add object: Out of memory.", "Out of Memory");
+            mainWindow->displayErrorMessage(langMap.get("ErrAddObjOutOfMemoryText"),
+                                            langMap.get("ErrAddObjOutOfMemoryTitle"));
             return false;
         }
     }
     else {
-        mainWindow->displayErrorMessage("Could not add object: Object had no ID.", "Object add error");
+        mainWindow->displayErrorMessage(langMap.get("ErrObjNoIDText"),
+                                        langMap.get("ErrObjNoIDTitle"));
         return false;
     }
 
