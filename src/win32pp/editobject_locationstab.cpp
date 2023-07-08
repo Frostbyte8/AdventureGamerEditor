@@ -499,3 +499,18 @@ void EditObjectLocationsTab::toggleUnlocksDoor(const BOOL& doesUnlock) {
     txtDoorCoord[1].EnableWindow(doesUnlock);
 
 }
+
+void EditObjectLocationsTab::canBeHeldByEntities(const BOOL canHold) {
+
+    btnLocatedAt[1].EnableWindow(canHold);
+    btnLocatedAt[2].EnableWindow(canHold);
+    cbxWhichCharacter.EnableWindow(canHold);
+
+    if(!canHold) {
+        locatedAtChanged(ControlIDs::OnGround, BN_CLICKED);
+        btnLocatedAt[0].SetCheck(BST_CHECKED);
+        btnLocatedAt[1].SetCheck(BST_UNCHECKED);
+        btnLocatedAt[2].SetCheck(BST_UNCHECKED);
+    }
+
+}

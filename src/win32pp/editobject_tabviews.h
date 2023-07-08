@@ -98,6 +98,10 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         // Constuctor
         EditObjectQualitiesTab(const GameMap* inGameMap, EditDialogBase* inParent) : EOTabViewBase(inParent), gameMap(inGameMap) { }
 
+        const BOOL isFixedFlagChecked() const {
+            return btnFlags[6].GetCheck() == BST_CHECKED;
+        }
+
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameObject::Builder& builder);
@@ -195,6 +199,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual void moveControls(const WindowMetrics& windowMetrics);
         virtual InputValidator* validateFields();
 
+        void canBeHeldByEntities(const BOOL canHold);
 
     protected:
 

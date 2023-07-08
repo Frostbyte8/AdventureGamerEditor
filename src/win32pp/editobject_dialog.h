@@ -38,6 +38,7 @@ class EditObjectDialog : public EditDialogBase {
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
 
+        virtual LRESULT OnNotify(WPARAM wParam, LPARAM lParam);
         virtual void notifyChangeMade();
         virtual void notifyChangesSaved();
         virtual void moveControls();

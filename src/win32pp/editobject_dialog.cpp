@@ -179,6 +179,18 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
 }
 
+LRESULT EditObjectDialog::OnNotify(WPARAM wParam, LPARAM lParam) {
+
+    NMHDR* notifyHDR = reinterpret_cast<NMHDR*>(lParam);
+
+    if(notifyHDR->hwndFrom == tabControl.GetHwnd() && notifyHDR->code == TCN_SELCHANGE) {
+        // Update Misc Tab if necessary
+        locationsTab->canBeHeldByEntities(!qualitiesTab->isFixedFlagChecked());
+    }
+
+    return 0; 
+}
+
 ///----------------------------------------------------------------------------
 /// onSize - Processes the WM_SIZE message for the dialog window
 ///----------------------------------------------------------------------------
