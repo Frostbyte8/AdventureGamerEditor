@@ -366,6 +366,13 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
             return;
         }
     }
+    else {
+        // TODO: Prevent the editor from getting here outside the controller so this check isn't done twice.
+        if(gameWorldController->canAddObject() == false) {
+            displayErrorMessage(langMap.get("ErrObjLimitReachedText"), langMap.get("ErrObjLimitReachedTitle"));
+            return;
+        }
+    }
 
     editObjectDialog = new (std::nothrow) EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
 
@@ -422,6 +429,8 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
         return;
     }
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
     const std::vector<GameCharacter>& gameCharacters = gameWorldController->getGameMap()->getGameCharacters();
     const bool editingChar = (alterType == AlterType::Edit) ? true : false;
 
@@ -432,6 +441,13 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
             return;
         }
     }
+    else {
+        if(gameWorldController->canAddCharacter() == false) {
+            displayErrorMessage(langMap.get("ErrCharLimitReachedText"), langMap.get("ErrCharLimitReachedTitle"));
+            return;
+        }
+    }
+
 
     editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingChar);
     editCharacterDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
@@ -444,7 +460,6 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
     // TODO: Set Caption
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
     if(alterType == AlterType::Add) {

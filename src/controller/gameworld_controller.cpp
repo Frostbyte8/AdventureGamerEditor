@@ -27,6 +27,34 @@ GameWorldController::~GameWorldController() {
 // Public Functions
 //=============================================================================
 
+///----------------------------------------------------------------------------
+/// canAddObject - Checks to see if the limit on objects has been reached
+/// @returns true if an object can still be added, false if it cannot.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::canAddObject() const {
+
+    // TODO: Make 100 a constant.
+    if(gameMap->getGameObjects().size() < 100) {
+        return true;
+    }
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// canAddCharacter - Checks to see if the limit on characters has been reached
+/// @returns true if a character can still be added, false if it cannot.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::canAddCharacter() const {
+
+    // TODO: Make 25 a constant.
+    if(gameMap->getGameCharacters().size() < 25) {
+        return true;
+    }
+    return false;
+}
+
 ///-----------------------------------------------------------------------------
 /// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
 /// the file, it will avoid erasing the currently loaded world.
@@ -261,12 +289,20 @@ bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, c
 
 bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuilder) {
 
-    // TODO: Add a cap for number of Characters
+    // TODO: At some future point, have tryCharacter access the main window's
+    // function to spawn the add dialog
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(!canAddCharacter()) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCharLimitReachedText"),
+                                        langMap.get("ErrCharLimitReachedTitle"));
+        return false;
+    }
 
     const int nextID = gameMap->getFirstUnusedCharacterID();
 
     characterBuilder.ID(nextID);
-    LanguageMapper& langMap = LanguageMapper::getInstance();
 
     try {
         gameMap->addCharacter(gmKey, characterBuilder.build());
@@ -288,10 +324,16 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 
 bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 
-    // Find out if Adventuer Gamer has a hard limit on the number of Objects.
-    // TODO: Cap number of objects, or at least a warning
+    // TODO: At some future point, have tryCharacter access the main window's
+    // function to spawn the add dialog
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(!canAddObject()) {
+        mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
+                                        langMap.get("ErrObjLimitReachedTitle"));
+        return false;
+    }
 
     if(gameObject.getID() == GameObjectConstants::NoID) {
 

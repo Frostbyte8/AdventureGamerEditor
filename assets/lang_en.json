@@ -199,6 +199,13 @@
 
     "ErrObjNoIDText"                : "Could not add object: Object had no ID set.",
     "ErrObjNoIDTitle"               : "Error no Object ID",
+
+    "ErrObjLimitReachedText"        : "Game Worlds cannot exceed %d number of objects.",
+    "ErrObjLimitReachedTitle"       : "Object limit reached",
+
+    "ErrCharLimitReachedText"       : "Game Worlds cannot exceed %d number of characters.",
+    "ErrCharLimitReachedTitle"      : "Character limit reached",
+
     
     // Validators
 

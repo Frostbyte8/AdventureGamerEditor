@@ -18,6 +18,9 @@ class GameWorldController {
         bool loadWorld(const std::string& filePath, const std::string& fileName);
         bool saveWorld(const std::string& filePath, const std::string& fileName);
 
+        bool canAddObject() const;
+        bool canAddCharacter() const;
+
         const GameMap* getGameMap() const { return gameMap; }
         const int& getMapWidth() const {return gameMap->getWidth(); }
         const int& getMapHeight() const {return gameMap->getHeight(); }
