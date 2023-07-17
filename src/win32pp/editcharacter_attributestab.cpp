@@ -146,7 +146,13 @@ void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowM
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
 
-    //TODO: Size the 5 labels. 
+    for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
+        pageWidth = std::max(windowMetrics.CalculateStringWidth(
+                             lblAttribType[i].GetWindowTextW().c_str()), pageWidth);
+    } 
+
+    pageWidth += CS.XGROUPBOX_MARGIN * 2;
+
 }
 
 ///----------------------------------------------------------------------------
