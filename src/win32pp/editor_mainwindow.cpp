@@ -453,7 +453,8 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     editCharacterDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editCharacterDialog->IsWindow()) {
-        // TODO: Handle error.
+        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
+        delete editCharacterDialog;
         return;
     }
 
