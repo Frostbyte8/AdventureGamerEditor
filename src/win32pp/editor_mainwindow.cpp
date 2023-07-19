@@ -454,9 +454,11 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
     if(!editCharacterDialog->IsWindow()) {
         // TODO: Handle error.
+        return;
     }
 
     editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    activeWindowHandle = editCharacterDialog->GetHwnd();
 
     // TODO: Set Caption
 
