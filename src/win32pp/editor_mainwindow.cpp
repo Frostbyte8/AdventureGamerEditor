@@ -554,11 +554,15 @@ void MainWindowFrame::onEditWorldInfo() {
         return;
     }
     
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
     editWorldInfoDialog = new EditWorldInfoDialog(this, GetHwnd());
     editWorldInfoDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editWorldInfoDialog->IsWindow()) {
-        // TODO: Handle error.
+        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
+        delete editWorldInfoDialog;
+        return;
     }
 
     editWorldInfoDialog->SetExStyle(editWorldInfoDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
@@ -566,7 +570,6 @@ void MainWindowFrame::onEditWorldInfo() {
 
     activeWindowHandle = editWorldInfoDialog->GetHwnd();
     
-    LanguageMapper& langMap = LanguageMapper::getInstance();
     editWorldInfoDialog->setDefaultDialogTitle(LM_toUTF8("EditWorldInfoTitle", langMap));
     editWorldInfoDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
