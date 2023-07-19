@@ -601,11 +601,15 @@ void MainWindowFrame::onEditStory() {
         return;
     }
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
     editStoryDialog = new EditStoryDialog(this, GetHwnd());
     editStoryDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editStoryDialog->IsWindow()) {
-        // TODO: Handle error;
+        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
+        delete editStoryDialog;
+        return;
     }
 
     editStoryDialog->SetExStyle(editStoryDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
@@ -613,7 +617,6 @@ void MainWindowFrame::onEditStory() {
 
     activeWindowHandle = editStoryDialog->GetHwnd();
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
     const CString dialogCaption = LM_toUTF8("EditWorldStoryTitle", langMap);
     editStoryDialog->setDefaultDialogTitle(dialogCaption);
 
@@ -651,11 +654,15 @@ void MainWindowFrame::onEditTileDescription() {
         return;
     }
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
     editTileDescriptionDialog = new EditTileDescriptionDialog(this, GetHwnd());
     editTileDescriptionDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(editTileDescriptionDialog->IsWindow()) {
-        // TODO: Handle Error
+        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
+        delete editTileDescriptionDialog;
+        return;
     }
 
     editTileDescriptionDialog->SetExStyle(editTileDescriptionDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
@@ -668,7 +675,6 @@ void MainWindowFrame::onEditTileDescription() {
     // TODO: Maybe make the dialog title part of the Constructor?
     // Or even move this to OnCreate since that function already needs languagemapper and
     // that's one less "getInstance".
-    LanguageMapper& langMap = LanguageMapper::getInstance();
     const CString dialogCaption = LM_toUTF8("EditTileDescTitle", langMap);
     editTileDescriptionDialog->setDefaultDialogTitle(dialogCaption);
 
