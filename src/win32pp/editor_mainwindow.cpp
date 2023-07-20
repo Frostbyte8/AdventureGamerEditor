@@ -684,22 +684,18 @@ void MainWindowFrame::onEditTileDescription() {
 
 void MainWindowFrame::finishedEditTileDescriptionDialog() {
     
+
     if(!editTileDescriptionDialog) {
         return;
     }
 
-    /*
-    if(!wasCanceled) {
-        gameWorldController->tryUpdateTileDescription(0, 0, "This is the Tile Name", "This is the long description");
+    if(editTileDescriptionDialog->hasSavedChanges()) {
+        gameWorldController->tryUpdateTileDescription(0, 0, editTileDescriptionDialog->getTileName(),
+                                                      editTileDescriptionDialog->getTileDescription());
     }
-    */
 
-    //if(!pressedApply) {
-
-        delete editTileDescriptionDialog;
-        editTileDescriptionDialog = NULL;
-        activeWindowHandle = GetHwnd();
-
-    //}
+    delete editTileDescriptionDialog;
+    editTileDescriptionDialog = NULL;
+    activeWindowHandle = GetHwnd();
 
 }
