@@ -191,12 +191,12 @@ void EditStoryDialog::notifyChangesSaved() {
 ///----------------------------------------------------------------------------
 /// trySaveData - Confirm data is valid, and if it is save it. This function
 /// should not be called directly and instead trySave should be called instead.
-/// @return true if the data was valid, false if it was not.
+/// @return Always true.
 ///----------------------------------------------------------------------------
 
 bool EditStoryDialog::trySaveData() {
-    storyText = WtoA(txtStory.GetWindowText());
-    summaryText = WtoA(txtSummary.GetWindowText());
+    storyText = WtoA(txtStory.GetWindowText().Left(GameMapConstants::MaxStoryText));
+    summaryText = WtoA(txtSummary.GetWindowText().Left(GameMapConstants::MaxSummaryText));
     return true;
 }
 

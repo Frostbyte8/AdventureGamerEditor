@@ -659,7 +659,7 @@ void MainWindowFrame::onEditTileDescription() {
     editTileDescriptionDialog = new EditTileDescriptionDialog(this, GetHwnd());
     editTileDescriptionDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
-    if(editTileDescriptionDialog->IsWindow()) {
+    if(!editTileDescriptionDialog->IsWindow()) {
         displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
         delete editTileDescriptionDialog;
         return;

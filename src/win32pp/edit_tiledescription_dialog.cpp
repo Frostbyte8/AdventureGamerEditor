@@ -189,14 +189,16 @@ void EditTileDescriptionDialog::notifyChangesSaved() {
 }
 
 ///----------------------------------------------------------------------------
-/// trySaveData - Confirm that data in the dialog (in this case, each tab page)
-/// is valid, and if it is, save it. This function should not be called
-/// directly.
-/// @return true if the data was valid, false if it was not.
+/// trySaveData - Confirm that data in the dialog is valid, and if it is, save
+/// it. This function should not be called directly.
+/// @return Always true
 ///----------------------------------------------------------------------------
 
 bool EditTileDescriptionDialog::trySaveData() {
-    // TODO: write function
+
+    tileName = WtoA(txtTileName.GetWindowText().Left(GameMapConstants::MaxTileName));
+    tileDescription = WtoA(txtTileDescription.GetWindowText().Left(GameMapConstants::MaxTileDescription));
+    
     return true;
 }
 
