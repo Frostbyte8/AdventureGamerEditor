@@ -47,6 +47,11 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 		virtual void    OnInitialUpdate();
 		virtual LRESULT WndProc(UINT msg, WPARAM wparam, LPARAM lparam);
 
+        static bool CALLBACK SetProperFont(HWND child, LPARAM font) {
+            ::SendMessage(child, WM_SETFONT, font, true);
+            return true;
+        }
+
 	private:
 
         void CreateMenuBar();

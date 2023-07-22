@@ -204,6 +204,12 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
     windowDims.right -= mapSize;
 
+    // Set the font to the font specified within window metrics.
+
+    HFONT dialogFont = windowMetrics.GetCurrentFont();
+    EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
+
+
     return retVal;
 }
 
