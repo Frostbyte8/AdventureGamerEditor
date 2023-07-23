@@ -27,7 +27,7 @@ namespace MenuIDs {
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
-editTileDescriptionDialog(0) {
+editTileDescriptionDialog(0), tileWidth(0), tileHeight(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
     LanguageMapper::getInstance();
@@ -152,6 +152,19 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
     SetStyle(GetStyle() | WS_CLIPCHILDREN);
 
+    // TODO: The tileset image should be created here and pass to the view on creation.
+
+    if(!loadTileSet()) {
+        MessageBox(L"Could not find tileset.bmp. Please ensure this file is in the same directory as advedit.exe. The program will now close.", L"Missing file tileset.bmp", MB_OK | MB_ICONERROR);
+        Close();
+        return 1;
+    }
+
+    /*
+    if(!(reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).isBMPLoaded())) {
+    }
+    */
+
 	const int retVal = CDockFrame::OnCreate(cs);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -167,16 +180,10 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	DWORD styleFlags = DS_NO_UNDOCK | DS_NO_CAPTION | DS_DEFAULT_CURSORS | DS_CLIENTEDGE;
 	SetDockStyle(styleFlags);
 
-    gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(gameWorldController), 
+    gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(gameWorldController, &tilesetBMP), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
 
-    // TODO: The tileset image should be created here and pass to the view on creation.
 
-    if(!(reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).isBMPLoaded())) {
-        MessageBox(L"Could not find tileset.bmp. Please ensure this file is in the same directory as advedit.exe. The program will now close.", L"Missing file tileset.bmp", MB_OK | MB_ICONERROR);
-        Close();
-        return 1;
-    }
 
 	roadSelectorDocker = static_cast<RoadSelectorDocker*>(gameMapDocker->AddDockedChild(
                                                           new RoadSelectorDocker(),
@@ -185,14 +192,13 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	entitiesHereDocker = static_cast<EntitiesHereDocker*>(gameMapDocker->AddDockedChild(
                                                           new EntitiesHereDocker(), styleFlags | DS_DOCKED_BOTTOM, 128));
 
-
     // The Road Selector is the Width of one tile plus the scroll bar
     // TODO: Zoom Factor
 
 	CRect rc;
 
-    const int tileWidth = reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).getTileWidth();
-	rc.right = tileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
+    const int tempTileWidth = tileWidth;
+	rc.right = tempTileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
 	AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
 	const int newWidth = abs(rc.right - rc.left);
 	roadSelectorDocker->SetDockSize(newWidth);   
@@ -703,5 +709,32 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
     delete editTileDescriptionDialog;
     editTileDescriptionDialog = NULL;
     activeWindowHandle = GetHwnd();
+
+}
+
+bool MainWindowFrame::loadTileSet() {
+
+    tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+
+    if(!tilesetBMP.GetHandle()) {
+        return false;
+    }
+
+    double tempWidth     = tilesetBMP.GetSize().cx / EditorConstants::TilesPerCol;
+    double tempHeight    = tilesetBMP.GetSize().cy / EditorConstants::TilesPerRow;
+
+    tileWidth   = static_cast<int>(tempWidth);
+    tileHeight  = static_cast<int>(tempHeight);
+
+    if(tempWidth - tileWidth != 0) {
+        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+    }
+
+    if(tempHeight - tileHeight != 0) {
+        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+    }
+
+
+    return true;
 
 }

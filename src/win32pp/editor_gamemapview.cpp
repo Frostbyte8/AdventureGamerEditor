@@ -5,8 +5,8 @@
 // Constructors / Destructor
 //=============================================================================
 
-GameMapView::GameMapView(GameWorldController* gwc) : backBufferDC(NULL), 
-                         tilesetDC(NULL), gameWorldController(gwc) {
+GameMapView::GameMapView(GameWorldController* gwc, const CBitmap* inTileSet) : backBufferDC(NULL), 
+tilesetDC(NULL), gameWorldController(gwc), tilesetBMP(inTileSet) {
     fakeZoomLevel = 1;
     tileWidth = 0;
     tileHeight = 0;
@@ -16,39 +16,23 @@ GameMapView::GameMapView(GameWorldController* gwc) : backBufferDC(NULL),
 // Accessors
 //=============================================================================
 
-///----------------------------------------------------------------------------
-/// isBMPLoaded - Checks to see if the tileset BMP was loaded successfully.
-///----------------------------------------------------------------------------
-
-const bool GameMapView::isBMPLoaded() const {
-    return (tilesetBMP.GetHandle() ? true : false);
-}
-
 //=============================================================================
 // Public / Protected functions
 //=============================================================================
 
 int GameMapView::OnCreate(CREATESTRUCT& cs) {
 
-    tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+    // TODO: tileset stuff should have its own mutator
 
-    double tempWidth     = tilesetBMP.GetSize().cx / EditorConstants::TilesPerCol;
-    double tempHeight    = tilesetBMP.GetSize().cy / EditorConstants::TilesPerRow;
+    double tempWidth     = tilesetBMP->GetSize().cx / EditorConstants::TilesPerCol;
+    double tempHeight    = tilesetBMP->GetSize().cy / EditorConstants::TilesPerRow;
 
     tileWidth   = static_cast<int>(tempWidth);
     tileHeight  = static_cast<int>(tempHeight);
-
-    if(tempWidth - tileWidth != 0) {
-        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
-    }
-
-    if(tempHeight - tileHeight != 0) {
-        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
-    }
     
     CClientDC dc(*this);
     tilesetDC = CMemDC(dc);
-    tilesetDC.SelectObject(tilesetBMP);
+    tilesetDC.SelectObject(*tilesetBMP);
     backBufferDC = CMemDC(dc);
 
     UpdateBackBuffer();

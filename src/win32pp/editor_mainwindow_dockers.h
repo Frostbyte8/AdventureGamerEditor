@@ -33,7 +33,7 @@ class RoadSelectorDocker : public CDocker {
 class GameMapDocker : public CDocker {
 
 	public:
-        GameMapDocker(GameWorldController* gwc) : view(gwc) {
+        GameMapDocker(GameWorldController* gwc, const CBitmap* inTileSet) : view(gwc, inTileSet) {
 			SetView(view);
 			SetBarWidth(6);
 		}

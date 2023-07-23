@@ -55,6 +55,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 	private:
 
         void CreateMenuBar();
+        bool loadTileSet();
 
         BOOL OnFileNew();
         BOOL OnFileOpen();
@@ -62,7 +63,11 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         CMenu mainMenu;
         CMenu fileMenu;
         CMenu editMenu;
+
         CBitmap tilesetBMP; 
+
+        int     tileWidth;
+        int     tileHeight;
 
 		GameEntitiesView*               entityView;
 		GameMapDocker*                  gameMapDocker;

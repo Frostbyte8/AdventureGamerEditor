@@ -78,12 +78,8 @@ class GameMapView : public CScrollView {
 	
 	public:
 
-        GameMapView(GameWorldController* gwc);
+        GameMapView(GameWorldController* gwc, const CBitmap* inTileSet);
         virtual ~GameMapView() {}
-
-        const bool isBMPLoaded() const;
-        const int& getTileWidth() const { return tileWidth; }
-        const int& gettileHeight() const { return tileHeight; }
         //void onZoomChange();
         void UpdateBackBuffer();
 
@@ -98,8 +94,8 @@ class GameMapView : public CScrollView {
 	    GameMapView(const GameMapView&);
 		GameMapView& operator = (const GameMapView&);
 
-        CMemDC      tilesetDC;
-        CBitmap     tilesetBMP;
+        CMemDC          tilesetDC;
+        const CBitmap*  tilesetBMP;
         
         CMemDC      backBufferDC;
         CBitmap     backBufferBMP;
