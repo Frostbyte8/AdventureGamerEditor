@@ -308,8 +308,9 @@ void RoadSelectorView::OnDraw(CDC& dc) {
         CBitmap oldBMP;
         oldBMP = backBufferDC.SelectObject(backBufferBMP);
 
-		for(int i = 0; i < 2; ++i) {
-			backBufferDC.BitBlt(0, 0, 37, 37, tilesetDC, 0, 0, SRCCOPY);
+		for(int i = 0; i < EditorConstants::TilesPerRow; ++i) {
+			backBufferDC.BitBlt(0, i * 37, 37, 37, tilesetDC, i * 37, 0, SRCCOPY);
+			backBufferDC.BitBlt(0, (i * 37) + (16 * 37), 37, 37, tilesetDC, i * 37, 8 * 37, SRCCOPY);
         }
 
 		backBufferDC.SelectObject(oldBMP);
