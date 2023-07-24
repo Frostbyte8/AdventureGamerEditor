@@ -55,16 +55,27 @@ class GameEntitiesView : public CWnd {
 class RoadSelectorView : public CWnd {
 
 	public:
-		RoadSelectorView() {}
+		RoadSelectorView() : backBufferDC(0), tilesetDC(0) {}
 		virtual ~RoadSelectorView() {}
         virtual void PreRegisterClass(WNDCLASS& wc) {
             wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
             wc.lpszClassName = L"RoadSelectorView";
             wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
         }
+        
+        void setTileset(CBitmap& inTileSet);
+        void UpdateBackBuffer();
+
+    protected:
+        virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void OnDraw(CDC& dc);
 
 	private:
-
+        CMemDC			    tilesetDC;
+        //CBitmap           tilesetBMP;
+        
+        CMemDC      backBufferDC;
+        CBitmap     backBufferBMP;
 		// Disable copy construction and assignment operator
 	    RoadSelectorView(const RoadSelectorView&);
 		RoadSelectorView& operator = (const RoadSelectorView&);
@@ -78,9 +89,10 @@ class GameMapView : public CScrollView {
 	
 	public:
 
-        GameMapView(GameWorldController* gwc, const CBitmap* inTileSet);
+        GameMapView(GameWorldController* gwc);
         virtual ~GameMapView() {}
         //void onZoomChange();
+        void setTileset(CBitmap& inTileSet);
         void UpdateBackBuffer();
 
     protected:
@@ -94,8 +106,8 @@ class GameMapView : public CScrollView {
 	    GameMapView(const GameMapView&);
 		GameMapView& operator = (const GameMapView&);
 
-        CMemDC          tilesetDC;
-        const CBitmap*  tilesetBMP;
+        CMemDC			    tilesetDC;
+        //CBitmap           tilesetBMP;
         
         CMemDC      backBufferDC;
         CBitmap     backBufferBMP;

@@ -263,3 +263,57 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
 
 }
+
+void RoadSelectorView::setTileset(CBitmap& bmp) {
+	
+	BITMAP bm;
+	bmp.GetObject(sizeof(BITMAP), &bm);
+	CMemDC memDC(NULL);
+	HBITMAP oldBMP = memDC.SelectObject(bmp);
+	tilesetDC.CreateCompatibleBitmap(memDC, bm.bmWidth, bm.bmHeight);
+	
+	tilesetDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, memDC, 0, 0, SRCCOPY);
+	
+	memDC.SelectObject(oldBMP);
+}
+
+int RoadSelectorView::OnCreate(CREATESTRUCT& cs) {
+   
+    //tileWidth = 37;
+    //tileHeight = 37;
+
+    //UpdateBackBuffer();
+
+    return CWnd::OnCreate(cs);
+
+}
+
+void RoadSelectorView::UpdateBackBuffer() {
+   
+    CBitmap oldBMP;
+    CClientDC dc(*this);
+    backBufferBMP = CreateCompatibleBitmap(dc, 1000, 1000);    
+
+    //oldBMP = backBufferDC.SelectObject(backBufferBMP);
+    //backBufferDC.BitBlt(0,0,32,32,tilesetDC,0,0,SRCCOPY);
+    //backBufferDC.SelectObject(oldBMP);
+}
+
+void RoadSelectorView::OnDraw(CDC& dc) {
+    
+    if(!backBufferBMP.GetHandle()) {
+		backBufferBMP = CreateCompatibleBitmap(dc, 1000, 1000);
+    }
+    
+    if(backBufferBMP.GetHandle()) {
+
+        CBitmap oldBMP;
+        oldBMP = backBufferDC.SelectObject(backBufferBMP);
+
+		for(int i = 0; i < 2; ++i) {
+			dc.BitBlt(0, 0, 37, 37, tilesetDC, 0, 0, SRCCOPY);
+        }
+
+    }
+
+}

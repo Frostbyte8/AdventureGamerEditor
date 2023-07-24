@@ -5,8 +5,8 @@
 // Constructors / Destructor
 //=============================================================================
 
-GameMapView::GameMapView(GameWorldController* gwc, const CBitmap* inTileSet) : backBufferDC(NULL), 
-tilesetDC(NULL), gameWorldController(gwc), tilesetBMP(inTileSet) {
+GameMapView::GameMapView(GameWorldController* gwc) : backBufferDC(NULL), 
+tilesetDC(NULL), gameWorldController(gwc) {
     fakeZoomLevel = 1;
     tileWidth = 0;
     tileHeight = 0;
@@ -20,10 +20,23 @@ tilesetDC(NULL), gameWorldController(gwc), tilesetBMP(inTileSet) {
 // Public / Protected functions
 //=============================================================================
 
+void GameMapView::setTileset(CBitmap& bmp) {
+	
+	BITMAP bm;
+	bmp.GetObject(sizeof(BITMAP), &bm);
+	CMemDC memDC(NULL);
+	HBITMAP oldBMP = memDC.SelectObject(bmp);
+	tilesetDC.CreateCompatibleBitmap(memDC, bm.bmWidth, bm.bmHeight);
+	
+	tilesetDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, memDC, 0, 0, SRCCOPY);
+	memDC.SelectObject(oldBMP);
+}
+
 int GameMapView::OnCreate(CREATESTRUCT& cs) {
 
     // TODO: tileset stuff should have its own mutator
 
+	/*
     double tempWidth     = tilesetBMP->GetSize().cx / EditorConstants::TilesPerCol;
     double tempHeight    = tilesetBMP->GetSize().cy / EditorConstants::TilesPerRow;
 
@@ -34,6 +47,10 @@ int GameMapView::OnCreate(CREATESTRUCT& cs) {
     tilesetDC = CMemDC(dc);
     tilesetDC.SelectObject(*tilesetBMP);
     backBufferDC = CMemDC(dc);
+    */
+    
+    tileWidth = 37;
+    tileHeight = 37;
 
     UpdateBackBuffer();
 
@@ -50,6 +67,7 @@ void GameMapView::UpdateBackBuffer() {
     SetScrollSizes(abc); // Otherwise it won't work.
     CBrush outofbounds(RGB(0,0,0));
     SetScrollBkgnd(outofbounds);
+    
     
     CBitmap oldBMP;
     CClientDC dc(*this);
