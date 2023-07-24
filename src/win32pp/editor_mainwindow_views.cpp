@@ -264,6 +264,14 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
 
 }
 
+//=============================================================================
+// RoadSelectorView 
+//=============================================================================
+
+int RoadSelectorView::OnCreate(CREATESTRUCT& cs) {
+    return CWnd::OnCreate(cs);
+}
+
 void RoadSelectorView::setTileset(CBitmap& bmp) {
 	
 	BITMAP bm;
@@ -271,34 +279,14 @@ void RoadSelectorView::setTileset(CBitmap& bmp) {
 	CMemDC memDC(NULL);
 	HBITMAP oldBMP = memDC.SelectObject(bmp);
 	tilesetDC.CreateCompatibleBitmap(memDC, bm.bmWidth, bm.bmHeight);
-	
 	tilesetDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, memDC, 0, 0, SRCCOPY);
+
+    tileWidth = bm.bmWidth / EditorConstants::TilesPerCol;
+    tileHeight = bm.bmHeight / EditorConstants::TilesPerRow;
 	
 	memDC.SelectObject(oldBMP);
-}
-
-int RoadSelectorView::OnCreate(CREATESTRUCT& cs) {
-   
-    //tileWidth = 37;
-    //tileHeight = 37;
 
     UpdateBackBuffer();
-
-    return CWnd::OnCreate(cs);
-
-}
-
-void RoadSelectorView::UpdateBackBuffer() {
-   
-    CSize abc(37, 37 * 32);
-    SetScrollSizes(abc); // Otherwise it won't work.
-    CBrush outofbounds(RGB(0,0,0));
-    SetScrollBkgnd(outofbounds);
-    
-    CBitmap oldBMP;
-    CClientDC dc(*this);
-    backBufferBMP = CreateCompatibleBitmap(dc, 37, 37 * 32);
-
 }
 
 void RoadSelectorView::OnDraw(CDC& dc) {
@@ -317,5 +305,18 @@ void RoadSelectorView::OnDraw(CDC& dc) {
 		dc.SelectObject(backBufferBMP);        
 
     }
+
+}
+
+void RoadSelectorView::UpdateBackBuffer() {
+   
+    const int totalHeight = tileHeight * (EditorConstants::TilesPerRow * 2);
+    CSize abc(tileWidth, totalHeight);
+    SetScrollSizes(abc); // Otherwise it won't work.
+    CBrush outofbounds(RGB(0,0,0));
+    SetScrollBkgnd(outofbounds);
+    
+    CClientDC dc(*this);
+    backBufferBMP = CreateCompatibleBitmap(dc, tileWidth, totalHeight);
 
 }

@@ -71,11 +71,15 @@ class RoadSelectorView : public CScrollView {
         virtual void OnDraw(CDC& dc);
 
 	private:
+
         CMemDC			    tilesetDC;
-        //CBitmap           tilesetBMP;
         
         CMemDC      backBufferDC;
         CBitmap     backBufferBMP;
+
+        int tileWidth;
+        int tileHeight;
+
 		// Disable copy construction and assignment operator
 	    RoadSelectorView(const RoadSelectorView&);
 		RoadSelectorView& operator = (const RoadSelectorView&);

@@ -30,32 +30,15 @@ void GameMapView::setTileset(CBitmap& bmp) {
 	
 	tilesetDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, memDC, 0, 0, SRCCOPY);
 	memDC.SelectObject(oldBMP);
+
+    tileWidth = bm.bmWidth / EditorConstants::TilesPerRow;
+    tileHeight = bm.bmHeight / EditorConstants::TilesPerCol;
+
+    UpdateBackBuffer();
 }
 
 int GameMapView::OnCreate(CREATESTRUCT& cs) {
-
-    // TODO: tileset stuff should have its own mutator
-
-	/*
-    double tempWidth     = tilesetBMP->GetSize().cx / EditorConstants::TilesPerCol;
-    double tempHeight    = tilesetBMP->GetSize().cy / EditorConstants::TilesPerRow;
-
-    tileWidth   = static_cast<int>(tempWidth);
-    tileHeight  = static_cast<int>(tempHeight);
-    
-    CClientDC dc(*this);
-    tilesetDC = CMemDC(dc);
-    tilesetDC.SelectObject(*tilesetBMP);
-    backBufferDC = CMemDC(dc);
-    */
-    
-    tileWidth = 37;
-    tileHeight = 37;
-
-    UpdateBackBuffer();
-
     return CScrollView::OnCreate(cs);
-
 }
 
 void GameMapView::UpdateBackBuffer() {
@@ -68,14 +51,9 @@ void GameMapView::UpdateBackBuffer() {
     CBrush outofbounds(RGB(0,0,0));
     SetScrollBkgnd(outofbounds);
     
-    
-    CBitmap oldBMP;
     CClientDC dc(*this);
     backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);    
 
-    oldBMP = backBufferDC.SelectObject(backBufferBMP);
-    backBufferDC.BitBlt(0,0,128,128,tilesetDC,0,0,SRCCOPY);
-    backBufferDC.SelectObject(oldBMP);
 }
 
 ///----------------------------------------------------------------------------
