@@ -52,7 +52,7 @@ class GameEntitiesView : public CWnd {
 /// RoadSelectorView - Show all the road tiles available
 ///----------------------------------------------------------------------------
 
-class RoadSelectorView : public CWnd {
+class RoadSelectorView : public CScrollView {
 
 	public:
 		RoadSelectorView() : backBufferDC(0), tilesetDC(0) {}

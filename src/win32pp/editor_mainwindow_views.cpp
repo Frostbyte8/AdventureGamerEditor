@@ -282,7 +282,7 @@ int RoadSelectorView::OnCreate(CREATESTRUCT& cs) {
     //tileWidth = 37;
     //tileHeight = 37;
 
-    //UpdateBackBuffer();
+    UpdateBackBuffer();
 
     return CWnd::OnCreate(cs);
 
@@ -290,21 +290,19 @@ int RoadSelectorView::OnCreate(CREATESTRUCT& cs) {
 
 void RoadSelectorView::UpdateBackBuffer() {
    
+    CSize abc(37, 37 * 32);
+    SetScrollSizes(abc); // Otherwise it won't work.
+    CBrush outofbounds(RGB(0,0,0));
+    SetScrollBkgnd(outofbounds);
+    
     CBitmap oldBMP;
     CClientDC dc(*this);
-    backBufferBMP = CreateCompatibleBitmap(dc, 1000, 1000);    
+    backBufferBMP = CreateCompatibleBitmap(dc, 37, 37 * 32);
 
-    //oldBMP = backBufferDC.SelectObject(backBufferBMP);
-    //backBufferDC.BitBlt(0,0,32,32,tilesetDC,0,0,SRCCOPY);
-    //backBufferDC.SelectObject(oldBMP);
 }
 
 void RoadSelectorView::OnDraw(CDC& dc) {
-    
-    if(!backBufferBMP.GetHandle()) {
-		backBufferBMP = CreateCompatibleBitmap(dc, 1000, 1000);
-    }
-    
+        
     if(backBufferBMP.GetHandle()) {
 
         CBitmap oldBMP;
@@ -314,8 +312,8 @@ void RoadSelectorView::OnDraw(CDC& dc) {
 			backBufferDC.BitBlt(0, 0, 37, 37, tilesetDC, 0, 0, SRCCOPY);
         }
 
-		dc.BitBlt(0, 0, 37, 37, backBufferDC, 0, 0, SRCCOPY);
-        backBufferDC.SelectObject(oldBMP);
+		backBufferDC.SelectObject(oldBMP);
+		dc.SelectObject(backBufferBMP);        
 
     }
 
