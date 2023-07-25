@@ -11,7 +11,7 @@
 class RoadSelectorDocker : public CDocker {
 
 	public:
-		RoadSelectorDocker() {
+		RoadSelectorDocker(MainWindowInterface* inMainWindow) : view(inMainWindow) {
 			SetView(view);
 			SetBarWidth(0);
 		}

@@ -187,10 +187,10 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 
 	roadSelectorDocker = static_cast<RoadSelectorDocker*>(gameMapDocker->AddDockedChild(
-                                                          new RoadSelectorDocker(),
+                                                          new RoadSelectorDocker(this),
                                                           styleFlags | DS_DOCKED_LEFT | DS_NO_RESIZE, 0));
                                                           
-	reinterpret_cast<RoadSelectorView&>(roadSelectorDocker->GetView()).setTileset(tilesetBMP);
+	reinterpret_cast<RoadSelectorView&>(roadSelectorDocker->GetView()).SetTileset(tilesetBMP);
 
 	entitiesHereDocker = static_cast<EntitiesHereDocker*>(gameMapDocker->AddDockedChild(
                                                           new EntitiesHereDocker(), styleFlags | DS_DOCKED_BOTTOM, 128));
