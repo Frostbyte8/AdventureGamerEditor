@@ -1,6 +1,23 @@
 #include "editor_mainwindow_views.h"
 #include "../editor_constants.h"
 
+void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
+                     const int& selectionWidth, const int selectionHeight,
+                     const int& borderWidth) {
+
+    CBrush oldBrush = inDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
+    CRect selectRect = CRect(xOffset, yOffset, selectionWidth, selectionHeight);
+    inDC.Rectangle(selectRect);
+
+    if(borderWidth > 1) {
+        // TODO: Loop and cap
+        selectRect.DeflateRect(1, 1);
+        inDC.DrawEdge(selectRect, BDR_SUNKENINNER, BF_RECT);
+    }
+    inDC.SelectObject(oldBrush);
+
+}
+
 //=============================================================================
 // Constructors
 //=============================================================================
@@ -89,15 +106,17 @@ void RoadSelectorView::UpdateBackBuffer() {
 
     }
 
+    DrawTileSelectionBox(backBufferDC, 0, 0, tileWidth, tileHeight, 2);
+
+    /*
     // Now draw the selection box
     CBrush oldBrush = backBufferDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
     CRect selectRect = CRect(0, 0, tileWidth, tileHeight);
     backBufferDC.Rectangle(selectRect);
     selectRect.DeflateRect(1, 1);
     backBufferDC.DrawEdge(selectRect, BDR_SUNKENINNER, BF_RECT);
-    
-    
     backBufferDC.SelectObject(oldBrush);
+    */
     backBufferDC.SelectObject(oldBMP);
 } 
 
