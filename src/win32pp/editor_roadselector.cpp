@@ -76,10 +76,6 @@ void RoadSelectorView::UpdateBackBuffer() {
     CBitmap oldBMP;
     oldBMP = backBufferDC.SelectObject(backBufferBMP);
 
-    int yRectPos = 0;
-    int yRectHeight = tileHeight;
-
-    CBrush oldBrush = backBufferDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
 
     for(int i = 0; i < EditorConstants::TilesPerRow; ++i) {
 
@@ -91,20 +87,16 @@ void RoadSelectorView::UpdateBackBuffer() {
         backBufferDC.BitBlt(0, yDest, tileWidth, tileHeight, tilesetDC, xSrc, 0, SRCCOPY);
 	    backBufferDC.BitBlt(0, yDirtDest, tileWidth, tileHeight, tilesetDC, xSrc, yDirtSrc, SRCCOPY);
 
-        backBufferDC.Rectangle(0, yRectPos, tileWidth, yRectHeight + yRectPos);
-        //backBufferDC.Rectangle(1, yRectPos + 1, tileWidth - 1, yRectHeight + yRectPos - 1);
-
-        if(yRectPos == 0) {
-            yRectPos--;
-            yRectHeight++;
-        }
-
-        backBufferDC.Rectangle(0, yDirtDest - 1, tileWidth, yDirtDest + yRectHeight - 1);
-        //backBufferDC.Rectangle(1, yDirtDest, tileWidth - 1, yDirtDest + yRectHeight - 2);
-
-        yRectPos += tileHeight;
     }
 
+    // Now draw the selection box
+    CBrush oldBrush = backBufferDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
+    CRect selectRect = CRect(0, 0, tileWidth, tileHeight);
+    backBufferDC.Rectangle(selectRect);
+    selectRect.DeflateRect(1, 1);
+    backBufferDC.DrawEdge(selectRect, BDR_SUNKENINNER, BF_RECT);
+    
+    
     backBufferDC.SelectObject(oldBrush);
     backBufferDC.SelectObject(oldBMP);
 } 
