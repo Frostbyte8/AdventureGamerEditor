@@ -170,8 +170,8 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
 void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter) {
 
     CString caption;
-    EOD_SetWindowText(std::to_string(gameCharacter.getX()), txtCoords[0], caption);
-    EOD_SetWindowText(std::to_string(gameCharacter.getY()), txtCoords[1], caption);
+    SetWindowTextFromStr(std::to_string(gameCharacter.getX()), txtCoords[0], caption);
+    SetWindowTextFromStr(std::to_string(gameCharacter.getY()), txtCoords[1], caption);
 
     std::vector<size_t> objectIndices = gameMap->getCharacterInventory(gameCharacter.getID());
     const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();

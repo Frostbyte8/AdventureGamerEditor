@@ -21,6 +21,19 @@ inline bool IsScrollBarKey(const int& vk) {
     return false;
 }
 
+///----------------------------------------------------------------------------
+/// SetWindowTextFromStr - Set the caption of the given control to the given 
+/// std::string
+/// @param reference to a control.
+/// @param reference to a CString to be filled with the new caption string.
+/// @param constant reference to the std::string containing the caption.
+///----------------------------------------------------------------------------
+
+inline void SetWindowTextFromStr(const std::string& str, CWnd& widget, CString& caption) {
+    caption = AtoW(str.c_str(), CP_UTF8);
+    widget.SetWindowTextW(caption);
+}
+
 namespace errorCodes {
     enum ec {
         NoError         = 0,

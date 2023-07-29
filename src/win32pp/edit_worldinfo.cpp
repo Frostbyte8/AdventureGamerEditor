@@ -1,6 +1,7 @@
 #include "edit_worldinfo.h"
 #include "../util/languagemapper.h"
 #include "shared_functions.h"
+#include "../util/win32pp_extras.h"
 #include "../adventuregamer_constants.h"
 
 
@@ -53,8 +54,8 @@ void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {
 
     CString caption;
 
-    EOD_SetWindowText(gameInfo.getGameName(), txtProperties[0], caption);
-    EOD_SetWindowText(gameInfo.getCurrencyName(), txtProperties[1], caption);
+    SetWindowTextFromStr(gameInfo.getGameName(), txtProperties[0], caption);
+    SetWindowTextFromStr(gameInfo.getCurrencyName(), txtProperties[1], caption);
 
     for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
         int base = gameInfo.getBaseAttribute(i);

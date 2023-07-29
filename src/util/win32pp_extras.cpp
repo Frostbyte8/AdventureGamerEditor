@@ -212,3 +212,4 @@ bool StringValidator::validate() {
  
     return true;
 }
+

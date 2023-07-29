@@ -256,8 +256,8 @@ void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject, con
 
         CString caption;
 
-        EOD_SetWindowText(gameObject.getDescription(i),
-                          txtDescriptions[i], caption);
+        SetWindowTextFromStr(gameObject.getDescription(i),
+                                            txtDescriptions[i], caption);
     }
 
 }

@@ -246,7 +246,7 @@ void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameChara
     CString caption;
 
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
-        EOD_SetWindowText(gameCharacter.getDescription(i), txtDescriptions[i], caption);
+        SetWindowTextFromStr(gameCharacter.getDescription(i), txtDescriptions[i], caption);
     }
 
 }

@@ -33,23 +33,12 @@ inline CString LM_toUTF8(const std::string& ID, const LanguageMapper& langMap) {
 /// @param ID of the string to be used.
 ///----------------------------------------------------------------------------
 
+
 inline void EOD_SetWindowText(const std::string& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
     // TODO: Update String
-    caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
-    widget.SetWindowTextW(caption);
-}
-
-///----------------------------------------------------------------------------
-/// LM_SetWindowText - Set the caption of the given control to the given 
-/// std::string
-/// @param reference to a control.
-/// @param reference to a CString to be filled with the new caption string.
-/// @param constant reference to the std::string containing the caption.
-///----------------------------------------------------------------------------
-
-inline void EOD_SetWindowText(const std::string& str, CWnd& widget, CString& caption) {
-    caption = AtoW(str.c_str(), CP_UTF8);
-    widget.SetWindowTextW(caption);
+    //caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
+    //widget.SetWindowTextW(caption);
+    SetWindowTextFromStr(langMap.get(ID), widget, caption);
 }
 
 ///----------------------------------------------------------------------------
