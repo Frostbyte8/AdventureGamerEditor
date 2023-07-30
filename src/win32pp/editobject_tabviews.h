@@ -6,6 +6,7 @@
 
 #include "../util/languagemapper.h"
 #include "../util/win32pp_extras.h"
+#include "../util/inputvalidator.h"
 #include "../win32/window_metrics.h"
 
 #include "../model/gameobject.h"

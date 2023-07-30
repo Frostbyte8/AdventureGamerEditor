@@ -75,7 +75,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     grpFlags.Create(*this, 0, BS_GROUPBOX);
 
-    EOD_SetWindowText("FlagsGroupLabel", grpFlags,
+    SetWindowTextFromLangMapString("FlagsGroupLabel", grpFlags,
                       caption, langMap);
 
     for(int k = 0; k < GameObjectFlags1::NumFlags; ++k) {
@@ -85,14 +85,14 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     }
 
-    EOD_SetWindowText("IsMasterKeyLabel", btnFlags[0], caption, langMap);
-    EOD_SetWindowText("IsInvisibleLabel", btnFlags[1], caption, langMap);
-    EOD_SetWindowText("IsLadderLabel", btnFlags[2], caption, langMap);
-    EOD_SetWindowText("ProtectsPlayerLabel", btnFlags[3], caption, langMap);
-    EOD_SetWindowText("IsFlashlightLabel", btnFlags[4], caption, langMap);
-    EOD_SetWindowText("IsWornLabel", btnFlags[5], caption, langMap);
-    EOD_SetWindowText("IsFixedPosLabel", btnFlags[6], caption, langMap);
-    EOD_SetWindowText("IsMoneyLabel", btnFlags[7], caption, langMap);
+    SetWindowTextFromLangMapString("IsMasterKeyLabel", btnFlags[0], caption, langMap);
+    SetWindowTextFromLangMapString("IsInvisibleLabel", btnFlags[1], caption, langMap);
+    SetWindowTextFromLangMapString("IsLadderLabel", btnFlags[2], caption, langMap);
+    SetWindowTextFromLangMapString("ProtectsPlayerLabel", btnFlags[3], caption, langMap);
+    SetWindowTextFromLangMapString("IsFlashlightLabel", btnFlags[4], caption, langMap);
+    SetWindowTextFromLangMapString("IsWornLabel", btnFlags[5], caption, langMap);
+    SetWindowTextFromLangMapString("IsFixedPosLabel", btnFlags[6], caption, langMap);
+    SetWindowTextFromLangMapString("IsMoneyLabel", btnFlags[7], caption, langMap);
 
     for(int i = 0; i < 2; ++i) {
 
@@ -109,17 +109,17 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
        
     }
 
-    EOD_SetWindowText("ObjectWorthLabel", lblProperties[0], caption, langMap);
-    EOD_SetWindowText("ObjectNumUsesLabel", lblProperties[1], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectWorthLabel", lblProperties[0], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectNumUsesLabel", lblProperties[1], caption, langMap);
 
     grpProperties.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("PropertiesGroupLabel", grpProperties, caption, langMap);
+    SetWindowTextFromLangMapString("PropertiesGroupLabel", grpProperties, caption, langMap);
 
     lblProperties[2].Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("ObjectHeldLabel", lblProperties[2], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectHeldLabel", lblProperties[2], caption, langMap);
 
     cbxUsedWith.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
-    EOD_AddString("NoObjectSelectedOption", cbxUsedWith, caption, langMap);
+    AddStringFromLangMap("NoObjectSelectedOption", cbxUsedWith, caption, langMap);
 
     const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
     const size_t numObjects = gameObjects.size();

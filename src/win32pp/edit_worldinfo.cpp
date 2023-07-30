@@ -129,7 +129,7 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpWorldInfo.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("WorldSettingsGroup", grpWorldInfo, caption, langMap);
+    SetWindowTextFromLangMapString("WorldSettingsGroup", grpWorldInfo, caption, langMap);
 
     for(int i = 0; i < 2; ++i) {
         lblProperties[i].Create(*this, 0, SS_SIMPLE);
@@ -141,8 +141,8 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     txtProperties[0].SetLimitText(GameInfoConstants::MaxWorldName);
     txtProperties[1].SetLimitText(GameInfoConstants::MaxCurrencyName);
 
-    EOD_SetWindowText("WorldNameLabel", lblProperties[0], caption, langMap);
-    EOD_SetWindowText("CurrencyNameLabel", lblProperties[1], caption, langMap);
+    SetWindowTextFromLangMapString("WorldNameLabel", lblProperties[0], caption, langMap);
+    SetWindowTextFromLangMapString("CurrencyNameLabel", lblProperties[1], caption, langMap);
 
     for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
         lblAttributes[i].Create(*this, 0, SS_SIMPLE);       
@@ -175,19 +175,19 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
 
     }
 
-    EOD_SetWindowText("EnergyLabel", lblAttributes[0], caption, langMap);
-    EOD_SetWindowText("SkillLabel", lblAttributes[1], caption, langMap);
-    EOD_SetWindowText("WillpowerLabel", lblAttributes[2], caption, langMap);
-    EOD_SetWindowText("LuckLabel", lblAttributes[3], caption, langMap);
-    EOD_SetWindowText("TorchLifeLabel", lblAttributes[4], caption, langMap);
+    SetWindowTextFromLangMapString("EnergyLabel", lblAttributes[0], caption, langMap);
+    SetWindowTextFromLangMapString("SkillLabel", lblAttributes[1], caption, langMap);
+    SetWindowTextFromLangMapString("WillpowerLabel", lblAttributes[2], caption, langMap);
+    SetWindowTextFromLangMapString("LuckLabel", lblAttributes[3], caption, langMap);
+    SetWindowTextFromLangMapString("TorchLifeLabel", lblAttributes[4], caption, langMap);
 
     for(int i = 0; i < 3; ++i) {
         btnDialog[i].Create(*this, 0, BS_PUSHBUTTON);
     }
 
-    EOD_SetWindowText("OKButton", btnDialog[0], caption, langMap);
-    EOD_SetWindowText("CancelButton", btnDialog[1], caption, langMap);
-    EOD_SetWindowText("ApplyButton", btnDialog[2], caption, langMap);
+    SetWindowTextFromLangMapString("OKButton", btnDialog[0], caption, langMap);
+    SetWindowTextFromLangMapString("CancelButton", btnDialog[1], caption, langMap);
+    SetWindowTextFromLangMapString("ApplyButton", btnDialog[2], caption, langMap);
 
     btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
     btnDialog[0].SetDlgCtrlID(IDOK);

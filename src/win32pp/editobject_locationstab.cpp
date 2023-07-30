@@ -72,7 +72,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpLocations.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("LocationsGroupLabel", grpLocations,
+    SetWindowTextFromLangMapString("LocationsGroupLabel", grpLocations,
                       caption, langMap);
 
     for(int i = 0; i < 3; ++i) {
@@ -83,19 +83,19 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     }
 
-    EOD_SetWindowText("OnGroundAtLabel", btnLocatedAt[0], caption, langMap);
-    EOD_SetWindowText("PlayerStartsWithLabel", btnLocatedAt[1], caption, langMap);
-    EOD_SetWindowText("CharacterHasItLabel", btnLocatedAt[2], caption, langMap);
+    SetWindowTextFromLangMapString("OnGroundAtLabel", btnLocatedAt[0], caption, langMap);
+    SetWindowTextFromLangMapString("PlayerStartsWithLabel", btnLocatedAt[1], caption, langMap);
+    SetWindowTextFromLangMapString("CharacterHasItLabel", btnLocatedAt[2], caption, langMap);
 
     for(int k = 0; k < 2; ++k) {
         lblGroundCoord[k].Create(*this, 0, SS_SIMPLE);
         lblDoorCoord[k].Create(*this, 0, SS_SIMPLE);
     }
 
-    EOD_SetWindowText("XCoord", lblGroundCoord[0], caption, langMap);
-    EOD_SetWindowText("YCoord", lblGroundCoord[1], caption, langMap);
-    EOD_SetWindowText("XCoord", lblDoorCoord[0],caption, langMap);
-    EOD_SetWindowText("YCoord", lblDoorCoord[1],caption, langMap);
+    SetWindowTextFromLangMapString("XCoord", lblGroundCoord[0], caption, langMap);
+    SetWindowTextFromLangMapString("YCoord", lblGroundCoord[1], caption, langMap);
+    SetWindowTextFromLangMapString("XCoord", lblDoorCoord[0],caption, langMap);
+    SetWindowTextFromLangMapString("YCoord", lblDoorCoord[1],caption, langMap);
 
     for(int k = 0; k < 2; ++k) {
         txtGroundCoord[k].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
@@ -108,7 +108,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
     cbxWhichCharacter.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     cbxWhichCharacter.SetDlgCtrlID(ControlIDs::WhichCharacter);
-    EOD_AddString("NoCharacterSelectedOption", cbxWhichCharacter, caption, langMap);
+    AddStringFromLangMap("NoCharacterSelectedOption", cbxWhichCharacter, caption, langMap);
 
     const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
     const size_t numCharacters = gameCharacters.size();
@@ -120,7 +120,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
     }
 
     btnUnlocksDoor.Create(*this, 0, BS_AUTOCHECKBOX | WS_TABSTOP);
-    EOD_SetWindowText("UnlocksDoorAtLabel", btnUnlocksDoor, caption, langMap);
+    SetWindowTextFromLangMapString("UnlocksDoorAtLabel", btnUnlocksDoor, caption, langMap);
     btnUnlocksDoor.SetDlgCtrlID(ControlIDs::UnlocksDoor);
 
     for(int k = 0; k < 2; ++k) {

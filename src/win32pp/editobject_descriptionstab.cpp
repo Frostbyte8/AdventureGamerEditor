@@ -57,7 +57,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpDescriptions.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("DescriptionsGroupLabel", grpDescriptions, caption, langMap);
+    SetWindowTextFromLangMapString("DescriptionsGroupLabel", grpDescriptions, caption, langMap);
 
     for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
         
@@ -79,7 +79,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
             btnBrowse[currentButton].Create(*this, 0,
                                             WS_TABSTOP | BS_PUSHBUTTON);
-            EOD_SetWindowText("BrowseButton", btnBrowse[currentButton], caption, langMap);
+            SetWindowTextFromLangMapString("BrowseButton", btnBrowse[currentButton], caption, langMap);
         }
         else {
             txtDescriptions[i].SetDlgCtrlID(ControlIDs::Name+i);
@@ -87,12 +87,12 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
     }
 
-    EOD_SetWindowText("ObjectNameLabel", lblDescriptions[0], caption, langMap);
-    EOD_SetWindowText("OnObjectSightLabel", lblDescriptions[1], caption, langMap);
-    EOD_SetWindowText("OnUseLabel", lblDescriptions[2], caption, langMap);
-    EOD_SetWindowText("OnLastUseLabel", lblDescriptions[3], caption, langMap);
-    EOD_SetWindowText("ObjectIconLabel", lblDescriptions[4], caption, langMap);
-    EOD_SetWindowText("ObjectSoundLabel", lblDescriptions[5], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectNameLabel", lblDescriptions[0], caption, langMap);
+    SetWindowTextFromLangMapString("OnObjectSightLabel", lblDescriptions[1], caption, langMap);
+    SetWindowTextFromLangMapString("OnUseLabel", lblDescriptions[2], caption, langMap);
+    SetWindowTextFromLangMapString("OnLastUseLabel", lblDescriptions[3], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectIconLabel", lblDescriptions[4], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectSoundLabel", lblDescriptions[5], caption, langMap);
 
     txtDescriptions[GameObjectDescriptions::Icon].EnableWindow(FALSE);
     txtDescriptions[GameObjectDescriptions::Sound].EnableWindow(FALSE);

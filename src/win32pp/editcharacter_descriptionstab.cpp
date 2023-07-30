@@ -58,7 +58,7 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpDescriptions.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("CharDescriptionsGroup", grpDescriptions, caption, langMap);
+    SetWindowTextFromLangMapString("CharDescriptionsGroup", grpDescriptions, caption, langMap);
 
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
         lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
@@ -77,14 +77,14 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
         }
     } 
     
-    EOD_SetWindowText("CharNameLabel", lblDescriptions[0], caption, langMap);
-    EOD_SetWindowText("CharOnSightLabel", lblDescriptions[1], caption, langMap);
-    EOD_SetWindowText("CharOnFightLabel", lblDescriptions[2], caption, langMap);
-    EOD_SetWindowText("CharOnDeathLabel", lblDescriptions[3], caption, langMap);
-    EOD_SetWindowText("CharIconLabel", lblDescriptions[4], caption, langMap);
-    EOD_SetWindowText("CharSoundLabel", lblDescriptions[5], caption, langMap);
-    EOD_SetWindowText("BrowseButton", btnBrowse[0], caption, langMap);
-    EOD_SetWindowText("BrowseButton", btnBrowse[1], caption, langMap);
+    SetWindowTextFromLangMapString("CharNameLabel", lblDescriptions[0], caption, langMap);
+    SetWindowTextFromLangMapString("CharOnSightLabel", lblDescriptions[1], caption, langMap);
+    SetWindowTextFromLangMapString("CharOnFightLabel", lblDescriptions[2], caption, langMap);
+    SetWindowTextFromLangMapString("CharOnDeathLabel", lblDescriptions[3], caption, langMap);
+    SetWindowTextFromLangMapString("CharIconLabel", lblDescriptions[4], caption, langMap);
+    SetWindowTextFromLangMapString("CharSoundLabel", lblDescriptions[5], caption, langMap);
+    SetWindowTextFromLangMapString("BrowseButton", btnBrowse[0], caption, langMap);
+    SetWindowTextFromLangMapString("BrowseButton", btnBrowse[1], caption, langMap);
 
     std::vector<std::string> imageExtensions;
     imageExtensions.push_back(".ICO");

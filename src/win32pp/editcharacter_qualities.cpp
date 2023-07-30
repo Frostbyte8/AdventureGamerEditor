@@ -95,7 +95,7 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     grpFlags.Create(*this, 0, BS_GROUPBOX);
 
-    EOD_SetWindowText("ChararacterFlagsGroup", grpFlags,
+    SetWindowTextFromLangMapString("ChararacterFlagsGroup", grpFlags,
                       caption, langMap);
 
     for(int k = 0; k < GameCharacterFlags::NumFlags; ++k) {
@@ -106,20 +106,20 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     }
 
-    EOD_SetWindowText("CanEnterDarkSpaces", btnFlags[0], caption, langMap);
-    EOD_SetWindowText("CanEnterHazardSpaces", btnFlags[1], caption, langMap);
-    EOD_SetWindowText("CanUseJumppads", btnFlags[2], caption, langMap);
-    EOD_SetWindowText("CanBypassGates", btnFlags[3], caption, langMap);
-    EOD_SetWindowText("CanBypassDoors", btnFlags[4], caption, langMap);
-    EOD_SetWindowText("CanClimbThings", btnFlags[5], caption, langMap);
-    EOD_SetWindowText("CharacterWanders", btnFlags[6], caption, langMap);
-    EOD_SetWindowText("CharacterStalksPlayer", btnFlags[7], caption, langMap);
+    SetWindowTextFromLangMapString("CanEnterDarkSpaces", btnFlags[0], caption, langMap);
+    SetWindowTextFromLangMapString("CanEnterHazardSpaces", btnFlags[1], caption, langMap);
+    SetWindowTextFromLangMapString("CanUseJumppads", btnFlags[2], caption, langMap);
+    SetWindowTextFromLangMapString("CanBypassGates", btnFlags[3], caption, langMap);
+    SetWindowTextFromLangMapString("CanBypassDoors", btnFlags[4], caption, langMap);
+    SetWindowTextFromLangMapString("CanClimbThings", btnFlags[5], caption, langMap);
+    SetWindowTextFromLangMapString("CharacterWanders", btnFlags[6], caption, langMap);
+    SetWindowTextFromLangMapString("CharacterStalksPlayer", btnFlags[7], caption, langMap);
 
     grpProperties.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("CharPropertiesGroup", grpProperties, caption, langMap);
+    SetWindowTextFromLangMapString("CharPropertiesGroup", grpProperties, caption, langMap);
 
     lblMoney.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("MoneyCharHas", lblMoney, caption, langMap);
+    SetWindowTextFromLangMapString("MoneyCharHas", lblMoney, caption, langMap);
 
     txtMoney.Create(*this, 0, ES_AUTOHSCROLL);
     txtMoney.SetExStyle(WS_EX_CLIENTEDGE);
@@ -129,16 +129,16 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
                     UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
     lblType.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("TypeOfCharacter", lblType, caption, langMap);
+    SetWindowTextFromLangMapString("TypeOfCharacter", lblType, caption, langMap);
 
     cbxType.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | 
                    WS_VSCROLL | WS_TABSTOP);
 
     cbxType.SetDlgCtrlID(ControlIDs::CharType);
 
-    EOD_AddString("TypeMissionary", cbxType, caption, langMap);
-    EOD_AddString("TypeTrader", cbxType, caption, langMap);
-    EOD_AddString("TypeFighter", cbxType, caption, langMap);
+    AddStringFromLangMap("TypeMissionary", cbxType, caption, langMap);
+    AddStringFromLangMap("TypeTrader", cbxType, caption, langMap);
+    AddStringFromLangMap("TypeFighter", cbxType, caption, langMap);
 
     spnMoney.SetRange(GameObjectConstants::MinMonetaryValue,
                       GameObjectConstants::MaxMonetaryValue);

@@ -19,38 +19,32 @@
 ///----------------------------------------------------------------------------
 
 inline CString LM_toUTF8(const std::string& ID, const LanguageMapper& langMap) {
-    // TODO: Update string
     CString retVal = AtoW(langMap.get(ID).c_str(), CP_UTF8);
     return retVal;
 }
 
 ///----------------------------------------------------------------------------
-/// LM_SetWindowText - Set the caption of the given control to the given 
-/// languagemap string.
-/// @param reference to a control.
+/// SetWindowTextFromLangMapString - Set the caption of the given control to
+/// the given languagemap string.
+/// @param ID of the string to be used.
+/// @param reference to a control having it's text changed.
 /// @param reference to a CString to be filled with the new caption string.
 /// @param constant reference to the instance of the Language mapper.
-/// @param ID of the string to be used.
 ///----------------------------------------------------------------------------
 
-
-inline void EOD_SetWindowText(const std::string& ID, CWnd& widget, CString& caption, const LanguageMapper& langMap) {
-    // TODO: Update String
-    //caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
-    //widget.SetWindowTextW(caption);
+inline void SetWindowTextFromLangMapString(const std::string& ID, CWnd& widget,CString& caption, const LanguageMapper& langMap) {
     SetWindowTextFromStr(langMap.get(ID), widget, caption);
 }
 
 ///----------------------------------------------------------------------------
-/// LM_AddString - Adds a string from the language mapper to the combobox given
+/// AddStringFromLangMap - Adds a string from the language mapper to the combobox given
+/// @param ID of the string to be used.
 /// @param reference to a CCombobox.
 /// @param reference to a CString to be filled with the new string.
 /// @param constant reference to the instance of the Langauge Mapper.
-/// @param ID of the string to be used.
 ///----------------------------------------------------------------------------
 
-inline void EOD_AddString(const std::string& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
-    // TODO: Update String
+inline void AddStringFromLangMap(const std::string& ID, CComboBox& widget, CString& caption, const LanguageMapper& langMap) {
     caption = AtoW(langMap.get(ID).c_str(), CP_UTF8);
     widget.AddString(caption);
 }
@@ -58,6 +52,8 @@ inline void EOD_AddString(const std::string& ID, CComboBox& widget, CString& cap
 //=============================================================================
 // Helper Functions
 //=============================================================================
+
+// TODO: Un-inline this
 
 inline void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window) {
     
@@ -77,103 +73,5 @@ inline void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& w
     window.SetWindowPos(0, windowPos.x, windowPos.y, 0, 0, SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOSIZE | SWP_NOZORDER | SWP_NOREPOSITION);
 
 }
-
-// TODO: This shouldn't be inline, but removing the inline keyword prevents this from compiling, do this at some point.
-
-inline void processValidatorError(std::string& errorMessage, std::string& errorTitle, const InputValidator* validator) {
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    const int errorCode = validator->getErrorCode();
-
-    if(validator->getType() == validatorTypes::Integer) {
-        const IntegerValidator* intValidator = reinterpret_cast<const IntegerValidator*>(validator);
-            
-        if(errorCode == errorCodes::OutOfRange) {
-            
-            // TODO: Update String
-            errorMessage = langMap.get("FileMenu");
-
-            // TODO: make this a loop
-
-            size_t pos = errorMessage.find("%d", 0);
-            if(pos != std::string::npos) {
-                errorMessage.erase(pos, 2);
-                std::string intVar = std::to_string(intValidator->getMinValue());
-                errorMessage.insert(pos, intVar);
-            }
-
-            pos = errorMessage.find("%d", 0);
-            if(pos != std::string::npos) {
-                errorMessage.erase(pos, 2);
-                std::string intVar = std::to_string(intValidator->getMaxValue());
-                errorMessage.insert(pos, intVar);
-            }
-
-        }
-        else if(errorCode == errorCodes::InvalidData) {
-            // TODO: Update String
-            errorMessage = langMap.get("FileMenu");
-            errorTitle = "TODO: Make a title";
-        }
-    }
-    else if(validator->getType() == validatorTypes::String) {
-        
-        const StringValidator* strValidator = reinterpret_cast<const StringValidator*>(validator);
-
-        if(errorCode == errorCodes::TooManyChars) {
-            errorMessage = "String has too many characters. The maximum amount of characters is %d.";
-
-            size_t pos = errorMessage.find("%d", 0);
-            if(pos != std::string::npos) {
-                errorMessage.erase(pos, 2);
-                std::string maxChars = std::to_string(strValidator->getMaxChars());
-                errorMessage.insert(pos, maxChars);
-            }
-
-        }
-        else if(errorCode == errorCodes::NotEnoughChars) {
-            
-            errorMessage = "String does not have enough chars. The minimum amount of characters is %d.";
-            size_t pos = errorMessage.find("%d", 0);
-
-            if(pos != std::string::npos) {
-                errorMessage.erase(pos, 2);
-                std::string minChars = std::to_string(strValidator->getMinChars());
-                errorMessage.insert(pos, minChars);
-            }
-
-        }
-        else if(errorCode == errorCodes::EndsWith) {
-            
-            errorMessage = "String must end in one of the following: ";
-            
-            const std::vector<std::string>& extenVec = strValidator->getEndsWith();
-            
-            const size_t numExten = extenVec.size();
-            
-            for(size_t i = 0; i < numExten; ++i) {
-                
-                errorMessage += extenVec[i].c_str();
-
-                if(i != numExten - 1) {
-                    errorMessage += ", ";
-                }
-                else {
-                    errorMessage += ".";
-                }
-            }
-        }
-
-    }
-
-}
-
-//=============================================================================
-// Drawing Functions
-//=============================================================================
-
-//void DrawGridLines
-
-
 
 #endif // __SHARED_FUNCTIONS_H__

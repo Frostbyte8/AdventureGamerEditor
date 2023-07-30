@@ -148,10 +148,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     btnDialogControl[0].SetDlgCtrlID(IDOK);
     btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
 
-    EOD_SetWindowText("OKButton",
+    SetWindowTextFromLangMapString("OKButton",
                       btnDialogControl[0], caption, langMap);
 
-    EOD_SetWindowText("CancelButton",
+    SetWindowTextFromLangMapString("CancelButton",
                       btnDialogControl[1], caption, langMap);
 
     btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
@@ -160,7 +160,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     if(isEditObject) {
         btnDialogControl[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
         btnDialogControl[2].EnableWindow(FALSE);
-        EOD_SetWindowText("ApplyButton",
+        SetWindowTextFromLangMapString("ApplyButton",
                           btnDialogControl[2], caption, langMap);
     }
 

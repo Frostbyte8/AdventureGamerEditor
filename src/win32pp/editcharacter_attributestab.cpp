@@ -83,7 +83,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
     grpAttrib.Create(*this, 0, BS_GROUPBOX);
 
-    EOD_SetWindowText("CharacterAttributesGroup", grpAttrib, caption, langMap);
+    SetWindowTextFromLangMapString("CharacterAttributesGroup", grpAttrib, caption, langMap);
 
     for(int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
         lblAttribType[i].Create(*this, 0, SS_SIMPLE);
@@ -102,20 +102,20 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
     }
 
-    EOD_SetWindowText("EnergyCharacter", lblAttribType[0], caption, langMap);
-    EOD_SetWindowText("SkillCharacter", lblAttribType[1], caption, langMap);
-    EOD_SetWindowText("WillpowerCharacter", lblAttribType[2], caption, langMap);
-    EOD_SetWindowText("LuckCharacter", lblAttribType[3], caption, langMap);
+    SetWindowTextFromLangMapString("EnergyCharacter", lblAttribType[0], caption, langMap);
+    SetWindowTextFromLangMapString("SkillCharacter", lblAttribType[1], caption, langMap);
+    SetWindowTextFromLangMapString("WillpowerCharacter", lblAttribType[2], caption, langMap);
+    SetWindowTextFromLangMapString("LuckCharacter", lblAttribType[3], caption, langMap);
 
     lblSight.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("CharacterSightLabel", lblSight, caption, langMap);
+    SetWindowTextFromLangMapString("CharacterSightLabel", lblSight, caption, langMap);
 
     cbxSight.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     cbxSight.SetDlgCtrlID(ControlIDs::SightType);
 
-    EOD_AddString("SightCharNormalOption", cbxSight, caption, langMap);
-    EOD_AddString("SightCharBlindOption", cbxSight, caption, langMap);
-    EOD_AddString("SightCharInfraredOption", cbxSight, caption, langMap);
+    AddStringFromLangMap("SightCharNormalOption", cbxSight, caption, langMap);
+    AddStringFromLangMap("SightCharBlindOption", cbxSight, caption, langMap);
+    AddStringFromLangMap("SightCharInfraredOption", cbxSight, caption, langMap);
 
     return retVal;
 }

@@ -92,7 +92,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     grpEffects.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("EffectsOnPlayerGroupLabel", grpEffects,
+    SetWindowTextFromLangMapString("EffectsOnPlayerGroupLabel", grpEffects,
                       caption, langMap);
 
     btnEffect[0].Create(*this, 0, BS_AUTORADIOBUTTON | WS_GROUP);
@@ -100,11 +100,11 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
     btnEffect[0].SetDlgCtrlID(ControlIDs::EffectsConsume);
     btnEffect[1].SetDlgCtrlID(ControlIDs::EffectsTemp);
 
-    EOD_SetWindowText("EffectsConsumpativeLabel", btnEffect[0], caption, langMap);
-    EOD_SetWindowText("EffectsReversedLabel", btnEffect[1], caption, langMap);
+    SetWindowTextFromLangMapString("EffectsConsumpativeLabel", btnEffect[0], caption, langMap);
+    SetWindowTextFromLangMapString("EffectsReversedLabel", btnEffect[1], caption, langMap);
 
     grpAttrib.Create(*this, 0, BS_GROUPBOX);
-    EOD_SetWindowText("AttributesGroupLabel", grpAttrib, caption, langMap);
+    SetWindowTextFromLangMapString("AttributesGroupLabel", grpAttrib, caption, langMap);
 
     for(int k = 0; k < 5; ++k) {
 
@@ -116,9 +116,9 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         btnAttribPolarity[k*2].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2));
         btnAttribPolarity[(k*2)+1].SetDlgCtrlID((ControlIDs::EnergyPosBTN) + (k*2) + 1);
 
-        EOD_SetWindowText("PositiveSignLabel", btnAttribPolarity[k*2], caption, langMap);
+        SetWindowTextFromLangMapString("PositiveSignLabel", btnAttribPolarity[k*2], caption, langMap);
 
-        EOD_SetWindowText("NegativeSignLabel", btnAttribPolarity[(k*2)+1], caption, langMap);
+        SetWindowTextFromLangMapString("NegativeSignLabel", btnAttribPolarity[(k*2)+1], caption, langMap);
 
         for(int l = 0; l < 2; ++l) {
             txtAttribAmount[(k*2)+l].Create(*this, 0, ES_AUTOHSCROLL | ES_NUMBER | WS_TABSTOP);
@@ -135,17 +135,17 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         }
     }
 
-    EOD_SetWindowText("EnergyLabel", lblAttribType[0], caption, langMap);
-    EOD_SetWindowText("SkillLabel", lblAttribType[1], caption, langMap);
-    EOD_SetWindowText("WillpowerLabel", lblAttribType[2], caption, langMap);
-    EOD_SetWindowText("LuckLabel", lblAttribType[3], caption, langMap);
-    EOD_SetWindowText("TorchLifeLabel", lblAttribType[4], caption, langMap);
+    SetWindowTextFromLangMapString("EnergyLabel", lblAttribType[0], caption, langMap);
+    SetWindowTextFromLangMapString("SkillLabel", lblAttribType[1], caption, langMap);
+    SetWindowTextFromLangMapString("WillpowerLabel", lblAttribType[2], caption, langMap);
+    SetWindowTextFromLangMapString("LuckLabel", lblAttribType[3], caption, langMap);
+    SetWindowTextFromLangMapString("TorchLifeLabel", lblAttribType[4], caption, langMap);
 
     for(int i = 0; i < 2; ++i) {
         lblAttribHeading[i].Create(*this, 0, SS_CENTER);
     }
-    EOD_SetWindowText("BaseAttribLabel", lblAttribHeading[0], caption, langMap);
-    EOD_SetWindowText("RandomAttribLabel", lblAttribHeading[1], caption, langMap);
+    SetWindowTextFromLangMapString("BaseAttribLabel", lblAttribHeading[0], caption, langMap);
+    SetWindowTextFromLangMapString("RandomAttribLabel", lblAttribHeading[1], caption, langMap);
 
     for(int m = 0; m < 2; ++m) {
         lblSenses[m].Create(*this, 0, SS_SIMPLE);
@@ -153,19 +153,19 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
         cbxSenses[m].SetDlgCtrlID(ControlIDs::MakesSight+m);
     }
 
-    EOD_AddString("SightNoEffectOption", cbxSenses[0], caption, langMap);
-    EOD_AddString("SightBlindOption", cbxSenses[0], caption, langMap);
-    EOD_AddString("SightNormalOption", cbxSenses[0], caption, langMap);
-    EOD_AddString("SightInfraredOption", cbxSenses[0], caption, langMap);
+    AddStringFromLangMap("SightNoEffectOption", cbxSenses[0], caption, langMap);
+    AddStringFromLangMap("SightBlindOption", cbxSenses[0], caption, langMap);
+    AddStringFromLangMap("SightNormalOption", cbxSenses[0], caption, langMap);
+    AddStringFromLangMap("SightInfraredOption", cbxSenses[0], caption, langMap);
 
-    EOD_AddString("HearingNoEffectOption", cbxSenses[1], caption, langMap);
-    EOD_AddString("HearingDeafOption", cbxSenses[1], caption, langMap);
-    EOD_AddString("HearingNormalOption", cbxSenses[1], caption, langMap);
-    EOD_AddString("HearingUltrasonicOption", cbxSenses[1], caption, langMap);
+    AddStringFromLangMap("HearingNoEffectOption", cbxSenses[1], caption, langMap);
+    AddStringFromLangMap("HearingDeafOption", cbxSenses[1], caption, langMap);
+    AddStringFromLangMap("HearingNormalOption", cbxSenses[1], caption, langMap);
+    AddStringFromLangMap("HearingUltrasonicOption", cbxSenses[1], caption, langMap);
 
-    EOD_SetWindowText("MakesPlayerSightLabel", lblSenses[0], caption, langMap);
+    SetWindowTextFromLangMapString("MakesPlayerSightLabel", lblSenses[0], caption, langMap);
     
-    EOD_SetWindowText("MakesPlayerHaeringLabel", lblSenses[1], caption, langMap);
+    SetWindowTextFromLangMapString("MakesPlayerHaeringLabel", lblSenses[1], caption, langMap);
 
     return retVal;
 

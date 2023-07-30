@@ -120,7 +120,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     CString caption;
 
     lblTileName.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("TileNameLabel", lblTileName, caption, langMap);
+    SetWindowTextFromLangMapString("TileNameLabel", lblTileName, caption, langMap);
 
     txtTileName.Create(*this, 0, ES_AUTOHSCROLL);
     txtTileName.SetExStyle(txtTileName.GetExStyle() | WS_EX_CLIENTEDGE);
@@ -128,7 +128,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     txtTileName.SetLimitText(GameMapConstants::MaxTileName);
 
     lblTileDescription.Create(*this, 0, SS_SIMPLE);
-    EOD_SetWindowText("TileDescriptionLabel", lblTileDescription, caption, langMap);
+    SetWindowTextFromLangMapString("TileDescriptionLabel", lblTileDescription, caption, langMap);
 
     txtTileDescription.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
     txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
@@ -139,9 +139,9 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
         btnDialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
     }
 
-    EOD_SetWindowText("OKButton", btnDialogButtons[0], caption, langMap);
-    EOD_SetWindowText("CancelButton", btnDialogButtons[1], caption, langMap);
-    EOD_SetWindowText("ApplyButton", btnDialogButtons[2], caption, langMap);
+    SetWindowTextFromLangMapString("OKButton", btnDialogButtons[0], caption, langMap);
+    SetWindowTextFromLangMapString("CancelButton", btnDialogButtons[1], caption, langMap);
+    SetWindowTextFromLangMapString("ApplyButton", btnDialogButtons[2], caption, langMap);
 
     btnDialogButtons[0].SetStyle(btnDialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
     btnDialogButtons[0].SetDlgCtrlID(IDOK);
