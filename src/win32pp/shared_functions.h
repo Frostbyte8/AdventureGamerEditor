@@ -10,10 +10,6 @@
 #include "../util/languagemapper.h"
 #include "../util/win32pp_extras.h"
 
-//=============================================================================
-// Functions that rely on Langauge Mapper.
-//=============================================================================
-
 ///----------------------------------------------------------------------------
 /// LM_toUTF8 - Converts a Language Mapper string to a CString.
 ///----------------------------------------------------------------------------
@@ -53,25 +49,10 @@ inline void AddStringFromLangMap(const std::string& ID, CComboBox& widget, CStri
 // Helper Functions
 //=============================================================================
 
-// TODO: Un-inline this
+void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window);
 
-inline void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window) {
-    
-    RECT rc = window.GetClientRect();
-    
-    MONITORINFOEX monitorInfo;
-    monitorInfo.cbSize = sizeof(MONITORINFOEX);
-    GetMonitorInfo(currentMonitor, &monitorInfo);
-
-    AdjustWindowRectEx(&rc, window.GetStyle(), FALSE, window.GetExStyle());
-
-    // Calculate Where the window is positioned, then offset it to where the monitor is.
-
-    const CPoint windowPos((abs(monitorInfo.rcWork.right - monitorInfo.rcWork.left) / 2) - ((rc.right + abs(rc.left)) / 2) + monitorInfo.rcMonitor.left,
-                           (abs(monitorInfo.rcWork.bottom - monitorInfo.rcWork.top) / 2) - ((rc.bottom + abs(rc.top)) / 2) + monitorInfo.rcMonitor.top);
-
-    window.SetWindowPos(0, windowPos.x, windowPos.y, 0, 0, SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOSIZE | SWP_NOZORDER | SWP_NOREPOSITION);
-
-}
+void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
+                          const int& selectionWidth, const int selectionHeight,
+                          const unsigned int& borderWidth);
 
 #endif // __SHARED_FUNCTIONS_H__

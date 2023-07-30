@@ -273,15 +273,6 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     switch (LOWORD(wParam)) {
 
         // TODO: On New and Open need to be interface functions
-        // TODO: Don't use langauge constants for this.
-        /*
-        case LanguageConstants::NewMenuItem: return OnFileNew();
-        case LanguageConstants::OpenMenuItem: return OnFileOpen();
-        case LanguageConstants::EditWorldInfoMenuItem: onEditWorldInfo(); break;
-        case LanguageConstants::SummaryStoryMenuItem: onEditStory(); break;
-        case LanguageConstants::LongDescMenuItem: onEditTileDescription(); break;
-        */
-
         case MenuIDs::NewFile: return OnFileNew();
         case MenuIDs::OpenFile: return OnFileOpen();
         case MenuIDs::SummaryAndStory: onEditStory(); break;
@@ -335,10 +326,49 @@ BOOL MainWindowFrame::OnFileOpen() {
     return TRUE;
 }
 
+///----------------------------------------------------------------------------
+/// loadTileset - Load's the tileset BMP
+/// @return true if it loaded succesfully, false if it did not.
+///----------------------------------------------------------------------------
+
+bool MainWindowFrame::loadTileSet() {
+
+    // TODO: tileset should be loaded to a temp BMP that is transfered over once it loads
+    // successfully.
+
+    tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+
+    if(!tilesetBMP.GetHandle()) {
+        return false;
+    }
+
+    double tempWidth     = tilesetBMP.GetSize().cx / EditorConstants::TilesPerCol;
+    double tempHeight    = tilesetBMP.GetSize().cy / EditorConstants::TilesPerRow;
+
+    tileWidth   = static_cast<int>(tempWidth);
+    tileHeight  = static_cast<int>(tempHeight);
+
+    if(tempWidth - tileWidth != 0) {
+        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+    }
+
+    if(tempHeight - tileHeight != 0) {
+        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+    }
+
+
+    return true;
+
+}
+
 //=============================================================================
 // Public Interface Functions
 // Refer to the interface header file for more information.
 //=============================================================================
+
+//-----------------------------------------------------------------------------
+// askYesNoQuestion
+//-----------------------------------------------------------------------------
 
 int MainWindowFrame::askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle,
                                       bool allowCancel) {
@@ -352,6 +382,10 @@ int MainWindowFrame::askYesNoQuestion(const std::string& inQuestion, const std::
     return retVal;
 }
 
+//-----------------------------------------------------------------------------
+// displayErrorMessage
+//-----------------------------------------------------------------------------
+
 void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
                                           const std::string& inTitle) {
 
@@ -362,6 +396,10 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
     MessageBox(message, title, messageBoxFlags);
 
 }
+
+//-----------------------------------------------------------------------------
+// onAlterObject
+//-----------------------------------------------------------------------------
 
 void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
@@ -435,6 +473,10 @@ void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
 
 }
 
+//-----------------------------------------------------------------------------
+// onAlterCharacter
+//-----------------------------------------------------------------------------
+
 void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index) {
 
     // Make sure that the dialog isn't already running, or that
@@ -502,6 +544,10 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
 }
 
+//-----------------------------------------------------------------------------
+// finishedEditCharacterDialog
+//-----------------------------------------------------------------------------
+
 void MainWindowFrame::finishedEditCharacterDialog() {
 
     if(!editCharacterDialog) {
@@ -531,6 +577,10 @@ void MainWindowFrame::finishedEditCharacterDialog() {
 
 }
 
+//-----------------------------------------------------------------------------
+// finishedEditObjectDialog
+//-----------------------------------------------------------------------------
+
 void MainWindowFrame::finishedEditObjectDialog() {
 
     if(!editObjectDialog) {
@@ -559,6 +609,10 @@ void MainWindowFrame::finishedEditObjectDialog() {
     activeWindowHandle = GetHwnd();
 
 }
+
+//-----------------------------------------------------------------------------
+// onEditWorldInfo
+//-----------------------------------------------------------------------------
 
 void MainWindowFrame::onEditWorldInfo() {
 
@@ -591,6 +645,10 @@ void MainWindowFrame::onEditWorldInfo() {
     editWorldInfoDialog->ShowWindow(SW_SHOW);
 }
 
+//-----------------------------------------------------------------------------
+// finishedEditWorldInfoDialog
+//-----------------------------------------------------------------------------
+
 void MainWindowFrame::finishedEditWorldInfoDialog() {
 
     if(!editWorldInfoDialog) {
@@ -609,6 +667,9 @@ void MainWindowFrame::finishedEditWorldInfoDialog() {
 
 }
 
+//-----------------------------------------------------------------------------
+// onEditStory
+//-----------------------------------------------------------------------------
 
 void MainWindowFrame::onEditStory() {
 
@@ -641,6 +702,10 @@ void MainWindowFrame::onEditStory() {
     
 }
 
+//-----------------------------------------------------------------------------
+// finishedEditStoryDialog
+//-----------------------------------------------------------------------------
+
 void MainWindowFrame::finishedEditStoryDialog() {
 
     if(!editStoryDialog) {
@@ -662,6 +727,10 @@ void MainWindowFrame::finishedEditStoryDialog() {
     //}
 
 }
+
+//-----------------------------------------------------------------------------
+// onEditTileDescription
+//-----------------------------------------------------------------------------
 
 void MainWindowFrame::onEditTileDescription() {
 
@@ -697,6 +766,10 @@ void MainWindowFrame::onEditTileDescription() {
     editTileDescriptionDialog->ShowWindow(SW_SHOW);
 }
 
+//-----------------------------------------------------------------------------
+// finishedEditTileDescriptionDialog
+//-----------------------------------------------------------------------------
+
 void MainWindowFrame::finishedEditTileDescriptionDialog() {
     
 
@@ -712,32 +785,5 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
     delete editTileDescriptionDialog;
     editTileDescriptionDialog = NULL;
     activeWindowHandle = GetHwnd();
-
-}
-
-bool MainWindowFrame::loadTileSet() {
-
-    tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-
-    if(!tilesetBMP.GetHandle()) {
-        return false;
-    }
-
-    double tempWidth     = tilesetBMP.GetSize().cx / EditorConstants::TilesPerCol;
-    double tempHeight    = tilesetBMP.GetSize().cy / EditorConstants::TilesPerRow;
-
-    tileWidth   = static_cast<int>(tempWidth);
-    tileHeight  = static_cast<int>(tempHeight);
-
-    if(tempWidth - tileWidth != 0) {
-        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
-    }
-
-    if(tempHeight - tileHeight != 0) {
-        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
-    }
-
-
-    return true;
 
 }

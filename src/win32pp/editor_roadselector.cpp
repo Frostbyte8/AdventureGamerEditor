@@ -1,22 +1,6 @@
 #include "editor_mainwindow_views.h"
 #include "../editor_constants.h"
-
-void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
-                     const int& selectionWidth, const int selectionHeight,
-                     const int& borderWidth) {
-
-    CBrush oldBrush = inDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
-    CRect selectRect = CRect(xOffset, yOffset, selectionWidth, selectionHeight);
-    inDC.Rectangle(selectRect);
-
-    if(borderWidth > 1) {
-        // TODO: Loop and cap
-        selectRect.DeflateRect(1, 1);
-        inDC.DrawEdge(selectRect, BDR_SUNKENINNER, BF_RECT);
-    }
-    inDC.SelectObject(oldBrush);
-
-}
+#include "shared_functions.h"
 
 //=============================================================================
 // Constructors
