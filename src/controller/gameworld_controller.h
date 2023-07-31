@@ -28,7 +28,6 @@ class GameWorldController {
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
 
-        // TODO: These param names don't match the ones in the .cpp file
         bool tryReplaceObject(GameObject::Builder& objectBuilder);
         bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
 

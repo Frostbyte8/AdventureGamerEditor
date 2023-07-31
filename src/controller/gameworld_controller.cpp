@@ -357,20 +357,20 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 /// @return true if the operation was successful, false if it was not.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& gameCharacter) {
+bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterBuilder) {
 
     // Find out if Adventuer Gamer has a hard limit on the number of Characters.
 
-    if(gameCharacter.getID() != GameCharacterConstants::NoID) {
+    if(characterBuilder.getID() != GameCharacterConstants::NoID) {
  
-        const size_t index = gameMap->characterIndexFromID(gameCharacter.getID());
+        const size_t index = gameMap->characterIndexFromID(characterBuilder.getID());
 
         if(index == (size_t)-1) {
             mainWindow->displayErrorMessage("Could not find character to replace: ID not found.", "ID not found");
             return false;
         }
 
-        gameMap->replaceCharacter(gmKey, index, gameCharacter.build());
+        gameMap->replaceCharacter(gmKey, index, characterBuilder.build());
 
     }
     else {
@@ -388,20 +388,20 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& gameCharac
 /// @return true if the operation was successful, false if it was not.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryReplaceObject(GameObject::Builder& gameObject) {
+bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder) {
 
     // Find out if Adventuer Gamer has a hard limit on the number of Objects.
 
-    if(gameObject.getID() != GameObjectConstants::NoID) {
+    if(objectBuilder.getID() != GameObjectConstants::NoID) {
  
-        const size_t index = gameMap->objectIndexFromID(gameObject.getID());
+        const size_t index = gameMap->objectIndexFromID(objectBuilder.getID());
 
         if(index == (size_t)-1) {
             mainWindow->displayErrorMessage("Could not find object to replace: ID not found.", "ID not found");
             return false;
         }
 
-        gameMap->replaceObject(gmKey, index, gameObject.build());
+        gameMap->replaceObject(gmKey, index, objectBuilder.build());
 
     }
     else {
