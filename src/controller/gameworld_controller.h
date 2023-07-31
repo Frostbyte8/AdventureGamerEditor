@@ -47,6 +47,8 @@ class GameWorldController {
     private:
 
         GameWorldController() {};
+        
+        void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
 
         MainWindowInterface*            mainWindow;
 

@@ -34,11 +34,12 @@ GameWorldController::~GameWorldController() {
 
 bool GameWorldController::canAddObject() const {
 
-    // TODO: Make 100 a constant.
-    if(gameMap->getGameObjects().size() < 100) {
+    if(gameMap->getGameObjects().size() < AdventureGamerConstants::MaxNumObjects) {
         return true;
     }
+    
     return false;
+    
 }
 
 ///----------------------------------------------------------------------------
@@ -48,10 +49,10 @@ bool GameWorldController::canAddObject() const {
 
 bool GameWorldController::canAddCharacter() const {
 
-    // TODO: Make 25 a constant.
-    if(gameMap->getGameCharacters().size() < 25) {
+    if(gameMap->getGameCharacters().size() < AdventureGamerConstants::MaxNumCharacters) {
         return true;
     }
+    
     return false;
 }
 
@@ -292,11 +293,8 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
     // TODO: At some future point, have tryCharacter access the main window's
     // function to spawn the add dialog
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
     if(!canAddCharacter()) {
-        mainWindow->displayErrorMessage(langMap.get("ErrCharLimitReachedText"),
-                                        langMap.get("ErrCharLimitReachedTitle"));
+        showErrorMessage("ErrCharLimitReachedText", "ErrCharLimitReachedTitle");
         return false;
     }
 
@@ -308,8 +306,7 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
         gameMap->addCharacter(gmKey, characterBuilder.build());
     }
     catch (const std::bad_alloc&) {
-        mainWindow->displayErrorMessage(langMap.get("ErrAddCharOutOfMemoryText"),
-                                        langMap.get("ErrAddCharOutOfMemoryTitle"));
+        showErrorMessage("ErrAddCharOutOfMemoryText", "ErrAddCharOutOfMemoryTitle");
         return false;
     }
     return true;
@@ -327,11 +324,8 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
     // TODO: At some future point, have tryCharacter access the main window's
     // function to spawn the add dialog
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
     if(!canAddObject()) {
-        mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
-                                        langMap.get("ErrObjLimitReachedTitle"));
+        showErrorMessage("ErrObjLimitReachedText", "ErrObjLimitReachedTitle");
         return false;
     }
 
@@ -344,14 +338,12 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
             gameMap->addObject(gmKey, gameObject.build());
         }
         catch (const std::bad_alloc&) {
-            mainWindow->displayErrorMessage(langMap.get("ErrAddObjOutOfMemoryText"),
-                                            langMap.get("ErrAddObjOutOfMemoryTitle"));
+            showErrorMessage("ErrAddObjOutOfMemoryText", "ErrAddObjOutOfMemoryTitle");
             return false;
         }
     }
     else {
-        mainWindow->displayErrorMessage(langMap.get("ErrObjNoIDText"),
-                                        langMap.get("ErrObjNoIDTitle"));
+        showErrorMessage("ErrObjNoIDText", "ErrObjNoIDTitle");
         return false;
     }
 
@@ -554,4 +546,20 @@ bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, c
     gameMap->setSummary(gmKey, inSummary);
 
     return true;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// showErrorMessage - Tells the main window to display the error message
+/// with the parameters given. This is for more simplistic messages.
+/// @param a string with the Language ID for the body of the text
+/// @param a string with the Language ID for the title of the message
+///----------------------------------------------------------------------------
+
+void GameWorldController::showErrorMessage(const std::string& errTextID, const std::string& errTitleID) const {
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    mainWindow->displayErrorMessage(langMap.get(errTextID), langMap.get(errTitleID));
 }
