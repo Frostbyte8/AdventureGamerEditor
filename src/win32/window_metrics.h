@@ -24,7 +24,7 @@ class WindowMetrics {
             int XUNRELATED_MARGIN;          // Same, but for unrelated controls.
             int YUNRELATED_MARGIN;
 
-            int XGROUPBOX_MARGIN;           // Margin from the left/right side of a groupbox. TODO: Is SM_CXEDGE needed?
+            int XGROUPBOX_MARGIN;           // Margin from the left/right side of a groupbox.
             int YFIRST_GROUPBOX_MARGIN;     // How far down from the top of the Groupbox the first control is.
             int YLAST_GROUPBOX_MARGIN;      // Space between bottom of the groupbox and the box's last control.
 

@@ -240,8 +240,6 @@ class GameCharacter {
 
     public:
 
-        // TODO: Accessors
-
         const std::string& getDescription(const int& which) const { return base.description[which]; }
         const uint8_t& getFlags() const { return base.flags; }
         const int& getType() const { return base.type; }

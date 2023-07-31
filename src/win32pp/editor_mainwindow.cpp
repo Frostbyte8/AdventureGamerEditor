@@ -100,11 +100,6 @@ HWND MainWindowFrame::Create(HWND parent) {
 /// CreateMenuBar - Creates the menu bar.
 ///----------------------------------------------------------------------------
 
-// TODO: Remove macro
-
-#define ADV_ADDMENUITEM(ID, MENUOBJ) caption = AtoW(languageMapper.get(ID).c_str(), CP_UTF8); \
-    MENUOBJ.AppendMenu(MF_STRING, ID, caption);
-
 void MainWindowFrame::CreateMenuBar() {
 
     mainMenu.CreateMenu();
@@ -136,8 +131,6 @@ void MainWindowFrame::CreateMenuBar() {
     SetFrameMenu(mainMenu);
 
 }
-
-#undef ADV_ADDMENUITEM
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the frame, and create remaining child
