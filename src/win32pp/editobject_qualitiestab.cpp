@@ -101,7 +101,8 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         txtProperties[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtProperties[i].LimitText(5);
 
-        // TODO: Why does WS_VISBLE have to be set? Possible bug?
+        // By overriding how the control is created, we need to speicfy the default
+        // flags ourself, including WS_VISIBLE
         spnProperties[i].Create(*this, 0, WS_VISIBLE | UDS_AUTOBUDDY | UDS_NOTHOUSANDS |
                                 UDS_SETBUDDYINT | UDS_ARROWKEYS | UDS_ALIGNRIGHT);
 
