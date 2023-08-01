@@ -396,8 +396,6 @@ class GameObject {
 
     public:
 
-        GameObject() {} // TODO: Remove this. Used for testing
-
         const std::string& getName() const { return base.description[0];}
         const int& getCreatureID() const { return base.creatureID; }
         const int& getID() const { return base.ID; }
