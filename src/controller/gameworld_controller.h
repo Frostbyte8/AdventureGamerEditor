@@ -57,8 +57,7 @@ class GameWorldController {
         GameInfo                        gameInfo;
         GameMap*                        gameMap;
 
-        // TODO: Make this constant?
-        GameMap::GMKey                  gmKey;
+        GameMap::GMKey            gmKey;
 
 };
 
