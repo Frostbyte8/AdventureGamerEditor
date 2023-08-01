@@ -341,7 +341,7 @@ bool EditWorldInfoDialog::trySaveData() {
 
 ///----------------------------------------------------------------------------
 /// caclculateCotentWidth - Calculates how wide the content of the window
-/// needs to be. TODO: Should this add the Window margin as well?
+/// needs to be.
 /// @return a LONG integer containing the width of the content.
 ///----------------------------------------------------------------------------
 
