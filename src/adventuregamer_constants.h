@@ -16,7 +16,13 @@ namespace AdventureGamerConstants {
     
     const int MaxNumObjects                 = 100;
     const int MaxNumCharacters              = 25;
+    
+    const int MaxObjectMonetaryValue        = 10000;
+    const int MinObjectMonetaryValue        = 0;
+    const int MaxNumUses                    = 10000;
+    const int MinNumUses                    = 1;
 }
+
 
 ///----------------------------------------------------------------------------
 /// AttributeTypes - Defines the 5 attributes used by the game

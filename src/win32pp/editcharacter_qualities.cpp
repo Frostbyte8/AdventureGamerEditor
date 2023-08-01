@@ -140,13 +140,12 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     AddStringFromLangMap("TypeTrader", cbxType, caption, langMap);
     AddStringFromLangMap("TypeFighter", cbxType, caption, langMap);
 
-    spnMoney.SetRange(GameObjectConstants::MinMonetaryValue,
-                      GameObjectConstants::MaxMonetaryValue);
+    spnMoney.SetRange(AdventureGamerConstants::MinObjectMonetaryValue,
+                      AdventureGamerConstants::MaxObjectMonetaryValue);
                       
-    // TODO: These Money constants should be moved to "GameWorldConstants" namespace
     moneyValidator = IntegerValidator(&txtMoney,
-                                      GameObjectConstants::MinMonetaryValue,
-                                      GameObjectConstants::MaxMonetaryValue);
+                                      AdventureGamerConstants::MinObjectMonetaryValue,
+                                      AdventureGamerConstants::MaxObjectMonetaryValue);
 
     return retVal;
 }

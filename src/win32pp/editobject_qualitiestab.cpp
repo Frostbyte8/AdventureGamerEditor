@@ -131,17 +131,15 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
         cbxUsedWith.SetDlgCtrlID(ControlIDs::UsedWith);
     }
 
-    spnProperties[0].SetRange(GameObjectConstants::MaxMonetaryValue,
-                              GameObjectConstants::MinMonetaryValue);
+    spnProperties[0].SetRange(AdventureGamerConstants::MaxObjectMonetaryValue,
+                              AdventureGamerConstants::MinObjectMonetaryValue);
                               
 
-    spnProperties[1].SetRange(GameObjectConstants::MaxNumUses,
-                              GameObjectConstants::MinNumUses);
+    spnProperties[1].SetRange(AdventureGamerConstants::MaxNumUses,
+                              AdventureGamerConstants::MinNumUses);
     
-    // TODO: Money constants need to be in their own namespace. See comment in EditCharacterDialog for more information.
-
-    moneyValidator = IntegerValidator(&txtProperties[0], GameObjectConstants::MinMonetaryValue, GameObjectConstants::MaxMonetaryValue);
-    usesValidator = IntegerValidator(&txtProperties[1], GameObjectConstants::MinNumUses, GameObjectConstants::MaxNumUses);
+    moneyValidator = IntegerValidator(&txtProperties[0], AdventureGamerConstants::MinObjectMonetaryValue, AdventureGamerConstants::MaxObjectMonetaryValue);
+    usesValidator = IntegerValidator(&txtProperties[1], AdventureGamerConstants::MinNumUses, AdventureGamerConstants::MaxNumUses);
 
     return retVal;
 

@@ -20,10 +20,6 @@ namespace GameObjectConstants {
     const int UsedAlone         = 0;
 
     const int NotOnCreature     = 0;
-    const int MaxMonetaryValue  = 10000;
-    const int MinMonetaryValue  = 0;
-    const int MaxNumUses        = 10000;
-    const int MinNumUses        = 1;
 
     // The original game has no apparent limit, so we'll make a
     // sensible one up.
@@ -167,8 +163,8 @@ class GameObject {
                     base.location       = "0,0";
                     base.makesSight     = SightTypes::NoChange().asInt();
                     base.makesHearing   = HearingTypes::NoChange().asInt();
-                    base.monetaryWorth  = GameObjectConstants::MinMonetaryValue;
-                    base.uses           = GameObjectConstants::MinNumUses;
+                    base.monetaryWorth  = AdventureGamerConstants::MinObjectMonetaryValue;
+                    base.uses           = AdventureGamerConstants::MinNumUses;
                     base.usedWithID     = GameObjectConstants::UsedAlone;
                     base.x              = 0;
                     base.y              = 0;
