@@ -5,6 +5,7 @@
 #include <fstream>
 #include "../compat/stdint_compat.h"
 #include "../editor_constants.h"
+#include "../adventuregamer_constants.h"
 
 //-----------------------------------------------------------------------------
 // GameInfoConstants - Game Info Constants. They're Constant!

@@ -70,6 +70,9 @@ endif(MSVC)
 set(SOURCES
     src/main.cpp
     src/gitinfo.h
+    src/adventuregamer_constants.h
+    src/editor_constants.cpp
+    src/editor_constants.h
 )
 
 #if (EXISTS ${CMAKE_SOURCE_DIR}/src/gitinfo.h)

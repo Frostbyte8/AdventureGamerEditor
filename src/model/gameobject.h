@@ -9,7 +9,7 @@
 #include "../util/frost.h"
 #include "../compat/stdint_compat.h"
 #include "../compat/std_extras_compat.h"
-#include "../editor_constants.h"
+#include "../adventuregamer_constants.h"
 
 //-----------------------------------------------------------------------------
 // GameObjectConstants - Exactly what it says
