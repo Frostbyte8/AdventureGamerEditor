@@ -173,6 +173,11 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
         txtAttributes[i].SetDlgCtrlID(ControlIDs::txtEnergy+i);
         spnAttributes[i].SetDlgCtrlID(ControlIDs::spnEnergy+i);
 
+        baseAttributeValidator[i] = IntegerValidator(&txtAttributes[i], AdventureGamerConstants::MinAttributeValue,
+                                                     AdventureGamerConstants::MaxAttributeValue);
+
+        randomAttributeValidator[i] = IntegerValidator(&txtRandomAttributes[i], AdventureGamerConstants::MinAttributeValue,
+                                                       AdventureGamerConstants::MaxAttributeValue);
     }
 
     SetWindowTextFromLangMapString("EnergyLabel", lblAttributes[0], caption, langMap);
@@ -331,7 +336,27 @@ void EditWorldInfoDialog::moveControls() {
 ///----------------------------------------------------------------------------
 
 bool EditWorldInfoDialog::trySaveData() {
-    // TODO: Write function
+    
+    const InputValidator* validationFailed = validateFields();
+    
+    if(validationFailed) {
+    
+        std::string errorMessage;
+        std::string errorTitle;
+
+        processValidatorError(errorMessage, errorTitle, validationFailed);
+        displayErrorMessage(errorMessage, errorTitle);
+
+        // TODO: Return an ID instead of a HWND
+        // Also, tell the tab what action to take (IE: if it's a textbox,
+        // hilight it)
+        if(validationFailed->getErrorCode() != errorCodes::ControlNotFound) {
+            validationFailed->getWindow()->SetFocus();
+        }
+    
+        return false;
+    }
+       
     return true;
 }
 
@@ -369,4 +394,29 @@ LONG EditWorldInfoDialog::caclculateWindowWidth() {
     contentWidth = std::max(contentWidth, static_cast<LONG>((CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3)));
     
     return contentWidth;
+}
+
+///----------------------------------------------------------------------------
+/// validateFields - Ensures that the data given by the user is valid, and if
+/// is not, gives the user a chance to correct it.
+/// @return NULL if no errors occurred, or a pointer to an input validator
+/// if something was wrong
+///----------------------------------------------------------------------------
+
+InputValidator* EditWorldInfoDialog::validateFields() {
+    
+    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
+    
+        if(!baseAttributeValidator[i].validate()) {
+            return &baseAttributeValidator[i];
+        }
+
+        if(!randomAttributeValidator[i].validate()) {
+            return &baseAttributeValidator[i];
+        }
+    
+    }
+    
+    return NULL;
+    
 }

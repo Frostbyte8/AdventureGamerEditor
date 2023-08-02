@@ -97,8 +97,8 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
         spnAttribType[i].SetRange(AdventureGamerConstants::MinAttributeValue,
                                   AdventureGamerConstants::MaxAttributeValue);
 
-        // TOOD: Attribute limits Namespace or something
-        attributeValidator[i] = IntegerValidator(&txtAttribType[i], 0, 12);
+        attributeValidator[i] = IntegerValidator(&txtAttribType[i], AdventureGamerConstants::MinAttributeValue,
+                                                 AdventureGamerConstants::MaxAttributeValue);
 
     }
 

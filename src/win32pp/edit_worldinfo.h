@@ -4,6 +4,7 @@
 #include <wxx_wincore.h>
 #include <wxx_stdcontrols.h>
 #include "../util/win32pp_extras.h"
+#include "../util/inputvalidator.h"
 #include "../win32/window_metrics.h"
 #include "editdialog_base.h"
 
@@ -31,6 +32,8 @@ class EditWorldInfoDialog : public EditDialogBase {
         virtual void notifyChangeMade();
         virtual void notifyChangesSaved();
         virtual bool trySaveData();
+        
+        InputValidator* validateFields();
 
         //virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -48,6 +51,9 @@ class EditWorldInfoDialog : public EditDialogBase {
         CEdit           txtRandomAttributes[5];
         CSpinButton     spnRandomAttributes[5];
         CButton         btnDialog[3];
+        
+        IntegerValidator    baseAttributeValidator[5];
+        IntegerValidator    randomAttributeValidator[5];
         
         // TODO: At some point, gameInfo needs to be passed in
         

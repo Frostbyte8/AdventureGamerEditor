@@ -6,8 +6,11 @@
 ///----------------------------------------------------------------------------
 
 namespace AdventureGamerConstants {
-	const std::string FileNameExtension     = "SG0";
-    const unsigned int MaxFileNameLength    = 12;
+
+	const std::string FileNameExtension         = "SG0";
+    const unsigned int MaxFileNameLength        = 12;
+    const unsigned int MaxCurrencyNameLength    = 64;
+    const unsigned int MaxWorldNameLength       = 96;
 
     const int MinAttributeValue             = 0;
     const int MaxAttributeValue             = 12;
@@ -21,6 +24,7 @@ namespace AdventureGamerConstants {
     const int MinObjectMonetaryValue        = 0;
     const int MaxNumUses                    = 10000;
     const int MinNumUses                    = 1;
+    
 }
 
 
