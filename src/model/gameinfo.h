@@ -62,6 +62,22 @@ class GameInfo {
         const std::string& getCurrencyName() const { return currencyName; }
         const int getBaseAttribute(const int& which) const { return baseAttributes[which]; }
         const int getRandomAttribute(const int& which) const { return randomAttributes[which]; }
+        
+        const void setBaseAttribute(const int& which, const int& amount) {
+            baseAttributes[which] = amount;
+        }
+        
+        const void setRandomAttribute(const int& which, const int& amount) {
+            baseAttributes[which] = amount;
+        }
+        
+        const void setGameName(const std::string& newName) {
+            gameName = newName.substr(0, AdventureGamerConstants::MaxWorldNameLength);
+        }
+        
+        const void setCurrencyName(const std::string& newName) {
+            currencyName = newName.substr(0, AdventureGamerConstants::MaxCurrencyNameLength);
+        }
 
 	private:
 

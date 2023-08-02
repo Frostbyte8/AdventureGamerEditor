@@ -39,6 +39,8 @@ class GameWorldController {
 
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         bool getCharacterFromID(const int& ID, GameCharacter* outChar);
+        
+        bool tryUpdateGameInfo(const GameInfo& newInfo);
 
         bool tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription);
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);

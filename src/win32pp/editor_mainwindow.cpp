@@ -647,12 +647,10 @@ void MainWindowFrame::finishedEditWorldInfoDialog() {
     if(!editWorldInfoDialog) {
         return;
     }
-
-    /*
-    if(!wasCanceled) {
-        // Update Information
+    
+    if(editWorldInfoDialog->hasSavedChanges()) {
+        gameWorldController->tryUpdateGameInfo(editWorldInfoDialog->getGameInfo());
     }
-    */
 
     delete editWorldInfoDialog;
     editWorldInfoDialog = NULL;

@@ -81,6 +81,7 @@ class GameMap {
         void setSummary(GMKey, const std::string& inSummary);
 
         void updateTileDescription(GMKey, const size_t& index, const std::string& tileName, const std::string& tileDescription);
+        void updateGameInfo(GMKey, const GameInfo& newInfo);
 
         // Public Functions
         const size_t characterIndexFromID(const int& charID) const;

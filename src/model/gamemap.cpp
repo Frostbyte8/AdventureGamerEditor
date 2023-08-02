@@ -325,6 +325,16 @@ void GameMap::updateTileDescription(GMKey, const size_t& index,
    
 }
 
+///----------------------------------------------------------------------------
+/// updateGameInfo - Update the GameInfo information
+/// @param GMKey used to restrict access of this function.
+/// @param GameInfo object containing new information to be used.
+///----------------------------------------------------------------------------
+
+void GameMap::updateGameInfo(GMKey, const GameInfo& newInfo) {    
+    gameInfo = newInfo;
+}
+
 //=============================================================================
 // Public Functions
 //=============================================================================

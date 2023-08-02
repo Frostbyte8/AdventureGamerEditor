@@ -512,6 +512,19 @@ bool GameWorldController::tryRemoveObject(const int& objectID) {
 }
 
 ///----------------------------------------------------------------------------
+/// tryUpdateGameInfo - Attempts to update the game info for the world.
+/// @param A reference to a GameInfo object that contains the new info
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateGameInfo(const GameInfo& newInfo) {
+
+    gameMap->updateGameInfo(gmKey, newInfo);
+    //mainWindow->GameInfoUpdated(newInfo);
+    return true;
+}
+
+///----------------------------------------------------------------------------
 /// tryUpdateTileDescription - Attempts to update the tiles name and
 /// description. 
 /// @param row of the tile being changed

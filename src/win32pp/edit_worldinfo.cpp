@@ -356,6 +356,14 @@ bool EditWorldInfoDialog::trySaveData() {
     
         return false;
     }
+    
+    newGameInfo.setGameName(WtoA(txtProperties[0].GetWindowText()).c_str());
+    newGameInfo.setCurrencyName(WtoA(txtProperties[1].GetWindowText()).c_str());
+    
+    for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
+        newGameInfo.setBaseAttribute(i, std::stoi(WtoA(txtAttributes[i].GetWindowText()).c_str()));
+        newGameInfo.setRandomAttribute(i, std::stoi(WtoA(txtRandomAttributes[i].GetWindowText()).c_str()));
+    }
        
     return true;
 }
