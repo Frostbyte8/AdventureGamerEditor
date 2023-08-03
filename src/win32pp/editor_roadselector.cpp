@@ -72,6 +72,7 @@ void RoadSelectorView::UpdateBackBuffer() {
     
     // TODO: Verify that the previous BMP is destroyed as per what the docs
     // state.
+    
     CClientDC dc(*this);
     backBufferBMP = CreateCompatibleBitmap(dc, tileWidth, totalHeight);
     CBitmap oldBMP;
@@ -92,15 +93,6 @@ void RoadSelectorView::UpdateBackBuffer() {
 
     DrawTileSelectionBox(backBufferDC, 0, 0, tileWidth, tileHeight, 2);
 
-    /*
-    // Now draw the selection box
-    CBrush oldBrush = backBufferDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
-    CRect selectRect = CRect(0, 0, tileWidth, tileHeight);
-    backBufferDC.Rectangle(selectRect);
-    selectRect.DeflateRect(1, 1);
-    backBufferDC.DrawEdge(selectRect, BDR_SUNKENINNER, BF_RECT);
-    backBufferDC.SelectObject(oldBrush);
-    */
     backBufferDC.SelectObject(oldBMP);
 } 
 

@@ -51,6 +51,6 @@ void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window);
 
 void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
                           const int& selectionWidth, const int selectionHeight,
-                          const unsigned int& borderWidth);
+                          const int& borderWidth);
 
 #endif // __SHARED_FUNCTIONS_H__

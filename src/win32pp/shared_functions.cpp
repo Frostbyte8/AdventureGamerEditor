@@ -26,28 +26,34 @@ void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window) 
 }
 
 ///----------------------------------------------------------------------------
-/// DrawTileSelectionBox - Draws a selection box at the coordinates given
+/// DrawTileSelectionBox - Draws a selection box at the coordinates given.
 /// @param a reference to a CmemDC to be drawn on
 /// @param the x-coordinate to start drawing the box at
 /// @param the y-coordinate to start drawing the box at
 /// @param the width of the box to be drawn
 /// @param the height of the box to be drawn
-/// @param species how thick the border should be. It will always have a thickness of 1, and 0 will round up to 1.
+/// @param species how thick the border should be. It will always have a
+/// thickness of 1, and any number smaller than 1 will be rounded up to 1. 
+/// In addition, the border caps at the seclection Width even if a bigger
+/// thickness is specified.
 ///----------------------------------------------------------------------------
 
 void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
                      const int& selectionWidth, const int selectionHeight,
-                     const unsigned int& borderWidth) {
+                     const int& borderWidth) {
 
     CBrush oldBrush = inDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
     CRect selectRect = CRect(xOffset, yOffset, selectionWidth, selectionHeight);
     inDC.Rectangle(selectRect);
-
-    if(borderWidth > 1) {
-        // TODO: Loop and cap
+    
+    int widthDrawn = 0;
+    
+    do {
         selectRect.DeflateRect(1, 1);
-        inDC.DrawEdge(selectRect, BDR_SUNKENINNER, BF_RECT);
-    }
+        inDC.DrawEdge(selectRect, BDR_SUNKENINNER, BF_RECT);   
+        widthDrawn++;
+    } while(widthDrawn < borderWidth && widthDrawn << selectionWidth);
+    
     inDC.SelectObject(oldBrush);
 
 }
