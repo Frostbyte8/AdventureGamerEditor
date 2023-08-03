@@ -4,6 +4,12 @@
 #include <vector>
 #include <io.h>
 
+#ifdef __linux__
+
+#include <unistd.h>
+
+#endif // __linux__
+
 namespace Frost {
 
     ///------------------------------------------------------------------------
@@ -112,7 +118,6 @@ namespace Frost {
     std::string toLower(const std::string& str) {
         std::string out;
         out.resize(str.size());
-        // TODO: Why did MSVC accept std::tolower, but not GCC?
         std::transform(str.begin(), str.end(), out.begin(), tolower);
         return out;
     }
@@ -180,12 +185,21 @@ namespace Frost {
 
     ///------------------------------------------------------------------------
     /// DoesFileExist - Checks if a file exists
-    /// TODO: Make Cross platform
     /// @return true if the file exists, false if it does not
     ///------------------------------------------------------------------------
+    
+#ifdef _WIN32
     
     bool doesFileExist(const std::string& fullPath) {
         return _access_s(fullPath.c_str(), 0) ? false : true;
     }
+    
+#elif __linux__
+
+    bool doesFileExist(const std::string& filePath) {
+        return !access(fullPath.c_str(), F_OK);
+    }
+    
+#endif  // __WIN32__
 
 }
