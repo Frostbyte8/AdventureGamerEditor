@@ -55,7 +55,7 @@ class GameEntitiesView : public CWnd {
 class RoadSelectorView : public CScrollView {
 
 	public:
-		RoadSelectorView(MainWindowInterface* inMainWindow) : backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow) {}
+		RoadSelectorView(MainWindowInterface* inMainWindow) : backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow), selectedTile(0) {}
 		virtual ~RoadSelectorView() {}
         virtual void PreRegisterClass(WNDCLASS& wc) {
             wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
@@ -68,9 +68,19 @@ class RoadSelectorView : public CScrollView {
     protected:
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void OnDraw(CDC& dc);
+        
+        virtual LRESULT WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+            
+            if(uMsg == WM_LBUTTONDOWN) {
+                return OnLButtonDown(LOWORD(lParam), HIWORD(lParam));
+            }
+            
+            return WndProcDefault(uMsg, wParam, lParam);
+        } 
 
 	private:
 
+        LRESULT OnLButtonDown(const WORD& x, const WORD& y);
         void UpdateScrollSize();
         void UpdateBackBuffer();
 

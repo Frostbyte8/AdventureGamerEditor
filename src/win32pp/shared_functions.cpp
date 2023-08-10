@@ -43,7 +43,7 @@ void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
                      const int& borderWidth) {
 
     CBrush oldBrush = inDC.SelectObject((HBRUSH)GetStockObject(NULL_BRUSH));
-    CRect selectRect = CRect(xOffset, yOffset, selectionWidth, selectionHeight);
+    CRect selectRect = CRect(xOffset, yOffset, xOffset + selectionWidth, yOffset + selectionHeight);
     inDC.Rectangle(selectRect);
     
     int widthDrawn = 0;

@@ -63,6 +63,38 @@ void RoadSelectorView::OnDraw(CDC& dc) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// OnLButtonDown - Processes the WM_LBUTTONDOWN window message
+/// @param x coordinate on the road selector where the left mouse button was
+/// pressed.
+/// @param y coordinate on the road aselector where the left mouse button was
+/// pressed.
+/// @return always 0.
+///----------------------------------------------------------------------------
+
+LRESULT RoadSelectorView::OnLButtonDown(const WORD &x, const WORD &y) {
+    
+    SCROLLINFO si = {0};
+    si.cbSize = sizeof(SCROLLBARINFO);
+    si.fMask = SIF_POS;
+    GetScrollInfo(SB_VERT, si);
+    
+    const int newTileSelected =  (y + si.nPos) / tileHeight;
+    
+    if(newTileSelected < 0 || newTileSelected >= tileHeight * EditorConstants::DefaultCols) {
+        return 0;
+    }
+    
+    // TODO: Invalidate old rect and new rect, and
+    // TODO: UpdateBackBufferTile()
+    
+    selectedTile = newTileSelected;
+    UpdateBackBuffer();
+    InvalidateRect(0);
+    
+    return 0;
+}
+
+///----------------------------------------------------------------------------
 /// UpdateBackBuffer - Redraws the entire back buffer
 ///----------------------------------------------------------------------------
 
@@ -91,7 +123,7 @@ void RoadSelectorView::UpdateBackBuffer() {
 
     }
 
-    DrawTileSelectionBox(backBufferDC, 0, 0, tileWidth, tileHeight, 2);
+    DrawTileSelectionBox(backBufferDC, 0, selectedTile * tileHeight, tileWidth, tileHeight, 2);
 
     backBufferDC.SelectObject(oldBMP);
 } 
