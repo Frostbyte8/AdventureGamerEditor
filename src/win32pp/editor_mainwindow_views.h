@@ -146,10 +146,29 @@ class GameMapView : public CScrollView {
 class EntitiesHereView : public CWnd {
 	
 	public:
-		EntitiesHereView() {}
+		EntitiesHereView(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
 		virtual ~EntitiesHereView() {}
+        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+        virtual void PreRegisterClass(WNDCLASS& wc) {
+            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+            wc.lpszClassName = L"EntitiesHereView";
+            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+        }
+
+    protected:
+        virtual int OnCreate(CREATESTRUCT& cs);
 
 	private:
+
+        int OnSize(const WPARAM& wParam, const LPARAM& lParam);
+
+        WindowMetrics*  windowMetrics;
+
+        CButton     objectsHereGroup;
+        CButton     charactersHereGroup;
+        CListBox    objectsHereListBox;
+        CListBox    charactersHereListBox;
 
 		// Disable copy construction and assignment operator
 	    EntitiesHereView(const EntitiesHereView&);

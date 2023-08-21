@@ -56,7 +56,7 @@ class GameMapDocker : public CDocker {
 class EntitiesHereDocker : public CDocker {
 
 	public:
-		EntitiesHereDocker() {
+		EntitiesHereDocker(WindowMetrics* inWindowMetrics) : view(inWindowMetrics) {
 			SetView(view);
 			SetBarWidth(6);
 		}

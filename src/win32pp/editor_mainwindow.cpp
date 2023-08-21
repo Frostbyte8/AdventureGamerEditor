@@ -186,7 +186,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	reinterpret_cast<RoadSelectorView&>(roadSelectorDocker->GetView()).SetTileset(tilesetBMP);
 
 	entitiesHereDocker = static_cast<EntitiesHereDocker*>(gameMapDocker->AddDockedChild(
-                                                          new EntitiesHereDocker(), styleFlags | DS_DOCKED_BOTTOM, 128));
+                                                          new EntitiesHereDocker(&windowMetrics), styleFlags | DS_DOCKED_BOTTOM, 128));
 
     // The Road Selector is the Width of one tile plus the scroll bar
     // TODO: Zoom Factor

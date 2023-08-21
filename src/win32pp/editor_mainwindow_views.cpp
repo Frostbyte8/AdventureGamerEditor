@@ -17,6 +17,12 @@ namespace ControlIDs {
 }
 
 //=============================================================================
+//
+// GameEntitiesView
+//
+//=============================================================================
+
+//=============================================================================
 // Public / Protected Functions
 //=============================================================================
 
@@ -262,4 +268,71 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     buttons[2].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
     buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
 
+}
+
+//=============================================================================
+//
+// EntitiesHereView
+//
+//=============================================================================
+
+int EntitiesHereView::OnCreate(CREATESTRUCT& cs) {
+
+    const int retVal = CWnd::OnCreate(cs);
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    objectsHereGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
+    objectsHereGroup.SetWindowText(L"Objects Here");
+
+    charactersHereGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
+    charactersHereGroup.SetWindowText(L"Chars here");
+
+    objectsHereListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
+    charactersHereListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
+
+    return retVal;
+}
+
+int EntitiesHereView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
+
+    const WindowMetrics::ControlDimensions cd = windowMetrics->GetControlDimensions();
+    const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
+
+    const WORD xPos = cs.XRELATED_MARGIN;
+    const WORD yPos = cs.YRELATED_MARGIN;
+    const WORD newWidth = LOWORD(lParam) - (cs.XRELATED_MARGIN * 2);
+    const WORD newHeight = HIWORD(lParam) - (cs.YRELATED_MARGIN * 2);
+
+    const CRect objectGroupRect(CPoint(xPos, yPos),
+                                CSize(static_cast<int>(newWidth * 0.5), newHeight));
+
+    const CRect characterGroupRect(CPoint(objectGroupRect.right + cs.XRELATED_MARGIN, yPos),
+                                   CSize(newWidth - objectGroupRect.Size().cx, newHeight));
+
+    const CRect objectListRect(objectGroupRect.left + cs.XGROUPBOX_MARGIN,
+                               objectGroupRect.top + cs.YFIRST_GROUPBOX_MARGIN,
+                               objectGroupRect.right - cs.XGROUPBOX_MARGIN,
+                               objectGroupRect.bottom - cs.YWINDOW_MARGIN);
+                               
+    const CRect characterListRect(characterGroupRect.left + cs.XGROUPBOX_MARGIN,
+                                  characterGroupRect.top + cs.YFIRST_GROUPBOX_MARGIN,
+                                  characterGroupRect.right - cs.XGROUPBOX_MARGIN,
+                                  characterGroupRect.bottom - cs.YWINDOW_MARGIN);
+
+    objectsHereGroup.MoveWindow(objectGroupRect);
+    charactersHereGroup.MoveWindow(characterGroupRect);
+    objectsHereListBox.MoveWindow(objectListRect);
+    charactersHereListBox.MoveWindow(characterListRect);
+
+    return 0;
+}
+
+LRESULT EntitiesHereView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
+
+    if (msg == WM_SIZE) {
+        return OnSize(wParam, lParam);
+    }
+
+    return WndProcDefault(msg, wParam, lParam);
 }
