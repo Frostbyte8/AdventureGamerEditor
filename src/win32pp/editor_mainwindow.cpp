@@ -263,8 +263,9 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
-    const std::vector<GameObject>& objectVec = gameWorldController->getGameMap()->getGameObjectsAtRowCol(0, 0);
-    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec);
+    const std::vector<GameObject>& objectVec = gameWorldController->getGameMap()->getGameObjectsAtRowCol(0, 4);
+    const std::vector<GameCharacter>& charVec = gameWorldController->getGameMap()->getGameCharactersAtRowCol(0, 4);
+    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
 
     switch (LOWORD(wParam)) {
 
@@ -309,7 +310,7 @@ BOOL MainWindowFrame::OnFileOpen() {
 
 	fileDialog.SetTitle(L"Open World File");
 
-	if(fileDialog.DoModal() == IDOK) {
+	if(fileDialog.DoModal(*this) == IDOK) {
 
 		std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
 		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));

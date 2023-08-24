@@ -338,9 +338,10 @@ LRESULT EntitiesHereView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     return WndProcDefault(msg, wParam, lParam);
 }
 
-void EntitiesHereView::updateLists(const std::vector<GameObject>& objectVec) {
+void EntitiesHereView::updateLists(const std::vector<GameObject>& objectVec, const std::vector<GameCharacter>& charVec) {
     
     objectsHereListBox.ClearStrings();
+    charactersHereListBox.ClearStrings();
     
     if(!objectVec.empty()) {
         const size_t objSize = objectVec.size();
@@ -349,8 +350,15 @@ void EntitiesHereView::updateLists(const std::vector<GameObject>& objectVec) {
             
             objectsHereListBox.AddString(AtoW(objectVec[i].getName().c_str(), CP_UTF8));
 
+        }
+    }
 
+    if(!charVec.empty()) {
+        const size_t charSize = charVec.size();
 
+        for (size_t i = 0; i < charSize; ++i) {
+
+            charactersHereListBox.AddString(AtoW(charVec[i].getName().c_str(), CP_UTF8));
         }
     }
 }

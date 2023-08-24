@@ -105,7 +105,7 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 }
 
 ///----------------------------------------------------------------------------
-/// getGameObjectsAtIndex - Return a vector containing Game Objects within the
+/// getGameObjectsAtRowCol - Return a vector containing Game Objects within the
 /// current map, and on the current tile.
 /// @param an integer indicating the row to search for
 /// @param an integer indicating the column to search for
@@ -133,6 +133,36 @@ const std::vector<GameObject> GameMap::getGameObjectsAtRowCol(const int& row, co
     }
 
     return objects;
+
+}
+
+///----------------------------------------------------------------------------
+/// getGameCharactersAtRowCol - Return a vector containing Game Objects within
+/// the current map, and at the given row and column
+/// @param an integer indicating the row to search for
+/// @param an integer indicating the column to search for
+/// @return a vector containing the Game Objects that match the given criteria
+///----------------------------------------------------------------------------
+
+const std::vector<GameCharacter> GameMap::getGameCharactersAtRowCol(const int& row, const int& col) const {
+
+    std::vector<GameCharacter> chars;
+
+    if (!isRowColInMapBounds(row, col)) {
+        return chars;
+    }
+
+    const size_t numChars = gameCharacters.size();
+
+    for (size_t i = 0; i < numChars; ++i) {
+        const GameCharacter& curChar = gameCharacters[i];
+
+        if(curChar.getX() == col && curChar.getY() == row) {
+            chars.push_back(curChar);
+        }
+    }
+
+    return chars;
 
 }
 

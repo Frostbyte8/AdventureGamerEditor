@@ -156,7 +156,7 @@ class EntitiesHereView : public CWnd {
             wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
         }
 
-        void updateLists(const std::vector<GameObject>& objectVec);
+        void updateLists(const std::vector<GameObject>& objectVec, const std::vector<GameCharacter>& gameCharacters);
 
     protected:
         virtual int OnCreate(CREATESTRUCT& cs);

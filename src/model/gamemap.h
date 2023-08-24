@@ -65,6 +65,7 @@ class GameMap {
         const std::vector<size_t> getReliantObjectsFromID(const size_t& objectID) const;
 		const std::vector<GameObject>& getGameObjects() const;
         const std::vector<GameObject> getGameObjectsAtRowCol(const int& row, const int& col) const;
+        const std::vector<GameCharacter> getGameCharactersAtRowCol(const int& row, const int& col) const;
         const std::vector<GameCharacter>& getGameCharacters() const;
         const std::vector<GameTile::DrawInfo> getTileDrawData() const;
         const std::vector<GameTile>& getTiles() const;
