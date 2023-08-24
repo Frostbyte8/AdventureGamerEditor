@@ -105,8 +105,41 @@ const std::vector<GameObject>& GameMap::getGameObjects() const {
 }
 
 ///----------------------------------------------------------------------------
+/// getGameObjectsAtIndex - Return a vector containing Game Objects within the
+/// current map, and on the current tile.
+/// @param an integer indicating the row to search for
+/// @param an integer indicating the column to search for
+/// @return a vector containing the Game Objects that match the given criteria
+///----------------------------------------------------------------------------
+
+const std::vector<GameObject> GameMap::getGameObjectsAtRowCol(const int& row, const int& col) const {
+        
+    std::vector<GameObject> objects;
+
+    if (!isRowColInMapBounds(row, col)) {
+        return objects;
+    }
+
+    const size_t numObjects = gameObjects.size();
+    
+    for (size_t i = 0; i < numObjects; ++i) {  
+        const GameObject& curObject = gameObjects[i];
+
+
+        if (curObject.getIsLocated() == GameObjectConstants::LocatedOnGround &&
+           (curObject.getX() == col && curObject.getY() == row)) {
+            objects.push_back(curObject);
+        }
+    }
+
+    return objects;
+
+}
+
+
+///----------------------------------------------------------------------------
 /// getHeight - Returns the height of the map
-/// @return an interger indicating the height of the map
+/// @return an integer indicating the height of the map
 ///----------------------------------------------------------------------------
 
 const int& GameMap::getHeight() const {
@@ -115,7 +148,7 @@ const int& GameMap::getHeight() const {
 
 ///----------------------------------------------------------------------------
 /// getLastCharacterID - Returns the last ID used on a character
-/// @return an interger indicating the the last ID used on a character
+/// @return an integer indicating the the last ID used on a character
 ///----------------------------------------------------------------------------
 
 const int& GameMap::getLastCharacterID() const {
@@ -124,7 +157,7 @@ const int& GameMap::getLastCharacterID() const {
 
 ///----------------------------------------------------------------------------
 /// getLastObjectID - Returns the last ID used on an object
-/// @return an interger indicating the the last ID used on an object
+/// @return an integer indicating the the last ID used on an object
 ///----------------------------------------------------------------------------
 
 const int& GameMap::getLastObjectID() const {
@@ -186,7 +219,7 @@ const std::vector<GameTile>& GameMap::getTiles() const {
 
 ///----------------------------------------------------------------------------
 /// getHeight - Returns the total number of tiles on the map
-/// @return an interger indicating the total number of tiles on the map.
+/// @return an integer indicating the total number of tiles on the map.
 ///----------------------------------------------------------------------------
 
 const int GameMap::getNumTiles() const {
@@ -827,7 +860,7 @@ void GameMap::readStory(const std::string& storyFilePath) {
 
 	if(ifs) {
 		ifs.seekg(0, std::ios::end);
-		story.resize(ifs.tellg());
+		story.resize(static_cast<size_t>(ifs.tellg()));
 		ifs.seekg(0, std::ios::beg);
 		ifs.read(&story[0], story.size());
 		ifs.close();

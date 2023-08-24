@@ -53,7 +53,7 @@ class LanguageMapper {
 	        if(ifs) {
 		        std::string data;
 		        ifs.seekg(0, std::ios::end);
-		        data.resize(ifs.tellg());
+		        data.resize(static_cast<size_t>(ifs.tellg()));
 		        ifs.seekg(0, std::ios::beg);
 		        ifs.read(&data[0], data.size());
 		        ifs.close();

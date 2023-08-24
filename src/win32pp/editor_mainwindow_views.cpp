@@ -324,6 +324,7 @@ int EntitiesHereView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     charactersHereGroup.MoveWindow(characterGroupRect);
     objectsHereListBox.MoveWindow(objectListRect);
     charactersHereListBox.MoveWindow(characterListRect);
+    
 
     return 0;
 }
@@ -335,4 +336,21 @@ LRESULT EntitiesHereView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     }
 
     return WndProcDefault(msg, wParam, lParam);
+}
+
+void EntitiesHereView::updateLists(const std::vector<GameObject>& objectVec) {
+    
+    objectsHereListBox.ClearStrings();
+    
+    if(!objectVec.empty()) {
+        const size_t objSize = objectVec.size();
+
+        for(size_t i = 0; i < objSize; ++i) {
+            
+            objectsHereListBox.AddString(AtoW(objectVec[i].getName().c_str(), CP_UTF8));
+
+
+
+        }
+    }
 }

@@ -263,6 +263,9 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
+    const std::vector<GameObject>& objectVec = gameWorldController->getGameMap()->getGameObjectsAtRowCol(0, 0);
+    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec);
+
     switch (LOWORD(wParam)) {
 
         // TODO: On New and Open need to be interface functions
