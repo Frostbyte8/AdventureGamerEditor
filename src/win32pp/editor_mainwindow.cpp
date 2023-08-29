@@ -27,7 +27,7 @@ namespace MenuIDs {
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
-editTileDescriptionDialog(0), tileWidth(0), tileHeight(0) {
+editTileDescriptionDialog(0), tileWidth(0), tileHeight(0), selectedTileIndex(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
     LanguageMapper::getInstance();
@@ -173,7 +173,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	DWORD styleFlags = DS_NO_UNDOCK | DS_NO_CAPTION | DS_DEFAULT_CURSORS | DS_CLIENTEDGE;
 	SetDockStyle(styleFlags);
 
-    gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(gameWorldController, &tilesetBMP), 
+    gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(this, gameWorldController, &tilesetBMP), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
 	
 	reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).setTileset(tilesetBMP);
@@ -263,10 +263,6 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
-    const std::vector<GameObject>& objectVec = gameWorldController->getGameMap()->getGameObjectsAtRowCol(0, 4);
-    const std::vector<GameCharacter>& charVec = gameWorldController->getGameMap()->getGameCharactersAtRowCol(0, 4);
-    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
-
     switch (LOWORD(wParam)) {
 
         // TODO: On New and Open need to be interface functions
@@ -392,6 +388,32 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 
     MessageBox(message, title, messageBoxFlags);
 
+}
+
+//-----------------------------------------------------------------------------
+// onSelectedTileChanged
+//-----------------------------------------------------------------------------
+
+void MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
+    
+    const GameMap* gameMap = gameWorldController->getGameMap();
+
+    if (!gameMap->isRowColInMapBounds(row, col)) {
+        return;
+    }
+
+    const int newTileIndex = gameMap->indexFromRowCol(row, col);
+
+    if (newTileIndex == selectedTileIndex) {
+        return;
+    }
+
+    selectedTileIndex = newTileIndex;
+
+    const std::vector<GameObject>& objectVec = gameWorldController->getGameMap()->getGameObjectsAtRowCol(row, col);
+    const std::vector<GameCharacter>& charVec = gameWorldController->getGameMap()->getGameCharactersAtRowCol(row, col);
+    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
+    
 }
 
 //-----------------------------------------------------------------------------

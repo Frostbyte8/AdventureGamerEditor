@@ -90,6 +90,7 @@ class RoadSelectorView : public CScrollView {
         CMemDC                  backBufferDC;
         CBitmap                 backBufferBMP;
 
+
         int tileWidth;
         int tileHeight;
 
@@ -108,7 +109,7 @@ class GameMapView : public CScrollView {
 	
 	public:
 
-        GameMapView(GameWorldController* gwc);
+        GameMapView(MainWindowInterface* inMainWindow, GameWorldController* gwc);
         virtual ~GameMapView() {}
         //void onZoomChange();
         void setTileset(CBitmap& inTileSet);
@@ -117,6 +118,7 @@ class GameMapView : public CScrollView {
     protected:
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void OnDraw(CDC& dc);
+        LRESULT onLButtonDown(const WORD& xPos, const WORD& yPos);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
 	private:
@@ -130,7 +132,7 @@ class GameMapView : public CScrollView {
         
         CMemDC      backBufferDC;
         CBitmap     backBufferBMP;
-        
+        MainWindowInterface*    mainWindow;
         GameWorldController*    gameWorldController;
 
         int fakeZoomLevel;

@@ -59,6 +59,11 @@ class MainWindowInterface {
         virtual void onEditWorldInfo() = 0;
 
         ///--------------------------------------------------------------------
+        /// Sent when the user is trying to select a new tile
+        ///--------------------------------------------------------------------
+        virtual void onSelectedTileChanged(const int& row, const int& col) = 0;
+
+        ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
         ///--------------------------------------------------------------------
         virtual void finishedEditCharacterDialog() = 0;

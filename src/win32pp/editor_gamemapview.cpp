@@ -5,8 +5,8 @@
 // Constructors / Destructor
 //=============================================================================
 
-GameMapView::GameMapView(GameWorldController* gwc) : backBufferDC(NULL), 
-tilesetDC(NULL), gameWorldController(gwc) {
+GameMapView::GameMapView(MainWindowInterface* inMainWindow, GameWorldController* gwc) : backBufferDC(NULL), 
+tilesetDC(NULL), mainWindow(inMainWindow), gameWorldController(gwc) {
     fakeZoomLevel = 1;
     tileWidth = 0;
     tileHeight = 0;
@@ -114,10 +114,27 @@ void GameMapView::OnDraw(CDC& dc) {
     }
 }
 
+LRESULT GameMapView::onLButtonDown(const WORD& xPos, const WORD& yPos) {
+    
+    CPoint viewOffset = GetScrollPosition();
+       
+    WORD row = (yPos + viewOffset.y) / tileHeight;
+    WORD col = (xPos + viewOffset.x) / tileWidth;
+
+    mainWindow->onSelectedTileChanged(row, col);
+
+    return 0;
+}
+
 ///----------------------------------------------------------------------------
 /// WndProc
 ///----------------------------------------------------------------------------
 
 LRESULT GameMapView::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
+
+    if (msg == WM_LBUTTONDOWN) {
+        return onLButtonDown(LOWORD(lparam), HIWORD(lparam));
+    }
+
     return WndProcDefault(msg, wparam, lparam);
 }
