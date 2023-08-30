@@ -133,7 +133,6 @@ class GameMapView : public CScrollView {
         virtual void PreRegisterClass(WNDCLASS& wc) {
             wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
             wc.lpszClassName = L"GameMapView";
-            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
             wc.style = CS_DBLCLKS;
         }
 
