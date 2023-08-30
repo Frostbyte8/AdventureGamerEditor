@@ -128,7 +128,6 @@ class GameMapView : public CScrollView {
 		GameMapView& operator = (const GameMapView&);
 
         CMemDC			    tilesetDC;
-        //CBitmap           tilesetBMP;
         
         CMemDC      backBufferDC;
         CBitmap     backBufferBMP;
@@ -138,6 +137,8 @@ class GameMapView : public CScrollView {
         int fakeZoomLevel;
         int tileWidth;
         int tileHeight;
+        int selectedRow;
+        int selectedCol;
 };
 
 ///----------------------------------------------------------------------------

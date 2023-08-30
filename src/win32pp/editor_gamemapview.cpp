@@ -1,5 +1,6 @@
 #include "editor_mainwindow_views.h"
 #include "../editor_constants.h"
+#include "shared_functions.h"
 
 //=============================================================================
 // Constructors / Destructor
@@ -10,6 +11,8 @@ tilesetDC(NULL), mainWindow(inMainWindow), gameWorldController(gwc) {
     fakeZoomLevel = 1;
     tileWidth = 0;
     tileHeight = 0;
+    selectedRow = 0;
+    selectedCol = 0;
 }
 
 //=============================================================================
@@ -108,6 +111,8 @@ void GameMapView::OnDraw(CDC& dc) {
             }
         }
 
+        DrawTileSelectionBox(backBufferDC, selectedCol * tileWidth, selectedRow * tileHeight, tileWidth, tileHeight, 2);
+
         backBufferDC.SelectObject(oldBMP);
         dc.SelectObject(backBufferBMP);
 
@@ -121,7 +126,11 @@ LRESULT GameMapView::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     WORD row = (yPos + viewOffset.y) / tileHeight;
     WORD col = (xPos + viewOffset.x) / tileWidth;
 
-    mainWindow->onSelectedTileChanged(row, col);
+    if (mainWindow->onSelectedTileChanged(row, col)) {
+        selectedRow = row;
+        selectedCol = col;
+        InvalidateRect();
+    }
 
     return 0;
 }

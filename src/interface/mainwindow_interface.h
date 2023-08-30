@@ -60,8 +60,9 @@ class MainWindowInterface {
 
         ///--------------------------------------------------------------------
         /// Sent when the user is trying to select a new tile
+        /// @return true if the selection was valid, false if it was not
         ///--------------------------------------------------------------------
-        virtual void onSelectedTileChanged(const int& row, const int& col) = 0;
+        virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
