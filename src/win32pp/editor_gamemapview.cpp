@@ -135,6 +135,21 @@ LRESULT GameMapView::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     return 0;
 }
 
+LRESULT GameMapView::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
+
+    CPoint viewOffset = GetScrollPosition();
+
+    WORD row = (yPos + viewOffset.y) / tileHeight;
+    WORD col = (xPos + viewOffset.x) / tileWidth;
+
+    if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
+        if (gameWorldController->tryUpdateTileType(row, col, 0)) {
+            InvalidateRect();
+        }
+    }
+    return 0;
+}
+
 ///----------------------------------------------------------------------------
 /// WndProc
 ///----------------------------------------------------------------------------
@@ -143,6 +158,9 @@ LRESULT GameMapView::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
 
     if (msg == WM_LBUTTONDOWN) {
         return onLButtonDown(LOWORD(lparam), HIWORD(lparam));
+    }
+    else if (msg == WM_LBUTTONDBLCLK) {
+        return onLButtonDBLClick(LOWORD(lparam), HIWORD(lparam));
     }
 
     return WndProcDefault(msg, wparam, lparam);

@@ -42,6 +42,8 @@ class GameWorldController {
         
         bool tryUpdateGameInfo(const GameInfo& newInfo);
 
+        bool tryUpdateTileType(const int& row, const int& col, const int& type);
+
         bool tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription);
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
         

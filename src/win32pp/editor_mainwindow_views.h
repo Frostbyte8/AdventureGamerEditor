@@ -119,7 +119,23 @@ class GameMapView : public CScrollView {
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void OnDraw(CDC& dc);
         LRESULT onLButtonDown(const WORD& xPos, const WORD& yPos);
+        LRESULT onLButtonDBLClick(const WORD& xPos, const WORD& yPos);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+        virtual void PreCreate(CREATESTRUCT& cs) {
+            // Win32++ Erroneously sets the lpszclass name,
+            // so we have to fix that here.
+            // TODO: Fix that in custom fork.
+            CScrollView::PreCreate(cs);
+            cs.lpszClass = L"GameMapView";
+        }
+
+        virtual void PreRegisterClass(WNDCLASS& wc) {
+            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+            wc.lpszClassName = L"GameMapView";
+            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+            wc.style = CS_DBLCLKS;
+        }
 
 	private:
 

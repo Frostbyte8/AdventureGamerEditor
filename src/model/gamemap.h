@@ -82,6 +82,15 @@ class GameMap {
         void setStory(GMKey, const std::string& inStory);
         void setSummary(GMKey, const std::string& inSummary);
 
+        void updateTile(GMKey, const size_t& index, const int& type, const int& flags) {
+
+            GameTile::Builder bd = GameTile::Builder(tiles[index]);
+
+            bd.sprite(type);
+            bd.flags(flags);
+
+            tiles[index] = bd.build();
+        }
         void updateTileDescription(GMKey, const size_t& index, const std::string& tileName, const std::string& tileDescription);
         void updateGameInfo(GMKey, const GameInfo& newInfo);
 

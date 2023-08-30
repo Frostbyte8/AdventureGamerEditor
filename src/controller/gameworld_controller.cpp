@@ -547,6 +547,29 @@ bool GameWorldController::tryUpdateTileDescription(const int& row, const int& co
 }
 
 ///----------------------------------------------------------------------------
+/// tryUpdateTileType - Update the tile type used on the tile given. If the
+/// tile is solid grass, it will remove the tile name and description.
+/// @param row of the tile being changed
+/// @param col of the tile being changed
+/// @param type to replace the tile with
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateTileType(const int& row, const int& col, const int& type) {
+    // TODO: Type constants
+    if (type < 15 && type >= 0) {
+
+        if (type == 0) {
+            gameMap->updateTileDescription(gmKey, gameMap->indexFromRowCol(row, col), "", "");
+        }
+
+        gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+
+    }
+    return true;
+}
+
+///----------------------------------------------------------------------------
 /// tryUpdateStoryAndSummary - Attempts to update the story/summary.
 /// @param Story text to use for the story
 /// @param Summary text to use for the summary
