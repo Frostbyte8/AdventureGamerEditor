@@ -155,7 +155,7 @@ const bool GameTile::isStraightaway() const {
 
 }
 ///----------------------------------------------------------------------------
-/// hasAnyFeature - Checks is a tile has any features applied to it.
+/// hasAnyFeature - Checks if a tile has any features applied to it.
 /// @return true if it does, false if it does not.
 ///----------------------------------------------------------------------------
 
@@ -168,6 +168,18 @@ const bool GameTile::hasAnyFeature() const {
     return !(base.drawInfo.spriteIndex != 0 &&
              base.drawInfo.spriteModifier != TileModifiers::None && 
              base.drawInfo.spriteModifier != TileModifiers::DirtRoad);
+}
+
+///----------------------------------------------------------------------------
+/// hasConnectionFeature - Checks if a tile has a feature that effects more
+/// than one tile. IE: Switches.
+///----------------------------------------------------------------------------
+
+const bool GameTile::hasConnectionFeature() const {
+
+    // Dark spaces require a switch, so they're included here too.
+
+    return(hasGate() || hasJumpPad() || hasSwitch() || isDark());
 }
 
 ///----------------------------------------------------------------------------

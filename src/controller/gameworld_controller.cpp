@@ -556,11 +556,43 @@ bool GameWorldController::tryUpdateTileDescription(const int& row, const int& co
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryUpdateTileType(const int& row, const int& col, const int& type) {
+
     // TODO: Type constants
     if (type < 15 && type >= 0) {
 
-        if (type == 0) {
-            gameMap->updateTileDescription(gmKey, gameMap->indexFromRowCol(row, col), "", "");
+        if (!gameMap->isRowColInMapBounds(row, col)) {
+            return false;
+        }
+
+        const size_t tileIndex = gameMap->indexFromRowCol(row, col);
+        const GameTile& gameTile = gameMap->getTile(tileIndex);
+
+        // First we need to figure out if this tile is connected to anything else
+
+        if (gameTile.hasConnectionFeature()) {
+            
+            // The tile has a connection, and if it's a jumppad, it may have two.
+            // So we'll need to check for that.
+
+            if (gameTile.hasJumpPad()) {
+
+                const SimplePoint* jumpPadDestination = gameMap->findMatchingPoint(row, col);
+
+                if (jumpPadDestination != NULL) {
+                    OutputDebugStr(L"Removing Jumppad in both places");
+                    gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+                    gameMap->updateTile(gmKey, gameMap->indexFromRowCol(jumpPadDestination->getRow(), jumpPadDestination->getColumn()), type, 0);
+                    //gameMap->removeFeature(gmKey, gameMap->indexFromRowCol(jumpPadDestination->getRow(), jumpPadDestination->getColumn());
+                }
+            }
+            
+            
+        }
+        else {
+            // Since it does not, we can easily clear it without any problems.
+            if (type == 0) {
+                //gameMap->updateTileDescription(gmKey, gameMap->indexFromRowCol(row, col), "", "");
+            }
         }
 
         gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);

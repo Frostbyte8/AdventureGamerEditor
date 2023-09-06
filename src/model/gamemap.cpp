@@ -613,6 +613,34 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
     readCharacters(mapFile);
 }
 
+///----------------------------------------------------------------------------
+/// findMatchingPoint - Find the matching connection point, if one exists.
+/// @param row of the connection point to search for
+/// @param column of the connection point to search for
+/// @return value NULL if nothing was found, a valid connection point if it was
+///----------------------------------------------------------------------------
+
+const SimplePoint* GameMap::findMatchingPoint(const int& row, const int& col) const {
+    
+    const size_t jmSize = jumpPoints.size();
+    SimplePoint* matchingPoint = NULL;
+
+    for (size_t i = 0; i < jmSize; ++i) {
+
+        const SimplePoint& conPoint1 = jumpPoints[i].getConnectPoint1();
+        const SimplePoint& conPoint2 = jumpPoints[i].getConnectPoint2();
+            
+        if (conPoint1.getColumn() == col && conPoint1.getRow() == row) {
+            return &conPoint2;
+        }
+        else if (conPoint2.getColumn() == col && conPoint2.getRow() == row) {
+            return &conPoint1;
+        }
+    }
+    
+    return NULL;
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================

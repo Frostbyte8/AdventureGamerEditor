@@ -269,6 +269,7 @@ class GameTile {
 
         // Information Functions
         
+        const bool hasConnectionFeature() const;
         const bool hasAnyFeature() const;
         const bool hasJumpPad() const;
         const bool hasGate() const;

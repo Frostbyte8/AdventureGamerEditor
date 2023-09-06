@@ -70,6 +70,7 @@ class GameMap {
         const std::vector<GameTile::DrawInfo> getTileDrawData() const;
         const std::vector<GameTile>& getTiles() const;
 
+
         // Mutators
         void addCharacter(GMKey, GameCharacter& gameCharacter);
         void addObject(GMKey, GameObject& gameObject);
@@ -104,6 +105,8 @@ class GameMap {
 
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
+
+        const SimplePoint* findMatchingPoint(const int& row, const int& col) const;
 
     private:
 
