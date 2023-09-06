@@ -21,11 +21,9 @@ class ConnectionPoint {
 
         bool operator==(const ConnectionPoint& rhs) const {
 
-            if(connectPoint1 == rhs.getConnectPoint1() ||
-               connectPoint1 == rhs.getConnectPoint2() ||
-               connectPoint2 == rhs.getConnectPoint1() ||
-               connectPoint2 == rhs.getConnectPoint2()) {
-                   return true;
+            if((connectPoint1 == rhs.getConnectPoint1() && connectPoint2 == rhs.getConnectPoint2()) || 
+               (connectPoint2 == rhs.getConnectPoint1() && connectPoint1 == rhs.getConnectPoint2())) {
+                return true;
             }
             return false;
         }

@@ -107,6 +107,7 @@ class GameMap {
         void writeMap(std::ofstream& mapFile);
 
         const SimplePoint* findMatchingPoint(const int& row, const int& col) const;
+        bool removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2);
 
     private:
 

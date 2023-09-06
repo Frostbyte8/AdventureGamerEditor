@@ -579,10 +579,14 @@ bool GameWorldController::tryUpdateTileType(const int& row, const int& col, cons
                 const SimplePoint* jumpPadDestination = gameMap->findMatchingPoint(row, col);
 
                 if (jumpPadDestination != NULL) {
-                    OutputDebugStr(L"Removing Jumppad in both places");
+
                     gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
                     gameMap->updateTile(gmKey, gameMap->indexFromRowCol(jumpPadDestination->getRow(), jumpPadDestination->getColumn()), type, 0);
                     //gameMap->removeFeature(gmKey, gameMap->indexFromRowCol(jumpPadDestination->getRow(), jumpPadDestination->getColumn());
+                    if (gameMap->removeJumpPoint(*jumpPadDestination, SimplePoint(col, row))) {
+                        OutputDebugStr(L"Removed Jump Point");
+                    }
+
                 }
             }
             

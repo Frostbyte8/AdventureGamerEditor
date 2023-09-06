@@ -641,6 +641,28 @@ const SimplePoint* GameMap::findMatchingPoint(const int& row, const int& col) co
     return NULL;
 }
 
+///----------------------------------------------------------------------------
+/// removeJumpPoint - Removes a Jump Point, if found.
+/// @param First point in the connection
+/// @param Second Point in the connection.
+/// @return value NULL if nothing was found, a valid connection point if it was
+///----------------------------------------------------------------------------
+
+bool GameMap::removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2) {
+
+    const size_t jmpSize = jumpPoints.size();
+    const ConnectionPoint conPoint(point1, point2);
+
+    for (size_t i = 0; i < jmpSize; ++i) {
+        if (jumpPoints[i] == conPoint) {
+            jumpPoints.erase(jumpPoints.begin() + i);
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================
