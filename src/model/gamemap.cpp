@@ -645,7 +645,7 @@ const SimplePoint* GameMap::findMatchingPoint(const int& row, const int& col) co
 /// removeJumpPoint - Removes a Jump Point, if found.
 /// @param First point in the connection
 /// @param Second Point in the connection.
-/// @return value NULL if nothing was found, a valid connection point if it was
+/// @return true if the point was removed from the Jump vector, false if not.
 ///----------------------------------------------------------------------------
 
 bool GameMap::removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2) {
@@ -661,6 +661,26 @@ bool GameMap::removeJumpPoint(const SimplePoint& point1, const SimplePoint& poin
     }
     
     return false;
+}
+
+///----------------------------------------------------------------------------
+/// removeFeature - Removes a feature from a tile
+/// @param GMKey
+/// @param row of the tile to remove the feature from
+/// @param column of the tile to remove the feature from.
+/// @return true if the feature was removed, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameMap::removeFeature(GMKey, const int& row, const int& col) {
+
+    const size_t index = indexFromRowCol(row, col);
+
+    GameTile::Builder tb(tiles[index]);
+
+    tb.sprite(tiles[index].getSpriteIndex());
+    tiles[index] = tb.build();
+
+    return true;
 }
 
 //=============================================================================

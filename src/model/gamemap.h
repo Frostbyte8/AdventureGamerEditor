@@ -70,7 +70,6 @@ class GameMap {
         const std::vector<GameTile::DrawInfo> getTileDrawData() const;
         const std::vector<GameTile>& getTiles() const;
 
-
         // Mutators
         void addCharacter(GMKey, GameCharacter& gameCharacter);
         void addObject(GMKey, GameObject& gameObject);
@@ -108,6 +107,7 @@ class GameMap {
 
         const SimplePoint* findMatchingPoint(const int& row, const int& col) const;
         bool removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2);
+        bool removeFeature(GMKey, const int& row, const int& col);
 
     private:
 
