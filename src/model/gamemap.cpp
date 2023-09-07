@@ -614,31 +614,26 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 }
 
 ///----------------------------------------------------------------------------
-/// findMatchingPoint - Find the matching connection point, if one exists.
+/// findSwitchPoint - Find where the switch is, or what switch connects to this
+/// tile.
 /// @param row of the connection point to search for
 /// @param column of the connection point to search for
 /// @return value NULL if nothing was found, a valid connection point if it was
 ///----------------------------------------------------------------------------
 
-const SimplePoint* GameMap::findMatchingPoint(const int& row, const int& col) const {
-    
-    const size_t jmSize = jumpPoints.size();
-    SimplePoint* matchingPoint = NULL;
+const SimplePoint* GameMap::findSwitchPoint(const int& row, const int& col) const {
+    return findMatchingPoint(row, col, switchConnections);
+}
 
-    for (size_t i = 0; i < jmSize; ++i) {
+///----------------------------------------------------------------------------
+/// findJumpPoint - Find the matching jump pad, if one exists.
+/// @param row of the connection point to search for
+/// @param column of the connection point to search for
+/// @return value NULL if nothing was found, a valid connection point if it was
+///----------------------------------------------------------------------------
 
-        const SimplePoint& conPoint1 = jumpPoints[i].getConnectPoint1();
-        const SimplePoint& conPoint2 = jumpPoints[i].getConnectPoint2();
-            
-        if (conPoint1.getColumn() == col && conPoint1.getRow() == row) {
-            return &conPoint2;
-        }
-        else if (conPoint2.getColumn() == col && conPoint2.getRow() == row) {
-            return &conPoint1;
-        }
-    }
-    
-    return NULL;
+const SimplePoint* GameMap::findJumpPoint(const int& row, const int& col) const {  
+    return findMatchingPoint(row, col, jumpPoints);
 }
 
 ///----------------------------------------------------------------------------
@@ -677,7 +672,10 @@ bool GameMap::removeFeature(GMKey, const int& row, const int& col) {
 
     GameTile::Builder tb(tiles[index]);
 
-    tb.sprite(tiles[index].getSpriteIndex());
+    // When removing a feature, preserve the dirt road modifier.
+
+    tb.sprite(GameTile::Builder::calculateSprite(tiles[index].getSpriteIndex(), tiles[index].getSpriteModifier() & TileModifiers::DirtRoad));
+
     tiles[index] = tb.build();
 
     return true;
@@ -705,6 +703,34 @@ const bool GameMap::ifConnectionExists(const std::vector<ConnectionPoint>& conne
     std::vector<ConnectionPoint>::const_iterator it = find(connections.begin(), connections.end(),
                                                            connectionPoint);
     return !(it == connections.end());
+}
+
+///----------------------------------------------------------------------------
+/// findMatchingPoint - Give the row and column, find the matching point if one
+/// exists.
+/// @param row of the connection point to search for
+/// @param column of the connection point to search for
+/// @return value NULL if nothing was found, a valid connection point if it was
+///----------------------------------------------------------------------------
+const SimplePoint* GameMap::findMatchingPoint(const int& row, const int& col, const std::vector<ConnectionPoint>& connections) const {
+
+    const size_t conSize = connections.size();
+    SimplePoint* matchingPoint = NULL;
+
+    for (size_t i = 0; i < conSize; ++i) {
+
+        const SimplePoint& conPoint1 = connections[i].getConnectPoint1();
+        const SimplePoint& conPoint2 = connections[i].getConnectPoint2();
+
+        if (conPoint1.getColumn() == col && conPoint1.getRow() == row) {
+            return &conPoint2;
+        }
+        else if (conPoint2.getColumn() == col && conPoint2.getRow() == row) {
+            return &conPoint1;
+        }
+    }
+
+    return NULL;
 }
 
 ///----------------------------------------------------------------------------

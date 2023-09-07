@@ -179,7 +179,7 @@ const bool GameTile::hasConnectionFeature() const {
 
     // Dark spaces require a switch, so they're included here too.
 
-    return(hasGate() || hasJumpPad() || hasSwitch() || isDark());
+    return(hasGate() || hasSwitch() || isDark());
 }
 
 ///----------------------------------------------------------------------------

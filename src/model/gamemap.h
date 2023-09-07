@@ -105,20 +105,24 @@ class GameMap {
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile);
 
-        const SimplePoint* findMatchingPoint(const int& row, const int& col) const;
+        const SimplePoint* findJumpPoint(const int& row, const int& col) const;
+        const SimplePoint* findSwitchPoint(const int& row, const int& col) const;
+
         bool removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2);
         bool removeFeature(GMKey, const int& row, const int& col);
 
     private:
 
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
+        const SimplePoint* findMatchingPoint(const int& row, const int& col, const std::vector<ConnectionPoint>& connections) const;
+        
         std::map<unsigned int, std::string> readRowDescriptions(const std::string& rowFileName);
 
         void readCharacters(std::ifstream& mapFile);
         void readJumps(std::ifstream& mapFile);
         void readObjects(std::ifstream& mapFile);
         void readStory(const std::string& storyFileName);
-        void readSwitches(std::ifstream& mapFile);
+        void readSwitches(std::ifstream& mapFile);        
 
         GameInfo gameInfo;
         

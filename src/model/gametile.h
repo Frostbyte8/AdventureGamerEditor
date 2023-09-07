@@ -185,6 +185,10 @@ class GameTile {
                     return *this;
                 }
 
+                static const uint8_t calculateSprite(const uint8_t& index, const uint8_t& modifer) {
+                    return index + (modifer << 4);
+                }
+
                 void readTile(std::ifstream& mapFile, const std::string& tileDescription);
 
                 GameTile build() {

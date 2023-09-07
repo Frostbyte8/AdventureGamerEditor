@@ -569,25 +569,32 @@ bool GameWorldController::tryUpdateTileType(const int& row, const int& col, cons
 
         // First we need to figure out if this tile is connected to anything else
 
+        // Jump pads are an interesting case, they can both have a Jump feature,
+        // and a dark switch feature. 
+
+        if (gameTile.hasJumpPad()) {
+
+            const SimplePoint* jumpPadDestination = gameMap->findJumpPoint(row, col);
+
+            // TODO: it's possible a jump pad may not have a connection if it is not yet connected.
+            if (jumpPadDestination != NULL) {
+
+                // TODO: Make sure darkness is preserved.
+                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+                gameMap->removeFeature(gmKey, jumpPadDestination->getRow(), jumpPadDestination->getColumn());
+                gameMap->removeJumpPoint(*jumpPadDestination, SimplePoint(col, row));
+
+            }
+
+        }
+
         if (gameTile.hasConnectionFeature()) {
             
-            // The tile has a connection, and if it's a jumppad, it may have two.
-            // So we'll need to check for that.
-
-            if (gameTile.hasJumpPad()) {
-
-                const SimplePoint* jumpPadDestination = gameMap->findMatchingPoint(row, col);
-
-                if (jumpPadDestination != NULL) {
-
-                    gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
-                    gameMap->removeFeature(gmKey, jumpPadDestination->getRow(), jumpPadDestination->getColumn());
-                    //gameMap->removeFeature(gmKey, gameMap->indexFromRowCol(jumpPadDestination->getRow(), jumpPadDestination->getColumn());
-                    if (gameMap->removeJumpPoint(*jumpPadDestination, SimplePoint(col, row))) {
-                        OutputDebugStr(L"Removed Jump Point");
-                    }
-
-                }
+            // Now check to see if this tile has a gate or dark space on it. Note that
+            // Tiles with gates on them can either be a gate, or a door, but not both.
+            if (gameTile.isDark()) {
+                // TODO: See if a tile can be dark without a switch.
+                const SimplePoint* matchingPoint = gameMap->findSwitchPoint(row, col);
             }
             
             
