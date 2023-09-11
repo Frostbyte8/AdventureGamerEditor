@@ -592,19 +592,29 @@ bool GameWorldController::tryUpdateTileType(const int& row, const int& col, cons
             
             // Now check to see if this tile has a gate or dark space on it. Note that
             // Tiles with gates on them can either be a gate, or a door, but not both.
-            if (gameTile.isDark() || gameTile.hasGate()) {
-                // TODO: See if a tile can be dark without a switch.
-                const SimplePoint* matchingPoint = gameMap->findSwitchPoint(row, col);
-                
-                if (matchingPoint) {
-                    gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+
+            const SimplePoint* matchingPoint = gameMap->findSwitchPoint(row, col);
+
+            if (matchingPoint) {
+                                
+                if (gameTile.isDark() || gameTile.hasGate()) {
+                    // Remove the switch
                     gameMap->removeFeature(gmKey, matchingPoint->getRow(), matchingPoint->getColumn());
-                    gameMap->removeSwitch(*matchingPoint, SimplePoint(col, row));
                 }
+                else if (gameTile.hasSwitch()) {
+                    // Remove the Gate/Dark flag
+                    const GameTile& matchingTile = gameMap->getTile(gameMap->indexFromRowCol(matchingPoint->getRow(), matchingPoint->getColumn()));
+                    if (matchingTile.hasGate()) {
+                        gameMap->removeFeature(gmKey, matchingPoint->getRow(), matchingPoint->getColumn());
+                    }
+                    else {
+                        gameMap->updateTileFlags(gmKey, matchingPoint->getRow(), matchingPoint->getColumn(), matchingTile.getFlags() & ~TileFlags::Dark);
+                    }
+                }
+
+                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+                gameMap->removeSwitch(*matchingPoint, SimplePoint(col, row));
             }
-            else if (gameTile.hasSwitch()) {
-            }
-            
         }
         else {
             // Since it does not, we can easily clear it without any problems.

@@ -682,7 +682,6 @@ bool GameMap::removeSwitch(const SimplePoint& point1, const SimplePoint& point2)
     return false;
 }
 
-
 ///----------------------------------------------------------------------------
 /// removeFeature - Removes a feature from a tile
 /// @param GMKey
@@ -704,6 +703,30 @@ bool GameMap::removeFeature(GMKey, const int& row, const int& col) {
     tiles[index] = tb.build();
 
     return true;
+}
+
+///----------------------------------------------------------------------------
+/// removeDarkness - Remove darkness from a tile
+/// @param GMKey
+/// @param row of the tile to remove the feature from
+/// @param column of the tile to remove the feature from.
+/// @return true if the feature was removed, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameMap::updateTileFlags(GMKey, const int& row, const int& col, const uint8_t& newFlags) {
+
+    const size_t index = indexFromRowCol(row, col);
+
+    GameTile::Builder tb(tiles[index]);
+
+    // When removing a feature, preserve the dirt road modifier.
+
+    tb.flags(newFlags);
+
+    tiles[index] = tb.build();
+
+    return true;
+
 }
 
 //=============================================================================

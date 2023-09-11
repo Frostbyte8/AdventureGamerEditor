@@ -111,6 +111,7 @@ class GameMap {
         bool removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2);
         bool removeSwitch(const SimplePoint& point1, const SimplePoint& point2);
         bool removeFeature(GMKey, const int& row, const int& col);
+        bool updateTileFlags(GMKey, const int& row, const int& col, const uint8_t& newFlags);
 
     private:
 
