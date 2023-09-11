@@ -622,6 +622,8 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 ///----------------------------------------------------------------------------
 
 const SimplePoint* GameMap::findSwitchPoint(const int& row, const int& col) const {
+    // TODO: It would be more efficient to remove an iterator or index
+    // so it could also be used to remove a point after.
     return findMatchingPoint(row, col, switchConnections);
 }
 
@@ -657,6 +659,29 @@ bool GameMap::removeJumpPoint(const SimplePoint& point1, const SimplePoint& poin
     
     return false;
 }
+
+///----------------------------------------------------------------------------
+/// removeSwitch - Removes a Switch connection from the switch vector
+/// @param First point in the connection
+/// @param Second Point in the connection.
+/// @return true if the point was removed from the switch vector, false if not.
+///----------------------------------------------------------------------------
+
+bool GameMap::removeSwitch(const SimplePoint& point1, const SimplePoint& point2) {
+
+    const size_t switchSize = switchConnections.size();
+    const ConnectionPoint conPoint(point1, point2);
+
+    for (size_t i = 0; i < switchSize; ++i) {
+        if (switchConnections[i] == conPoint) {
+            switchConnections.erase(switchConnections.begin() + i);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 ///----------------------------------------------------------------------------
 /// removeFeature - Removes a feature from a tile
@@ -1068,6 +1093,16 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
 
             if(! (tiles[tileIndex].hasGate() || tiles[tileIndex].isDark()) ) {
                 errorMsg.append("Read switch, but the tile it effects is not a gate or dark space.");
+                throw std::runtime_error(errorMsg);
+            }
+
+            ConnectionPoint switchConnection(connectionA, connectionB);
+
+            if (!ifConnectionExists(switchConnections, switchConnection)) {
+                switchConnections.push_back(switchConnection);
+            }
+            else {
+                errorMsg.append("Duplicate Switch Connection was read.");
                 throw std::runtime_error(errorMsg);
             }
 
