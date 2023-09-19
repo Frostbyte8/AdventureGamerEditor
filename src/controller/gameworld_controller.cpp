@@ -588,18 +588,28 @@ bool GameWorldController::tryUpdateTileType(const int& row, const int& col, cons
 
         }
 
+        // TODO: Handle unconnected things
+
         if (gameTile.hasConnectionFeature()) {
             
             // Now check to see if this tile has a gate or dark space on it. Note that
-            // Tiles with gates on them can either be a gate, or a door, but not both.
+            // Tiles with gates on them can either be a gate, or dark, but not both.
 
             const SimplePoint* matchingPoint = gameMap->findSwitchPoint(row, col);
 
             if (matchingPoint) {
-                                
+                               
                 if (gameTile.isDark() || gameTile.hasGate()) {
+
+                    const int response = mainWindow->askYesNoQuestion("The switch attached to this tile will also be removed. Continue?", "Remove Switch", true);
+
                     // Remove the switch
-                    gameMap->removeFeature(gmKey, matchingPoint->getRow(), matchingPoint->getColumn());
+                    if (response == GenericInterfaceResponses::Yes) {
+                        gameMap->removeFeature(gmKey, matchingPoint->getRow(), matchingPoint->getColumn());
+                    }
+                    else {
+                        return false; // Nothing changed
+                    }
                 }
                 else if (gameTile.hasSwitch()) {
                     // Remove the Gate/Dark flag

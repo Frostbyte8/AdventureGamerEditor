@@ -372,7 +372,11 @@ int MainWindowFrame::askYesNoQuestion(const std::string& inQuestion, const std::
 
     const int retVal = MessageBox(question, title, messageBoxFlags);
 
-    return retVal;
+    if (retVal == IDYES) {
+        return GenericInterfaceResponses::Yes;
+    }
+
+    return GenericInterfaceResponses::No;
 }
 
 //-----------------------------------------------------------------------------
