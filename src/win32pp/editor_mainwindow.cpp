@@ -395,6 +395,14 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 }
 
 //-----------------------------------------------------------------------------
+// getTileToDrawWith
+//-----------------------------------------------------------------------------
+
+int MainWindowFrame::getTileToDrawWith() {
+    return reinterpret_cast<RoadSelectorView&>(roadSelectorDocker->GetView()).getSelectedTile();
+}
+
+//-----------------------------------------------------------------------------
 // onSelectedTileChanged
 //-----------------------------------------------------------------------------
 

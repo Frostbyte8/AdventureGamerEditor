@@ -64,6 +64,7 @@ class RoadSelectorView : public CScrollView {
         }
         
         void SetTileset(CBitmap& inTileSet);
+        int getSelectedTile() const { return selectedTile; }
 
     protected:
         virtual int OnCreate(CREATESTRUCT& cs);

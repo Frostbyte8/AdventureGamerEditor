@@ -558,7 +558,7 @@ bool GameWorldController::tryUpdateTileDescription(const int& row, const int& co
 bool GameWorldController::tryUpdateTileType(const int& row, const int& col, const int& type) {
 
     // TODO: Type constants
-    if (type < 15 && type >= 0) {
+    if (type <= 15 && type >= 0) {
 
         if (!gameMap->isRowColInMapBounds(row, col)) {
             return false;
