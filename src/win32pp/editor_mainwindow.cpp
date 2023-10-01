@@ -779,7 +779,7 @@ void MainWindowFrame::onEditTileDescription() {
     }
 
     editTileDescriptionDialog->SetExStyle(editTileDescriptionDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    const GameTile gt = gameWorldController->getGameMap()->getTile(0);
+    const GameTile gt = gameWorldController->getGameMap()->getTile(selectedTileIndex);
     editTileDescriptionDialog->setTileDescription(gt.getName(), gt.getDescription());
 
     activeWindowHandle = editTileDescriptionDialog->GetHwnd();
@@ -807,7 +807,10 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
     }
 
     if(editTileDescriptionDialog->hasSavedChanges()) {
-        gameWorldController->tryUpdateTileDescription(0, 0, editTileDescriptionDialog->getTileName(),
+
+
+
+        gameWorldController->tryUpdateTileDescription(selectedTileIndex, editTileDescriptionDialog->getTileName(),
                                                       editTileDescriptionDialog->getTileDescription());
     }
 

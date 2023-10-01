@@ -546,6 +546,12 @@ bool GameWorldController::tryUpdateTileDescription(const int& row, const int& co
     return true;
 }
 
+bool GameWorldController::tryUpdateTileDescription(const int& index, const std::string& inName, const std::string& inDescription) {
+    // TODO: index in bounds
+    gameMap->updateTileDescription(gmKey, index, inName, inDescription);
+    return true;
+}
+
 ///----------------------------------------------------------------------------
 /// tryUpdateTileType - Update the tile type used on the tile given. If the
 /// tile is solid grass, it will remove the tile name and description.
