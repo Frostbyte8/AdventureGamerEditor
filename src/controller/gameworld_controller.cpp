@@ -174,7 +174,7 @@ bool GameWorldController::saveWorld(const std::string& filePath, const std::stri
     ofs.open(fileNameTemp.c_str(), std::ofstream::out | std::ios::binary);
 
     if(ofs) {
-
+        gameMap->writeMap(ofs, filePath, fileName);
     }
     else {
         mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");

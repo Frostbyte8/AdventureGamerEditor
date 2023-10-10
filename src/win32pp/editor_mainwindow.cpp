@@ -13,6 +13,7 @@ namespace MenuIDs {
     const WORD WorldProperties      = 203;
     const WORD NewFile              = 204;
     const WORD OpenFile             = 205;
+    const WORD SaveFile             = 206;
 }
 
 //=============================================================================
@@ -110,7 +111,7 @@ void MainWindowFrame::CreateMenuBar() {
 
     fileMenu.AppendMenu(MF_STRING, MenuIDs::NewFile, LM_toUTF8("NewMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, MenuIDs::OpenFile, LM_toUTF8("OpenMenuItem", langMap));
-    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SaveMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, MenuIDs::SaveFile, LM_toUTF8("SaveMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SaveAsMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("ExitMenuItem", langMap));
 
@@ -268,6 +269,10 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         // TODO: On New and Open need to be interface functions
         case MenuIDs::NewFile: return OnFileNew();
         case MenuIDs::OpenFile: return OnFileOpen();
+        case MenuIDs::SaveFile:
+            gameWorldController->saveWorld("D:\\Dump\\Adv\\debug\\", "DEBUG.SG0");
+            return 0;
+            break;
         case MenuIDs::SummaryAndStory: onEditStory(); break;
         case MenuIDs::LongDescription: onEditTileDescription(); break;
         case MenuIDs::WorldProperties: onEditWorldInfo(); break;

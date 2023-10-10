@@ -520,9 +520,34 @@ bool GameMap::isRowColInMapBounds(const int& row, const int& col) const {
 }
 
 ///----------------------------------------------------------------------------
+/// findSwitchPoint - Find where the switch is, or what switch connects to this
+/// tile.
+/// @param row of the connection point to search for
+/// @param column of the connection point to search for
+/// @return value NULL if nothing was found, a valid connection point if it was
+///----------------------------------------------------------------------------
+
+const SimplePoint* GameMap::findSwitchPoint(const int& row, const int& col) const {
+    // TODO: It would be more efficient to remove an iterator or index
+    // so it could also be used to remove a point after.
+    return findMatchingPoint(row, col, switchConnections);
+}
+
+///----------------------------------------------------------------------------
+/// findJumpPoint - Find the matching jump pad, if one exists.
+/// @param row of the connection point to search for
+/// @param column of the connection point to search for
+/// @return value NULL if nothing was found, a valid connection point if it was
+///----------------------------------------------------------------------------
+
+const SimplePoint* GameMap::findJumpPoint(const int& row, const int& col) const {  
+    return findMatchingPoint(row, col, jumpPoints);
+}
+
+///----------------------------------------------------------------------------
 /// readMap - Reads the SG0 and TXX file of the map name given, and then uses
 /// it to construct the game map.
-/// @param an ifstream if the map file
+/// @param an ifstream of the map file
 /// @param a string to the path where the mapfile is located
 /// @param a string indicating the file's name
 /// @throws runtime_error
@@ -566,20 +591,20 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     tiles.reserve((numCols * numRows));
 
-    for(int row = 0; row < numRows; row++) {
+    for (int row = 0; row < numRows; row++) {
 
         const std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
 
         Frost::getLineWindows(mapFile, line);
 
         // This is only true if they're not equal.
-        if(rowID.compare(line)) {
+        if (rowID.compare(line)) {
             throw std::runtime_error("Row identifier not found. Expected \"" + rowID + "\", but got \"" + line + "\".");
         }
 
-        std::string rowFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".T"; 
-        
-        if(row < 10) {
+        std::string rowFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".T";
+
+        if (row < 10) {
             rowFilePath += "0";
         }
 
@@ -587,16 +612,16 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
         const std::map<unsigned int, std::string> rowDescriptions = readRowDescriptions(rowFilePath);
 
-        for(int col = 0; col < numCols; col++) {
+        for (int col = 0; col < numCols; col++) {
 
             // Before we can read a tile, we'll need to get the description for it,
             // if one exists.
 
             std::string tileDescription;
             std::map<unsigned int, std::string>::const_iterator it;
-		    it = rowDescriptions.find(col);
+            it = rowDescriptions.find(col);
 
-            if(it != rowDescriptions.end()) {
+            if (it != rowDescriptions.end()) {
                 tileDescription = it->second;
             }
 
@@ -607,35 +632,10 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     }
     readJumps(mapFile);
-    readSwitches(mapFile);    
+    readSwitches(mapFile);
     gameInfo.readPlayerAttributes(key, mapFile);
     readObjects(mapFile);
     readCharacters(mapFile);
-}
-
-///----------------------------------------------------------------------------
-/// findSwitchPoint - Find where the switch is, or what switch connects to this
-/// tile.
-/// @param row of the connection point to search for
-/// @param column of the connection point to search for
-/// @return value NULL if nothing was found, a valid connection point if it was
-///----------------------------------------------------------------------------
-
-const SimplePoint* GameMap::findSwitchPoint(const int& row, const int& col) const {
-    // TODO: It would be more efficient to remove an iterator or index
-    // so it could also be used to remove a point after.
-    return findMatchingPoint(row, col, switchConnections);
-}
-
-///----------------------------------------------------------------------------
-/// findJumpPoint - Find the matching jump pad, if one exists.
-/// @param row of the connection point to search for
-/// @param column of the connection point to search for
-/// @return value NULL if nothing was found, a valid connection point if it was
-///----------------------------------------------------------------------------
-
-const SimplePoint* GameMap::findJumpPoint(const int& row, const int& col) const {  
-    return findMatchingPoint(row, col, jumpPoints);
 }
 
 ///----------------------------------------------------------------------------
@@ -726,6 +726,32 @@ bool GameMap::updateTileFlags(GMKey, const int& row, const int& col, const uint8
     tiles[index] = tb.build();
 
     return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// writeMap - Writes the SG0 and TXX files of the map given.
+/// @param an ofstream of the map file
+/// @param a string to the path where the mapfile is located
+/// @param a string indicating the file's name
+/// @throws runtime_error
+///----------------------------------------------------------------------------
+
+void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
+                       const std::string& fileName) {
+
+    const std::string storyFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".STY";
+    writeStory(storyFilePath);
+
+
+    // Write Header
+    // Write Tiles + Row Descriptions
+
+    // Write Jumps
+    // Write Switches
+    // Write Player Attributes
+    // Write Objects
+    // Write Characters
 
 }
 
@@ -1142,6 +1168,30 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
 
 }
 
-void GameMap::writeMap(std::ofstream& mapFile) {
-    gameInfo.writeHeader(key, mapFile);
+///----------------------------------------------------------------------------
+/// writeStory - Writes the STY file.
+/// @param a string indicating the full path to the story file.
+///----------------------------------------------------------------------------
+
+void GameMap::writeStory(const std::string& storyFilePath) {
+    
+    std::ofstream ofs;
+    ofs.open(storyFilePath.c_str(), std::ofstream::out | std::ios::binary);
+
+    if (ofs) {
+        ofs.put('\"');
+        ofs.write(&summary[0], summary.size());
+        ofs.put('\"');
+        ofs.put('\r');
+        ofs.put('\n');
+        
+
+        ofs.put('\"');
+        ofs.write(&story[0], story.size());
+        ofs.put('\"');
+        ofs.put('\r');
+        ofs.put('\n');
+        
+    }
+
 }

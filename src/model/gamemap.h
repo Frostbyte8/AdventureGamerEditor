@@ -103,7 +103,7 @@ class GameMap {
         bool isRowColInMapBounds(const int& row, const int& col) const;
 
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
-        void writeMap(std::ofstream& mapFile);
+        void writeMap(std::ofstream& mapFile, const std::string& filePath, const std::string& fileName);
 
         const SimplePoint* findJumpPoint(const int& row, const int& col) const;
         const SimplePoint* findSwitchPoint(const int& row, const int& col) const;
@@ -125,6 +125,8 @@ class GameMap {
         void readObjects(std::ifstream& mapFile);
         void readStory(const std::string& storyFileName);
         void readSwitches(std::ifstream& mapFile);        
+
+        void writeStory(const std::string& storyFileName);
 
         GameInfo gameInfo;
         
