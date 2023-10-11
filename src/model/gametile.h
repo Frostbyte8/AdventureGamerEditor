@@ -284,6 +284,10 @@ class GameTile {
         const bool isDeadend() const;
         const bool isStraightaway() const;
 
+        // IO Functions
+
+        const void write(std::ofstream& mapFile) const;
+
     private:
 
         GameTile(Builder& builder) {

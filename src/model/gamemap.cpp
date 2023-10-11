@@ -502,10 +502,10 @@ const unsigned int GameMap::indexFromRowCol(const int& row,
 
 ///----------------------------------------------------------------------------
 /// isRowColInMapBounds - Check if a given row and column are with in the
-/// bounderies of the map.
+/// boundaries of the map.
 /// @param row to check
 /// @param col to check
-/// @return true if it is with map boundries, false if it is not.
+/// @return true if it is with map boundaries, false if it is not.
 ///----------------------------------------------------------------------------
 
 bool GameMap::isRowColInMapBounds(const int& row, const int& col) const {
@@ -548,7 +548,7 @@ const SimplePoint* GameMap::findJumpPoint(const int& row, const int& col) const 
 /// readMap - Reads the SG0 and TXX file of the map name given, and then uses
 /// it to construct the game map.
 /// @param an ifstream of the map file
-/// @param a string to the path where the mapfile is located
+/// @param a string to the path where the map file is located
 /// @param a string indicating the file's name
 /// @throws runtime_error
 ///----------------------------------------------------------------------------
@@ -565,7 +565,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     // TODO: Throwing an error right now causes the object to be in an undefined state.
     // We also need to do some better error checking.
-    // TODO: Verify correct extentions.
+    // TODO: Verify correct extensions.
 
     gameInfo.readHeader(key, mapFile);
 
@@ -591,7 +591,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
     tiles.reserve((numCols * numRows));
 
-    for (int row = 0; row < numRows; row++) {
+    for (int row = 0; row < numRows; ++row) {
 
         const std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
 
@@ -612,7 +612,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
 
         const std::map<unsigned int, std::string> rowDescriptions = readRowDescriptions(rowFilePath);
 
-        for (int col = 0; col < numCols; col++) {
+        for (int col = 0; col < numCols; ++col) {
 
             // Before we can read a tile, we'll need to get the description for it,
             // if one exists.
@@ -732,7 +732,7 @@ bool GameMap::updateTileFlags(GMKey, const int& row, const int& col, const uint8
 ///----------------------------------------------------------------------------
 /// writeMap - Writes the SG0 and TXX files of the map given.
 /// @param an ofstream of the map file
-/// @param a string to the path where the mapfile is located
+/// @param a string to the path where the map file is located
 /// @param a string indicating the file's name
 /// @throws runtime_error
 ///----------------------------------------------------------------------------
@@ -742,10 +742,38 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
 
     const std::string storyFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".STY";
     writeStory(storyFilePath);
+    
+    gameInfo.writeHeader(key, mapFile);
 
+    mapFile << (numCols - 1);
+    mapFile << (numRows - 1);
 
-    // Write Header
-    // Write Tiles + Row Descriptions
+    for (int row = 0; row < numRows; ++row) {
+
+        const std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
+        mapFile.write(&rowID[0], rowID.length());
+
+        std::string rowFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".T";
+
+        if (row < 10) {
+            rowFilePath += "0";
+        }
+
+        rowFilePath += std::to_string(row);
+        std::ofstream rowDescFile;
+
+        for (int col = 0; col < numCols; ++col) {
+
+            size_t currentTile = indexFromRowCol(row, col);
+            
+            if (!tiles[currentTile].getDescription().empty()) {
+                // TODO: Tally up descriptions
+            }
+
+            tiles[currentTile].write(mapFile);
+
+        }
+    }
 
     // Write Jumps
     // Write Switches

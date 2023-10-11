@@ -216,3 +216,16 @@ const bool GameTile::hasSwitch() const {
 
     return (isCorner() && isSwitch);
 }
+
+///----------------------------------------------------------------------------
+/// write - writes the tile to the output file given
+/// @param mapFile an ofstream of the map file to be written to
+///----------------------------------------------------------------------------
+
+const void GameTile::write(std::ofstream& mapFile) const {
+    mapFile << static_cast<int>(base.sprite);
+    mapFile << static_cast<int>(base.flags);
+    if (base.sprite != 0) {
+        mapFile.write(&base.name[0], base.name.length());
+    }
+}
