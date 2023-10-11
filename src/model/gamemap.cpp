@@ -744,14 +744,13 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
     writeStory(storyFilePath);
     
     gameInfo.writeHeader(key, mapFile);
-
-    mapFile << (numCols - 1);
-    mapFile << (numRows - 1);
+    Frost::writeVBInteger(mapFile, numCols - 1);
+    Frost::writeVBInteger(mapFile, numRows - 1);
 
     for (int row = 0; row < numRows; ++row) {
 
         const std::string rowID = AdventureGamerHeadings::Row + std::to_string(row);
-        mapFile.write(&rowID[0], rowID.length());
+        Frost::writeVBLine(mapFile, rowID);
 
         std::string rowFilePath = filePath + fileName.substr(0, fileName.length() - 4) + ".T";
 

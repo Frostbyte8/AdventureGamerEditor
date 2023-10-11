@@ -184,6 +184,31 @@ namespace Frost {
     }
 
     ///------------------------------------------------------------------------
+    /// writeVBInteger - Writes an integer to a stream the same way Visual
+    /// Basic would.
+    /// @param Output stream to write to
+    /// @param integer to write
+    ///------------------------------------------------------------------------
+
+    void writeVBInteger(std::ostream& os, const int32_t& intVal) {
+        os.write(" ", 1);
+        os << intVal;
+        os.write(" \r\n", 3);
+    }
+
+    ///------------------------------------------------------------------------
+    /// writeVBLine - Writes a single line string to a file just like Visual
+    /// Basic's "Print" command would.
+    /// @param Output stream to write to
+    /// @param single line string to write
+    ///------------------------------------------------------------------------
+
+    void writeVBLine(std::ostream& os, const std::string& line) {
+        os.write(&line[0], line.length());
+        os.write("\r\n", 2);
+    }
+
+    ///------------------------------------------------------------------------
     /// DoesFileExist - Checks if a file exists
     /// @return true if the file exists, false if it does not
     ///------------------------------------------------------------------------

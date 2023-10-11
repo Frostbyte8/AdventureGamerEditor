@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <istream>
+#include "../compat/stdint_compat.h"
 
 namespace Frost {
 
@@ -18,8 +19,10 @@ namespace Frost {
     inline bool isCharANSI(const wchar_t& ch) { if(ch < 32 || ch > 255) { return false; } return true; }
     inline void getLineWindows(std::istream& is, std::string& str) { std::getline(is, str); str = rtrim(str, "\r"); }
     inline void getVBString(std::istream& is, std::string& str) { getLineWindows(is, str); str = trim(str, "\""); }
-    //writeVBString
-    //writeVBInteger
+
+    void writeVBInteger(std::ostream& os, const int32_t& intVal);
+    void writeVBLine(std::ostream& os, const std::string& line);
+    //void writeVBString(std::string& os, const std::string& str);
     bool doesFileExist(const std::string& fullPath);
 
 }

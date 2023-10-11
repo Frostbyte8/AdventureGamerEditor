@@ -1,5 +1,6 @@
 #include "gametile.h"
 #include "../compat/std_extras_compat.h"
+#include "../util/frost.h"
 
 //=============================================================================
 // GameTile::Builder
@@ -28,7 +29,7 @@ void GameTile::Builder::readTile(std::ifstream& mapFile, const std::string& tile
         flags(std::stoi(line));
 
         if(base.sprite != 0) {
-            std::getline(mapFile, line);
+            Frost::getLineWindows(mapFile, line);
             name(line);
         }
 
@@ -223,9 +224,10 @@ const bool GameTile::hasSwitch() const {
 ///----------------------------------------------------------------------------
 
 const void GameTile::write(std::ofstream& mapFile) const {
-    mapFile << static_cast<int>(base.sprite);
-    mapFile << static_cast<int>(base.flags);
+
+    Frost::writeVBInteger(mapFile, base.sprite);
+    Frost::writeVBInteger(mapFile, base.flags);
     if (base.sprite != 0) {
-        mapFile.write(&base.name[0], base.name.length());
+        Frost::writeVBLine(mapFile, base.name);
     }
 }

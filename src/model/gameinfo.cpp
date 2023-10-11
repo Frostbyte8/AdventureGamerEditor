@@ -28,15 +28,19 @@ GameInfo::GameInfo() : gameName("Untitled Game"), saveName("Master"), isSaveFile
 
 void GameInfo::readHeader(std::ifstream& mapFile) {
 
-    std::getline(mapFile, gameName);
-    std::getline(mapFile, saveName);
+    Frost::getLineWindows(mapFile, gameName);
+    Frost::getLineWindows(mapFile, saveName);
 
-    if(!saveName.compare("Master")) {
+    // TODO: If the World doesn't load and this exception runs, it leaks memory.
+    // This is a good place to test that!
+    // TODO: Master needs to be defined somewhere.
+
+    if(saveName.compare("Master")) {
         throw std::runtime_error("File is not an Adventure Gamer World File.");
         isSaveFile = true; // Maybe in the future we can add this into the editor.
     }
 
-    std::getline(mapFile, currencyName);
+    Frost::getLineWindows(mapFile, currencyName);
 
 }
 
@@ -123,8 +127,8 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
 
 void GameInfo::writeHeader(std::ofstream& mapFile) {
 
-    mapFile.write(&gameName[0], gameName.size());
-    mapFile.write(&saveName[0], saveName.size());
-    mapFile.write(&currencyName[0], currencyName.size());
+    Frost::writeVBLine(mapFile, gameName);
+    Frost::writeVBLine(mapFile, saveName);
+    Frost::writeVBLine(mapFile, currencyName);
 
 }
