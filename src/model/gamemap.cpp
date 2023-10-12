@@ -774,8 +774,8 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
         }
     }
 
-    // Write Jumps
-    // Write Switches
+    writeJumps(mapFile);
+    writeSwitches(mapFile);
     // Write Player Attributes
     // Write Objects
     // Write Characters
@@ -1219,6 +1219,49 @@ void GameMap::writeStory(const std::string& storyFilePath) {
         ofs.put('\r');
         ofs.put('\n');
         
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// writeJumps - Write the Jump points to the map file
+/// @param ofstream of the map file to be written to.
+///----------------------------------------------------------------------------
+
+void GameMap::writeJumps(std::ofstream& mapFile) {
+    
+    Frost::writeVBLine(mapFile, AdventureGamerHeadings::Jumps);
+
+    Frost::writeVBInteger(mapFile, jumpPoints.size());
+
+    for (size_t i = 0; i < jumpPoints.size(); ++i) {
+        const SimplePoint& firstPoint = jumpPoints[i].getConnectPoint1();
+        const SimplePoint& secondPoint = jumpPoints[i].getConnectPoint2();
+        Frost::writeVBInteger(mapFile, firstPoint.getX());
+        Frost::writeVBInteger(mapFile, firstPoint.getY());
+        Frost::writeVBInteger(mapFile, secondPoint.getX());
+        Frost::writeVBInteger(mapFile, secondPoint.getY());
+    }
+}
+
+///----------------------------------------------------------------------------
+/// writeSwitches - Write the Switch Connections to the map file
+/// @param ofstream of the map file to be written to.
+///----------------------------------------------------------------------------
+
+void GameMap::writeSwitches(std::ofstream& mapFile) {
+    
+    Frost::writeVBLine(mapFile, AdventureGamerHeadings::Switches);
+
+    Frost::writeVBInteger(mapFile, switchConnections.size());
+
+    for (size_t i = 0; i < switchConnections.size(); ++i) {
+        const SimplePoint& firstPoint = switchConnections[i].getConnectPoint1();
+        const SimplePoint& secondPoint = switchConnections[i].getConnectPoint2();
+        Frost::writeVBInteger(mapFile, firstPoint.getX());
+        Frost::writeVBInteger(mapFile, firstPoint.getY());
+        Frost::writeVBInteger(mapFile, secondPoint.getX());
+        Frost::writeVBInteger(mapFile, secondPoint.getY());
     }
 
 }

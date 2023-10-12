@@ -175,8 +175,9 @@ namespace Frost {
         const size_t lastPos = str.find_last_not_of(needle);
 
         if(lastPos == std::string::npos) {
-            // No matches, so return the string un-edited.
-            return str;
+            // String contains only the characters in the needle, so it's
+            // effectively empty.
+            return "";
         }
 
         return str.substr(0, lastPos+1);

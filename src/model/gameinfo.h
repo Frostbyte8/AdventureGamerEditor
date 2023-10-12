@@ -17,7 +17,8 @@ namespace GameInfoConstants {
 }
 
 ///----------------------------------------------------------------------------
-/// AdventureGamerHeadings - Various headings the File format uses
+/// AdventureGamerHeadings - Various headings the File format uses. TODO:
+/// This should be moved to another file.
 ///----------------------------------------------------------------------------
 
 namespace AdventureGamerHeadings {
