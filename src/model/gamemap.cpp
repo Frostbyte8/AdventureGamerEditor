@@ -631,6 +631,7 @@ void GameMap::readMap(std::ifstream& mapFile, const std::string& filePath,
         }
 
     }
+
     readJumps(mapFile);
     readSwitches(mapFile);
     gameInfo.readPlayerAttributes(key, mapFile);
@@ -759,17 +760,31 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
         }
 
         rowFilePath += std::to_string(row);
-        std::ofstream rowDescFile;
+        std::map<int, std::string> rowDescriptions;
 
         for (int col = 0; col < numCols; ++col) {
 
             size_t currentTile = indexFromRowCol(row, col);
             
             if (!tiles[currentTile].getDescription().empty()) {
-                // TODO: Tally up descriptions
+                rowDescriptions[col] = tiles[currentTile].getDescription();
             }
 
             tiles[currentTile].write(mapFile);
+
+        }
+
+        if (!rowDescriptions.empty()) {
+            std::ofstream rowDescFile(rowFilePath.c_str(), std::ofstream::out |
+                                                           std::ios::binary);
+
+            Frost::writeVBInteger(rowDescFile, rowDescriptions.size());
+
+            for (std::map<int, std::string>::iterator it = rowDescriptions.begin();
+                 it != rowDescriptions.end(); ++it) {
+                Frost::writeVBInteger(rowDescFile, it->first);
+                Frost::writeVBString(rowDescFile, it->second);
+            }
 
         }
     }
