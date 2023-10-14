@@ -776,7 +776,7 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
 
     writeJumps(mapFile);
     writeSwitches(mapFile);
-    // Write Player Attributes
+    gameInfo.writePlayerAttributes(key, mapFile);
     // Write Objects
     // Write Characters
 

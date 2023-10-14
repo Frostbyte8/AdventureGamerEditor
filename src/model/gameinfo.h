@@ -36,7 +36,9 @@ namespace AdventureGamerHeadings {
 
 namespace AdventureGamerSubHeadings {
     const unsigned int NumAttributeSubHeadings = AttributeTypes::NumTypes;
-    const std::string Attributes[NumAttributeSubHeadings] = { "Stamina", "Skill", "Willpower", "Luck", "Torch Life" };
+    // Note: Stamina is the alternative name for Energy. Gates.SG0 uses it instead of Energy, but all other files
+    // get saved with Energy.
+    const std::string Attributes[NumAttributeSubHeadings+1] = { "Energy", "Skill", "Willpower", "Luck", "Torch Life", "Stamina" };
 }
 
 class GameMap;
@@ -58,6 +60,7 @@ class GameInfo {
         inline void readHeader(Key, std::ifstream& mapFile) { readHeader(mapFile); }
         inline void readPlayerAttributes(Key, std::ifstream& mapFile) { readPlayerAttributes(mapFile); }
         inline void writeHeader(Key, std::ofstream& mapFile) { writeHeader(mapFile); }
+        inline void writePlayerAttributes(Key, std::ofstream& mapFile) { writePlayerAttributes(mapFile); }
 
         const std::string& getGameName() const { return gameName; }
         const std::string& getCurrencyName() const { return currencyName; }
@@ -84,6 +87,7 @@ class GameInfo {
 
         void readHeader(std::ifstream& mapFile);
         void readPlayerAttributes(std::ifstream& mapFile);
+        void writePlayerAttributes(std::ofstream& mapFile);
         void writeHeader(std::ofstream& mapFile);
 
 		std::string         gameName;

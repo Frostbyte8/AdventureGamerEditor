@@ -70,10 +70,13 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
             
             std::getline(mapFile, line);
 
+            // TODO: Handle Energy/Stamina discrepancy
+            
             if(!(line.compare(AdventureGamerSubHeadings::Attributes[i]))) {
                 errorMsg.append("Expected \"" + AdventureGamerSubHeadings::Attributes[i] + "\", but got \"" + line + "\".");
                 throw std::runtime_error(errorMsg);
             }
+            
 
             std::getline(mapFile, line);
             baseAttributes[i]   = std::stoi(line);
@@ -118,6 +121,28 @@ void GameInfo::readPlayerAttributes(std::ifstream& mapFile) {
         throw std::runtime_error(errorMsg);
     }
 
+}
+
+///----------------------------------------------------------------------------
+/// writeAttributes - Writes the player's attributes to the file given
+/// @param mapFile an ofstream of the file being written to
+///----------------------------------------------------------------------------
+
+void GameInfo::writePlayerAttributes(std::ofstream& mapFile) {
+    
+    Frost::writeVBLine(mapFile, AdventureGamerHeadings::Attributes);
+
+    for (int i = 0; i < AdventureGamerSubHeadings::NumAttributeSubHeadings; ++i) {
+        Frost::writeVBLine(mapFile, AdventureGamerSubHeadings::Attributes[i]);
+        Frost::writeVBInteger(mapFile, baseAttributes[i]);
+        Frost::writeVBInteger(mapFile, randomAttributes[i]);
+    }
+
+    Frost::writeVBInteger(mapFile, SightTypes::Normal().asInt());
+    Frost::writeVBInteger(mapFile, HearingTypes::Normal().asInt());
+    
+    Frost::writeVBInteger(mapFile, playerStartX);
+    Frost::writeVBInteger(mapFile, playerStartY);
 }
 
 ///----------------------------------------------------------------------------
