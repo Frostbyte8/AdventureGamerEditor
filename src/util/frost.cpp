@@ -211,6 +211,19 @@ namespace Frost {
     }
 
     ///------------------------------------------------------------------------
+    /// writeVBString - Writes a string to the file just like Visual Basic's
+    /// "Write" command would.
+    /// @param Output stream to write to
+    /// @param String to write.
+    ///------------------------------------------------------------------------
+
+    void writeVBString(std::ostream& os, const std::string& str) {
+        os.write("\"", 1);
+        os.write(&str[0], str.length());
+        os.write("\"\r\n", 3);
+    }
+
+    ///------------------------------------------------------------------------
     /// DoesFileExist - Checks if a file exists
     /// @return true if the file exists, false if it does not
     ///------------------------------------------------------------------------

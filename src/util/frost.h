@@ -20,9 +20,14 @@ namespace Frost {
     inline void getLineWindows(std::istream& is, std::string& str) { std::getline(is, str); str = rtrim(str, "\r"); }
     inline void getVBString(std::istream& is, std::string& str) { getLineWindows(is, str); str = trim(str, "\""); }
 
+    //readVBString
+    //readVBLine
+    //readVBInteger
+
     void writeVBInteger(std::ostream& os, const int32_t& intVal);
     void writeVBLine(std::ostream& os, const std::string& line);
-    //void writeVBString(std::string& os, const std::string& str);
+    void writeVBString(std::ostream& os, const std::string& str);
+
     bool doesFileExist(const std::string& fullPath);
 
 }
