@@ -283,7 +283,7 @@ class GameObject {
 
                 Builder& location(const int& charID) {
                     
-                    base.location = std::to_string(charID) + "," + GameObjectConstants::OnCharacterString;
+                    base.location = std::to_string(charID) + ", " + GameObjectConstants::OnCharacterString;
                     
                     // Update cached location information
                     

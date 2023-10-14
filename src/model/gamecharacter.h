@@ -252,6 +252,8 @@ class GameCharacter {
 
         const std::string& getName() const { return base.description[0]; }
 
+        void writeCharacter(std::ofstream& mapFile) const;
+
     private:
 
         GameCharacter(Builder& builder) {

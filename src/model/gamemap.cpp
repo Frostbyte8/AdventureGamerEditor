@@ -778,7 +778,7 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
     writeSwitches(mapFile);
     gameInfo.writePlayerAttributes(key, mapFile);
     writeObjects(mapFile);
-    // Write Characters
+    writeCharacters(mapFile);
 
 }
 
@@ -1270,18 +1270,37 @@ void GameMap::writeSwitches(std::ofstream& mapFile) {
 }
 
 ///----------------------------------------------------------------------------
-/// writeObejcts - Write the objects section to the map file given.
+/// writeObjects - Write the objects section to the map file given.
 /// @param ofstream of the map file to be written to.
 ///----------------------------------------------------------------------------
 
 void GameMap::writeObjects(std::ofstream& mapFile) {
     
     Frost::writeVBLine(mapFile, AdventureGamerHeadings::Objects);
-    Frost::writeVBInteger(mapFile, gameObjects.size());
-
+    
     const size_t numObjects = gameObjects.size();
+
+    Frost::writeVBInteger(mapFile, numObjects);
 
     for (size_t i = 0; i < numObjects; ++i) {
         gameObjects[i].writeObject(mapFile);
+    }
+}
+
+///----------------------------------------------------------------------------
+/// writeCharacters - Write the characters section to the map file given.
+/// @param ofstream of the map file to be written to.
+///----------------------------------------------------------------------------
+
+void GameMap::writeCharacters(std::ofstream& mapFile) {
+
+    Frost::writeVBLine(mapFile, AdventureGamerHeadings::Characters);
+    
+    const size_t numChars = gameCharacters.size();
+
+    Frost::writeVBInteger(mapFile, numChars);
+
+    for (size_t i = 0; i < numChars; ++i) {
+        gameCharacters[i].writeCharacter(mapFile);
     }
 }

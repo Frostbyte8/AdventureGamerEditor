@@ -193,7 +193,11 @@ namespace Frost {
     ///------------------------------------------------------------------------
 
     void writeVBInteger(std::ostream& os, const int32_t& intVal) {
-        os.write(" ", 1);
+
+        if (intVal > -1) {
+            os.write(" ", 1);
+        }
+
         os << intVal;
         os.write(" \r\n", 3);
     }

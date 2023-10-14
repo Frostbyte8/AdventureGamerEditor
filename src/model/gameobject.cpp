@@ -96,7 +96,7 @@ void GameObject::writeObject(std::ofstream& mapFile) const {
     Frost::writeVBInteger(mapFile, base.monetaryWorth);
     Frost::writeVBInteger(mapFile, base.uses);
 
-    Frost::writeVBLine(mapFile, base.location);
+    Frost::writeVBString(mapFile, base.location);
 
     for (int k = 0; k < AttributeTypes::NumTypes; ++k) {
         Frost::writeVBInteger(mapFile, base.attributeBase[k]);
@@ -106,8 +106,11 @@ void GameObject::writeObject(std::ofstream& mapFile) const {
     Frost::writeVBInteger(mapFile, base.makesSight);
     Frost::writeVBInteger(mapFile, base.makesHearing);
 
-    Frost::writeVBString(mapFile, base.description[4]);
-    Frost::writeVBString(mapFile, base.description[5]);
+    Frost::writeVBLine(mapFile,
+                       base.description[GameObjectDescriptions::Icon]);
+
+    Frost::writeVBLine(mapFile,
+                       base.description[GameObjectDescriptions::Sound]);
 
     Frost::writeVBInteger(mapFile, base.usedWithID);
 
