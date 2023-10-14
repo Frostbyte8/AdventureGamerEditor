@@ -129,6 +129,7 @@ class GameMap {
         void writeStory(const std::string& storyFileName);
         void writeJumps(std::ofstream& mapFile);
         void writeSwitches(std::ofstream& mapFile);
+        void writeObjects(std::ofstream& mapFile);
 
         GameInfo gameInfo;
         

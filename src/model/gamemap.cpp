@@ -777,7 +777,7 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
     writeJumps(mapFile);
     writeSwitches(mapFile);
     gameInfo.writePlayerAttributes(key, mapFile);
-    // Write Objects
+    writeObjects(mapFile);
     // Write Characters
 
 }
@@ -1232,9 +1232,11 @@ void GameMap::writeJumps(std::ofstream& mapFile) {
     
     Frost::writeVBLine(mapFile, AdventureGamerHeadings::Jumps);
 
-    Frost::writeVBInteger(mapFile, jumpPoints.size());
+    const size_t numJumps = jumpPoints.size();
 
-    for (size_t i = 0; i < jumpPoints.size(); ++i) {
+    Frost::writeVBInteger(mapFile, numJumps);
+
+    for (size_t i = 0; i < numJumps; ++i) {
         const SimplePoint& firstPoint = jumpPoints[i].getConnectPoint1();
         const SimplePoint& secondPoint = jumpPoints[i].getConnectPoint2();
         Frost::writeVBInteger(mapFile, firstPoint.getX());
@@ -1252,10 +1254,11 @@ void GameMap::writeJumps(std::ofstream& mapFile) {
 void GameMap::writeSwitches(std::ofstream& mapFile) {
     
     Frost::writeVBLine(mapFile, AdventureGamerHeadings::Switches);
+    const size_t numSwitches = switchConnections.size();
 
-    Frost::writeVBInteger(mapFile, switchConnections.size());
+    Frost::writeVBInteger(mapFile, numSwitches);
 
-    for (size_t i = 0; i < switchConnections.size(); ++i) {
+    for (size_t i = 0; i < numSwitches; ++i) {
         const SimplePoint& firstPoint = switchConnections[i].getConnectPoint1();
         const SimplePoint& secondPoint = switchConnections[i].getConnectPoint2();
         Frost::writeVBInteger(mapFile, firstPoint.getX());
@@ -1264,4 +1267,21 @@ void GameMap::writeSwitches(std::ofstream& mapFile) {
         Frost::writeVBInteger(mapFile, secondPoint.getY());
     }
 
+}
+
+///----------------------------------------------------------------------------
+/// writeObejcts - Write the objects section to the map file given.
+/// @param ofstream of the map file to be written to.
+///----------------------------------------------------------------------------
+
+void GameMap::writeObjects(std::ofstream& mapFile) {
+    
+    Frost::writeVBLine(mapFile, AdventureGamerHeadings::Objects);
+    Frost::writeVBInteger(mapFile, gameObjects.size());
+
+    const size_t numObjects = gameObjects.size();
+
+    for (size_t i = 0; i < numObjects; ++i) {
+        gameObjects[i].writeObject(mapFile);
+    }
 }

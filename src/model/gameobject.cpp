@@ -9,7 +9,7 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
     Frost::getLineWindows(mapFile, line);
     ID(std::stoi(line));
 
-    for(int i = 0; i < GameObjectDescriptions::NumDescriptions; i++) {
+    for(int i = 0; i < GameObjectDescriptions::NumDescriptions; ++i) {
         Frost::getVBString(mapFile, line);
         description(line, i);
     }
@@ -78,5 +78,39 @@ void GameObject::Builder::readObject(std::ifstream& mapFile) {
 
     Frost::getLineWindows(mapFile, line);
     usedWithID(std::stoi(line));
+
+}
+
+void GameObject::writeObject(std::ofstream& mapFile) const {
+
+    Frost::writeVBInteger(mapFile, base.ID);
+
+    for (int i = 0; i < GameObjectDescriptions::NumDescriptions; ++i) {
+        // TODO: WriteVBString
+        Frost::writeVBLine(mapFile, base.description[i]);
+    }
+
+    Frost::writeVBInteger(mapFile, base.doorColumn);
+    Frost::writeVBInteger(mapFile, base.doorRow);
+    Frost::writeVBInteger(mapFile, base.flags1);
+    Frost::writeVBInteger(mapFile, base.flags2);
+    Frost::writeVBInteger(mapFile, base.monetaryWorth);
+    Frost::writeVBInteger(mapFile, base.uses);
+
+    Frost::writeVBLine(mapFile, base.location);
+
+    for (int k = 0; k < AttributeTypes::NumTypes; ++k) {
+        Frost::writeVBInteger(mapFile, base.attributeBase[k]);
+        Frost::writeVBInteger(mapFile, base.attributeRandom[k]);
+    }
+
+    Frost::writeVBInteger(mapFile, base.makesSight);
+    Frost::writeVBInteger(mapFile, base.makesHearing);
+
+    // TODO: WriteVBString
+    Frost::writeVBLine(mapFile, base.description[4]);
+    Frost::writeVBLine(mapFile, base.description[5]);
+
+    Frost::writeVBInteger(mapFile, base.usedWithID);
 
 }

@@ -418,6 +418,8 @@ class GameObject {
 
         const std::string& getDescription(const unsigned int which) const { return base.description[which]; }
 
+        void writeObject(std::ofstream& mapFile) const;
+
     private:
 
         GameObject(Builder& builder) {
