@@ -186,6 +186,106 @@ namespace Frost {
     }
 
     ///------------------------------------------------------------------------
+    /// readVBString - Reads a VB String.
+    /// @param Reference to an input stream
+    /// @param string to be read into
+    /// @throws IOException Error if a string could not be read
+    ///------------------------------------------------------------------------
+
+    std::string Frost::readVBString(std::istream& is) {
+
+        // Visual Basic Escapes Double Quotes, with a second Double Quote.
+        // So as such, we need to locate the true end quote: <"><CR><LF>
+        
+        std::string outStr;
+        std::string curLine;
+        bool firstLine = true;
+
+
+        do {
+
+            // So the first thing to do is get the next line.
+
+            std::getline(is, curLine);
+
+            if (!is.fail()) {
+
+                if (!is.eof()) {
+                    // We need to ensure that the new line is present in the string read.
+                    curLine.push_back('\n');
+                }
+                else {
+                    throw std::runtime_error("Reached end of file without finding the end of the string.");
+                }
+
+                // If this is the first line read, we need to do some checks
+                if (firstLine) {
+                    
+                    // For instance, it must start with a double quote
+                    if (curLine[0] != '\"') {
+                        throw std::runtime_error("Value read was not a valid Visual Basic String.");
+                    }
+                    else if (curLine.size() == 4) {
+                        // And we know if it's exactly 4 characters long that
+                        // this is an empty string, and that double quotes here
+                        // is not an escape.
+                        if (!curLine.compare("\"\"\r\n")) {
+                            return ""; // Empty String
+                        }
+                    }
+                    
+                    // Valid string, so remove the starting quote.
+                    outStr = curLine.substr(1, std::string::npos);
+                    curLine = outStr;
+                    firstLine = false;
+
+                }
+                else {
+                    outStr += curLine;
+                }
+
+                bool endString = false;
+
+                // Now we need to begin our search for the end quote,
+                // we will search each new line for a quote that has no
+                // second quote directly left of it.
+
+                if (curLine.size() > 2) {
+                    const size_t numChars = curLine.size() - 2;
+                    for (int i = numChars; i != 0; --i) {
+                        
+                        // If we find a quote once, it is possibly the end
+                        // but if we find another one space to the left,
+                        // the we can assume that it's a escaped double quote
+                        if (curLine[i-1] == '"') {
+                            
+                            endString = !endString;
+                        }
+                        else if (endString) {
+                            // Found!
+                            break;
+                        }
+                    }
+                }
+
+                // Since we found the end of the string, we can chop off the
+                // last three characters.
+                if (endString) {
+                    outStr = outStr.substr(0, outStr.size() - 3);
+                    break;
+                }
+
+            }
+            else {
+                throw std::runtime_error("Failed to read from input stream.");
+            }
+
+        } while (!is.eof() && !is.fail());
+
+        return outStr;
+    }
+
+    ///------------------------------------------------------------------------
     /// writeVBInteger - Writes an integer to a stream the same way Visual
     /// Basic would.
     /// @param Output stream to write to
@@ -222,6 +322,8 @@ namespace Frost {
     ///------------------------------------------------------------------------
 
     void writeVBString(std::ostream& os, const std::string& str) {
+        
+        // TODO: Properly escape Quotes
         os.write("\"", 1);
         os.write(&str[0], str.length());
         os.write("\"\r\n", 3);

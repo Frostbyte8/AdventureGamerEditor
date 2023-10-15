@@ -1011,30 +1011,11 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
                 const unsigned int colID = std::stoi(line);
 
                 if(colID >= static_cast<unsigned int>(numCols)) {
-                    errorMsg.append("The column indicated is outside the boundries of the map.");
+                    errorMsg.append("The column indicated is outside the boundaries of the map.");
                     throw std::runtime_error(errorMsg);
                 }
 
-                std::string description;
-
-                do {
-                    if(ifs.eof()) {
-                        break;
-                    }
-
-                    Frost::getLineWindows(ifs, line);
-
-                    if(Frost::endsWith(line, "\"")) {
-                        break;
-                    }
-
-                    description += line;
-
-                } while(true);
-
-                description += line;
-
-                descriptionMap[colID] = description;
+                descriptionMap[colID] = Frost::readVBString(ifs);
             }
         }
         catch (const std::invalid_argument& e) {

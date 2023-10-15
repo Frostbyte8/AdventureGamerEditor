@@ -24,6 +24,8 @@ namespace Frost {
     //readVBLine
     //readVBInteger
 
+    std::string readVBString(std::istream& is);
+
     void writeVBInteger(std::ostream& os, const int32_t& intVal);
     void writeVBLine(std::ostream& os, const std::string& line);
     void writeVBString(std::ostream& os, const std::string& str);
