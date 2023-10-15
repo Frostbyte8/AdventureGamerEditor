@@ -235,22 +235,24 @@ namespace Frost {
                     }
                     
                     // Valid string, so remove the starting quote.
-                    outStr = curLine.substr(1, std::string::npos);
-                    curLine = outStr;
+                    curLine = curLine.substr(1, std::string::npos);
+                    //curLine = outStr;
                     firstLine = false;
 
                 }
                 else {
-                    outStr += curLine;
+                    //outStr += curLine;
                 }
 
-                bool endString = false;
+                
+                bool foundEndString = false;
 
                 // Now we need to begin our search for the end quote,
                 // we will search each new line for a quote that has no
                 // second quote directly left of it.
 
                 if (curLine.size() > 2) {
+                    bool foundEndQuote = false;
                     const size_t numChars = curLine.size() - 2;
                     for (int i = numChars; i != 0; --i) {
                         
@@ -259,18 +261,35 @@ namespace Frost {
                         // the we can assume that it's a escaped double quote
                         if (curLine[i-1] == '"') {
                             
-                            endString = !endString;
+                            if (foundEndQuote) {
+                                // Double quote found, so remove the double
+                                curLine.erase(i, 1);
+                            }
+
+                            foundEndQuote = !foundEndQuote;
                         }
-                        else if (endString) {
-                            // Found!
-                            break;
+                        else if (foundEndQuote == true && foundEndString == false) {
+                            // We found the ending quote, so we know this is the
+                            // last line in the string, but we'll continue on
+                            // to capture all the other ""'s on this line.
+                            foundEndString = true;
+                            foundEndQuote = false;
                         }
                     }
+
+                    if (foundEndQuote) {
+                        foundEndString = true;
+                    }
+
                 }
 
                 // Since we found the end of the string, we can chop off the
                 // last three characters.
-                if (endString) {
+
+                outStr += curLine;
+
+                if (foundEndString) {
+                    
                     outStr = outStr.substr(0, outStr.size() - 3);
                     break;
                 }
