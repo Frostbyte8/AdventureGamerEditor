@@ -13,7 +13,7 @@ class MainWindowInterface {
         /// @param The question to ask
         /// @param Title of the message box
         /// @param if true, the user should have a way of canceling the operation
-        /// @return an Integer indicating what the user selected. See MainWindowInterfaceResponses
+        /// @return an Integer indicating what the user selected. See GenericInterfaceResponses
         /// for more information
         ///--------------------------------------------------------------------
         virtual int askYesNoQuestion(const std::string& question, const std::string& title,
@@ -94,6 +94,15 @@ class MainWindowInterface {
         /// dialog is closed.
         ///--------------------------------------------------------------------
         virtual void finishedEditTileDescriptionDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the window needs to spawn the Save Dialog
+        /// @param path to file
+        /// @param file name
+        /// @return an Integer indicating what the user selected. See GenericInterfaceResponses
+        /// for more information
+        ///--------------------------------------------------------------------
+        virtual int onSaveFileDialog(std::string& filePath, std::string& fileName) = 0;
 
 };
 

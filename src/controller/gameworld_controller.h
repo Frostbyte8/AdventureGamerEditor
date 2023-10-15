@@ -17,6 +17,7 @@ class GameWorldController {
         bool newWorld();
         bool loadWorld(const std::string& filePath, const std::string& fileName);
         bool saveWorld(const std::string& filePath, const std::string& fileName);
+        bool saveGameWorld(bool saveAs = false);
 
         bool canAddObject() const;
         bool canAddCharacter() const;
@@ -56,13 +57,16 @@ class GameWorldController {
 
         MainWindowInterface*            mainWindow;
 
+        std::string                     worldFilePath;
+        std::string                     worldFileName;
+
         // Game World is composed of several other objects which I have
         // split up here to make doing undo/redo operations easier.
 
         GameInfo                        gameInfo;
         GameMap*                        gameMap;
 
-        GameMap::GMKey            gmKey;
+        GameMap::GMKey                  gmKey;
 
 };
 

@@ -5,6 +5,7 @@ namespace GenericInterfaceResponses {
     int const No        = 0;
     int const Yes       = 1;
     int const Cancel    = 2;
+    int const Ok        = 4;
 }
 
 #endif // __SHARED_INTERFACE_DEFINITIONS_H__

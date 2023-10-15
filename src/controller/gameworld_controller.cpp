@@ -10,6 +10,8 @@
 
 GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {
     gameMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
+    worldFilePath = "";
+    worldFileName = "";
 }
 
 GameWorldController::~GameWorldController() {
@@ -156,6 +158,9 @@ bool GameWorldController::newWorld() {
         newMap = NULL;
     }
 
+    worldFilePath = "";
+    worldFileName = "";
+
     return wasWorldCreated;
 }
 
@@ -170,11 +175,48 @@ bool GameWorldController::newWorld() {
 bool GameWorldController::saveWorld(const std::string& filePath, const std::string& fileName) {
     std::ofstream ofs;
     std::string fileNameTemp = filePath;
+
+    worldFilePath = filePath;
+    worldFileName = fileName;
+
     fileNameTemp.append("DEBUG.SG0");
     ofs.open(fileNameTemp.c_str(), std::ofstream::out | std::ios::binary);
 
     if(ofs) {
         gameMap->writeMap(ofs, filePath, fileName);
+    }
+    else {
+        mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");
+        return false;
+    }
+
+    return true;
+}
+
+bool GameWorldController::saveGameWorld(bool saveAs) {
+
+    if (saveAs || (worldFilePath.empty() || worldFileName.empty())) {
+        
+        std::string filePath;
+        std::string fileName;
+        const int retVal = mainWindow->onSaveFileDialog(filePath, fileName);
+
+        if (retVal != GenericInterfaceResponses::Ok) {
+            // Abort saving.
+            return false;
+        }
+
+        worldFilePath = filePath;
+        worldFileName = fileName;
+        
+    }
+
+    std::ofstream ofs;
+    std::string fullPathName = worldFilePath + worldFileName;
+    ofs.open(fullPathName.c_str(), std::ofstream::out | std::ios::binary);
+
+    if (ofs) {
+        gameMap->writeMap(ofs, worldFilePath, worldFileName);
     }
     else {
         mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");

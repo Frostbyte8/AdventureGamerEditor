@@ -14,6 +14,7 @@ namespace MenuIDs {
     const WORD NewFile              = 204;
     const WORD OpenFile             = 205;
     const WORD SaveFile             = 206;
+    const WORD SaveFileAs = 207;
 }
 
 //=============================================================================
@@ -112,7 +113,7 @@ void MainWindowFrame::CreateMenuBar() {
     fileMenu.AppendMenu(MF_STRING, MenuIDs::NewFile, LM_toUTF8("NewMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, MenuIDs::OpenFile, LM_toUTF8("OpenMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, MenuIDs::SaveFile, LM_toUTF8("SaveMenuItem", langMap));
-    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("SaveAsMenuItem", langMap));
+    fileMenu.AppendMenu(MF_STRING, MenuIDs::SaveFileAs, LM_toUTF8("SaveAsMenuItem", langMap));
     fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("ExitMenuItem", langMap));
 
     editMenu.AppendMenu(MF_STRING, MenuIDs::LongDescription, LM_toUTF8("LongTileMenuItem", langMap));
@@ -269,10 +270,17 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         // TODO: On New and Open need to be interface functions
         case MenuIDs::NewFile: return OnFileNew();
         case MenuIDs::OpenFile: return OnFileOpen();
+
         case MenuIDs::SaveFile:
-            gameWorldController->saveWorld("D:\\Dump\\Adv\\debug\\", "DEBUG.SG0");
-            return 0;
+            gameWorldController->saveGameWorld();
+            return TRUE;
             break;
+
+        case MenuIDs::SaveFileAs:
+            gameWorldController->saveGameWorld(true);
+            return TRUE;
+            break;
+
         case MenuIDs::SummaryAndStory: onEditStory(); break;
         case MenuIDs::LongDescription: onEditTileDescription(); break;
         case MenuIDs::WorldProperties: onEditWorldInfo(); break;
@@ -823,4 +831,25 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
     editTileDescriptionDialog = NULL;
     activeWindowHandle = GetHwnd();
 
+}
+
+//-----------------------------------------------------------------------------
+// onSaveFileDialog
+//-----------------------------------------------------------------------------
+
+int MainWindowFrame::onSaveFileDialog(std::string& filePath, std::string& fileName) {
+    CFileDialog fileDialog(FALSE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
+                           L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
+
+    //fileDialog.SetTitle(L"Open World File");
+
+    if (fileDialog.DoModal(*this) == IDOK) {
+
+        filePath = WtoA(fileDialog.GetFolderPath().c_str());
+        fileName = WtoA(fileDialog.GetFileName().c_str());
+
+        return GenericInterfaceResponses::Ok;
+    }
+
+    return GenericInterfaceResponses::Cancel;
 }

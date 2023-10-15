@@ -42,6 +42,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void onEditStory();
         virtual void onEditTileDescription();
         virtual void onEditWorldInfo();
+        virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);
 
 	protected:
 
