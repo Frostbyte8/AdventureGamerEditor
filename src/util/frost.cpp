@@ -342,9 +342,18 @@ namespace Frost {
 
     void writeVBString(std::ostream& os, const std::string& str) {
         
-        // TODO: Properly escape Quotes
         os.write("\"", 1);
-        os.write(&str[0], str.length());
+        std::string outStr = str;
+
+        // Escape double quotes
+        for (size_t i = 0; i < outStr.size(); ++i) {
+            if(outStr[i] == '\"') {
+                outStr.insert(i, 1, '\"');
+                ++i;
+            }
+        }
+
+        os.write(&outStr[0], outStr.length());
         os.write("\"\r\n", 3);
     }
 
