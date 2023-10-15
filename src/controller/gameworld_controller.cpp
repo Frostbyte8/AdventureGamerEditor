@@ -116,6 +116,9 @@ bool GameWorldController::loadWorld(const std::string& filePath,
         }
     }
 
+    worldFilePath = filePath;
+    worldFileName = fileName;
+
     return loadSuccessful;
 }
 
@@ -162,35 +165,6 @@ bool GameWorldController::newWorld() {
     worldFileName = "";
 
     return wasWorldCreated;
-}
-
-///-----------------------------------------------------------------------------
-/// saveWorld - Attempts to save the currently loaded world to the file path
-/// and name given.
-/// @param Path to the file being written.
-/// @param name of the file being written to.
-/// @return true if the operation completed successfully, false if it could not
-///-----------------------------------------------------------------------------
-
-bool GameWorldController::saveWorld(const std::string& filePath, const std::string& fileName) {
-    std::ofstream ofs;
-    std::string fileNameTemp = filePath;
-
-    worldFilePath = filePath;
-    worldFileName = fileName;
-
-    fileNameTemp.append("DEBUG.SG0");
-    ofs.open(fileNameTemp.c_str(), std::ofstream::out | std::ios::binary);
-
-    if(ofs) {
-        gameMap->writeMap(ofs, filePath, fileName);
-    }
-    else {
-        mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");
-        return false;
-    }
-
-    return true;
 }
 
 bool GameWorldController::saveGameWorld(bool saveAs) {

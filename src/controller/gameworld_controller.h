@@ -16,7 +16,6 @@ class GameWorldController {
 
         bool newWorld();
         bool loadWorld(const std::string& filePath, const std::string& fileName);
-        bool saveWorld(const std::string& filePath, const std::string& fileName);
         bool saveGameWorld(bool saveAs = false);
 
         bool canAddObject() const;
