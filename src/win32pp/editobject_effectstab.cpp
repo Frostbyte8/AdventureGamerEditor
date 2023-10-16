@@ -286,7 +286,7 @@ void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
         }
 #endif // _DEBUG 
 
-        if(btnAttribPolarity[i*2].GetCheck() == BST_CHECKED) {
+        if(btnAttribPolarity[(i*2)+1].GetCheck() == BST_CHECKED) {
             baseAmount *= -1;
             randAmount *= -1;
         }

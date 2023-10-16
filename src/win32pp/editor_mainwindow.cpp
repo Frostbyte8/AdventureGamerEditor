@@ -288,7 +288,6 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
     }
 
-
     return TRUE;
 }
 

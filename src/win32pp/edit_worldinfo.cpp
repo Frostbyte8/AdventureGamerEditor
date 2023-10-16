@@ -64,6 +64,11 @@ void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {
         spnRandomAttributes[i].SetPos(random);
     }
 
+    // TODO: assignment operator
+
+    newGameInfo.setPlayerX(gameInfo.getPlayerStartX());
+    newGameInfo.setPlayerY(gameInfo.getPlayerStartY());
+
 }
 
 //=============================================================================
