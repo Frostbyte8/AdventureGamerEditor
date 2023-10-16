@@ -489,7 +489,8 @@ const int& GameMap::objectIDFromIndex(const size_t& objectIndex) const {
 
 ///----------------------------------------------------------------------------
 /// indexFromRowCol - Converts the given row and column to an index for the
-/// current map being edited.
+/// current map being edited. It assumes that that the row and column given
+/// are valid.
 /// @param integer specifying the row the tile is on
 /// @param integer specifying the column the tile is on
 /// @return the index of the tile specified
@@ -499,6 +500,22 @@ const unsigned int GameMap::indexFromRowCol(const int& row,
                                             const int& col) const {
     return (row * numCols) + col;
 }
+
+///----------------------------------------------------------------------------
+/// rowColFromIndex - Converts an index into a row and column value. Note that
+/// the function assumes the index is in a valid range.
+/// @param (out) integer to write the row to
+/// @param (out) integer to write the column to
+/// @param integer specifying the index.
+///----------------------------------------------------------------------------
+
+const void GameMap::rowColFromIndex(int& row, int& col,
+                                    const int& index) const {
+    row = index / numCols;
+    col = index - (row * numCols);
+
+}
+
 
 ///----------------------------------------------------------------------------
 /// isRowColInMapBounds - Check if a given row and column are with in the
@@ -511,7 +528,24 @@ const unsigned int GameMap::indexFromRowCol(const int& row,
 bool GameMap::isRowColInMapBounds(const int& row, const int& col) const {
     
     if(row > numRows - 1 || col > numCols - 1 || col < 0 || row < 0 || 
-        indexFromRowCol(row, col) > tiles.size()) {
+        indexFromRowCol(row, col) >= tiles.size()) {
+        return false;
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// isIndexMapBounds - Check if a given index is within the bounds of the map
+/// boundaries of the map.
+/// @param index to check
+/// @return true if it is with map boundaries, false if it is not.
+///----------------------------------------------------------------------------
+
+bool GameMap::isIndexInMapBounds(const int& index) const {
+
+    if (index >= tiles.size()) {
         return false;
     }
 

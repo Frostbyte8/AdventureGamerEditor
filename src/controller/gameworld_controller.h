@@ -24,8 +24,9 @@ class GameWorldController {
         bool canAddCharacter() const;
 
         const GameMap* getGameMap() const { return gameMap; }
-        const int& getMapWidth() const {return gameMap->getWidth(); }
-        const int& getMapHeight() const {return gameMap->getHeight(); }
+        const int& getMapWidth() const { return gameMap->getWidth(); }
+        const int& getMapHeight() const { return gameMap->getHeight(); }
+        const int& getSelectedTileIndex() const { return selectedTileIndex; }
 
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
@@ -40,9 +41,11 @@ class GameWorldController {
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
 
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
-        bool getCharacterFromID(const int& ID, GameCharacter* outChar);
+        //bool getCharacterFromID(const int& ID, GameCharacter* outChar);
         
         bool tryUpdateGameInfo(const GameInfo& newInfo);
+
+        bool tryUpdateSelectedTile(const int& newIndex);
 
         bool tryUpdateTileType(const int& row, const int& col, const int& type);
         bool tryAddFeatureToTile(const int& row, const int& col, const uint8_t& modType);
@@ -61,6 +64,10 @@ class GameWorldController {
 
         std::string                     worldFilePath;
         std::string                     worldFileName;
+
+        int                             selectedTileIndex;
+        int                             drawingTileIndex;
+
 
         // Game World is composed of several other objects which I have
         // split up here to make doing undo/redo operations easier.

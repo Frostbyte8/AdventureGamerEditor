@@ -100,7 +100,9 @@ class GameMap {
         const int& characterIDFromIndex(const size_t& charIndex) const;
         const int& objectIDFromIndex(const size_t& objectIndex) const;
 		const unsigned int indexFromRowCol(const int& row, const int& col) const;
+        const void rowColFromIndex(int& outRow, int& outCol, const int& index) const;
         bool isRowColInMapBounds(const int& row, const int& col) const;
+        bool isIndexInMapBounds(const int& index) const;
 
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile, const std::string& filePath, const std::string& fileName);

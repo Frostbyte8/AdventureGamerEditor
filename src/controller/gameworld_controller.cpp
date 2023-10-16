@@ -701,6 +701,23 @@ bool GameWorldController::tryAddFeatureToTile(const int& row, const int& col, co
     return true;
 }
 
+///----------------------------------------------------------------------------
+/// tryUpdateSelectedTileIndex - Attempts to change which tile is selected.
+/// @param new index of the tile to be selected
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateSelectedTile(const int& newIndex) {
+
+    if (!gameMap->isIndexInMapBounds(newIndex)) {
+        return false;
+    }
+
+    selectedTileIndex = newIndex;
+
+    return true;
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================
