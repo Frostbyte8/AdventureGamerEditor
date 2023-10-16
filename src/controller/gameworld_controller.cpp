@@ -122,11 +122,11 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     return loadSuccessful;
 }
 
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 /// newWorld - Attempt to create a new Adventure Gamer World. If it cannot, it
 /// will avoid erasing the currently loaded world.
 /// @return true if the operation completed successfully, false if it could not
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 
 bool GameWorldController::newWorld() {
 
@@ -167,12 +167,22 @@ bool GameWorldController::newWorld() {
     return wasWorldCreated;
 }
 
-bool GameWorldController::saveGameWorld(bool saveAs) {
+///----------------------------------------------------------------------------
+/// saveWorld - Attempt to save the game world. If not, prompt the main window
+/// for more information, or prompt it regardless if the user requested to
+/// save the file as something else.
+/// @param if true, save the file as something else, otherwise attempt to save
+/// the file.
+/// @return true if the operation completed successfully, false if it could not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::saveWorld(bool saveAs) {
 
     if (saveAs || (worldFilePath.empty() || worldFileName.empty())) {
         
         std::string filePath;
         std::string fileName;
+
         const int retVal = mainWindow->onSaveFileDialog(filePath, fileName);
 
         if (retVal != GenericInterfaceResponses::Ok) {

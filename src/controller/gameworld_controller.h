@@ -7,6 +7,8 @@
 #include "../model/gamecharacter.h"
 #include "../interface/mainwindow_interface.h"
 
+// TODO: This really should be named MainWindowController
+
 class GameWorldController {
 
     public:
@@ -16,7 +18,7 @@ class GameWorldController {
 
         bool newWorld();
         bool loadWorld(const std::string& filePath, const std::string& fileName);
-        bool saveGameWorld(bool saveAs = false);
+        bool saveWorld(bool saveAs = false);
 
         bool canAddObject() const;
         bool canAddCharacter() const;

@@ -264,20 +264,19 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 ///----------------------------------------------------------------------------
 
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
+
+    const WORD ID = LOWORD(wParam);
     
-    switch (LOWORD(wParam)) {
+    switch (ID) {
 
         // TODO: On New and Open need to be interface functions
         case MenuIDs::NewFile: return OnFileNew();
         case MenuIDs::OpenFile: return OnFileOpen();
 
         case MenuIDs::SaveFile:
-            gameWorldController->saveGameWorld();
-            return TRUE;
-            break;
-
         case MenuIDs::SaveFileAs:
-            gameWorldController->saveGameWorld(true);
+            gameWorldController->saveWorld(ID == MenuIDs::SaveFileAs 
+                                           ? true : false);
             return TRUE;
             break;
 
