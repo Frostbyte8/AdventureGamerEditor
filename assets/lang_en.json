@@ -7,6 +7,15 @@
     "SaveAsMenuItem"            : "Save &As...",
     "ExitMenuItem"              : "E&xit",
 
+	"AddMenuItem"				: "&Add Feature",
+	"StartMenuItem"				: "&Start",
+	"FinishMenuItem"			: "&Finish",
+	"LockedDoorMenuItem"		: "&Locked Door",
+	"SouthBarrItem"				: "S&outh Facing Barrier",
+	"NorthBarrItem"				: "&North Facing Barrier",
+	"WestBarrItem"				: "&West Facing Barrier",
+	"EastBarrItem"				: "&East Facing Barrier",
+
     "EditMenu"                  : "&Edit",
     "LongTileMenuItem"          : "&Long Tile Description...",
     "SummaryMenuItem"           : "&Summary and Story...",

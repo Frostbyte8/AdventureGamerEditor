@@ -686,6 +686,21 @@ bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, c
     return true;
 }
 
+///----------------------------------------------------------------------------
+/// tryAddFeatureToTile - Attempts to Add a feature to a tile.
+/// @param row of the tile to add the feature to
+/// @param column of the tile to add the feature to.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddFeatureToTile(const int& row, const int& col, const uint8_t& modType) {
+    // TODO: Update tile with no feature on it, then add the tile mod. This will require making sure
+    // code shared between this function and tryUpdateTileType is in it's own private function.
+
+    gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), RoadTypes::StraightawayHorizontal | (TileModifiers::MOD1 << 4),  0);
+    return true;
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================

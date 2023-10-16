@@ -933,8 +933,9 @@ void GameMap::readJumps(std::ifstream& mapFile) {
 
             unsigned int tileIndex = indexFromRowCol(y, x);
             if(!(tiles[tileIndex].hasJumpPad())) {
+                // TODO: Jump pad features don't actually have to be in the jump list.
                 errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
-                throw std::runtime_error(errorMsg);
+                //throw std::runtime_error(errorMsg);
             }
 
             std::getline(mapFile, line);
@@ -952,8 +953,9 @@ void GameMap::readJumps(std::ifstream& mapFile) {
 
 
             if(!(tiles[tileIndex].hasJumpPad())) {
+                // TODO: Jumppads can be one way, that is jump to a non-jumppad tile.
                 errorMsg.append("Jump Pad position was read, but the coordinates given were not that of a Jump Pad tile.");
-                throw std::runtime_error(errorMsg);
+                //throw std::runtime_error(errorMsg);
             }
 
             ConnectionPoint jumpConnection(jumpA, jumpB);

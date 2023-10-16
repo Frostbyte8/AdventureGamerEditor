@@ -14,7 +14,29 @@ namespace MenuIDs {
     const WORD NewFile              = 204;
     const WORD OpenFile             = 205;
     const WORD SaveFile             = 206;
-    const WORD SaveFileAs = 207;
+    const WORD SaveFileAs           = 207;
+
+    // Straight Aways
+
+    const WORD AddStart             = 208;      // 1
+    const WORD AddFinish            = 209;      // 2
+    const WORD AddDoor              = 210;      // 3
+    const WORD AddBarrierSouth      = 211;      // 1+3
+    const WORD AddBarrierEast       = 212;      // 1+3
+    const WORD AddBarrierNorth      = 213;      // 2+3
+    const WORD AddBarrierWest       = 214;      // 2+3
+    const WORD AddClosedGate        = 215;      // Gates always closed
+    
+    // Dead Ends
+
+    const WORD AddJumpPad           = 216;
+
+    // Cross Roads
+
+    const WORD AddHazard            = 217;
+    const WORD AddSafeHaven         = 218;
+    
+
 }
 
 //=============================================================================
@@ -107,6 +129,7 @@ void MainWindowFrame::CreateMenuBar() {
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
     editMenu.CreatePopupMenu();
+    featureMenu.CreatePopupMenu();
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -120,6 +143,8 @@ void MainWindowFrame::CreateMenuBar() {
     editMenu.AppendMenu(MF_STRING, MenuIDs::SummaryAndStory, LM_toUTF8("SummaryMenuItem", langMap));
     editMenu.AppendMenu(MF_STRING, MenuIDs::WorldProperties, LM_toUTF8("WorldMenuItem", langMap));
 
+    featureMenu.AppendMenu(MF_STRING | MF_DISABLED, MenuIDs::AddStart, LM_toUTF8("StartMenuItem", langMap));
+
     CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
@@ -129,6 +154,11 @@ void MainWindowFrame::CreateMenuBar() {
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(editMenu.GetHandle()), caption);
+
+    caption = AtoW(langMap.get("AddMenuItem").c_str(), CP_UTF8);
+
+    mainMenu.AppendMenu(MF_STRING | MF_POPUP,
+                        reinterpret_cast<UINT_PTR>(featureMenu.GetHandle()), caption);
 
     SetFrameMenu(mainMenu);
 
