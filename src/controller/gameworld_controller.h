@@ -27,6 +27,8 @@ class GameWorldController {
         const int& getMapWidth() const { return gameMap->getWidth(); }
         const int& getMapHeight() const { return gameMap->getHeight(); }
         const int& getSelectedTileIndex() const { return selectedTileIndex; }
+        const int& getSelectedRow() const { return selectedRow; }
+        const int& getSelectedCol() const { return selectedCol; }
 
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
@@ -46,6 +48,7 @@ class GameWorldController {
         bool tryUpdateGameInfo(const GameInfo& newInfo);
 
         bool tryUpdateSelectedTile(const int& newIndex);
+        bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
 
         bool tryUpdateTileType(const int& row, const int& col, const int& type);
         bool tryAddFeatureToTile(const int& row, const int& col, const uint8_t& modType);
@@ -66,6 +69,8 @@ class GameWorldController {
         std::string                     worldFileName;
 
         int                             selectedTileIndex;
+        int                             selectedRow;
+        int                             selectedCol;
         int                             drawingTileIndex;
 
 

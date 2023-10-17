@@ -11,8 +11,6 @@ tilesetDC(NULL), mainWindow(inMainWindow), gameWorldController(gwc) {
     fakeZoomLevel = 1;
     tileWidth = 0;
     tileHeight = 0;
-    selectedRow = 0;
-    selectedCol = 0;
 }
 
 //=============================================================================
@@ -111,6 +109,9 @@ void GameMapView::OnDraw(CDC& dc) {
             }
         }
 
+        const int selectedRow = gameWorldController->getSelectedRow();
+        const int selectedCol = gameWorldController->getSelectedCol();
+
         DrawTileSelectionBox(backBufferDC, selectedCol * tileWidth, selectedRow * tileHeight, tileWidth, tileHeight, 2);
 
         backBufferDC.SelectObject(oldBMP);
@@ -126,9 +127,7 @@ LRESULT GameMapView::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     WORD row = (yPos + viewOffset.y) / tileHeight;
     WORD col = (xPos + viewOffset.x) / tileWidth;
 
-    if (mainWindow->onSelectedTileChanged(row, col)) {
-        selectedRow = row;
-        selectedCol = col;
+    if (gameWorldController->tryUpdateSelectedTile(row, col)) {
         InvalidateRect();
     }
 

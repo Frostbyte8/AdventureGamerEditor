@@ -153,8 +153,8 @@ class GameMapView : public CScrollView {
         int fakeZoomLevel;
         int tileWidth;
         int tileHeight;
-        int selectedRow;
-        int selectedCol;
+        //int selectedRow;
+        //int selectedCol;
 };
 
 ///----------------------------------------------------------------------------

@@ -12,6 +12,9 @@ GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : ma
     gameMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
     worldFilePath = "";
     worldFileName = "";
+    selectedTileIndex = 0;
+    selectedRow = 0;
+    selectedCol = 0;
 }
 
 GameWorldController::~GameWorldController() {
@@ -702,7 +705,8 @@ bool GameWorldController::tryAddFeatureToTile(const int& row, const int& col, co
 }
 
 ///----------------------------------------------------------------------------
-/// tryUpdateSelectedTileIndex - Attempts to change which tile is selected.
+/// tryUpdateSelectedTileIndex - Attempts to change which tile is selected. It
+/// also caches the row and column values as well.
 /// @param new index of the tile to be selected
 /// @return true if the operation was successful, false if it was not.
 ///----------------------------------------------------------------------------
@@ -714,9 +718,34 @@ bool GameWorldController::tryUpdateSelectedTile(const int& newIndex) {
     }
 
     selectedTileIndex = newIndex;
+    gameMap->rowColFromIndex(selectedRow, selectedCol, selectedTileIndex);
+    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
 
     return true;
 }
+
+///----------------------------------------------------------------------------
+/// tryUpdateSelectedTileIndex - Attempts to change which tile is selected. It
+/// also caches the row and column values as well.
+/// @param new row of the tile being selected
+/// @param new col of the tile being selected
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateSelectedTile(const int& newRow, const int& newCol) {
+
+    if(!gameMap->isRowColInMapBounds(newRow, newCol)) {
+        return false;
+    }
+
+    selectedRow = newRow;
+    selectedCol = newCol;
+    selectedTileIndex = gameMap->indexFromRowCol(newRow, newCol);
+    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
+
+    return true;
+}
+
 
 //=============================================================================
 // Private Functions

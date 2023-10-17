@@ -449,23 +449,10 @@ int MainWindowFrame::getTileToDrawWith() {
 
 bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
     
-    const GameMap* gameMap = gameWorldController->getGameMap();
-
-    if (!gameMap->isRowColInMapBounds(row, col)) {
-        return false;
-    }
-
-    const int newTileIndex = gameMap->indexFromRowCol(row, col);
-
-    if (newTileIndex == selectedTileIndex) {
-        return false;
-    }
-
-    selectedTileIndex = newTileIndex;
-
     const std::vector<GameObject>& objectVec = gameWorldController->getGameMap()->getGameObjectsAtRowCol(row, col);
     const std::vector<GameCharacter>& charVec = gameWorldController->getGameMap()->getGameCharactersAtRowCol(row, col);
     reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
+
     return true;
 }
 
