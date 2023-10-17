@@ -789,3 +789,65 @@ void GameWorldController::showErrorMessage(const std::string& errTextID, const s
     LanguageMapper& langMap = LanguageMapper::getInstance();
     mainWindow->displayErrorMessage(langMap.get(errTextID), langMap.get(errTitleID));
 }
+
+//=============================================================================
+// New Functions to be moved after
+//=============================================================================
+
+// Assumes selected tile
+
+bool GameWorldController::tryChangeSelectedTile() {
+
+    const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
+    const bool isConnected      = (gameTile.hasJumpPad() || 
+                                   gameTile.hasConnectionFeature());
+
+    if (isConnected) {
+        
+        // TODO: confirm is jumppad has another end
+
+        std::string messageText = "";
+        std::string messageTitle = "";
+
+        if (mainWindow->askYesNoQuestion("Altering this tile will remove the jump pad at X,Y. Continue?", "Remove jump pads?", true) != GenericInterfaceResponses::Yes) {
+            return false;
+        }
+
+        return false; // For debugging. 
+    }
+
+    // Get the information we need to update the tile with.
+
+    const int roadType          = drawingTileIndex & 0xF;
+    const bool isDirt           = drawingTileIndex > 15 ? true : false;
+    
+    // Note that after this function gameTile is no longer a valid reference
+    const bool tileUpdated = tryUpdateTile(selectedRow, selectedCol, selectedTileIndex, roadType, 0, isDirt);
+
+
+    if (tileUpdated && isConnected) {
+        // Alter the other tile on the other end.
+    }
+
+    return true;
+}
+
+bool GameWorldController::tryRemoveJumpPad(const int& rowFrom,
+                                           const int& colFrom,
+                                           const int& rowTo, 
+                                           const int& colTo) {
+
+
+
+}
+
+bool GameWorldController::tryUpdateTile(const int& row, const int& col, const int& index, const int& type, const int& feature, const bool isDirt) {
+    
+    GameTile::Builder newTile(gameMap->getTile(index));
+
+    // All tiles except tile 0 can have MoreInfo set, so we'll clear it if necessary.
+    if (newTile.flags & TileFlags::MoreInfo && !isDirt && type == RoadTypes::Empty) {
+        newTile.flags = newTile.flags & ~(TileFlags::MoreInfo);
+    }
+
+}

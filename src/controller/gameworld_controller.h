@@ -53,14 +53,22 @@ class GameWorldController {
         
         bool tryUpdateGameInfo(const GameInfo& newInfo);
 
+
         bool tryUpdateSelectedTile(const int& newIndex);
         bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
-
         bool tryUpdateTileType(const int& row, const int& col, const int& type);
         bool tryAddFeatureToTile(const int& row, const int& col, const uint8_t& modType);
-
         bool tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription);
         bool tryUpdateTileDescription(const int& index, const std::string& inName, const std::string& inDescription);
+
+        bool tryChangeSelectedTile();
+
+        bool tryRemoveJumpPad(const int& rowFrom, const int& colFrom, const int& rowTo, const int& colTo);
+        bool tryRemoveConnection(const int& rowFrom, const int& colFrom, const int& rowTo, const int& colTo);
+
+
+        bool tryUpdateTile(const int& row, const int& col, const int& index, const int& type, const int& feature, const bool isDirt);
+
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
         
     private:
