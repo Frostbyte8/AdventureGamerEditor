@@ -212,7 +212,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 
 	roadSelectorDocker = static_cast<RoadSelectorDocker*>(gameMapDocker->AddDockedChild(
-                                                          new RoadSelectorDocker(this),
+                                                          new RoadSelectorDocker(this, gameWorldController),
                                                           styleFlags | DS_DOCKED_LEFT | DS_NO_RESIZE, 0));
                                                           
 	reinterpret_cast<RoadSelectorView&>(roadSelectorDocker->GetView()).SetTileset(tilesetBMP);
@@ -433,14 +433,6 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 
     MessageBox(message, title, messageBoxFlags);
 
-}
-
-//-----------------------------------------------------------------------------
-// getTileToDrawWith
-//-----------------------------------------------------------------------------
-
-int MainWindowFrame::getTileToDrawWith() {
-    return reinterpret_cast<RoadSelectorView&>(roadSelectorDocker->GetView()).getSelectedTile();
 }
 
 //-----------------------------------------------------------------------------

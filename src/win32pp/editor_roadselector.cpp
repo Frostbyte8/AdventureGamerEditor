@@ -80,14 +80,14 @@ LRESULT RoadSelectorView::OnLButtonDown(const WORD &x, const WORD &y) {
     
     const int newTileSelected =  (y + si.nPos) / tileHeight;
     
-    if(newTileSelected < 0 || newTileSelected >= tileHeight * EditorConstants::DefaultCols) {
+    if(newTileSelected < 0 || newTileSelected >= tileHeight * (EditorConstants::DefaultCols * 2)) {
         return 0;
     }
     
     // TODO: Invalidate old rect and new rect, and
     // TODO: UpdateBackBufferTile()
     
-    selectedTile = newTileSelected;
+    gameWorldController->setDrawingTileIndex(newTileSelected);
     UpdateBackBuffer();
     InvalidateRect(0);
     
@@ -122,6 +122,8 @@ void RoadSelectorView::UpdateBackBuffer() {
 	    backBufferDC.BitBlt(0, yDirtDest, tileWidth, tileHeight, tilesetDC, xSrc, yDirtSrc, SRCCOPY);
 
     }
+
+    const int selectedTile = gameWorldController->getDrawingTileIndex();
 
     DrawTileSelectionBox(backBufferDC, 0, selectedTile * tileHeight, tileWidth, tileHeight, 2);
 

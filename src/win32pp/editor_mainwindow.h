@@ -28,8 +28,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
-        virtual int getTileToDrawWith();
-
         virtual void finishedEditCharacterDialog();
         virtual void finishedEditObjectDialog();
         virtual void finishedEditStoryDialog();

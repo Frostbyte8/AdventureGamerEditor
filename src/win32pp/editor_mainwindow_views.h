@@ -55,7 +55,7 @@ class GameEntitiesView : public CWnd {
 class RoadSelectorView : public CScrollView {
 
 	public:
-		RoadSelectorView(MainWindowInterface* inMainWindow) : backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow), selectedTile(0) {}
+		RoadSelectorView(MainWindowInterface* inMainWindow, GameWorldController* gwc) : gameWorldController(gwc), backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow) {}
 		virtual ~RoadSelectorView() {}
         virtual void PreRegisterClass(WNDCLASS& wc) {
             wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
@@ -64,7 +64,6 @@ class RoadSelectorView : public CScrollView {
         }
         
         void SetTileset(CBitmap& inTileSet);
-        int getSelectedTile() const { return selectedTile; }
 
     protected:
         virtual int OnCreate(CREATESTRUCT& cs);
@@ -85,8 +84,8 @@ class RoadSelectorView : public CScrollView {
         void UpdateScrollSize();
         void UpdateBackBuffer();
 
-        MainWindowInterface*     mainWindow;
-
+        MainWindowInterface*    mainWindow;
+        GameWorldController*    gameWorldController;
         CMemDC			        tilesetDC;
         CMemDC                  backBufferDC;
         CBitmap                 backBufferBMP;
@@ -94,8 +93,6 @@ class RoadSelectorView : public CScrollView {
 
         int tileWidth;
         int tileHeight;
-
-        int selectedTile;
 
 		// Disable copy construction and assignment operator
 	    RoadSelectorView(const RoadSelectorView&);

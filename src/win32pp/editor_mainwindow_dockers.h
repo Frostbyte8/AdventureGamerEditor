@@ -11,7 +11,7 @@
 class RoadSelectorDocker : public CDocker {
 
 	public:
-		RoadSelectorDocker(MainWindowInterface* inMainWindow) : view(inMainWindow) {
+		RoadSelectorDocker(MainWindowInterface* inMainWindow, GameWorldController* gwc) : view(inMainWindow, gwc) {
 			SetView(view);
 			SetBarWidth(0);
 		}

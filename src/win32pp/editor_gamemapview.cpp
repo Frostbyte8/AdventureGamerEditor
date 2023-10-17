@@ -142,7 +142,8 @@ LRESULT GameMapView::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     WORD col = (xPos + viewOffset.x) / tileWidth;
 
     if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
-        if (gameWorldController->tryUpdateTileType(row, col, mainWindow->getTileToDrawWith())) {
+        // TODO: tryUpdateTileType shouldn't require the info already in the controller
+        if (gameWorldController->tryUpdateTileType(row, col, gameWorldController->getDrawingTileIndex())) {
             InvalidateRect();
         }
     }

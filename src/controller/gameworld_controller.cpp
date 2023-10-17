@@ -12,6 +12,7 @@ GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : ma
     gameMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
     worldFilePath = "";
     worldFileName = "";
+    drawingTileIndex = 0;
     selectedTileIndex = 0;
     selectedRow = 0;
     selectedCol = 0;
@@ -122,6 +123,11 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     worldFilePath = filePath;
     worldFileName = fileName;
 
+    drawingTileIndex = 0;
+    selectedTileIndex = 0;
+    selectedRow = 0;
+    selectedCol = 0;
+
     return loadSuccessful;
 }
 
@@ -166,6 +172,11 @@ bool GameWorldController::newWorld() {
 
     worldFilePath = "";
     worldFileName = "";
+
+    drawingTileIndex = 0;
+    selectedTileIndex = 0;
+    selectedRow = 0;
+    selectedCol = 0;
 
     return wasWorldCreated;
 }
@@ -419,7 +430,7 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
 
 bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder) {
 
-    // Find out if Adventuer Gamer has a hard limit on the number of Objects.
+    // Find out if Adventure Gamer has a hard limit on the number of Objects.
 
     if(objectBuilder.getID() != GameObjectConstants::NoID) {
  
@@ -593,7 +604,7 @@ bool GameWorldController::tryUpdateTileDescription(const int& index, const std::
 bool GameWorldController::tryUpdateTileType(const int& row, const int& col, const int& type) {
 
     // TODO: Type constants
-    if (type <= 15 && type >= 0) {
+    if (type <= 31 && type >= 0) {
 
         if (!gameMap->isRowColInMapBounds(row, col)) {
             return false;
@@ -615,7 +626,13 @@ bool GameWorldController::tryUpdateTileType(const int& row, const int& col, cons
             if (jumpPadDestination) {
 
                 // TODO: Make sure darkness is preserved.
-                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+
+                int realType = type;
+                if (realType >= 16) {
+                    realType = (type - 16) + (TileModifiers::DirtRoad << 4);
+                }
+
+                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), realType, 0);
                 gameMap->removeFeature(gmKey, jumpPadDestination->getRow(), jumpPadDestination->getColumn());
                 gameMap->removeJumpPoint(*jumpPadDestination, SimplePoint(col, row));
 
@@ -657,7 +674,12 @@ bool GameWorldController::tryUpdateTileType(const int& row, const int& col, cons
                     }
                 }
 
-                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+                int realType = type;
+                if (realType >= 16) {
+                    realType = (type - 16) + (TileModifiers::DirtRoad << 4);
+                }
+
+                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), realType, 0);
                 gameMap->removeSwitch(*matchingPoint, SimplePoint(col, row));
             }
         }
@@ -668,7 +690,12 @@ bool GameWorldController::tryUpdateTileType(const int& row, const int& col, cons
             }
         }
 
-        gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), type, 0);
+        int realType = type;
+        if (realType >= 16) {
+            realType = (type - 16) + (TileModifiers::DirtRoad << 4);
+        }
+
+        gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), realType, 0);
 
     }
     return true;

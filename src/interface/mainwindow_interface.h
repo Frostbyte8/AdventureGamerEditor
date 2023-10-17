@@ -25,11 +25,6 @@ class MainWindowInterface {
         /// @param Title of the message box, if necessary.
         ///--------------------------------------------------------------------
         virtual void displayErrorMessage(const std::string& message, const std::string& title) = 0;
-
-        ///--------------------------------------------------------------------
-        /// Get the tile type the use has selected to draw with
-        ///--------------------------------------------------------------------
-        virtual int getTileToDrawWith() = 0;
        
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to add, edit

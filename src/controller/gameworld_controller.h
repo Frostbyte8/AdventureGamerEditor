@@ -29,6 +29,12 @@ class GameWorldController {
         const int& getSelectedTileIndex() const { return selectedTileIndex; }
         const int& getSelectedRow() const { return selectedRow; }
         const int& getSelectedCol() const { return selectedCol; }
+        const int& getDrawingTileIndex() const { return drawingTileIndex; }
+
+        void setDrawingTileIndex(const int& newDrawIndex) {
+            // TODO: Caps
+            drawingTileIndex = newDrawIndex;
+        }
 
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
