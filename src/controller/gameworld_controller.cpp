@@ -593,115 +593,6 @@ bool GameWorldController::tryUpdateTileDescription(const int& index, const std::
 }
 
 ///----------------------------------------------------------------------------
-/// tryUpdateTileType - Update the tile type used on the tile given. If the
-/// tile is solid grass, it will remove the tile name and description.
-/// @param row of the tile being changed
-/// @param col of the tile being changed
-/// @param type to replace the tile with
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryUpdateTileType(const int& row, const int& col, const int& type) {
-
-    // TODO: Type constants
-    if (type <= 31 && type >= 0) {
-
-        if (!gameMap->isRowColInMapBounds(row, col)) {
-            return false;
-        }
-
-        const size_t tileIndex = gameMap->indexFromRowCol(row, col);
-        const GameTile& gameTile = gameMap->getTile(tileIndex);
-
-        // First we need to figure out if this tile is connected to anything else
-
-        // Jump pads are an interesting case, they can both have a Jump feature,
-        // and a dark switch feature. 
-
-        if (gameTile.hasJumpPad()) {
-
-            const SimplePoint* jumpPadDestination = gameMap->findJumpPoint(row, col);
-
-            // TODO: it's possible a jump pad may not have a connection if it is not yet connected.
-            if (jumpPadDestination) {
-
-                // TODO: Make sure darkness is preserved.
-
-                int realType = type;
-                if (realType >= 16) {
-                    realType = (type - 16) + (TileModifiers::DirtRoad << 4);
-                }
-
-                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), realType, 0);
-                gameMap->removeFeature(gmKey, jumpPadDestination->getRow(), jumpPadDestination->getColumn());
-                gameMap->removeJumpPoint(*jumpPadDestination, SimplePoint(col, row));
-
-            }
-
-        }
-
-        // TODO: Handle unconnected things
-
-        if (gameTile.hasConnectionFeature()) {
-            
-            // Now check to see if this tile has a gate or dark space on it. Note that
-            // Tiles with gates on them can either be a gate, or dark, but not both.
-
-            const SimplePoint* matchingPoint = gameMap->findSwitchPoint(row, col);
-
-            if (matchingPoint) {
-                               
-                if (gameTile.isDark() || gameTile.hasGate()) {
-
-                    const int response = mainWindow->askYesNoQuestion("The switch attached to this tile will also be removed. Continue?", "Remove Switch", true);
-
-                    // Remove the switch
-                    if (response == GenericInterfaceResponses::Yes) {
-                        gameMap->removeFeature(gmKey, matchingPoint->getRow(), matchingPoint->getColumn());
-                    }
-                    else {
-                        return false; // Nothing changed
-                    }
-                }
-                else if (gameTile.hasSwitch()) {
-                    // Remove the Gate/Dark flag
-                    const GameTile& matchingTile = gameMap->getTile(gameMap->indexFromRowCol(matchingPoint->getRow(), matchingPoint->getColumn()));
-                    if (matchingTile.hasGate()) {
-                        gameMap->removeFeature(gmKey, matchingPoint->getRow(), matchingPoint->getColumn());
-                    }
-                    else {
-                        gameMap->updateTileFlags(gmKey, matchingPoint->getRow(), matchingPoint->getColumn(), matchingTile.getFlags() & ~TileFlags::Dark);
-                    }
-                }
-
-                int realType = type;
-                if (realType >= 16) {
-                    realType = (type - 16) + (TileModifiers::DirtRoad << 4);
-                }
-
-                gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), realType, 0);
-                gameMap->removeSwitch(*matchingPoint, SimplePoint(col, row));
-            }
-        }
-        else {
-            // Since it does not, we can easily clear it without any problems.
-            if (type == 0) {
-                //gameMap->updateTileDescription(gmKey, gameMap->indexFromRowCol(row, col), "", "");
-            }
-        }
-
-        int realType = type;
-        if (realType >= 16) {
-            realType = (type - 16) + (TileModifiers::DirtRoad << 4);
-        }
-
-        gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), realType, 0);
-
-    }
-    return true;
-}
-
-///----------------------------------------------------------------------------
 /// tryUpdateStoryAndSummary - Attempts to update the story/summary.
 /// @param Story text to use for the story
 /// @param Summary text to use for the summary
@@ -773,7 +664,6 @@ bool GameWorldController::tryUpdateSelectedTile(const int& newRow, const int& ne
     return true;
 }
 
-
 //=============================================================================
 // Private Functions
 //=============================================================================
@@ -796,26 +686,49 @@ void GameWorldController::showErrorMessage(const std::string& errTextID, const s
 
 // Assumes selected tile
 
+inline const bool GameWorldController::findConnectionPoint(const GameTile& tile, int& outRow, int& outCol) const {
+        
+    SimplePoint* connectedTo;
+
+    // TODO: Until I can figure out how to handle this better, use a const cast here.
+
+    if (tile.hasJumpPad()) {
+        connectedTo = const_cast<SimplePoint *>(gameMap->findJumpPoint(selectedRow, selectedCol));
+    }
+    else if (tile.hasConnectionFeature() && !tile.isDark()) { // Ignore dark spaces
+        connectedTo = const_cast<SimplePoint *>(gameMap->findSwitchPoint(selectedRow, selectedCol));
+    }
+    else {
+        return false;
+    }
+
+    outRow = connectedTo->getRow();
+    outCol = connectedTo->getColumn();
+
+    return true;
+}
+
 bool GameWorldController::tryChangeSelectedTile() {
 
-    const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
-    const bool isConnected      = (gameTile.hasJumpPad() || 
-                                   gameTile.hasConnectionFeature());
+    const GameTile& gameTile        = gameMap->getTile(selectedTileIndex);
+    int otherRow = 0;
+    int otherCol = 0;
+    const bool connectedTo = findConnectionPoint(gameTile, otherRow, otherCol);
 
     // We only need to worry about clearing the other tile if this tile is
     // A Jump pad, a gate, or a switch. If it is simply just dark, we
     // can ignore it.
 
-    if (isConnected && !gameTile.isDark()) {
-        
+    if (connectedTo) {
+
         std::string messageText = "";
         std::string messageTitle = "";
 
-        if (mainWindow->askYesNoQuestion("Altering this tile will remove the jump pad at X,Y. Continue?", "Remove jump pads?", true) != GenericInterfaceResponses::Yes) {
+        if (mainWindow->askYesNoQuestion("Altering this tile will update the tile at X,Y. Continue?", "Remove jump pads?", true) != GenericInterfaceResponses::Yes) {
             return false;
         }
 
-        return false; // For debugging. 
+
     }
 
     // Get the information we need to update the tile with.
@@ -829,29 +742,46 @@ bool GameWorldController::tryChangeSelectedTile() {
     newSprite += isDirt ? 128 : 0;
     newTile.sprite(newSprite);
 
-    /*
-    if (gameTile.getFlags() & TileFlags::MoreInfo && !isDirt && roadType == RoadTypes::Empty) {
-        newTile.flags(gameTile.getFlags() & ~(TileFlags::MoreInfo));
-        newTile.description("");
-        newTile.name("");
+    if (connectedTo) {
+        removeFeatureFromOtherTile(otherRow, otherCol, gameTile);
     }
-    */
 
-    // Assume after this line that gameTile is no longer valid.    
     gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
 
-    if (isConnected) {
-        // Alter the other tile on the other end.
-    }
-
     return true;
+
 }
 
-bool GameWorldController::tryRemoveJumpPad(const int& rowFrom,
-                                           const int& colFrom,
-                                           const int& rowTo, 
-                                           const int& colTo) {
+void GameWorldController::removeFeatureFromOtherTile(const int otherRow, const int otherCol, const GameTile& firstTile) {
+    
+    const int otherTileIndex = gameMap->indexFromRowCol(otherRow, otherCol);
+    const GameTile& otherTile = gameMap->getTile(otherTileIndex);
+    GameTile::Builder otherTileBuilder(otherTile);
 
+    bool wasSuccessful = false;
 
-    return false;
+    if (firstTile.hasJumpPad()) {
+        wasSuccessful = gameMap->removeJumpPoint(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
+    }
+    else if (firstTile.hasGate()) {
+        wasSuccessful = gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
+    }
+    else if (firstTile.hasSwitch()) {
+
+        if (otherTile.hasGate()) {
+            wasSuccessful = gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
+        }
+        else if (otherTile.isDark()) {
+            // Darkness is an exception to the rule, it has to be done here.
+            otherTileBuilder.flags(otherTile.getFlags() & ~(TileFlags::Dark));
+            gameMap->updateTileFlags(gmKey, otherRow, otherCol, otherTile.getFlags() & ~(TileFlags::Dark));
+            gameMap->updateTile(gmKey, otherTileIndex, otherTileBuilder.build());
+        }
+    }
+
+    if (wasSuccessful) {
+        const uint8_t otherTileNewSprite = GameTile::Builder::calculateSprite(otherTile.getSpriteIndex(), otherTile.getSpriteModifier() & TileModifiers::DirtRoad);
+        otherTileBuilder.sprite(otherTileNewSprite);
+        gameMap->updateTile(gmKey, otherTileIndex, otherTileBuilder.build());
+    }
 }

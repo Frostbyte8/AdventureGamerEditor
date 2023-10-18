@@ -57,7 +57,6 @@ class GameWorldController {
 
         bool tryUpdateSelectedTile(const int& newIndex);
         bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
-        bool tryUpdateTileType(const int& row, const int& col, const int& type);
         bool tryAddFeatureToTile(const int& row, const int& col, const uint8_t& modType);
         bool tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription);
         bool tryUpdateTileDescription(const int& index, const std::string& inName, const std::string& inDescription);
@@ -73,7 +72,11 @@ class GameWorldController {
 
         GameWorldController() {};
         
+        void removeFeatureFromOtherTile(const int otherRow, const int otherCol, const GameTile& firstTile);
         void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
+
+        inline const bool findConnectionPoint(const GameTile& tile, int& outRow, int& outCol) const;
+
 
         MainWindowInterface*            mainWindow;
 

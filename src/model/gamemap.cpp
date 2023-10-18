@@ -741,7 +741,7 @@ bool GameMap::removeFeature(GMKey, const int& row, const int& col) {
 }
 
 ///----------------------------------------------------------------------------
-/// removeDarkness - Remove darkness from a tile
+/// updateTileFlags - Remove darkness from a tile
 /// @param GMKey
 /// @param row of the tile to remove the feature from
 /// @param column of the tile to remove the feature from.
