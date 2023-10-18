@@ -561,21 +561,37 @@ bool GameMap::isIndexInMapBounds(const int& index) const {
 /// @return value NULL if nothing was found, a valid connection point if it was
 ///----------------------------------------------------------------------------
 
-const SimplePoint* GameMap::findSwitchPoint(const int& row, const int& col) const {
-    // TODO: It would be more efficient to remove an iterator or index
-    // so it could also be used to remove a point after.
-    return findMatchingPoint(row, col, switchConnections);
+const bool GameMap::findSwitchPoint(const int& row, const int& col, SimplePoint& outPoint) const {
+
+    const SimplePoint* point = findMatchingPoint(row, col, switchConnections);
+
+    if (point) {
+        outPoint = SimplePoint(point->getX(), point->getY());
+        return true;
+    }
+
+    return false;
 }
 
 ///----------------------------------------------------------------------------
-/// findJumpPoint - Find the matching jump pad, if one exists.
+/// findJumpPoint - Attempt to find the matching jump point
 /// @param row of the connection point to search for
 /// @param column of the connection point to search for
-/// @return value NULL if nothing was found, a valid connection point if it was
+/// @param a reference to a SimplePoint that will be filled with the matching
+/// point if one is found.
+/// @return true if a point is found, false if it was not.
 ///----------------------------------------------------------------------------
 
-const SimplePoint* GameMap::findJumpPoint(const int& row, const int& col) const {  
-    return findMatchingPoint(row, col, jumpPoints);
+const bool GameMap::findJumpPoint(const int& row, const int& col, SimplePoint& outPoint) const {  
+    
+    const SimplePoint* point = findMatchingPoint(row, col, jumpPoints);
+
+    if (point) {
+        outPoint = SimplePoint(point->getX(), point->getY());
+        return true;
+    }
+
+    return false;
 }
 
 ///----------------------------------------------------------------------------

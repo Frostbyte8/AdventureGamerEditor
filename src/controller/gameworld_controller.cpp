@@ -688,22 +688,20 @@ void GameWorldController::showErrorMessage(const std::string& errTextID, const s
 
 inline const bool GameWorldController::findConnectionPoint(const GameTile& tile, int& outRow, int& outCol) const {
         
-    SimplePoint* connectedTo;
-
-    // TODO: Until I can figure out how to handle this better, use a const cast here.
+    SimplePoint connectedTo(0, 0);
 
     if (tile.hasJumpPad()) {
-        connectedTo = const_cast<SimplePoint *>(gameMap->findJumpPoint(selectedRow, selectedCol));
+        gameMap->findJumpPoint(selectedRow, selectedCol, connectedTo);
     }
     else if (tile.hasConnectionFeature() && !tile.isDark()) { // Ignore dark spaces
-        connectedTo = const_cast<SimplePoint *>(gameMap->findSwitchPoint(selectedRow, selectedCol));
+        gameMap->findSwitchPoint(selectedRow, selectedCol, connectedTo);
     }
     else {
         return false;
     }
 
-    outRow = connectedTo->getRow();
-    outCol = connectedTo->getColumn();
+    outRow = connectedTo.getRow();
+    outCol = connectedTo.getColumn();
 
     return true;
 }

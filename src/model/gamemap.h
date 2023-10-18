@@ -110,8 +110,8 @@ class GameMap {
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile, const std::string& filePath, const std::string& fileName);
 
-        const SimplePoint* findJumpPoint(const int& row, const int& col) const;
-        const SimplePoint* findSwitchPoint(const int& row, const int& col) const;
+        const bool findSwitchPoint(const int& row, const int& col, SimplePoint& outPoint) const;
+        const bool findJumpPoint(const int& row, const int& col, SimplePoint& outPoint) const;
 
         bool removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2);
         bool removeSwitch(const SimplePoint& point1, const SimplePoint& point2);
