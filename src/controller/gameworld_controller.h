@@ -72,10 +72,13 @@ class GameWorldController {
 
         GameWorldController() {};
         
-        void removeFeatureFromOtherTile(const int otherRow, const int otherCol, const GameTile& firstTile);
-        void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
+        
 
-        inline const bool findConnectionPoint(const GameTile& tile, int& outRow, int& outCol) const;
+        void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
+        
+        bool tryRemoveFeatureFromOtherTile(const GameTile& firstTile);
+        inline const SimplePoint* GameWorldController::findConnectionPoint(const GameTile& tile) const;
+        
 
 
         MainWindowInterface*            mainWindow;

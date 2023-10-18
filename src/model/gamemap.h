@@ -113,6 +113,11 @@ class GameMap {
         const bool findSwitchPoint(const int& row, const int& col, SimplePoint& outPoint) const;
         const bool findJumpPoint(const int& row, const int& col, SimplePoint& outPoint) const;
 
+        const SimplePoint* findSwitchPoint(const int& row, const int& col) const;
+        const SimplePoint* findJumpPoint(const int& row, const int& col) const;
+
+        const SimplePoint* findConnectionPointOfType(const int& row, const int& col, bool findSwitchInsteadOfJump);
+
         bool removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2);
         bool removeSwitch(const SimplePoint& point1, const SimplePoint& point2);
         bool removeFeature(GMKey, const int& row, const int& col);

@@ -686,47 +686,26 @@ void GameWorldController::showErrorMessage(const std::string& errTextID, const s
 
 // Assumes selected tile
 
-inline const bool GameWorldController::findConnectionPoint(const GameTile& tile, int& outRow, int& outCol) const {
-        
-    SimplePoint connectedTo(0, 0);
+inline const SimplePoint* GameWorldController::findConnectionPoint(const GameTile& tile) const {
 
     if (tile.hasJumpPad()) {
-        gameMap->findJumpPoint(selectedRow, selectedCol, connectedTo);
+        return gameMap->findJumpPoint(selectedRow, selectedCol);
     }
     else if (tile.hasConnectionFeature() && !tile.isDark()) { // Ignore dark spaces
-        gameMap->findSwitchPoint(selectedRow, selectedCol, connectedTo);
-    }
-    else {
-        return false;
+        return gameMap->findSwitchPoint(selectedRow, selectedCol);
     }
 
-    outRow = connectedTo.getRow();
-    outCol = connectedTo.getColumn();
-
-    return true;
+    return NULL;
 }
 
 bool GameWorldController::tryChangeSelectedTile() {
 
     const GameTile& gameTile        = gameMap->getTile(selectedTileIndex);
-    int otherRow = 0;
-    int otherCol = 0;
-    const bool connectedTo = findConnectionPoint(gameTile, otherRow, otherCol);
 
-    // We only need to worry about clearing the other tile if this tile is
-    // A Jump pad, a gate, or a switch. If it is simply just dark, we
-    // can ignore it.
-
-    if (connectedTo) {
-
-        std::string messageText = "";
-        std::string messageTitle = "";
-
-        if (mainWindow->askYesNoQuestion("Altering this tile will update the tile at X,Y. Continue?", "Remove jump pads?", true) != GenericInterfaceResponses::Yes) {
-            return false;
-        }
-
-
+    // This poorly named function checks to see if a connection exists, and
+    // if it does, attempts to remove it.
+    if (tryRemoveFeatureFromOtherTile(gameTile) == false) {
+        return false;
     }
 
     // Get the information we need to update the tile with.
@@ -740,21 +719,36 @@ bool GameWorldController::tryChangeSelectedTile() {
     newSprite += isDirt ? 128 : 0;
     newTile.sprite(newSprite);
 
-    if (connectedTo) {
-        removeFeatureFromOtherTile(otherRow, otherCol, gameTile);
-    }
-
     gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
 
     return true;
 
 }
 
-void GameWorldController::removeFeatureFromOtherTile(const int otherRow, const int otherCol, const GameTile& firstTile) {
+bool GameWorldController::tryRemoveFeatureFromOtherTile(const GameTile& firstTile) {
     
+    const SimplePoint* connectedTo = findConnectionPoint(firstTile);
+
+    if (!connectedTo) {
+        return true; // Nothing to remove
+    }
+
+    // connectedTo will become invalidated, so we will copy it's data now.
+
+    const int otherRow = connectedTo->getRow();
+    const int otherCol = connectedTo->getColumn();
+
     const int otherTileIndex = gameMap->indexFromRowCol(otherRow, otherCol);
     const GameTile& otherTile = gameMap->getTile(otherTileIndex);
     GameTile::Builder otherTileBuilder(otherTile);
+
+
+    std::string messageText = "";
+    std::string messageTitle = "";
+
+    if (mainWindow->askYesNoQuestion("Altering this tile will update the tile at X,Y. Continue?", "Remove jump pads?", true) != GenericInterfaceResponses::Yes) {
+        return false; // Okay, leave it alone
+    }
 
     bool wasSuccessful = false;
 
@@ -782,4 +776,7 @@ void GameWorldController::removeFeatureFromOtherTile(const int otherRow, const i
         otherTileBuilder.sprite(otherTileNewSprite);
         gameMap->updateTile(gmKey, otherTileIndex, otherTileBuilder.build());
     }
+
+    return true; // Removal was successful
+
 }

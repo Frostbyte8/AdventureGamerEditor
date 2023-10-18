@@ -554,44 +554,19 @@ bool GameMap::isIndexInMapBounds(const int& index) const {
 }
 
 ///----------------------------------------------------------------------------
-/// findSwitchPoint - Find where the switch is, or what switch connects to this
-/// tile.
-/// @param row of the connection point to search for
-/// @param column of the connection point to search for
-/// @return value NULL if nothing was found, a valid connection point if it was
+/// findSwitchPoint - 
 ///----------------------------------------------------------------------------
 
-const bool GameMap::findSwitchPoint(const int& row, const int& col, SimplePoint& outPoint) const {
-
-    const SimplePoint* point = findMatchingPoint(row, col, switchConnections);
-
-    if (point) {
-        outPoint = SimplePoint(point->getX(), point->getY());
-        return true;
-    }
-
-    return false;
+const SimplePoint* GameMap::findSwitchPoint(const int& row, const int& col) const {
+    return findMatchingPoint(row, col, switchConnections);
 }
 
 ///----------------------------------------------------------------------------
-/// findJumpPoint - Attempt to find the matching jump point
-/// @param row of the connection point to search for
-/// @param column of the connection point to search for
-/// @param a reference to a SimplePoint that will be filled with the matching
-/// point if one is found.
-/// @return true if a point is found, false if it was not.
+/// findJumpPoint - 
 ///----------------------------------------------------------------------------
 
-const bool GameMap::findJumpPoint(const int& row, const int& col, SimplePoint& outPoint) const {  
-    
-    const SimplePoint* point = findMatchingPoint(row, col, jumpPoints);
-
-    if (point) {
-        outPoint = SimplePoint(point->getX(), point->getY());
-        return true;
-    }
-
-    return false;
+const SimplePoint* GameMap::findJumpPoint(const int& row, const int& col) const {
+    return findMatchingPoint(row, col, jumpPoints);
 }
 
 ///----------------------------------------------------------------------------
