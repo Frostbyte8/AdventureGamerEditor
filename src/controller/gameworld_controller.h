@@ -30,6 +30,7 @@ class GameWorldController {
         const int& getSelectedRow() const { return selectedRow; }
         const int& getSelectedCol() const { return selectedCol; }
         const int& getDrawingTileIndex() const { return drawingTileIndex; }
+        const GameTile& getSelectedTile() const { return gameMap->getTile(selectedTileIndex); }
 
         void setDrawingTileIndex(const int& newDrawIndex) {
             // TODO: Caps
@@ -65,9 +66,6 @@ class GameWorldController {
 
         bool tryRemoveJumpPad(const int& rowFrom, const int& colFrom, const int& rowTo, const int& colTo);
         bool tryRemoveConnection(const int& rowFrom, const int& colFrom, const int& rowTo, const int& colTo);
-
-
-        bool tryUpdateTile(const int& row, const int& col, const int& index, const int& type, const int& feature, const bool isDirt);
 
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
         

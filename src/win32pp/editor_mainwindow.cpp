@@ -51,7 +51,7 @@ namespace MenuIDs {
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
-editTileDescriptionDialog(0), tileWidth(0), tileHeight(0), selectedTileIndex(0) {
+editTileDescriptionDialog(0), tileWidth(0), tileHeight(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
     LanguageMapper::getInstance();
@@ -799,7 +799,7 @@ void MainWindowFrame::onEditTileDescription() {
     }
 
     editTileDescriptionDialog->SetExStyle(editTileDescriptionDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    const GameTile gt = gameWorldController->getGameMap()->getTile(selectedTileIndex);
+    const GameTile gt = gameWorldController->getSelectedTile();
     editTileDescriptionDialog->setTileDescription(gt.getName(), gt.getDescription());
 
     activeWindowHandle = editTileDescriptionDialog->GetHwnd();
@@ -830,7 +830,7 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
 
 
 
-        gameWorldController->tryUpdateTileDescription(selectedTileIndex, editTileDescriptionDialog->getTileName(),
+        gameWorldController->tryUpdateTileDescription(gameWorldController->getSelectedTileIndex(), editTileDescriptionDialog->getTileName(),
                                                       editTileDescriptionDialog->getTileDescription());
     }
 

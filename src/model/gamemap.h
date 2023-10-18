@@ -91,6 +91,9 @@ class GameMap {
 
             tiles[index] = bd.build();
         }
+
+        void updateTile(GMKey, const size_t& index, GameTile& gameTile);
+
         void updateTileDescription(GMKey, const size_t& index, const std::string& tileName, const std::string& tileDescription);
         void updateGameInfo(GMKey, const GameInfo& newInfo);
 

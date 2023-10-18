@@ -141,11 +141,11 @@ LRESULT GameMapView::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     WORD row = (yPos + viewOffset.y) / tileHeight;
     WORD col = (xPos + viewOffset.x) / tileWidth;
 
+    // Make sure the user is clicking the map when trying to alter a tile.
+    // TODO: Make sure it's the same tile twice.
     if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
-        // TODO: tryUpdateTileType shouldn't require the info already in the controller
-        if (gameWorldController->tryUpdateTileType(row, col, gameWorldController->getDrawingTileIndex())) {
-            InvalidateRect();
-        }
+        gameWorldController->tryChangeSelectedTile();
+        InvalidateRect();
     }
     return 0;
 }

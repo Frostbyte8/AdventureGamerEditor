@@ -190,8 +190,8 @@ const bool GameTile::hasConnectionFeature() const {
 
 const bool GameTile::hasGate() const {
 
-    const bool isGate = (base.drawInfo.spriteModifier & TileModifiers::GateClosed) ||
-                        (base.drawInfo.spriteModifier & TileModifiers::GateOpen);
+    const bool isGate = (base.drawInfo.spriteModifier == TileModifiers::GateClosed) ||
+                        (base.drawInfo.spriteModifier == TileModifiers::GateOpen);
 
     return (isStraightaway() && isGate);
 }

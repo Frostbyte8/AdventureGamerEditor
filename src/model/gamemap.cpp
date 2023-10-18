@@ -1336,3 +1336,11 @@ void GameMap::writeCharacters(std::ofstream& mapFile) {
         gameCharacters[i].writeCharacter(mapFile);
     }
 }
+
+//=============================================================================
+// New Functions to be moved after
+//=============================================================================
+
+void GameMap::updateTile(GMKey, const size_t& index, GameTile& gameTile) {
+    tiles[index] = gameTile;
+}

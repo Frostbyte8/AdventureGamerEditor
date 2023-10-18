@@ -159,6 +159,16 @@ class GameTile {
                     // Update Cache Info too
                     base.drawInfo.spriteIndex    = sprite & 15;
                     base.drawInfo.spriteModifier = (sprite & 240) >> 4;
+
+                    // And if the tile is empty, make sure to clear it's
+                    // description
+
+                    if (base.drawInfo.spriteIndex == RoadTypes::Empty &&
+                        !(base.drawInfo.spriteModifier & TileModifiers::DirtRoad)) {
+                        *this = description("");
+                        *this = name("");
+                    }
+
                     return *this;
 
                 }

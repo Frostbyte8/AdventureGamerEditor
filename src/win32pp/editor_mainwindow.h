@@ -71,7 +71,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         int     tileWidth;
         int     tileHeight;
-        int     selectedTileIndex;
 
 		GameEntitiesView*               entityView;
 		GameMapDocker*                  gameMapDocker;
