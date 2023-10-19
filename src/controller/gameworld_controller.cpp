@@ -225,6 +225,43 @@ bool GameWorldController::saveWorld(bool saveAs) {
 }
 
 ///----------------------------------------------------------------------------
+/// tryChangeSelectedTile - Attempts to change the type of the tile selected
+/// to the one the user is drawing with.
+/// @returns true if the tile was changed successfully, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryChangeSelectedTile() {
+
+    const GameTile& gameTile = gameMap->getTile(selectedTileIndex);
+
+    // TODO: A way to properly preserve the darkness flag
+
+    if (!tryUpdateConnectedTile(gameTile)) {
+        return false;
+    }
+
+    // Get the information we need to update the tile with.
+
+    const uint8_t roadType  = drawingTileIndex & 0xF;
+    const uint8_t isDirt    = drawingTileIndex > 15 ? TileModifiers::DirtRoad :
+                                                      TileModifiers::None;
+
+    GameTile::Builder newTile(gameTile);
+
+    uint8_t newSprite = roadType;
+    
+    newSprite += isDirt ? 128 : 0;
+    newTile.flags(gameTile.getFlags() & ~(TileFlags::Dark)); // Clear darkness.
+    newTile.sprite(GameTile::Builder::calculateSprite(roadType, isDirt));
+    
+
+    gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
 /// tryGetTileCopy - tries to get a copy of the tile at the specified row/col.
 /// @param row of the tile get
 /// @param column of the tile to get
@@ -353,6 +390,39 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 }
 
 ///----------------------------------------------------------------------------
+/// tryAddFeatureToTile - Attempts to Add a feature to a tile.
+/// @param What feature to try and set to the tile
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddFeatureToTile(const int& modType) {
+    
+    const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
+    GameTile::Builder newTile(gameTile);
+
+    // We'll have to calculate what the new combined sprite will be with the
+    // feature set.
+
+    const uint8_t spriteIndex = gameTile.getSpriteIndex();
+    const uint8_t modifiers = modType | (gameTile.isDirtRoad() ?
+                              TileModifiers::DirtRoad : TileModifiers::None);
+
+    newTile.sprite(GameTile::Builder::calculateSprite(spriteIndex, modifiers));                             
+
+    // And we can only continue if both the modifier is valid, and if there is
+    // a tile connected to this one, that it can be updated too.
+
+    if (!newTile.isModiferValid() || tryUpdateConnectedTile(gameTile) == false) {
+        return false;
+    }
+
+    gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
 /// tryAddObject - Attempts to add an Object.
 /// @param A reference to a Object Builder object that will get finalized
 /// before being added.
@@ -399,7 +469,7 @@ bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
 
 bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterBuilder) {
 
-    // Find out if Adventuer Gamer has a hard limit on the number of Characters.
+    // Find out if Adventure Gamer has a hard limit on the number of Characters.
 
     if(characterBuilder.getID() != GameCharacterConstants::NoID) {
  
@@ -669,72 +739,35 @@ void GameWorldController::showErrorMessage(const std::string& errTextID, const s
 // New Functions to be moved after
 //=============================================================================
 
-// Assumes selected tile
+///----------------------------------------------------------------------------
+/// findConnectionPoint - Checks to see if the tile given has connection in
+/// the Jump list or Switch list.
+/// @param tile to check for.
+/// @return NULL if no points are found, and a valid pointer to a SimplePoint
+/// is one is found.
+///----------------------------------------------------------------------------
 
 inline const SimplePoint* GameWorldController::findConnectionPoint(const GameTile& tile) const {
 
     if (tile.hasJumpPad()) {
         return gameMap->findJumpPoint(selectedRow, selectedCol);
     }
-    else if (tile.hasConnectionFeature() && !tile.isDark()) { // Ignore dark spaces
+    else if (tile.hasConnectionFeature()) {
         return gameMap->findSwitchPoint(selectedRow, selectedCol);
     }
 
     return NULL;
 }
 
-bool GameWorldController::tryChangeSelectedTile() {
-
-    const GameTile& gameTile = gameMap->getTile(selectedTileIndex);
-
-    // This poorly named function checks to see if a connection exists, and
-    // if it does, attempts to remove it.
-    if (tryRemoveFeatureFromOtherTile(gameTile) == false) {
-        return false;
-    }
-
-    // Get the information we need to update the tile with.
-
-    const int roadType  = drawingTileIndex & 0xF;
-    const bool isDirt   = drawingTileIndex > 15 ? true : false;
-    
-    GameTile::Builder newTile(gameTile);
-
-    uint8_t newSprite = roadType; // No features to worry about here.
-    newSprite += isDirt ? 128 : 0;
-    newTile.sprite(newSprite);
-
-    gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
-
-    return true;
-
-}
-
 ///----------------------------------------------------------------------------
-/// tryAddFeatureToTile - Attempts to Add a feature to a tile.
-/// @param row of the tile to add the feature to
-/// @param column of the tile to add the feature to.
-/// @return true if the operation was successful, false if it was not.
+/// tryUpdateConnectedTile - Checks if there is a connected tile, and if there
+/// is, attempts to update that tile to remove the feature from it.
+/// @param tile with the connection feature on it
+/// @return true if there is nothing to remove, or if the remove was successful,
+/// false if it could not be removed.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryAddFeatureToTile(const int& modType) {
-    // TODO: Update tile with no feature on it, then add the tile mod. This will require making sure
-    // code shared between this function and tryUpdateTileType is in it's own private function.
-
-    const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
-    GameTile::Builder newTile(gameTile);
-    newTile.sprite(newTile.calculateSprite(gameTile.getSpriteIndex(), modType | (gameTile.isDirtRoad() ? TileModifiers::DirtRoad : 0)));
-    
-    if (!newTile.isModiferValid() || tryRemoveFeatureFromOtherTile(gameTile) == false) {
-        return false;
-    }
-
-    gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
-    
-    return true;
-}
-
-bool GameWorldController::tryRemoveFeatureFromOtherTile(const GameTile& firstTile) {
+bool GameWorldController::tryUpdateConnectedTile(const GameTile& firstTile) {
     
     const SimplePoint* connectedTo = findConnectionPoint(firstTile);
 
@@ -765,6 +798,9 @@ bool GameWorldController::tryRemoveFeatureFromOtherTile(const GameTile& firstTil
         wasSuccessful = gameMap->removeJumpPoint(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
     }
     else if (firstTile.hasGate()) {
+        wasSuccessful = gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
+    }
+    else if (firstTile.isDark()) {
         wasSuccessful = gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
     }
     else if (firstTile.hasSwitch()) {

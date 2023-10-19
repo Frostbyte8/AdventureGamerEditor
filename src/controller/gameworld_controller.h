@@ -50,23 +50,18 @@ class GameWorldController {
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
 
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
-        //bool getCharacterFromID(const int& ID, GameCharacter* outChar);
         
+        bool tryChangeSelectedTile();
+
         bool tryUpdateGameInfo(const GameInfo& newInfo);
-
-
         bool tryUpdateSelectedTile(const int& newIndex);
         bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
         
         bool tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription);
         bool tryUpdateTileDescription(const int& index, const std::string& inName, const std::string& inDescription);
 
-        //bool tryAddFeatureToTile(const int& row, const int& col, const uint8_t& modType);
         bool tryAddFeatureToTile(const int& modType);
-        bool tryChangeSelectedTile();
-
-        bool tryRemoveJumpPad(const int& rowFrom, const int& colFrom, const int& rowTo, const int& colTo);
-        bool tryRemoveConnection(const int& rowFrom, const int& colFrom, const int& rowTo, const int& colTo);
+        
 
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
         
@@ -78,8 +73,8 @@ class GameWorldController {
 
         void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
         
-        bool tryRemoveFeatureFromOtherTile(const GameTile& firstTile);
-        inline const SimplePoint* GameWorldController::findConnectionPoint(const GameTile& tile) const;
+        bool tryUpdateConnectedTile(const GameTile& firstTile);
+        inline const SimplePoint* findConnectionPoint(const GameTile& tile) const;
         
 
 
