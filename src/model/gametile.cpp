@@ -141,6 +141,15 @@ const bool GameTile::isDeadend() const {
 }
 
 ///----------------------------------------------------------------------------
+/// isDirtRoad - Checks if a tile has the dirt sprite flag set
+/// @return true if it does, false if it does not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isDirtRoad() const {
+    return base.drawInfo.spriteModifier & TileModifiers::DirtRoad ? true : false;
+}
+
+///----------------------------------------------------------------------------
 /// isStraightaway - Checks if a tile is a straightaway tile
 /// @return true if it is, false if it is not
 ///----------------------------------------------------------------------------

@@ -608,21 +608,6 @@ bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, c
 }
 
 ///----------------------------------------------------------------------------
-/// tryAddFeatureToTile - Attempts to Add a feature to a tile.
-/// @param row of the tile to add the feature to
-/// @param column of the tile to add the feature to.
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryAddFeatureToTile(const int& row, const int& col, const uint8_t& modType) {
-    // TODO: Update tile with no feature on it, then add the tile mod. This will require making sure
-    // code shared between this function and tryUpdateTileType is in it's own private function.
-
-    gameMap->updateTile(gmKey, gameMap->indexFromRowCol(row, col), RoadTypes::StraightawayHorizontal | (TileModifiers::MOD1 << 4),  0);
-    return true;
-}
-
-///----------------------------------------------------------------------------
 /// tryUpdateSelectedTileIndex - Attempts to change which tile is selected. It
 /// also caches the row and column values as well.
 /// @param new index of the tile to be selected
@@ -700,7 +685,7 @@ inline const SimplePoint* GameWorldController::findConnectionPoint(const GameTil
 
 bool GameWorldController::tryChangeSelectedTile() {
 
-    const GameTile& gameTile        = gameMap->getTile(selectedTileIndex);
+    const GameTile& gameTile = gameMap->getTile(selectedTileIndex);
 
     // This poorly named function checks to see if a connection exists, and
     // if it does, attempts to remove it.
@@ -710,8 +695,8 @@ bool GameWorldController::tryChangeSelectedTile() {
 
     // Get the information we need to update the tile with.
 
-    const int roadType          = drawingTileIndex & 0xF;
-    const bool isDirt           = drawingTileIndex > 15 ? true : false;
+    const int roadType  = drawingTileIndex & 0xF;
+    const bool isDirt   = drawingTileIndex > 15 ? true : false;
     
     GameTile::Builder newTile(gameTile);
 
@@ -723,6 +708,30 @@ bool GameWorldController::tryChangeSelectedTile() {
 
     return true;
 
+}
+
+///----------------------------------------------------------------------------
+/// tryAddFeatureToTile - Attempts to Add a feature to a tile.
+/// @param row of the tile to add the feature to
+/// @param column of the tile to add the feature to.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddFeatureToTile(const int& modType) {
+    // TODO: Update tile with no feature on it, then add the tile mod. This will require making sure
+    // code shared between this function and tryUpdateTileType is in it's own private function.
+
+    const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
+    GameTile::Builder newTile(gameTile);
+    newTile.sprite(newTile.calculateSprite(gameTile.getSpriteIndex(), modType | (gameTile.isDirtRoad() ? TileModifiers::DirtRoad : 0)));
+    
+    if (!newTile.isModiferValid() || tryRemoveFeatureFromOtherTile(gameTile) == false) {
+        return false;
+    }
+
+    gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
+    
+    return true;
 }
 
 bool GameWorldController::tryRemoveFeatureFromOtherTile(const GameTile& firstTile) {

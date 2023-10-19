@@ -201,18 +201,21 @@ class GameTile {
 
                 void readTile(std::ifstream& mapFile, const std::string& tileDescription);
 
-                GameTile build() {
+                bool isModiferValid() const {
 
                     const uint8_t modifier = (base.drawInfo.spriteModifier & TileModifiers::ALLMODS);
+                    
+                    if (modifier != 0) {
 
-                    if(modifier != 0) {
-
-                        bool invalidModifer = false;
-                        switch(base.drawInfo.spriteIndex) {
+                        switch (base.drawInfo.spriteIndex) {
 
                             case RoadTypes::Empty:
-                                if(modifier != 0) {
-                                    invalidModifer = true;
+                            case RoadTypes::ThreewayNSE:
+                            case RoadTypes::ThreewayNSW:
+                            case RoadTypes::ThreewayNWE:
+                            case RoadTypes::ThreewaySWE:
+                                if (modifier != 0) {
+                                    return false;
                                 }
                                 break;
 
@@ -220,8 +223,8 @@ class GameTile {
                             case RoadTypes::DeadEndEast:
                             case RoadTypes::DeadEndSouth:
                             case RoadTypes::DeadEndWest:
-                                if(modifier != TileModifiers::JumpPad) {
-                                    invalidModifer = true; 
+                                if (modifier != TileModifiers::JumpPad) {
+                                    return false;
                                 }
                                 break;
 
@@ -229,28 +232,35 @@ class GameTile {
                             case RoadTypes::CornerNW:
                             case RoadTypes::CornerSE:
                             case RoadTypes::CornerSW:
-                                if(modifier != TileModifiers::SwitchOn &&
-                                   modifier != TileModifiers::SwitchOff) {
-                                   invalidModifer = true;
+                                if (modifier != TileModifiers::SwitchOn &&
+                                    modifier != TileModifiers::SwitchOff) {
+                                    return false;
                                 }
                                 break;
 
                             case RoadTypes::StraightawayVertical:
                             case RoadTypes::StraightawayHorizontal:
-                                if(modifier > TileModifiers::ALLMODS) {
-                                    invalidModifer = true;
+                                if (modifier > TileModifiers::ALLMODS) {
+                                    return false;
                                 }
                                 break;
+
                             case RoadTypes::Crossroads:
-                                if(modifier != TileModifiers::SafeHaven &&
-                                   modifier != TileModifiers::Hazard) {
-                                    invalidModifer = true;
+                                if (modifier != TileModifiers::SafeHaven &&
+                                    modifier != TileModifiers::Hazard) {
+                                    return false;
                                 }
                                 break;
                         }
-                        if(invalidModifer) {
-                            throw std::invalid_argument("Attempted to build a tile with an invalid modifier.");
-                        }
+                    }
+
+                    return true;
+                }
+
+                GameTile build() {
+
+                    if (!isModiferValid()) {
+                        throw std::invalid_argument("Attempted to build a tile with an invalid modifier.");
                     }
 
                     if(base.flags & TileFlags::MoreInfo && base.description.empty()) {
@@ -292,6 +302,7 @@ class GameTile {
         const bool isCorner() const;
         const bool isDark() const;
         const bool isDeadend() const;
+        const bool isDirtRoad() const;
         const bool isStraightaway() const;
 
         // IO Functions

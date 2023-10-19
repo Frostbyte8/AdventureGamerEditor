@@ -168,13 +168,13 @@ LRESULT GameMapView::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
         WORD row = (LOWORD(lparam) + viewOffset.y) / tileHeight;
         WORD col = (HIWORD(lparam) + viewOffset.x) / tileWidth;
 
-        /*
+        
         if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
-            if (gameWorldController->tryAddFeatureToTile(col, row, 1)) {
+            if (gameWorldController->tryAddFeatureToTile(1)) {
                 InvalidateRect();
             }
         }
-        */
+        
         InvalidateRect();
     }
 
