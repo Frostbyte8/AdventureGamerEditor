@@ -66,6 +66,10 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         CMenu fileMenu;
         CMenu editMenu;
         CMenu featureMenu;
+        CMenu straightAwayMenu;
+        CMenu cornerMenu;
+        CMenu deadendMenu;
+        CMenu crossroadMenu;
 
         CBitmap tilesetBMP; 
 

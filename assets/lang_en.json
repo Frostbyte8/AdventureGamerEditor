@@ -8,6 +8,11 @@
     "ExitMenuItem"              : "E&xit",
 
 	"AddMenuItem"				: "&Add Feature",
+	"StraightAwayMenuItem"		: "&Straight Aways",
+	"CornerMenuItem"			: "&Corners",
+	"DeadEndMenuItem"			: "&Dead-Ends",
+	"CrossroadsMenuItem"		: "C&rossroads",
+
 	"StartMenuItem"				: "&Start",
 	"FinishMenuItem"			: "&Finish",
 	"LockedDoorMenuItem"		: "&Locked Door",
@@ -16,6 +21,14 @@
 	"WestBarrMenuItem"			: "&West Facing Barrier",
 	"EastBarrMenuItem"			: "&East Facing Barrier",
 	"GateMenuItem"				: "&Gate",
+
+	"SwitchOnMenuItem"			: "Switch O&n",
+	"SwitchOffMenuItem"			: "Switch O&ff",
+
+	"JumppadMenuItem"			: "&Jump Pad",
+
+	"HazardMenuItem"			: "&Hazard",
+	"SafeHavenMenuItem"			: "&Safe Haven",
 
     "EditMenu"                  : "&Edit",
     "LongTileMenuItem"          : "&Long Tile Description...",
