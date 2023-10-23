@@ -8,6 +8,7 @@
 #include "shared_functions.h"
 
 namespace MenuIDs {
+
     const WORD LongDescription      = 201;
     const WORD SummaryAndStory      = 202;
     const WORD WorldProperties      = 203;
@@ -16,27 +17,32 @@ namespace MenuIDs {
     const WORD SaveFile             = 206;
     const WORD SaveFileAs           = 207;
 
+    // For these IDs, we'll just obtain their MOD flag count.
+
     // Straight Aways
 
-    const WORD AddStart             = 208;      // 1
-    const WORD AddFinish            = 209;      // 2
-    const WORD AddDoor              = 210;      // 3
-    const WORD AddBarrierSouth      = 211;      // 1+3
-    const WORD AddBarrierEast       = 212;      // 1+3
-    const WORD AddBarrierNorth      = 213;      // 2+3
-    const WORD AddBarrierWest       = 214;      // 2+3
-    const WORD AddClosedGate        = 215;      // Gates always closed
+    const WORD AddStart             = 208;      // MOD1
+    const WORD AddFinish            = 209;      // MOD2
+    const WORD AddGate              = 210;      // MOD1+MOD2. Gates always closed.
+    const WORD AddLockedDoor        = 211;      // MOD3.
     
-    // Dead Ends
+    const WORD AddBarrierSouth      = 211;      // MOD1+MOD3
+    const WORD AddBarrierNorth      = 212;      // MOD2+MOD3
 
-    const WORD AddJumpPad           = 216;
+    const WORD AddBarrierEast       = 211;      // MOD1+MOD3
+    const WORD AddBarrierWest       = 212;      // MOD2+MOD3
 
     // Cross Roads
 
-    const WORD AddHazard            = 217;
-    const WORD AddSafeHaven         = 218;
+    const WORD AddHazard            = 211;      // MOD3
+    const WORD AddSafeHaven         = 213;      // ALLMODS
     
+    // Dead Ends
 
+    const WORD AddJumpPad           = 210;      // MOD1+MOD2
+
+    
+    
 }
 
 //=============================================================================
@@ -143,7 +149,14 @@ void MainWindowFrame::CreateMenuBar() {
     editMenu.AppendMenu(MF_STRING, MenuIDs::SummaryAndStory, LM_toUTF8("SummaryMenuItem", langMap));
     editMenu.AppendMenu(MF_STRING, MenuIDs::WorldProperties, LM_toUTF8("WorldMenuItem", langMap));
 
-    featureMenu.AppendMenu(MF_STRING | MF_DISABLED, MenuIDs::AddStart, LM_toUTF8("StartMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddStart, LM_toUTF8("StartMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddFinish, LM_toUTF8("FinishMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierNorth, LM_toUTF8("NorthBarrMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierSouth, LM_toUTF8("SouthBarrMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierEast, LM_toUTF8("EastBarrMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierWest, LM_toUTF8("WestBarrMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddGate, LM_toUTF8("GateMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::AddLockedDoor, LM_toUTF8("LockedDoorMenuItem", langMap));
 
     CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
 
@@ -297,6 +310,11 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
     const WORD ID = LOWORD(wParam);
     
+    if (ID >= MenuIDs::AddStart && ID <= MenuIDs::AddSafeHaven) {
+        gameWorldController->tryAddFeatureToTile((ID - MenuIDs::AddStart) + 1);
+        return TRUE;
+    }
+
     switch (ID) {
 
         // TODO: On New and Open need to be interface functions
@@ -305,6 +323,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         case MenuIDs::SaveFile:
         case MenuIDs::SaveFileAs:
+
             gameWorldController->saveWorld(ID == MenuIDs::SaveFileAs 
                                            ? true : false);
             return TRUE;

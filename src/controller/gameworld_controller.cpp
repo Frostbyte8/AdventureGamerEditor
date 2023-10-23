@@ -805,11 +805,11 @@ bool GameWorldController::tryUpdateConnectedTile(const GameTile& firstTile) {
     }
     else if (firstTile.hasSwitch()) {
 
-        if (otherTile.hasGate()) {
-            wasSuccessful = gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
-        }
-        else if (otherTile.isDark()) {
+        wasSuccessful = gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), SimplePoint(otherCol, otherRow));
+
+        if (otherTile.isDark()) {
             // Darkness is an exception to the rule, it has to be done here.
+            wasSuccessful = false; // We won't need to run the other builder code now.
             otherTileBuilder.flags(otherTile.getFlags() & ~(TileFlags::Dark));
             gameMap->updateTileFlags(gmKey, otherRow, otherCol, otherTile.getFlags() & ~(TileFlags::Dark));
             gameMap->updateTile(gmKey, otherTileIndex, otherTileBuilder.build());
