@@ -407,7 +407,11 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
     const uint8_t modifiers = modType | (gameTile.isDirtRoad() ?
                               TileModifiers::DirtRoad : TileModifiers::None);
 
-    newTile.sprite(GameTile::Builder::calculateSprite(spriteIndex, modifiers));                             
+    // TODO: Preserve darkness in some cases
+
+    newTile.sprite(GameTile::Builder::calculateSprite(spriteIndex, modifiers));
+    newTile.flags(gameTile.getFlags() & ~(TileFlags::Dark)); // Clear darkness.
+
 
     // And we can only continue if both the modifier is valid, and if there is
     // a tile connected to this one, that it can be updated too.

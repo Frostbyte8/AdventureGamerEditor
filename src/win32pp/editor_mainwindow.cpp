@@ -26,11 +26,11 @@ namespace MenuIDs {
     const WORD AddGate              = 210;      // MOD1+MOD2. Gates always closed.
     const WORD AddLockedDoor        = 211;      // MOD3.
     
-    const WORD AddBarrierSouth      = 211;      // MOD1+MOD3
-    const WORD AddBarrierNorth      = 212;      // MOD2+MOD3
+    const WORD AddBarrierSouth      = 212;      // MOD1+MOD3
+    const WORD AddBarrierNorth      = 213;      // MOD2+MOD3
 
-    const WORD AddBarrierEast       = 211;      // MOD1+MOD3
-    const WORD AddBarrierWest       = 212;      // MOD2+MOD3
+    const WORD AddBarrierEast       = 212;      // MOD1+MOD3
+    const WORD AddBarrierWest       = 213;      // MOD2+MOD3
 
     // Corners
 
@@ -44,7 +44,7 @@ namespace MenuIDs {
     // Cross Roads
 
     const WORD AddHazard            = 211;      // MOD3
-    const WORD AddSafeHaven         = 213;      // ALLMODS
+    const WORD AddSafeHaven         = 214;      // ALLMODS
    
 }
 
@@ -335,7 +335,9 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     const WORD ID = LOWORD(wParam);
     
     if (ID >= MenuIDs::AddStart && ID <= MenuIDs::AddSafeHaven) {
-        gameWorldController->tryAddFeatureToTile((ID - MenuIDs::AddStart) + 1);
+        if (gameWorldController->tryAddFeatureToTile((ID - MenuIDs::AddStart) + 1)) {
+            reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+        }
         return TRUE;
     }
 
