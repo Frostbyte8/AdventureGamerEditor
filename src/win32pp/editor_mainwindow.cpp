@@ -490,6 +490,57 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
     const std::vector<GameCharacter>& charVec = gameWorldController->getGameMap()->getGameCharactersAtRowCol(row, col);
     reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
 
+    const GameMap* gameMap = gameWorldController->getGameMap();
+    const GameTile& gameTile = gameMap->getTile(gameMap->indexFromRowCol(row, col));
+
+    const uint8_t roadType = gameTile.getSpriteIndex();
+
+    // TODO: Split this into a function called UpdateFeatureMenu
+
+    for (int i = 0; i < featureMenu.GetMenuItemCount(); ++i) {
+        featureMenu.EnableMenuItem(i, MF_DISABLED | MF_BYPOSITION);
+    }
+
+    switch(roadType) {
+
+        case RoadTypes::StraightawayHorizontal:
+        case RoadTypes::StraightawayVertical:
+            featureMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
+
+            if (roadType == RoadTypes::StraightawayHorizontal) {
+                straightAwayMenu.EnableMenuItem(2, MF_DISABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(3, MF_DISABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(4, MF_ENABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
+            }
+            else {
+                straightAwayMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(4, MF_DISABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(5, MF_DISABLED | MF_BYPOSITION);
+            }
+
+            break;
+        
+        case RoadTypes::CornerNE:
+        case RoadTypes::CornerNW:
+        case RoadTypes::CornerSE:
+        case RoadTypes::CornerSW:
+            featureMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
+            break;
+
+        case RoadTypes::DeadEndEast:
+        case RoadTypes::DeadEndNorth:
+        case RoadTypes::DeadEndSouth:
+        case RoadTypes::DeadEndWest:
+            featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+            break;
+
+        case RoadTypes::Crossroads:
+            featureMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
+            break;
+    }
+
     return true;
 }
 
