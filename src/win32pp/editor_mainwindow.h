@@ -57,6 +57,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
 	private:
 
+        void updateStatusbar(const int& index);
         void updateFeatureMenu(const int& index);
         void CreateMenuBar();
         bool loadTileSet();

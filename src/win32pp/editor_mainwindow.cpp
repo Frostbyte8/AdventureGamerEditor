@@ -487,7 +487,21 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 void MainWindowFrame::onTileUpdated(const int& index) {
     if (gameWorldController->getSelectedTileIndex() == index) {
         updateFeatureMenu(index);
+        updateStatusbar(index);
     }
+}
+
+void MainWindowFrame::updateStatusbar(const int& index) {
+
+    const int currentRow = gameWorldController->getSelectedRow();
+    const int currentCol = gameWorldController->getSelectedCol();
+    const GameTile& currentTile = gameWorldController->getGameMap()->getTile(index);
+
+    CString newCaption;
+    newCaption.Format(L"(%d, %d) - ", currentRow, currentCol);
+    newCaption += currentTile.getName().c_str();
+    SetStatusText(newCaption);
+
 }
 
 void MainWindowFrame::updateFeatureMenu(const int& index) {
@@ -557,6 +571,7 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
     reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
 
     updateFeatureMenu(gameMap->indexFromRowCol(row, col));
+    updateStatusbar(gameMap->indexFromRowCol(row, col));
 
     return true;
 }
