@@ -33,7 +33,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedEditStoryDialog();
         virtual void finishedEditTileDescriptionDialog();
         virtual void finishedEditWorldInfoDialog();
-                
+        
+        virtual void onTileUpdated(const int& index);
         virtual bool onSelectedTileChanged(const int& row, const int& col);
         virtual void onAlterCharacter(const int& alterType, const size_t& index);
         virtual void onAlterObject(const int& alterType, const size_t& index);
@@ -56,6 +57,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
 	private:
 
+        void updateFeatureMenu(const int& index);
         void CreateMenuBar();
         bool loadTileSet();
 

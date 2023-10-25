@@ -65,6 +65,11 @@ class MainWindowInterface {
         virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
 
         ///--------------------------------------------------------------------
+        /// Sent when a tile is changed
+        ///--------------------------------------------------------------------
+        virtual void onTileUpdated(const int& index) = 0;
+
+        ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished
         ///--------------------------------------------------------------------
         virtual void finishedEditCharacterDialog() = 0;

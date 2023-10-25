@@ -481,17 +481,19 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 }
 
 //-----------------------------------------------------------------------------
-// onSelectedTileChanged
+// onTileUpdated
 //-----------------------------------------------------------------------------
 
-bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
-    
-    const std::vector<GameObject>& objectVec = gameWorldController->getGameMap()->getGameObjectsAtRowCol(row, col);
-    const std::vector<GameCharacter>& charVec = gameWorldController->getGameMap()->getGameCharactersAtRowCol(row, col);
-    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
+void MainWindowFrame::onTileUpdated(const int& index) {
+    if (gameWorldController->getSelectedTileIndex() == index) {
+        updateFeatureMenu(index);
+    }
+}
+
+void MainWindowFrame::updateFeatureMenu(const int& index) {
 
     const GameMap* gameMap = gameWorldController->getGameMap();
-    const GameTile& gameTile = gameMap->getTile(gameMap->indexFromRowCol(row, col));
+    const GameTile& gameTile = gameMap->getTile(index);
 
     const uint8_t roadType = gameTile.getSpriteIndex();
 
@@ -501,45 +503,60 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
         featureMenu.EnableMenuItem(i, MF_DISABLED | MF_BYPOSITION);
     }
 
-    switch(roadType) {
+    switch (roadType) {
 
-        case RoadTypes::StraightawayHorizontal:
-        case RoadTypes::StraightawayVertical:
-            featureMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
+    case RoadTypes::StraightawayHorizontal:
+    case RoadTypes::StraightawayVertical:
+        featureMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
 
-            if (roadType == RoadTypes::StraightawayHorizontal) {
-                straightAwayMenu.EnableMenuItem(2, MF_DISABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(3, MF_DISABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(4, MF_ENABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
-            }
-            else {
-                straightAwayMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(4, MF_DISABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(5, MF_DISABLED | MF_BYPOSITION);
-            }
+        if (roadType == RoadTypes::StraightawayHorizontal) {
+            straightAwayMenu.EnableMenuItem(2, MF_DISABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(3, MF_DISABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(4, MF_ENABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
+        }
+        else {
+            straightAwayMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(4, MF_DISABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(5, MF_DISABLED | MF_BYPOSITION);
+        }
 
-            break;
-        
-        case RoadTypes::CornerNE:
-        case RoadTypes::CornerNW:
-        case RoadTypes::CornerSE:
-        case RoadTypes::CornerSW:
-            featureMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
-            break;
+        break;
 
-        case RoadTypes::DeadEndEast:
-        case RoadTypes::DeadEndNorth:
-        case RoadTypes::DeadEndSouth:
-        case RoadTypes::DeadEndWest:
-            featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
-            break;
+    case RoadTypes::CornerNE:
+    case RoadTypes::CornerNW:
+    case RoadTypes::CornerSE:
+    case RoadTypes::CornerSW:
+        featureMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
+        break;
 
-        case RoadTypes::Crossroads:
-            featureMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
-            break;
+    case RoadTypes::DeadEndEast:
+    case RoadTypes::DeadEndNorth:
+    case RoadTypes::DeadEndSouth:
+    case RoadTypes::DeadEndWest:
+        featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+        break;
+
+    case RoadTypes::Crossroads:
+        featureMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
+        break;
     }
+}
+
+//-----------------------------------------------------------------------------
+// onSelectedTileChanged
+//-----------------------------------------------------------------------------
+
+bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
+    
+    const GameMap* gameMap = gameWorldController->getGameMap();
+
+    const std::vector<GameObject>& objectVec = gameMap->getGameObjectsAtRowCol(row, col);
+    const std::vector<GameCharacter>& charVec = gameMap->getGameCharactersAtRowCol(row, col);
+    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
+
+    updateFeatureMenu(gameMap->indexFromRowCol(row, col));
 
     return true;
 }

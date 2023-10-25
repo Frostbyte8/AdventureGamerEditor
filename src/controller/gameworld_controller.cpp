@@ -124,9 +124,7 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     worldFileName = fileName;
 
     drawingTileIndex = 0;
-    selectedTileIndex = 0;
-    selectedRow = 0;
-    selectedCol = 0;
+    tryUpdateSelectedTile(0);
 
     return loadSuccessful;
 }
@@ -173,10 +171,8 @@ bool GameWorldController::newWorld() {
     worldFilePath = "";
     worldFileName = "";
 
+    tryUpdateSelectedTile(0);
     drawingTileIndex = 0;
-    selectedTileIndex = 0;
-    selectedRow = 0;
-    selectedCol = 0;
 
     return wasWorldCreated;
 }
@@ -256,6 +252,8 @@ bool GameWorldController::tryChangeSelectedTile() {
     
 
     gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
+
+    mainWindow->onTileUpdated(selectedTileIndex);
 
     return true;
 
@@ -825,6 +823,10 @@ bool GameWorldController::tryUpdateConnectedTile(const GameTile& firstTile) {
         otherTileBuilder.sprite(otherTileNewSprite);
         gameMap->updateTile(gmKey, otherTileIndex, otherTileBuilder.build());
     }
+
+    // Inform the main window this tile was updated, incase it needs to do anything
+    // with it.
+    mainWindow->onTileUpdated(otherTileIndex);
 
     return true; // Removal was successful
 
