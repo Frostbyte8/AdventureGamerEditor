@@ -61,6 +61,8 @@ class GameWorldController {
         bool tryUpdateTileDescription(const int& index, const std::string& inName, const std::string& inDescription);
 
         bool tryAddFeatureToTile(const int& modType);
+        bool tryAddFirstJumpConnection();
+        bool tryAddSecondJumpConnection();
         
 
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
@@ -87,6 +89,9 @@ class GameWorldController {
         int                             selectedRow;
         int                             selectedCol;
         int                             drawingTileIndex;
+
+        SimplePoint                     firstJumpConnection;
+        SimplePoint                     secondJumpConnection;
 
 
         // Game World is composed of several other objects which I have

@@ -289,6 +289,18 @@ void GameMap::addCharacter(GMKey, GameCharacter& gameCharacter) {
 }
 
 ///----------------------------------------------------------------------------
+/// addJump - Adds a jump connection to the jump list
+/// @param GMKey used to restrict access of this function.
+/// @param Simple Point of the first tile in the jump
+/// @param Simple Point of the second tile in the jump
+///----------------------------------------------------------------------------
+
+void GameMap::addJump(GMKey, SimplePoint& firstJump, SimplePoint& secondJump) {
+    ConnectionPoint newJump = ConnectionPoint(firstJump, secondJump);
+    jumpPoints.push_back(newJump);
+}
+
+///----------------------------------------------------------------------------
 /// addObject - Adds a object to the game world.
 /// @param GMKey used to restrict access of this function.
 /// @param GameObject to add

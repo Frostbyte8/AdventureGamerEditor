@@ -75,6 +75,7 @@ class GameMap {
         void addObject(GMKey, GameObject& gameObject);
         void deleteCharacter(GMKey, const size_t& index);
         void deleteObject(GMKey, const size_t& index);
+        void addJump(GMKey, SimplePoint& firstConnection, SimplePoint& secondConnection);
         void replaceCharacter(GMKey, const size_t& index, const GameCharacter& gameChar);
         void replaceObject(GMKey, const size_t& index, const GameObject& gameObject);
 

@@ -26,6 +26,9 @@
 	"SwitchOffMenuItem"			: "Switch O&ff",
 
 	"JumppadMenuItem"			: "&Jump Pad",
+	"JumppadConnectFirst"		: "&Start Jumppad Connection",
+	"JumppadConnectSecond"		: "&Finish Jumppad Connection",
+
 
 	"HazardMenuItem"			: "&Hazard",
 	"SafeHavenMenuItem"			: "&Safe Haven",

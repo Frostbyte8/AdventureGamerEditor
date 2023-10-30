@@ -831,3 +831,49 @@ bool GameWorldController::tryUpdateConnectedTile(const GameTile& firstTile) {
     return true; // Removal was successful
 
 }
+
+// For now, get this working and refactor it after
+
+bool GameWorldController::tryAddFirstJumpConnection() {
+
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if (findConnectionPoint(currentTile) != NULL) {
+        return false;
+    }
+
+    if (currentTile.isDeadend() && currentTile.hasJumpPad()) {
+
+        firstJumpConnection = SimplePoint(selectedCol, selectedRow);
+        return true;
+    }
+    else {
+
+        return false;
+    }
+}
+
+bool GameWorldController::tryAddSecondJumpConnection() {
+
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if (findConnectionPoint(currentTile) != NULL) {
+        return false;
+    }
+
+    if (currentTile.isDeadend() && currentTile.hasJumpPad()) {
+        secondJumpConnection = SimplePoint(selectedCol, selectedRow);
+    }
+    else {
+        return false;
+    }
+
+    if (firstJumpConnection == secondJumpConnection) {
+        return false; // Can't jump to itself!
+    }
+
+    gameMap->addJump(gmKey, firstJumpConnection, secondJumpConnection);
+
+    return true;
+
+}

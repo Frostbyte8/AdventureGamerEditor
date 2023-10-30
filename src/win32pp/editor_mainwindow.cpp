@@ -45,6 +45,12 @@ namespace MenuIDs {
 
     const WORD AddHazard            = 211;      // MOD3
     const WORD AddSafeHaven         = 214;      // ALLMODS
+
+    // Additional Menu Items
+
+    const WORD FirstJumpConnection  = 215;
+    const WORD SecondJumpConnection = 216;
+
    
 }
 
@@ -179,6 +185,12 @@ void MainWindowFrame::CreateMenuBar() {
 
     crossroadMenu.AppendMenu(MF_STRING, MenuIDs::AddHazard, LM_toUTF8("HazardMenuItem", langMap));
     crossroadMenu.AppendMenu(MF_STRING, MenuIDs::AddSafeHaven, LM_toUTF8("SafeHavenMenuItem", langMap));
+
+    // Append extra items where needed
+
+    deadendMenu.AppendMenu(MF_STRING, MenuIDs::FirstJumpConnection, LM_toUTF8("JumppadConnectFirst", langMap));
+    deadendMenu.AppendMenu(MF_STRING | MF_GRAYED, MenuIDs::SecondJumpConnection, LM_toUTF8("JumppadConnectSecond", langMap));
+
 
     // Finally deal with the menu bar
 
@@ -339,7 +351,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
             reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
         }
         return TRUE;
-    }
+    }  
 
     switch (ID) {
 
@@ -358,6 +370,13 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case MenuIDs::SummaryAndStory: onEditStory(); break;
         case MenuIDs::LongDescription: onEditTileDescription(); break;
         case MenuIDs::WorldProperties: onEditWorldInfo(); break;
+
+
+        case MenuIDs::FirstJumpConnection:
+        case MenuIDs::SecondJumpConnection:
+            addJumpConnection(ID);
+            return TRUE;
+            break;
 
         default: return FALSE;
 
@@ -514,7 +533,7 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
     // TODO: Split this into a function called UpdateFeatureMenu
 
     for (int i = 0; i < featureMenu.GetMenuItemCount(); ++i) {
-        featureMenu.EnableMenuItem(i, MF_DISABLED | MF_BYPOSITION);
+        featureMenu.EnableMenuItem(i, MF_GRAYED | MF_BYPOSITION);
     }
 
     switch (roadType) {
@@ -524,16 +543,16 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
         featureMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
 
         if (roadType == RoadTypes::StraightawayHorizontal) {
-            straightAwayMenu.EnableMenuItem(2, MF_DISABLED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(3, MF_DISABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(3, MF_GRAYED | MF_BYPOSITION);
             straightAwayMenu.EnableMenuItem(4, MF_ENABLED | MF_BYPOSITION);
             straightAwayMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
         }
         else {
             straightAwayMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
             straightAwayMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(4, MF_DISABLED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(5, MF_DISABLED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(4, MF_GRAYED | MF_BYPOSITION);
+            straightAwayMenu.EnableMenuItem(5, MF_GRAYED | MF_BYPOSITION);
         }
 
         break;
@@ -987,4 +1006,30 @@ int MainWindowFrame::onSaveFileDialog(std::string& filePath, std::string& fileNa
     }
 
     return GenericInterfaceResponses::Cancel;
+}
+
+
+void MainWindowFrame::addJumpConnection(const int& whichPoint) {
+    
+    if (whichPoint == MenuIDs::FirstJumpConnection) {
+        if (gameWorldController->tryAddFirstJumpConnection()) {
+            deadendMenu.EnableMenuItem(1, MF_GRAYED | MF_BYPOSITION);
+            deadendMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+            return;
+        }
+    }
+    else if (whichPoint == MenuIDs::SecondJumpConnection) {
+        if (gameWorldController->tryAddSecondJumpConnection()) {
+            MessageBox(L"Jump connection added successfully.", L"Jump Added", MB_OK);
+        }
+        else {
+            MessageBox(L"Unable to add Jump Connection.", L"Error adding Jump", MB_ICONERROR);
+        }
+    }
+
+    // If any failures happens, start over.
+
+    deadendMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
+    deadendMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
+
 }
