@@ -58,6 +58,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 	private:
 
         void addJumpConnection(const int& whichPoint);
+        void addSwitchConnection(const int& whichPoint);
         void updateStatusbar(const int& index);
         void updateFeatureMenu(const int& index);
         void CreateMenuBar();

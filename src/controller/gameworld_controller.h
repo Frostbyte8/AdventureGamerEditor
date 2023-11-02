@@ -64,6 +64,8 @@ class GameWorldController {
         bool tryAddFirstJumpConnection();
         bool tryAddSecondJumpConnection();
         
+        bool tryStartSwitchConnection();
+        bool tryEndSwitchConnection();
 
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
         
@@ -92,6 +94,8 @@ class GameWorldController {
 
         SimplePoint                     firstJumpConnection;
         SimplePoint                     secondJumpConnection;
+        SimplePoint                     firstSwitchConnection;
+        SimplePoint                     secondSwitchConnection;
 
 
         // Game World is composed of several other objects which I have

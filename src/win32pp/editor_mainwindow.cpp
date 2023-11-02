@@ -21,36 +21,38 @@ namespace MenuIDs {
 
     // Straight Aways
 
-    const WORD AddStart             = 208;      // MOD1
-    const WORD AddFinish            = 209;      // MOD2
-    const WORD AddGate              = 210;      // MOD1+MOD2. Gates always closed.
-    const WORD AddLockedDoor        = 211;      // MOD3.
+    const WORD AddStart                 = 208;      // MOD1
+    const WORD AddFinish                = 209;      // MOD2
+    const WORD AddGate                  = 210;      // MOD1+MOD2.
+    const WORD AddLockedDoor            = 211;      // MOD3.
     
-    const WORD AddBarrierSouth      = 212;      // MOD1+MOD3
-    const WORD AddBarrierNorth      = 213;      // MOD2+MOD3
+    const WORD AddBarrierSouth          = 212;      // MOD1+MOD3
+    const WORD AddBarrierNorth          = 213;      // MOD2+MOD3
 
-    const WORD AddBarrierEast       = 212;      // MOD1+MOD3
-    const WORD AddBarrierWest       = 213;      // MOD2+MOD3
+    const WORD AddBarrierEast           = 212;      // MOD1+MOD3
+    const WORD AddBarrierWest           = 213;      // MOD2+MOD3
 
     // Corners
 
-    const WORD AddSwitchOn          = 208;      // MOD1
-    const WORD AddSwitchOff         = 209;      // MOD2
+    const WORD AddSwitchOn              = 208;      // MOD1
+    const WORD AddSwitchOff             = 209;      // MOD2
 
     // Dead Ends
 
-    const WORD AddJumpPad           = 210;      // MOD1+MOD2
+    const WORD AddJumpPad               = 210;      // MOD1+MOD2
 
     // Cross Roads
 
-    const WORD AddHazard            = 211;      // MOD3
-    const WORD AddSafeHaven         = 214;      // ALLMODS
+    const WORD AddHazard                = 211;      // MOD3
+    const WORD AddSafeHaven             = 214;      // ALLMODS
 
     // Additional Menu Items
 
-    const WORD FirstJumpConnection  = 215;
-    const WORD SecondJumpConnection = 216;
+    const WORD FirstJumpConnection      = 215;
+    const WORD SecondJumpConnection     = 216;
 
+    const WORD startSwitchConnection    = 217;
+    const WORD endSwitchConnection      = 218;
    
 }
 
@@ -190,6 +192,10 @@ void MainWindowFrame::CreateMenuBar() {
 
     deadendMenu.AppendMenu(MF_STRING, MenuIDs::FirstJumpConnection, LM_toUTF8("JumppadConnectFirst", langMap));
     deadendMenu.AppendMenu(MF_STRING | MF_GRAYED, MenuIDs::SecondJumpConnection, LM_toUTF8("JumppadConnectSecond", langMap));
+
+    featureMenu.AppendMenu(MF_SEPARATOR);
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::startSwitchConnection, LM_toUTF8("StartSwitchMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING | MF_GRAYED, MenuIDs::endSwitchConnection, LM_toUTF8("EndSwitchMenuItem", langMap));
 
 
     // Finally deal with the menu bar
@@ -378,6 +384,12 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
             return TRUE;
             break;
 
+        case MenuIDs::startSwitchConnection:
+        case MenuIDs::endSwitchConnection:
+            addSwitchConnection(ID);
+            return TRUE;
+            break;
+
         default: return FALSE;
 
     }
@@ -532,7 +544,7 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
     // TODO: Split this into a function called UpdateFeatureMenu
 
-    for (int i = 0; i < featureMenu.GetMenuItemCount(); ++i) {
+    for (int i = 0; i < featureMenu.GetMenuItemCount() - 2; ++i) {
         featureMenu.EnableMenuItem(i, MF_GRAYED | MF_BYPOSITION);
     }
 
@@ -1032,4 +1044,26 @@ void MainWindowFrame::addJumpConnection(const int& whichPoint) {
     deadendMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
     deadendMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
 
+}
+
+void MainWindowFrame::addSwitchConnection(const int& whichPoint) {
+    
+    if (whichPoint == MenuIDs::startSwitchConnection) {
+        if (gameWorldController->tryStartSwitchConnection()) {
+            featureMenu.EnableMenuItem(5, MF_GRAYED | MF_BYPOSITION);
+            featureMenu.EnableMenuItem(6, MF_ENABLED | MF_BYPOSITION);
+            return;
+        }
+    }
+    else if (whichPoint == MenuIDs::endSwitchConnection) {
+        if (gameWorldController->tryEndSwitchConnection()) {
+            MessageBox(L"Switch connection added successfully.", L"Switch Added", MB_OK);
+        }
+        else {
+            MessageBox(L"Unable to add Switch Connection.", L"Error adding Switch", MB_ICONERROR);
+        }
+    }
+
+    featureMenu.EnableMenuItem(6, MF_GRAYED | MF_BYPOSITION);
+    featureMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
 }

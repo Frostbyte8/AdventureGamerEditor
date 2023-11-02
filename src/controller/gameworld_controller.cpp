@@ -847,15 +847,16 @@ bool GameWorldController::tryAddFirstJumpConnection() {
         firstJumpConnection = SimplePoint(selectedCol, selectedRow);
         return true;
     }
-    else {
 
-        return false;
-    }
+    return false;
+
 }
 
 bool GameWorldController::tryAddSecondJumpConnection() {
 
     const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    // TODO: Make sure everything is in bounds
 
     if (findConnectionPoint(currentTile) != NULL) {
         return false;
@@ -873,6 +874,58 @@ bool GameWorldController::tryAddSecondJumpConnection() {
     }
 
     gameMap->addJump(gmKey, firstJumpConnection, secondJumpConnection);
+
+    return true;
+
+}
+
+bool GameWorldController::tryStartSwitchConnection() {
+
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if (findConnectionPoint(currentTile) != NULL) {
+        return false;
+    }
+
+    if (currentTile.isCorner() && currentTile.hasSwitch()) {
+
+        firstSwitchConnection = SimplePoint(selectedCol, selectedRow);
+        return true;
+    }
+
+    return false;
+}
+
+bool GameWorldController::tryEndSwitchConnection() {
+    
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if (findConnectionPoint(currentTile) != NULL) {
+        return false;
+    }
+
+    // TODO: Dark spaces
+
+    if (currentTile.isStraightaway() && currentTile.hasGate()) {
+        secondSwitchConnection = SimplePoint(selectedCol, selectedRow);
+    }
+    else {
+        return false;
+    }
+
+    if (firstSwitchConnection == secondSwitchConnection) {
+        return false; // Can't connect a switch to itself
+    }
+
+    const int firstIndex = gameMap->indexFromRowCol(firstSwitchConnection.getRow(), firstSwitchConnection.getColumn());
+    const GameTile& firstTile = gameMap->getTile(firstIndex);
+
+    if (!firstTile.hasSwitch()) {
+        // TODO: Move this to the tile change code instead
+        return false; // The tile switched before we could complete the task. 
+    }
+
+    gameMap->addSwitch(gmKey, firstSwitchConnection, secondSwitchConnection);
 
     return true;
 

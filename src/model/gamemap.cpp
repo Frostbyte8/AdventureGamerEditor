@@ -301,6 +301,18 @@ void GameMap::addJump(GMKey, SimplePoint& firstJump, SimplePoint& secondJump) {
 }
 
 ///----------------------------------------------------------------------------
+/// addSwitch - Adds a switch connection to the switch list
+/// @param GMKey used to restrict access of this function.
+/// @param Simple Point of the first tile in the switch
+/// @param Simple Point of the second tile in the switch
+///----------------------------------------------------------------------------
+
+void GameMap::addSwitch(GMKey, SimplePoint& firstConnection, SimplePoint& secondConnection) {
+    ConnectionPoint newSwitch = ConnectionPoint(firstConnection, secondConnection);
+    switchConnections.push_back(newSwitch);
+}
+
+///----------------------------------------------------------------------------
 /// addObject - Adds a object to the game world.
 /// @param GMKey used to restrict access of this function.
 /// @param GameObject to add
