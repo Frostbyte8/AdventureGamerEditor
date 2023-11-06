@@ -29,7 +29,7 @@
 	"JumppadConnectFirst"		: "&Start Jumppad Connection",
 	"JumppadConnectSecond"		: "&Finish Jumppad Connection",
 	"StartSwitchMenuItem"		: "S&tart Switch Connection",
-	"EndSwitchMenuItem"			: "&End Switch Connection"
+	"EndSwitchMenuItem"			: "&End Switch Connection",
 
 
 	"HazardMenuItem"			: "&Hazard",
