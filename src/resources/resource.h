@@ -1,5 +1,6 @@
-/*
-#ifndef RT_MANIFEST
-  #define RT_MANIFEST 24
+#define IDI_APPICON 101
+
+#ifndef IDC_STATIC
+#define IDC_STATIC (-1)
 #endif
-*/
+
