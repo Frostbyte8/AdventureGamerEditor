@@ -405,7 +405,8 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
     const uint8_t modifiers = modType | (gameTile.isDirtRoad() ?
                               TileModifiers::DirtRoad : TileModifiers::None);
 
-    // TODO: Preserve darkness in some cases
+    // TODO: Preserve darkness in some cases. The only time is should be cleared
+    // is when a new feature is a gate.
 
     newTile.sprite(GameTile::Builder::calculateSprite(spriteIndex, modifiers));
     newTile.flags(gameTile.getFlags() & ~(TileFlags::Dark)); // Clear darkness.
@@ -929,4 +930,26 @@ bool GameWorldController::tryEndSwitchConnection() {
 
     return true;
 
+}
+
+///----------------------------------------------------------------------------
+/// tryMakeTileDark - Attempts to make a tile dark.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryMakeTileDark() {
+
+    const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
+
+    if (gameTile.hasGate()) {
+        return false;
+    }
+
+    GameTile::Builder newTile(gameTile);
+
+    newTile.flags(gameTile.getFlags() | TileFlags::Dark);
+
+    gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
+
+    return true;
 }

@@ -162,19 +162,7 @@ LRESULT GameMapView::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
     else if (msg == WM_LBUTTONDBLCLK) {
         return onLButtonDBLClick(LOWORD(lparam), HIWORD(lparam));
     }
-    else if (msg == WM_RBUTTONDOWN) {
-        CPoint viewOffset = GetScrollPosition();
-
-        WORD row = (LOWORD(lparam) + viewOffset.y) / tileHeight;
-        WORD col = (HIWORD(lparam) + viewOffset.x) / tileWidth;
-
-        
-        if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
-            if (gameWorldController->tryAddFeatureToTile(1)) {
-                InvalidateRect();
-            }
-        }
-        
+    else if (msg == WM_RBUTTONDOWN) {        
         InvalidateRect();
     }
 

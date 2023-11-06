@@ -30,6 +30,7 @@
 	"JumppadConnectSecond"		: "&Finish Jumppad Connection",
 	"StartSwitchMenuItem"		: "S&tart Switch Connection",
 	"EndSwitchMenuItem"			: "&End Switch Connection",
+	"MakeTileDarkMenuItem"		: "&Make Tile Dark",
 
 
 	"HazardMenuItem"			: "&Hazard",

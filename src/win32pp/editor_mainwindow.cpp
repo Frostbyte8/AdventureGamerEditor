@@ -53,6 +53,8 @@ namespace MenuIDs {
 
     const WORD startSwitchConnection    = 217;
     const WORD endSwitchConnection      = 218;
+
+    const WORD MakeTileDark             = 219;
    
 }
 
@@ -196,6 +198,7 @@ void MainWindowFrame::CreateMenuBar() {
     featureMenu.AppendMenu(MF_SEPARATOR);
     featureMenu.AppendMenu(MF_STRING, MenuIDs::startSwitchConnection, LM_toUTF8("StartSwitchMenuItem", langMap));
     featureMenu.AppendMenu(MF_STRING | MF_GRAYED, MenuIDs::endSwitchConnection, LM_toUTF8("EndSwitchMenuItem", langMap));
+    featureMenu.AppendMenu(MF_STRING, MenuIDs::MakeTileDark, LM_toUTF8("MakeTileDarkMenuItem", langMap));
 
 
     // Finally deal with the menu bar
@@ -387,6 +390,11 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case MenuIDs::startSwitchConnection:
         case MenuIDs::endSwitchConnection:
             addSwitchConnection(ID);
+            return TRUE;
+            break;
+
+        case MenuIDs::MakeTileDark:
+            gameWorldController->tryMakeTileDark();
             return TRUE;
             break;
 

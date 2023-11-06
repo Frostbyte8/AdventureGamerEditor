@@ -52,6 +52,7 @@ class GameWorldController {
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         
         bool tryChangeSelectedTile();
+        bool tryMakeTileDark();
 
         bool tryUpdateGameInfo(const GameInfo& newInfo);
         bool tryUpdateSelectedTile(const int& newIndex);
