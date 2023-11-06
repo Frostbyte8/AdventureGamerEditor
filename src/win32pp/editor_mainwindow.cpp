@@ -9,13 +9,13 @@
 
 namespace MenuIDs {
 
-    const WORD LongDescription      = 201;
-    const WORD SummaryAndStory      = 202;
-    const WORD WorldProperties      = 203;
-    const WORD NewFile              = 204;
-    const WORD OpenFile             = 205;
-    const WORD SaveFile             = 206;
-    const WORD SaveFileAs           = 207;
+    const WORD LongDescription          = 201;
+    const WORD SummaryAndStory          = 202;
+    const WORD WorldProperties          = 203;
+    const WORD NewFile                  = 204;
+    const WORD OpenFile                 = 205;
+    const WORD SaveFile                 = 206;
+    const WORD SaveFileAs               = 207;
 
     // For these IDs, we'll just obtain their MOD flag count.
 
@@ -446,7 +446,7 @@ BOOL MainWindowFrame::OnFileOpen() {
 
 ///----------------------------------------------------------------------------
 /// loadTileset - Load's the tileset BMP
-/// @return true if it loaded succesfully, false if it did not.
+/// @return true if it loaded successfully, false if it did not.
 ///----------------------------------------------------------------------------
 
 bool MainWindowFrame::loadTileSet() {
@@ -550,9 +550,9 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
     const uint8_t roadType = gameTile.getSpriteIndex();
 
-    // TODO: Split this into a function called UpdateFeatureMenu
+    const int numSubMenus = 4;
 
-    for (int i = 0; i < featureMenu.GetMenuItemCount() - 2; ++i) {
+    for (int i = 0; i < numSubMenus; ++i) {
         featureMenu.EnableMenuItem(i, MF_GRAYED | MF_BYPOSITION);
     }
 

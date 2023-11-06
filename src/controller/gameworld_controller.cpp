@@ -907,7 +907,7 @@ bool GameWorldController::tryEndSwitchConnection() {
 
     // TODO: Dark spaces
 
-    if (currentTile.isStraightaway() && currentTile.hasGate()) {
+    if ((currentTile.isStraightaway() && currentTile.hasGate()) || currentTile.isDark()) {
         secondSwitchConnection = SimplePoint(selectedCol, selectedRow);
     }
     else {
@@ -939,7 +939,7 @@ bool GameWorldController::tryEndSwitchConnection() {
 
 bool GameWorldController::tryMakeTileDark() {
 
-    const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
+    const GameTile& gameTile = gameMap->getTile(selectedTileIndex);
 
     if (gameTile.hasGate()) {
         return false;
