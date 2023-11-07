@@ -26,7 +26,7 @@
 #else
 	int APIENTRY WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		AdvEditApp advEditApp;
-		return advEditApp.Run()
+        return advEditApp.Run();
 	}
 #endif // _DEBUG
 

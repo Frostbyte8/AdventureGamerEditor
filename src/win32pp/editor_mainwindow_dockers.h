@@ -62,6 +62,7 @@ class EntitiesHereDocker : public CDocker {
 		}
 		virtual ~EntitiesHereDocker() {}
 
+
 	private:
 
 		EntitiesHereView view;

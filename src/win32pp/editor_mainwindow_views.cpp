@@ -73,12 +73,12 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
 
     CString caption = AtoW(langMap.get("ObjectsGroup").c_str(), CP_UTF8);
 
-    objectsGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
+    objectsGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
     objectsGroup.SetWindowText(caption);
 
     caption = AtoW(langMap.get("CharactersGroup").c_str(), CP_UTF8);
 
-    charactersGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
+    charactersGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
     charactersGroup.SetWindowText(caption);
 
     objectsListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
@@ -118,7 +118,7 @@ void GameEntitiesView::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
     wc.lpszClassName = L"GameEntitiesView";
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-    wc.style = CS_HREDRAW;
+    //wc.style = CS_HREDRAW | CS_VREDRAW;
 }
 
 ///----------------------------------------------------------------------------
@@ -160,7 +160,16 @@ void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects, c
 LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch(msg) {
-        case WM_SIZE: return OnSize(wParam, lParam);
+
+        case UWN_BARMOVE:
+        case UWN_DOCKMOVE:
+            OutputDebugStr(L"Yes\n");
+            break;
+
+        case WM_SIZE:
+            OnSize(wParam, lParam);
+            break;
+
     }
 
     return WndProcDefault(msg, wParam, lParam);
@@ -175,6 +184,8 @@ LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 ///----------------------------------------------------------------------------
 
 int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
+
+    Invalidate();
 
     const WindowMetrics::ControlDimensions cd = windowMetrics->GetControlDimensions();
     const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
@@ -191,13 +202,29 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     HDWP hDWP = BeginDeferWindowPos(12);
 
-    objectsGroup.DeferWindowPos(hDWP, NULL, objectGroupRect, SWP_NOZORDER);
-    charactersGroup.DeferWindowPos(hDWP, NULL, characterGroupRect, SWP_NOZORDER);
+    objectsGroup.DeferWindowPos(hDWP, NULL, objectGroupRect, SWP_NOREDRAW | SWP_NOZORDER);
+    charactersGroup.DeferWindowPos(hDWP, NULL, characterGroupRect, SWP_NOREDRAW | SWP_NOZORDER);
 
     sizeGroupBox(hDWP, false, objectGroupRect, cs, cd);
     sizeGroupBox(hDWP, true, characterGroupRect, cs, cd);
 
     EndDeferWindowPos(hDWP);
+
+    RedrawWindow(RDW_INVALIDATE | RDW_UPDATENOW);
+
+    UpdateWindow();
+
+    objectsGroup.UpdateWindow();
+    objectsListBox.UpdateWindow();
+    charactersGroup.UpdateWindow();
+    charactersListBox.UpdateWindow();
+
+    for (int i = 0; i < 4; ++i) {
+        alterObjectButton[i].UpdateWindow();
+        alterCharacterButton[i].UpdateWindow();
+    }
+
+    
 
     return 0;
 }
@@ -237,7 +264,7 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     
     // Start by moving the list box
     const CRect listBoxRect(xPos, yPos, right, bottom);
-    listBox->DeferWindowPos(hDWP, NULL, listBoxRect, SWP_NOZORDER | SWP_NOCOPYBITS);
+    listBox->DeferWindowPos(hDWP, NULL, listBoxRect, SWP_NOZORDER | SWP_NOREDRAW);
     //listBox->MoveWindow(listBoxRect, TRUE);
 
     const int width = listBoxRect.Size().cx;
@@ -251,14 +278,14 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     CRect rightButtonRect(bottomRight.x, bottom, 
                           bottomRight.x + (width - buttonWidth), bottom + cd.YBUTTON);
     
-    buttons[0].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS); //MoveWindow(leftButtonRect, TRUE);
-    buttons[1].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
+    buttons[0].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOREDRAW);
+    buttons[1].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOREDRAW);
 
     leftButtonRect.MoveToY(bottomRight.y);
     rightButtonRect.MoveToY(bottomRight.y);
 
-    buttons[2].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
-    buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOZORDER | SWP_NOCOPYBITS);
+    buttons[2].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOREDRAW);
+    buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOREDRAW);
 
 }
 
