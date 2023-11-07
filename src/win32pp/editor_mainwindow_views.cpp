@@ -195,8 +195,8 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     
     HDWP hDWP = BeginDeferWindowPos(12);
 
-    objectsGroup.DeferWindowPos(hDWP, NULL, objectGroupRect, SWP_NOREDRAW);
-    charactersGroup.DeferWindowPos(hDWP, NULL, characterGroupRect, SWP_NOREDRAW);
+    objectsGroup.DeferWindowPos(hDWP, HWND_TOP, objectGroupRect, SWP_NOREDRAW);
+    charactersGroup.DeferWindowPos(hDWP, HWND_TOP, characterGroupRect, SWP_NOREDRAW);
 
     sizeGroupBox(hDWP, false, objectGroupRect, cs, cd);
     sizeGroupBox(hDWP, true, characterGroupRect, cs, cd);
@@ -255,7 +255,7 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     
     // Start by moving the list box
     const CRect listBoxRect(xPos, yPos, right, bottom);
-    listBox->DeferWindowPos(hDWP, NULL, listBoxRect, SWP_NOREDRAW);
+    listBox->DeferWindowPos(hDWP, HWND_TOP, listBoxRect, SWP_NOREDRAW);
     //listBox->MoveWindow(listBoxRect, TRUE);
 
     const int width = listBoxRect.Size().cx;
@@ -269,14 +269,14 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
     CRect rightButtonRect(bottomRight.x, bottom, 
                           bottomRight.x + (width - buttonWidth), bottom + cd.YBUTTON);
     
-    buttons[0].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOREDRAW);
-    buttons[1].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOREDRAW);
+    buttons[0].DeferWindowPos(hDWP, HWND_TOP, leftButtonRect, SWP_NOREDRAW);
+    buttons[1].DeferWindowPos(hDWP, HWND_TOP, rightButtonRect, SWP_NOREDRAW);
 
     leftButtonRect.MoveToY(bottomRight.y);
     rightButtonRect.MoveToY(bottomRight.y);
 
-    buttons[2].DeferWindowPos(hDWP, NULL, leftButtonRect, SWP_NOREDRAW);
-    buttons[3].DeferWindowPos(hDWP, NULL, rightButtonRect, SWP_NOREDRAW);
+    buttons[2].DeferWindowPos(hDWP, HWND_TOP, leftButtonRect, SWP_NOREDRAW);
+    buttons[3].DeferWindowPos(hDWP, HWND_TOP, rightButtonRect, SWP_NOREDRAW);
 
 }
 
