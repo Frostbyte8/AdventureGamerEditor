@@ -22,6 +22,10 @@ namespace ControlIDs {
 //
 //=============================================================================
 
+void GameEntitiesView::PreCreate(CREATESTRUCT& cs) {
+    cs.dwExStyle |= WS_EX_COMPOSITED;
+}
+
 //=============================================================================
 // Public / Protected Functions
 //=============================================================================
@@ -155,16 +159,8 @@ void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects, c
 
 LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    //WINDOWPOS* wp;
-
     switch(msg) {
         case WM_SIZE: return OnSize(wParam, lParam);
-           /*
-        case WM_WINDOWPOSCHANGING:
-            wp = (WINDOWPOS*)(lParam);
-            wp->flags |= SWP_NOCOPYBITS;
-            break;
-            */
     }
 
     return WndProcDefault(msg, wParam, lParam);
@@ -193,14 +189,10 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     const CRect characterGroupRect(CPoint(xPos, objectGroupRect.bottom + cs.YRELATED_MARGIN),
                                    CSize(newWidth, newHeight - objectGroupRect.Size().cy));
 
-    HDWP hDWP = BeginDeferWindowPos(10);
+    HDWP hDWP = BeginDeferWindowPos(12);
 
-
-    //objectsGroup.MoveWindow(objectGroupRect, TRUE);
-    //charactersGroup.MoveWindow(characterGroupRect, FALSE);
-
-    objectsGroup.DeferWindowPos(hDWP, 0, objectGroupRect, SWP_NOZORDER);
-    charactersGroup.DeferWindowPos(hDWP, 0, characterGroupRect, SWP_NOZORDER);
+    objectsGroup.DeferWindowPos(hDWP, NULL, objectGroupRect, SWP_NOZORDER);
+    charactersGroup.DeferWindowPos(hDWP, NULL, characterGroupRect, SWP_NOZORDER);
 
     sizeGroupBox(hDWP, false, objectGroupRect, cs, cd);
     sizeGroupBox(hDWP, true, characterGroupRect, cs, cd);
@@ -275,6 +267,10 @@ void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const C
 // EntitiesHereView
 //
 //=============================================================================
+
+void EntitiesHereView::PreCreate(CREATESTRUCT& cs) {
+    cs.dwExStyle |= WS_EX_COMPOSITED;
+}
 
 int EntitiesHereView::OnCreate(CREATESTRUCT& cs) {
 

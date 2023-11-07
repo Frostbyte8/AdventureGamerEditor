@@ -22,6 +22,7 @@ class GameEntitiesView : public CWnd {
         void updateLists(const std::vector<GameObject>& gameObject, const std::vector<GameCharacter>& gameCharacters);
 
     protected:
+        virtual void PreCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
 
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
@@ -175,6 +176,7 @@ class EntitiesHereView : public CWnd {
         void updateLists(const std::vector<GameObject>& objectVec, const std::vector<GameCharacter>& gameCharacters);
 
     protected:
+        virtual void PreCreate(CREATESTRUCT& cs);
         virtual int OnCreate(CREATESTRUCT& cs);
 
 	private:
