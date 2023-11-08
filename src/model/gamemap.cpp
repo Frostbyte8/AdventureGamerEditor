@@ -1139,6 +1139,12 @@ void GameMap::readStory(const std::string& storyFilePath) {
 		ifs.read(&story[0], story.size());
 		ifs.close();
     }
+    else {
+        // No Story or summary exists.
+        summary = "";
+        story = "";
+        return;
+    }
 
     const size_t summarySize = story.find("\"\r\n"); 
 
