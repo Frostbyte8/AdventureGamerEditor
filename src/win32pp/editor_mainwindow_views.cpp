@@ -158,11 +158,14 @@ void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects, c
 
 LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
+    WINDOWPOS *wp;
+
     switch(msg) {
 
         case WM_SIZE:
             return OnSize(wParam, lParam);
             break;
+
     }
 
     return WndProcDefault(msg, wParam, lParam);
@@ -190,8 +193,6 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     const CRect characterGroupRect(CPoint(xPos, objectGroupRect.bottom + cs.YRELATED_MARGIN),
                                    CSize(newWidth, newHeight - objectGroupRect.Size().cy));
-
-    SetRedraw(TRUE);
     
     HDWP hDWP = BeginDeferWindowPos(12);
 
@@ -203,7 +204,10 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     EndDeferWindowPos(hDWP);    
 
-    RedrawWindow(RDW_ERASE | RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+    SetRedraw(TRUE);
+
+    RedrawWindow(RDW_UPDATENOW | RDW_ERASE | RDW_FRAME | RDW_INVALIDATE);
+    UpdateWindow();
 
     objectsGroup.UpdateWindow();
     objectsListBox.UpdateWindow();
