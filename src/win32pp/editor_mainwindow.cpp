@@ -360,6 +360,7 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
             break;
         case WM_EXITSIZEMOVE:
             isSizing = false;
+            RecalcDockLayout();
             break;
     }
 
