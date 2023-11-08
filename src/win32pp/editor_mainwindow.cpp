@@ -62,6 +62,13 @@ namespace MenuIDs {
 // Constructors / Destructor
 //=============================================================================
 
+void MainWindowFrame::RecalcDockLayout() {
+    LockWindowUpdate();
+    CDockFrame::RecalcDockLayout();
+    UnLockWindowUpdate();
+}
+
+
 ///----------------------------------------------------------------------------
 /// MainWindowFrame - Creates a new window frame with entity view as the
 /// main view.

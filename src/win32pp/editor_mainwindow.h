@@ -43,11 +43,14 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void onEditWorldInfo();
         virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);
 
+        virtual void RecalcDockLayout();
+
 	protected:
 
         virtual BOOL    OnCommand(WPARAM wparam, LPARAM lparam);
 		virtual int     OnCreate(CREATESTRUCT& cs);
 		virtual void    OnInitialUpdate();
+
 		virtual LRESULT WndProc(UINT msg, WPARAM wparam, LPARAM lparam);
 
         static bool CALLBACK SetProperFont(HWND child, LPARAM font) {

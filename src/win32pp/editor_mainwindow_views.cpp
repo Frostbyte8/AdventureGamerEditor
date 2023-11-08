@@ -81,16 +81,16 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
     charactersGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
     charactersGroup.SetWindowText(caption);
 
-    objectsListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
-    charactersListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
+    objectsListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
+    charactersListBox.Create(*this, 0, WS_CLIPSIBLINGS |  WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
 
     for(int i = 0; i < 4; ++i) {
 
-        alterObjectButton[i].Create(*this, 0, BS_PUSHBUTTON);
+        alterObjectButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON);
         alterObjectButton[i].SetWindowText(caption);
         alterObjectButton[i].SetDlgCtrlID(ControlIDs::AddObjectButton+i);
 
-        alterCharacterButton[i].Create(*this, 0, BS_PUSHBUTTON);
+        alterCharacterButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON);
         alterCharacterButton[i].SetWindowText(caption);
         alterCharacterButton[i].SetDlgCtrlID(ControlIDs::AddCharacterButton+i);
         
@@ -158,8 +158,6 @@ void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects, c
 
 LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    WINDOWPOS *wp;
-
     switch(msg) {
 
         case WM_SIZE:
@@ -204,8 +202,8 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     EndDeferWindowPos(hDWP);    
 
+    
     SetRedraw(TRUE);
-
     RedrawWindow(RDW_UPDATENOW | RDW_ERASE | RDW_FRAME | RDW_INVALIDATE);
     UpdateWindow();
 
