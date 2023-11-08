@@ -202,8 +202,6 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     EndDeferWindowPos(hDWP);    
 
-    
-    SetRedraw(TRUE);
     RedrawWindow(RDW_UPDATENOW | RDW_ERASE | RDW_FRAME | RDW_INVALIDATE);
     UpdateWindow();
 
@@ -216,8 +214,6 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
         alterObjectButton[i].UpdateWindow();
         alterCharacterButton[i].UpdateWindow();
     }
-
-    SetRedraw(FALSE);
 
     return 0;
 }

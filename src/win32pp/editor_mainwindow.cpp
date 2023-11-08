@@ -357,11 +357,13 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
         case WM_ENTERSIZEMOVE:
             isSizing = true;
+            RecalcDockLayout();
             break;
         case WM_EXITSIZEMOVE:
             isSizing = false;
             RecalcDockLayout();
             break;
+
     }
 
 
