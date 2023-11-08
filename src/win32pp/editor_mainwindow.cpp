@@ -346,11 +346,9 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     }
 	*/
 
-    //switch(msg) {
-    //    case WM_ERASEBKGND: return TRUE;
-    //}
 
     switch (msg) {
+
         case WM_ACTIVATEAPP:
             ::BringWindowToTop(activeWindowHandle);
             return 0;
@@ -358,6 +356,7 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_ENTERSIZEMOVE:
             isSizing = true;
             break;
+
         case WM_EXITSIZEMOVE:
             isSizing = false;
             break;
