@@ -79,6 +79,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         CMenu deadendMenu;
         CMenu crossroadMenu;
 
+        bool isSizing;
+
         CBitmap tilesetBMP; 
 
         int     tileWidth;

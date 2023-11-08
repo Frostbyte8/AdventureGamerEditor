@@ -63,9 +63,15 @@ namespace MenuIDs {
 //=============================================================================
 
 void MainWindowFrame::RecalcDockLayout() {
-    LockWindowUpdate();
-    CDockFrame::RecalcDockLayout();
-    UnLockWindowUpdate();
+
+    if (isSizing) {
+        CDockFrame::RecalcDockLayout();
+    }
+    else {
+        LockWindowUpdate();
+        CDockFrame::RecalcDockLayout();
+        UnLockWindowUpdate();
+    }
 }
 
 
@@ -81,6 +87,7 @@ editTileDescriptionDialog(0), tileWidth(0), tileHeight(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
     LanguageMapper::getInstance();
+    isSizing = false;
 }
 
 ///----------------------------------------------------------------------------
@@ -347,6 +354,13 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_ACTIVATEAPP:
             ::BringWindowToTop(activeWindowHandle);
             return 0;
+
+        case WM_ENTERSIZEMOVE:
+            isSizing = true;
+            break;
+        case WM_EXITSIZEMOVE:
+            isSizing = false;
+            break;
     }
 
 
