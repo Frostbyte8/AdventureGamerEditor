@@ -62,6 +62,13 @@ class EntitiesHereDocker : public CDocker {
 		}
 		virtual ~EntitiesHereDocker() {}
 
+    protected:
+        virtual void RecalcDockLayout() {
+            LockWindowUpdate();
+            CDocker::RecalcDockLayout();
+            UnLockWindowUpdate();
+        }
+
 
 	private:
 

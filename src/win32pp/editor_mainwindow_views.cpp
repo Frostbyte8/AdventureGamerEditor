@@ -298,14 +298,14 @@ int EntitiesHereView::OnCreate(CREATESTRUCT& cs) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    objectsHereGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
+    objectsHereGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
     objectsHereGroup.SetWindowText(L"Objects Here");
 
-    charactersHereGroup.Create(*this, 0, WS_CLIPCHILDREN | WS_CLIPSIBLINGS | BS_GROUPBOX);
+    charactersHereGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
     charactersHereGroup.SetWindowText(L"Chars here");
 
-    objectsHereListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
-    charactersHereListBox.Create(*this, 0, WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
+    objectsHereListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
+    charactersHereListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
 
     return retVal;
 }
@@ -336,11 +336,25 @@ int EntitiesHereView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
                                   characterGroupRect.right - cs.XGROUPBOX_MARGIN,
                                   characterGroupRect.bottom - cs.YWINDOW_MARGIN);
 
-    objectsHereGroup.MoveWindow(objectGroupRect);
-    charactersHereGroup.MoveWindow(characterGroupRect);
-    objectsHereListBox.MoveWindow(objectListRect);
-    charactersHereListBox.MoveWindow(characterListRect);
+    HDWP hDWP = BeginDeferWindowPos(4);
+
+    objectsHereGroup.DeferWindowPos(hDWP, HWND_TOP, objectGroupRect, SWP_NOREDRAW);
+    charactersHereGroup.DeferWindowPos(hDWP, HWND_TOP, characterGroupRect, SWP_NOREDRAW);
+    objectsHereListBox.DeferWindowPos(hDWP, HWND_TOP, objectListRect, SWP_NOREDRAW);
+    charactersHereListBox.DeferWindowPos(hDWP, HWND_TOP, characterListRect, SWP_NOREDRAW);
+
+    EndDeferWindowPos(hDWP);
     
+    SetRedraw(TRUE);
+    RedrawWindow(RDW_UPDATENOW | RDW_ERASE | RDW_FRAME | RDW_INVALIDATE);
+    UpdateWindow();
+
+    objectsHereGroup.UpdateWindow();
+    charactersHereGroup.UpdateWindow();
+    objectsHereListBox.UpdateWindow();
+    charactersHereListBox.UpdateWindow();
+
+    SetRedraw(FALSE);
 
     return 0;
 }
