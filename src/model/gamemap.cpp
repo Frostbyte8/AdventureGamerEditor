@@ -1365,3 +1365,37 @@ void GameMap::writeCharacters(std::ofstream& mapFile) {
 void GameMap::updateTile(GMKey, const size_t& index, GameTile& gameTile) {
     tiles[index] = gameTile;
 }
+
+bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
+       
+    if (newWidth == numCols) {
+        if (newHeight == numRows) {
+            return true; // Nothing to do.
+        }
+        else if (newHeight < numRows) {
+            // Clear the last view tiles, then resize.
+        }
+        tiles.resize(newWidth * newHeight);
+
+        return true;
+    }
+    else if (newHeight == numRows) {
+        
+        if (newWidth < numRows) {
+            // From Start
+        }
+        else {
+            // From End
+        }
+
+        return true;
+    }
+
+    // For everything else, we will copy everything into a new vector
+
+    std::vector<GameTile> newTiles;
+    GameTile::Builder builder;
+    GameTile gt = builder.build();
+    newTiles.insert(newTiles.begin(), newWidth * newHeight, gt);
+
+}

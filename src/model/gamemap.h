@@ -125,6 +125,8 @@ class GameMap {
         bool removeFeature(GMKey, const int& row, const int& col);
         bool updateTileFlags(GMKey, const int& row, const int& col, const uint8_t& newFlags);
 
+        bool resizeMap(const int& newWidth, const int& newHeight);
+
     private:
 
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
