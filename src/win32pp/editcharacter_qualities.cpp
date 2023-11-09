@@ -136,9 +136,9 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
     cbxType.SetDlgCtrlID(ControlIDs::CharType);
 
-    AddStringFromLangMap("TypeMissionary", cbxType, caption, langMap);
-    AddStringFromLangMap("TypeTrader", cbxType, caption, langMap);
     AddStringFromLangMap("TypeFighter", cbxType, caption, langMap);
+    AddStringFromLangMap("TypeTrader", cbxType, caption, langMap);
+    AddStringFromLangMap("TypeMissionary", cbxType, caption, langMap);
 
     spnMoney.SetRange(AdventureGamerConstants::MinObjectMonetaryValue,
                       AdventureGamerConstants::MaxObjectMonetaryValue);
@@ -211,7 +211,7 @@ void EditCharacterQualitiesTab::insertData(GameCharacter::Builder& builder) {
 
     builder.flags(newFlags);
     builder.money(spnMoney.GetPos());
-    builder.type(cbxType.GetCurSel());
+    builder.type(cbxType.GetCurSel() + 1);
 
 }
 
@@ -306,7 +306,7 @@ void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacte
     }
 
     spnMoney.SetPos(gameCharacter.getMoney());
-    cbxType.SetCurSel(gameCharacter.getType());
+    cbxType.SetCurSel(gameCharacter.getType() - 1);
 
 }
  

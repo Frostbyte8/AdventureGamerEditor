@@ -113,8 +113,8 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
     cbxSight.Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL | WS_VSCROLL | WS_TABSTOP);
     cbxSight.SetDlgCtrlID(ControlIDs::SightType);
 
-    AddStringFromLangMap("SightCharNormalOption", cbxSight, caption, langMap);
     AddStringFromLangMap("SightCharBlindOption", cbxSight, caption, langMap);
+    AddStringFromLangMap("SightCharNormalOption", cbxSight, caption, langMap);
     AddStringFromLangMap("SightCharInfraredOption", cbxSight, caption, langMap);
 
     return retVal;
@@ -186,7 +186,7 @@ void EditCharacterAttributesTab::insertData(GameCharacter::Builder& builder) {
 
     }
 
-    builder.sight(cbxSight.GetCurSel());
+    builder.sight(cbxSight.GetCurSel() + 1);
 }
 
 ///----------------------------------------------------------------------------
@@ -253,7 +253,7 @@ void EditCharacterAttributesTab::populateFields(const GameCharacter& gameCharact
         spnAttribType[i].SetPos(gameCharacter.getAttribute(i));
     }
 
-    cbxSight.SetCurSel(gameCharacter.getSight());
+    cbxSight.SetCurSel(gameCharacter.getSight() - 1);
 
 }
 
