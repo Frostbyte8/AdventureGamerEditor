@@ -1367,35 +1367,89 @@ void GameMap::updateTile(GMKey, const size_t& index, GameTile& gameTile) {
 }
 
 bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
-       
-    if (newWidth == numCols) {
-        if (newHeight == numRows) {
-            return true; // Nothing to do.
-        }
-        else if (newHeight < numRows) {
-            // Clear the last view tiles, then resize.
-        }
-        tiles.resize(newWidth * newHeight);
-
-        return true;
-    }
-    else if (newHeight == numRows) {
-        
-        if (newWidth < numRows) {
-            // From Start
-        }
-        else {
-            // From End
-        }
-
+    
+    if (newWidth == numCols && newHeight == numRows) {
         return true;
     }
 
-    // For everything else, we will copy everything into a new vector
+    bool onlyClearTiles = false;
 
-    std::vector<GameTile> newTiles;
     GameTile::Builder builder;
     GameTile gt = builder.build();
+
+    if (newWidth == numCols && newHeight > numRows) {
+        tiles.resize(newWidth * newHeight, gt);
+        return true;
+    }
+    else if (newWidth == numCols && newHeight < numRows) {
+        tiles.resize(newWidth * newHeight, gt);
+        onlyClearTiles = true;
+    }
+
+    // Unconnect old tiles, and move chars/objects to 0,0.
+
+
+    if (numCols - newHeight > 0 || numRows - newWidth > 0) {
+        const std::vector<GameObject> objectList = getGameObjects();
+        const std::vector<GameCharacter> characteList = getGameCharacters();
+
+        const size_t numObjects = gameObjects.size();
+
+        for (size_t i = 0; i < numObjects; ++i) {
+            const GameObject& curObject = gameObjects[i];
+
+            if (curObject.getIsLocated() == GameObjectConstants::LocatedOnGround) {
+                if (curObject.getY() >= newHeight || curObject.getX() >= newWidth) {
+                    GameObject::Builder bd(curObject);
+                    bd.location(0, 0);
+                    replaceObject(gmKey, i, bd.build());
+                }
+            }
+
+        }
+
+        const size_t numChars = gameCharacters.size();
+
+        for (size_t i = 0; i < numChars; ++i) {
+            const GameCharacter& curChar = gameCharacters[i];
+
+            if (curChar.getY() >= newHeight || curChar.getX() >= newWidth) {
+                GameCharacter::Builder bd(curChar);
+                bd.location(0, 0);
+                replaceCharacter(gmKey, i, bd.build());
+            }
+
+        }
+
+    }
+
+    if (onlyClearTiles) {
+        return true;
+    }
+
+    // For everything else, we will copy everything into a new vector  
+    std::vector<GameTile> newTiles;
     newTiles.insert(newTiles.begin(), newWidth * newHeight, gt);
 
+    for (int k = 0; k < newHeight; ++k) {
+        for (int i = 0; i < newWidth; ++i) {
+
+            if (i >= numCols) {
+                break; // Nothing left to copy on this row.
+            }
+
+            if (k >= numRows) {
+                break;
+            }
+
+            const int oldOffset = (i + (k * numCols));
+
+            newTiles.at(i + (k * newWidth)) = tiles.at(oldOffset);
+        }
+    }
+
+    tiles = newTiles;
+    numRows = newHeight;
+    numCols = newWidth;
+    return true;
 }

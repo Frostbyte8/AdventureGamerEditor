@@ -69,6 +69,10 @@ class GameWorldController {
         bool tryEndSwitchConnection();
 
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
+
+        void resize(const int& newWidth, const int& newHeight) {
+            gameMap->resizeMap(newWidth, newHeight);
+        }
         
     private:
 

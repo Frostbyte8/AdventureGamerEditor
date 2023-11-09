@@ -37,9 +37,11 @@ class GameMap {
 
         // This makes it so only certain classes
         // can use some of the public functions.
+        // TODO: Remove this.
         
         class GMKey {
             friend class GameWorldController;
+            friend class GameMap;
             GMKey() {};
             GMKey(GMKey &t) {};
         };
@@ -127,6 +129,9 @@ class GameMap {
 
         bool resizeMap(const int& newWidth, const int& newHeight);
 
+    protected:
+        GMKey gmKey;
+
     private:
 
         const bool ifConnectionExists(const std::vector<ConnectionPoint>& connections, const ConnectionPoint& connectionPoint) const;
@@ -163,6 +168,7 @@ class GameMap {
         std::vector<GameCharacter> gameCharacters;
 
         GameInfo::Key key;
+        
 
 };
 

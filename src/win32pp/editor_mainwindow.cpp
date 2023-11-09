@@ -349,6 +349,11 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch (msg) {
 
+        case WM_SYSCOMMAND:
+            gameWorldController->resize(8, 8);
+            reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+            break;
+
         case WM_ACTIVATEAPP:
             ::BringWindowToTop(activeWindowHandle);
             return 0;
@@ -558,7 +563,7 @@ void MainWindowFrame::updateStatusbar(const int& index) {
     const GameTile& currentTile = gameWorldController->getGameMap()->getTile(index);
 
     CString newCaption;
-    newCaption.Format(L"(%d, %d) - ", currentRow, currentCol);
+    newCaption.Format(L"(%d, %d) - ", currentCol, currentRow);
     newCaption += currentTile.getName().c_str();
     SetStatusText(newCaption);
 
