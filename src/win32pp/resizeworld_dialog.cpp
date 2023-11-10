@@ -96,7 +96,7 @@ int ResizeWorldDialog::OnCreate(CREATESTRUCT& cs) {
         txtDimensions[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtDimensions[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtDimensions[i].SetDlgCtrlID(ControlIDs::txtWidth + i);
-        txtDimensions[0].SetLimitText(2);
+        txtDimensions[i].SetLimitText(2);
 
         dimensionValidator[i] = IntegerValidator(&txtDimensions[i], 3, 99);
 
@@ -255,6 +255,10 @@ bool ResizeWorldDialog::trySaveData() {
 
         return false;
     }
+
+
+    worldWidth = std::stol(WtoA(txtDimensions[0].GetWindowText()).c_str());
+    worldHeight = std::stol(WtoA(txtDimensions[1].GetWindowText()).c_str());
 
     return true;
 }

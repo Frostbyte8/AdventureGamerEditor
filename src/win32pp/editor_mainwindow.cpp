@@ -1142,7 +1142,7 @@ void MainWindowFrame::finishedResizeWorldDialog() {
     }
 
     if (resizeWorldDialog->hasSavedChanges()) {
-        gameWorldController->resize(3, 3);
+        gameWorldController->resize(resizeWorldDialog->getNewWidth() , resizeWorldDialog->getNewHeight());
         reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
 
         // TODO: Move selected tile cursor
