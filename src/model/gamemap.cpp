@@ -1390,6 +1390,7 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
 
 
     if (numCols - newHeight > 0 || numRows - newWidth > 0) {
+        
         const std::vector<GameObject> objectList = getGameObjects();
         const std::vector<GameCharacter> characteList = getGameCharacters();
 
@@ -1419,6 +1420,37 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
                 replaceCharacter(gmKey, i, bd.build());
             }
 
+        }
+
+        // TODO: Use remove_if
+        
+        for (std::vector<ConnectionPoint>::iterator jumpIter = jumpPoints.begin(); jumpIter != jumpPoints.end();) {
+            if (jumpIter->getConnectPoint1().getX() >= newWidth || jumpIter->getConnectPoint2().getX() >= newWidth ||
+                jumpIter->getConnectPoint1().getY() >= newHeight || jumpIter->getConnectPoint2().getY() >= newHeight) {
+                jumpIter = jumpPoints.erase(jumpIter);
+
+                if (jumpIter == jumpPoints.end()) {
+                    break;
+                }
+
+                continue;
+            }
+
+            ++jumpIter;
+        }
+
+        for (std::vector<ConnectionPoint>::iterator switchIter = switchConnections.begin(); switchIter != switchConnections.end();) {
+            if (switchIter->getConnectPoint1().getX() >= newWidth || switchIter->getConnectPoint2().getX() >= newWidth ||
+                switchIter->getConnectPoint1().getY() >= newHeight || switchIter->getConnectPoint2().getY() >= newHeight) {
+                switchIter = switchConnections.erase(switchIter);
+                if (switchIter == switchConnections.end()) {
+                    break;
+                }
+                
+                continue;
+            }
+
+            ++switchIter;
         }
 
     }

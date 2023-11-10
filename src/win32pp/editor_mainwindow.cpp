@@ -350,7 +350,7 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
 
         case WM_SYSCOMMAND:
-            gameWorldController->resize(8, 8);
+            gameWorldController->resize(5, 5);
             reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
             break;
 
