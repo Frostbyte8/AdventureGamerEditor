@@ -13,6 +13,7 @@
 #include "edit_worldinfo.h"
 #include "editstory_dialog.h"
 #include "edit_tiledescription_dialog.h"
+#include "resizeworld_dialog.h"
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
@@ -33,6 +34,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedEditStoryDialog();
         virtual void finishedEditTileDescriptionDialog();
         virtual void finishedEditWorldInfoDialog();
+        virtual void finishedResizeWorldDialog();
         
         virtual void onTileUpdated(const int& index);
         virtual bool onSelectedTileChanged(const int& row, const int& col);
@@ -41,6 +43,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void onEditStory();
         virtual void onEditTileDescription();
         virtual void onEditWorldInfo();
+        virtual void onResizeWorld();
         virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);
 
         virtual void RecalcDockLayout();
@@ -99,6 +102,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         EditWorldInfoDialog*            editWorldInfoDialog;
         EditStoryDialog*                editStoryDialog;
         EditTileDescriptionDialog*      editTileDescriptionDialog;
+        ResizeWorldDialog*              resizeWorldDialog;
 
         HWND                            activeWindowHandle;
 

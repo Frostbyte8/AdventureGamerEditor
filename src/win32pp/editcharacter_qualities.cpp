@@ -319,6 +319,8 @@ void EditCharacterQualitiesTab::populateFields(const GameCharacter& gameCharacte
 
 InputValidator* EditCharacterQualitiesTab::validateFields() {
 
+    // TODO: Validate that Character type is also a valid value.
+
     if(!moneyValidator.validate()) {
         return &moneyValidator;
     }

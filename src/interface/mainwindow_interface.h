@@ -59,6 +59,12 @@ class MainWindowInterface {
         virtual void onEditWorldInfo() = 0;
 
         ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to resize the
+        /// Game World
+        ///--------------------------------------------------------------------
+        virtual void onResizeWorld() = 0;
+
+        ///--------------------------------------------------------------------
         /// Sent when the user is trying to select a new tile
         /// @return true if the selection was valid, false if it was not
         ///--------------------------------------------------------------------
@@ -91,9 +97,15 @@ class MainWindowInterface {
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the edit tile description
-        /// dialog is closed.
+        /// dialog is finished
         ///--------------------------------------------------------------------
         virtual void finishedEditTileDescriptionDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the resize world dialog is
+        /// finished
+        ///--------------------------------------------------------------------
+        virtual void finishedResizeWorldDialog() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the window needs to spawn the Save Dialog

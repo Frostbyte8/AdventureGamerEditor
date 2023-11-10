@@ -16,45 +16,46 @@ namespace MenuIDs {
     const WORD OpenFile                 = 205;
     const WORD SaveFile                 = 206;
     const WORD SaveFileAs               = 207;
+    const WORD ResizeWorld              = 208;
 
     // For these IDs, we'll just obtain their MOD flag count.
 
     // Straight Aways
 
-    const WORD AddStart                 = 208;      // MOD1
-    const WORD AddFinish                = 209;      // MOD2
-    const WORD AddGate                  = 210;      // MOD1+MOD2.
-    const WORD AddLockedDoor            = 211;      // MOD3.
+    const WORD AddStart                 = 308;      // MOD1
+    const WORD AddFinish                = 309;      // MOD2
+    const WORD AddGate                  = 310;      // MOD1+MOD2.
+    const WORD AddLockedDoor            = 311;      // MOD3.
     
-    const WORD AddBarrierSouth          = 212;      // MOD1+MOD3
-    const WORD AddBarrierNorth          = 213;      // MOD2+MOD3
+    const WORD AddBarrierSouth          = 312;      // MOD1+MOD3
+    const WORD AddBarrierNorth          = 313;      // MOD2+MOD3
 
-    const WORD AddBarrierEast           = 212;      // MOD1+MOD3
-    const WORD AddBarrierWest           = 213;      // MOD2+MOD3
+    const WORD AddBarrierEast           = 312;      // MOD1+MOD3
+    const WORD AddBarrierWest           = 313;      // MOD2+MOD3
 
     // Corners
 
-    const WORD AddSwitchOn              = 208;      // MOD1
-    const WORD AddSwitchOff             = 209;      // MOD2
+    const WORD AddSwitchOn              = 308;      // MOD1
+    const WORD AddSwitchOff             = 309;      // MOD2
 
     // Dead Ends
 
-    const WORD AddJumpPad               = 210;      // MOD1+MOD2
+    const WORD AddJumpPad               = 310;      // MOD1+MOD2
 
     // Cross Roads
 
-    const WORD AddHazard                = 211;      // MOD3
-    const WORD AddSafeHaven             = 214;      // ALLMODS
+    const WORD AddHazard                = 311;      // MOD3
+    const WORD AddSafeHaven             = 314;      // ALLMODS
 
     // Additional Menu Items
 
-    const WORD FirstJumpConnection      = 215;
-    const WORD SecondJumpConnection     = 216;
+    const WORD FirstJumpConnection      = 315;
+    const WORD SecondJumpConnection     = 316;
 
-    const WORD startSwitchConnection    = 217;
-    const WORD endSwitchConnection      = 218;
+    const WORD startSwitchConnection    = 317;
+    const WORD endSwitchConnection      = 318;
 
-    const WORD MakeTileDark             = 219;
+    const WORD MakeTileDark             = 319;
    
 }
 
@@ -83,7 +84,7 @@ void MainWindowFrame::RecalcDockLayout() {
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
-editTileDescriptionDialog(0), tileWidth(0), tileHeight(0) {
+editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesView(this, &windowMetrics);
     LanguageMapper::getInstance();
@@ -179,6 +180,7 @@ void MainWindowFrame::CreateMenuBar() {
     editMenu.AppendMenu(MF_STRING, MenuIDs::LongDescription, LM_toUTF8("LongTileMenuItem", langMap));
     editMenu.AppendMenu(MF_STRING, MenuIDs::SummaryAndStory, LM_toUTF8("SummaryMenuItem", langMap));
     editMenu.AppendMenu(MF_STRING, MenuIDs::WorldProperties, LM_toUTF8("WorldMenuItem", langMap));
+    editMenu.AppendMenu(MF_STRING, MenuIDs::ResizeWorld, LM_toUTF8("ResizeWorldMenuItem", langMap));
 
     featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(straightAwayMenu.GetHandle()), LM_toUTF8("StraightAwayMenuItem", langMap));
     featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(cornerMenu.GetHandle()), LM_toUTF8("CornerMenuItem", langMap));
@@ -349,11 +351,6 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch (msg) {
 
-        case WM_SYSCOMMAND:
-            gameWorldController->resize(5, 5);
-            reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
-            break;
-
         case WM_ACTIVATEAPP:
             ::BringWindowToTop(activeWindowHandle);
             return 0;
@@ -399,29 +396,26 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
             gameWorldController->saveWorld(ID == MenuIDs::SaveFileAs 
                                            ? true : false);
-            return TRUE;
             break;
 
         case MenuIDs::SummaryAndStory: onEditStory(); break;
         case MenuIDs::LongDescription: onEditTileDescription(); break;
         case MenuIDs::WorldProperties: onEditWorldInfo(); break;
+        case MenuIDs::ResizeWorld: onResizeWorld(); break;
 
 
         case MenuIDs::FirstJumpConnection:
         case MenuIDs::SecondJumpConnection:
             addJumpConnection(ID);
-            return TRUE;
             break;
 
         case MenuIDs::startSwitchConnection:
         case MenuIDs::endSwitchConnection:
             addSwitchConnection(ID);
-            return TRUE;
             break;
 
         case MenuIDs::MakeTileDark:
             gameWorldController->tryMakeTileDark();
-            return TRUE;
             break;
 
         default: return FALSE;
@@ -1100,4 +1094,62 @@ void MainWindowFrame::addSwitchConnection(const int& whichPoint) {
 
     featureMenu.EnableMenuItem(6, MF_GRAYED | MF_BYPOSITION);
     featureMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
+}
+
+//-----------------------------------------------------------------------------
+// onResizeWorld
+//-----------------------------------------------------------------------------
+
+void MainWindowFrame::onResizeWorld() {
+
+    // Make sure that the dialog isn't already running, or that
+    // another modal window isn't already running.
+
+    if (resizeWorldDialog || activeWindowHandle != GetHwnd()) {
+        return;
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    resizeWorldDialog = new ResizeWorldDialog(this, GetHwnd());
+    resizeWorldDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+
+    if (!resizeWorldDialog->IsWindow()) {
+        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
+        delete resizeWorldDialog;
+        return;
+    }
+
+    resizeWorldDialog->SetExStyle(resizeWorldDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    resizeWorldDialog->setWorldDimensions(3, 3); // TODO
+
+    activeWindowHandle = resizeWorldDialog->GetHwnd();
+
+    resizeWorldDialog->setDefaultDialogTitle(LM_toUTF8("ResizeWorldTitle", langMap));
+    resizeWorldDialog->goModal();
+    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*resizeWorldDialog));
+    resizeWorldDialog->ShowWindow(SW_SHOW);
+}
+
+//-----------------------------------------------------------------------------
+// finishedResizeWorldDialog
+//-----------------------------------------------------------------------------
+
+void MainWindowFrame::finishedResizeWorldDialog() {
+
+    if (!resizeWorldDialog) {
+        return;
+    }
+
+    if (resizeWorldDialog->hasSavedChanges()) {
+        gameWorldController->resize(3, 3);
+        reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+
+        // TODO: Move selected tile cursor
+    }
+
+    delete resizeWorldDialog;
+    resizeWorldDialog = NULL;
+    activeWindowHandle = GetHwnd();
+
 }
