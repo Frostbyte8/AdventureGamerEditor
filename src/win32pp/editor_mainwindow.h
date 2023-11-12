@@ -8,12 +8,20 @@
 #include "../interface/mainwindow_interface.h"
 #include "../controller/gameworld_controller.h"
 #include "../win32/window_metrics.h"
-#include "editobject_dialog.h"
-#include "editcharacter_dialog.h"
-#include "edit_worldinfo.h"
-#include "editstory_dialog.h"
-#include "edit_tiledescription_dialog.h"
-#include "resizeworld_dialog.h"
+
+// Dialog windows
+
+#include "objectdlg/editobject_dialog.h"
+#include "chardlg/editcharacter_dialog.h"
+#include "worldinfodlg/edit_worldinfo.h"
+#include "storydlg/editstory_dialog.h"
+#include "tiledescdlg/edit_tiledescription_dialog.h"
+#include "resizedlg/resizeworld_dialog.h"
+
+//=============================================================================
+// MainWindowFrame - The Primary view of the program where the map editor
+// resides.
+//=============================================================================
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 

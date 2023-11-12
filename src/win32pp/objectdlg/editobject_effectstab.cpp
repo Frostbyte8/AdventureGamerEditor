@@ -1,9 +1,9 @@
 #include "editobject_tabviews.h"
-#include "../model/gameobject.h"
+#include "../../model/gameobject.h"
 #include <algorithm>
 
-#include "shared_functions.h"
-#include "../adventuregamer_constants.h"
+#include "../shared_functions.h"
+#include "../../adventuregamer_constants.h"
 
 namespace ControlIDs {
     const WORD EnergyBase            = 101;

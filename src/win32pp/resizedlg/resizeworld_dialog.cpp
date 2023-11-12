@@ -1,8 +1,8 @@
 #include "resizeworld_dialog.h"
-#include "../util/languagemapper.h"
-#include "shared_functions.h"
-#include "../util/win32pp_extras.h"
-#include "../adventuregamer_constants.h"
+#include "../../util/languagemapper.h"
+#include "../shared_functions.h"
+#include "../../util/win32pp_extras.h"
+#include "../../adventuregamer_constants.h"
 
 namespace ControlIDs {
     const WORD txtWidth = 101;

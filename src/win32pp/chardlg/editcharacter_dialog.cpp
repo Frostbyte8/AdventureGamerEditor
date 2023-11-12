@@ -1,5 +1,5 @@
 #include "editcharacter_dialog.h"
-#include "shared_functions.h"
+#include "../shared_functions.h"
 
 //=============================================================================
 // Constructors

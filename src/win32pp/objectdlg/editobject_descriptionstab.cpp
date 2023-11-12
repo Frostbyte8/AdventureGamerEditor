@@ -1,16 +1,17 @@
-#include "editcharacter_tabviews.h"
-#include "../model/gamecharacter.h"
+#include "editobject_tabviews.h"
+#include "../../model/gameobject.h"
+#include <algorithm>
 #include <wxx_commondlg.h>
 
-#include "shared_functions.h"
+#include "../shared_functions.h"
 
 namespace ControlIDs {
-    const WORD NameText     = 101;
-    const WORD OnSightText  = 102;
-    const WORD OnFightText  = 103;
-    const WORD OnDeathText  = 104;
-    const WORD BrowseIcon   = 105;
-    const WORD BrowseSound  = 106;
+    const WORD BrowseIcon       = 101;
+    const WORD BrowseSound      = 102;
+    const WORD Name             = 103;
+    const WORD Sight            = 104;
+    const WORD OnUse            = 105;
+    const WORD OnLastUse        = 106;
 }
 
 //=============================================================================
@@ -22,22 +23,21 @@ namespace ControlIDs {
 /// for more information
 ///----------------------------------------------------------------------------
 
-BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
+BOOL EditObjectDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
     
     if(lParam) {
 
         const WORD ctrlID = LOWORD(wParam);
         const WORD ctrlAction = HIWORD(wParam);
 
-        if(ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound) {
-            if(ctrlAction == BN_CLICKED) {
-                return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
-            }
-        }
-        else if(ctrlID >= ControlIDs::NameText && ctrlID <= ControlIDs::OnDeathText) {
+        if(ctrlID >= ControlIDs::Name && ctrlID <= ControlIDs::OnLastUse) {
             if(ctrlAction == EN_CHANGE) {
                 parentWindow->madeChange();
             }
+        }
+        else if(ctrlAction == BN_CLICKED && 
+          (ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound)) {
+                return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
         }
 
     }
@@ -46,45 +46,59 @@ BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 }
 
 ///----------------------------------------------------------------------------
-/// OnCreate - Set some defaults for the tab, and create remaining child
-/// controls.
-/// Refer to the Win32++ documentation for more information.
+/// OnCreate - Creates the controls for the Tab page.
 ///----------------------------------------------------------------------------
 
-int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
+int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
+    
     const int retVal = CWnd::OnCreate(cs);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
     grpDescriptions.Create(*this, 0, BS_GROUPBOX);
-    SetWindowTextFromLangMapString("CharDescriptionsGroup", grpDescriptions, caption, langMap);
+    SetWindowTextFromLangMapString("DescriptionsGroupLabel", grpDescriptions, caption, langMap);
 
-    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
+    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; i++) {
+        
         lblDescriptions[i].Create(*this, 0, SS_SIMPLE);
-        txtDescriptions[i].Create(*this, 0, ES_AUTOHSCROLL | WS_TABSTOP);
+        txtDescriptions[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtDescriptions[i].SetExStyle(WS_EX_CLIENTEDGE);
 
-        // For the last two in the range, we will give them browse buttons.
-        if(i > 3) {
-            btnBrowse[i-4].Create(*this, 0, BS_PUSHBUTTON);
-            btnBrowse[i-4].SetDlgCtrlID(ControlIDs::BrowseIcon + (i-4));
-            
-            txtDescriptions[i].EnableWindow(FALSE);
+        if(i == 0) {
+            txtDescriptions[i].LimitText(GameObjectConstants::MaxNameLength);
         }
         else {
-            txtDescriptions[i].SetDlgCtrlID(ControlIDs::NameText+i);
+            txtDescriptions[i].LimitText(GameObjectConstants::MaxDescriptionLength);
         }
-    } 
-    
-    SetWindowTextFromLangMapString("CharNameLabel", lblDescriptions[0], caption, langMap);
-    SetWindowTextFromLangMapString("CharOnSightLabel", lblDescriptions[1], caption, langMap);
-    SetWindowTextFromLangMapString("CharOnFightLabel", lblDescriptions[2], caption, langMap);
-    SetWindowTextFromLangMapString("CharOnDeathLabel", lblDescriptions[3], caption, langMap);
-    SetWindowTextFromLangMapString("CharIconLabel", lblDescriptions[4], caption, langMap);
-    SetWindowTextFromLangMapString("CharSoundLabel", lblDescriptions[5], caption, langMap);
-    SetWindowTextFromLangMapString("BrowseButton", btnBrowse[0], caption, langMap);
-    SetWindowTextFromLangMapString("BrowseButton", btnBrowse[1], caption, langMap);
+        
+        // For the last two fields, we need browse buttons
+        if(i > GameObjectDescriptions::NumDescriptions - 1) {
+
+            const int currentButton = i - GameObjectDescriptions::NumDescriptions;
+
+            btnBrowse[currentButton].Create(*this, 0,
+                                            WS_TABSTOP | BS_PUSHBUTTON);
+            SetWindowTextFromLangMapString("BrowseButton", btnBrowse[currentButton], caption, langMap);
+        }
+        else {
+            txtDescriptions[i].SetDlgCtrlID(ControlIDs::Name+i);
+        }
+
+    }
+
+    SetWindowTextFromLangMapString("ObjectNameLabel", lblDescriptions[0], caption, langMap);
+    SetWindowTextFromLangMapString("OnObjectSightLabel", lblDescriptions[1], caption, langMap);
+    SetWindowTextFromLangMapString("OnUseLabel", lblDescriptions[2], caption, langMap);
+    SetWindowTextFromLangMapString("OnLastUseLabel", lblDescriptions[3], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectIconLabel", lblDescriptions[4], caption, langMap);
+    SetWindowTextFromLangMapString("ObjectSoundLabel", lblDescriptions[5], caption, langMap);
+
+    txtDescriptions[GameObjectDescriptions::Icon].EnableWindow(FALSE);
+    txtDescriptions[GameObjectDescriptions::Sound].EnableWindow(FALSE);
+
+    btnBrowse[0].SetDlgCtrlID(ControlIDs::BrowseIcon);
+    btnBrowse[1].SetDlgCtrlID(ControlIDs::BrowseSound);
 
     std::vector<std::string> imageExtensions;
     imageExtensions.push_back(".ICO");
@@ -94,16 +108,32 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
     soundDescValidator = StringValidator(&txtDescriptions[5], "", ".WAV", 12, 5);
 
     return retVal;
+
 }
 
 ///----------------------------------------------------------------------------
-/// PreRegisterClass - Override defaults for dialog
+/// PreRegisterClass - Override defaults for tab page
 ///----------------------------------------------------------------------------
 
-void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
+void EditObjectDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditCharacterDescriptionsTab";
+    wc.lpszClassName = L"EditObjectDescriptionsTabPage";
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+}
+
+///----------------------------------------------------------------------------
+/// PreTranslateMessage - Intercept messages, and check if the tab needs
+/// to process them.
+///----------------------------------------------------------------------------
+
+BOOL EditObjectDescriptionsTab::PreTranslateMessage(MSG &msg) {
+
+    if(IsDialogMessage(msg)) {
+        return TRUE;
+    }
+    
+    return CWnd::PreTranslateMessage(msg);
+
 }
 
 //=============================================================================
@@ -111,25 +141,27 @@ void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// calculateWidth - Calculates the width of the tab page.
+/// calculatePageWidth - Finds how wide the tab page needs to be display the
+/// controls
 ///----------------------------------------------------------------------------
 
-void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
+void EditObjectDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
+    
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+
     pageWidth = 0;
 
     // The Width will be the size of the widest control, in this case, it will be
     // one of the labels, so we will loop through that.
 
-    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
+    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
                              lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
     }
 
-    // And we need to makes sure that we indicate that there is a margin for the groupbox
-    // and a margin for the window edge.
-
     const WindowMetrics::ControlSpacing cs = windowMetrics.GetControlSpacing();
-    pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
+    pageWidth += cs.XGROUPBOX_MARGIN * 2;
+    
 }
 
 ///----------------------------------------------------------------------------
@@ -137,28 +169,18 @@ void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windo
 /// builder object.
 ///----------------------------------------------------------------------------
 
-void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
+void EditObjectDescriptionsTab::insertData(GameObject::Builder& builder) {
 
     // TODO: For the controller version of this, send the text and let the controller
     // do the string capping.
 
-    CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameCharacterConstants::MaxCharacterName);
-    builder.description(WtoA(wideDesc).c_str(), 0);
+    CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameObjectConstants::MaxNameLength);
+    builder.description(WtoA(wideDesc).c_str(), 0);  
 
-    wideDesc = txtDescriptions[1].GetWindowText().Left(GameCharacterConstants::MaxDescriptionLength);
-    builder.description(WtoA(wideDesc).c_str(), 1);
-
-    wideDesc = txtDescriptions[2].GetWindowText().Left(GameCharacterConstants::MaxFightText);
-    builder.description(WtoA(wideDesc).c_str(), 2);
-
-    wideDesc = txtDescriptions[3].GetWindowText().Left(GameCharacterConstants::MaxDeathText);
-    builder.description(WtoA(wideDesc).c_str(), 3);
-
-    wideDesc = txtDescriptions[4].GetWindowText();
-    builder.description(WtoA(wideDesc).c_str(), 4);
-
-    wideDesc = txtDescriptions[5].GetWindowText();
-    builder.description(WtoA(wideDesc).c_str(), 5);
+    for(int i = 1; i < 6; ++i) {
+        wideDesc = txtDescriptions[i].GetWindowText().Left(GameObjectConstants::MaxDescriptionLength);
+        builder.description(WtoA(wideDesc).c_str(), i);
+    }
 
 }
 
@@ -168,31 +190,24 @@ void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
 /// to move and size the controls.
 ///----------------------------------------------------------------------------
 
-void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetrics) {
-
-    const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
-    const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
-
+void EditObjectDescriptionsTab::moveControls(const WindowMetrics& windowMetrics) {
+    
+    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
+    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
+    
     // The max width of a row is the size of the tab page, less the margins of the
     // Group Box and the window.
 
     const int maxGroupBoxWidth  = GetClientRect().right - (CS.XWINDOW_MARGIN * 2);
     const int maxRowWidth       = maxGroupBoxWidth - (CS.XGROUPBOX_MARGIN * 2);
 
-    // Since we have many labels and edit boxes on this tab page that take up 
-    // the full width, we'll calculate their size here.
-    
     const CSize defaultLabelSize(maxRowWidth, CD.YLABEL);
     const CSize defaultEditSize(maxRowWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
-
-    // Start positioning them at the top of the groupbox past it's margins.
 
     CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN, 
                 CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
 
-    // Now loop through the 6 labels/edit boxes and move them
-
-    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
+    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
 
         lblDescriptions[i].MoveWindow(cPos.x, cPos.y,
                                       defaultLabelSize.cx, defaultLabelSize.cy);
@@ -204,11 +219,9 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
 
         cPos.Offset(0, defaultEditSize.cy + CS.YRELATED_MARGIN);
 
-        // For the last 2, we also need to make sure their buttons are moved too.
+        if(i > GameObjectDescriptions::NumDescriptions - 1) {
 
-        if(i > GameCharacterDescriptions::NumDescriptions - 1) {
-
-            const int currentButton = i - GameCharacterDescriptions::NumDescriptions;
+            const int currentButton = i - GameObjectDescriptions::NumDescriptions;
 
             btnBrowse[currentButton].MoveWindow(cPos.x, cPos.y, 
                                                 CD.XBUTTON, CD.YBUTTON);
@@ -224,29 +237,27 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
 
     }
 
-    // Finally resize the groupbox, and update how tall the content on the tab page
-    // is.
-
     grpDescriptions.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
                                maxGroupBoxWidth, cPos.y);
 
+    pageHeight = cPos.y + CS.YWINDOW_MARGIN + CS.YUNRELATED_MARGIN;
 
-    pageHeight = cPos.y + CS.YUNRELATED_MARGIN + CS.YWINDOW_MARGIN;
 }
 
 ///----------------------------------------------------------------------------
-/// populateFields - Fill the tab page with the relevenat data from the
-/// Game Character being worked on.
-/// @param a constant reference to the Game Character containing the data to be
-/// used to fill out the fields.
+/// populateFields - Take the data from the GameObject and fill in the fields
+/// on the tab page.
+/// @param a constant reference to GameObject object
 ///----------------------------------------------------------------------------
 
-void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameCharacter) {
+void EditObjectDescriptionsTab::populateFields(const GameObject &gameObject, const GameMap& gameMap) {
 
-    CString caption;
+    for(int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
 
-    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
-        SetWindowTextFromStr(gameCharacter.getDescription(i), txtDescriptions[i], caption);
+        CString caption;
+
+        SetWindowTextFromStr(gameObject.getDescription(i),
+                                            txtDescriptions[i], caption);
     }
 
 }
@@ -258,10 +269,8 @@ void EditCharacterDescriptionsTab::populateFields(const GameCharacter& gameChara
 /// if something was wrong
 ///----------------------------------------------------------------------------
 
-InputValidator* EditCharacterDescriptionsTab::validateFields() {
+InputValidator* EditObjectDescriptionsTab::validateFields() {
    
-    // For this tab page, only the last two text boxes need to be validated.
-
     if(txtDescriptions[4].GetTextLength() != 0) {
         if(!iconDescValidator.validate()) {
             return &iconDescValidator;
@@ -285,12 +294,9 @@ InputValidator* EditCharacterDescriptionsTab::validateFields() {
 /// onBrowseForMedia - When the Browse for Icon or Sound icon is pressed,
 /// search for one.
 /// @param if true, it will search for an icon, otherwise, search for a sound.
-/// @return always TRUE.
 ///----------------------------------------------------------------------------
 
-// TODO: Split this into a shared function?
-
-BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
+BOOL EditObjectDescriptionsTab::onBrowseForMedia(const bool findIcon) {
 
 	CFileDialog fileDialog(TRUE, NULL, NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, NULL);
 
@@ -322,10 +328,9 @@ BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
         fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash); 
 
         txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);
-
-        parentWindow->madeChange();
 	}
 
+    parentWindow->madeChange();
     return TRUE;
 
 }

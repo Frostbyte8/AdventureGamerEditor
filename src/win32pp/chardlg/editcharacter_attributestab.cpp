@@ -1,8 +1,8 @@
 #include "editcharacter_tabviews.h"
-#include "../model/gamecharacter.h"
+#include "../../model/gamecharacter.h"
 
-#include "shared_functions.h"
-#include "../adventuregamer_constants.h"
+#include "../shared_functions.h"
+#include "../../adventuregamer_constants.h"
 
 namespace ControlIDs {
     const WORD Energy       = 101;

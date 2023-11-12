@@ -1,18 +1,19 @@
-#include "editstory_dialog.h"
-#include "../util/languagemapper.h"
-#include "shared_functions.h"
+#include "edit_tiledescription_dialog.h"
+#include "../../util/languagemapper.h"
+#include "../shared_functions.h"
 
 namespace ControlIDs {
-    const WORD SummaryText  = 101;
-    const WORD StoryText    = 102;
+    const WORD Name                 = 101;
+    const WORD Description          = 102;
 }
+
 
 //=============================================================================
 // Constructors
 //=============================================================================
 
-EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
-EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE), dialogCaption("") {
+EditTileDescriptionDialog::EditTileDescriptionDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
+EditDialogBase(inMainWindow, inParentHandle) {
 }
 
 //=============================================================================
@@ -20,22 +21,19 @@ EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE), dialogCapti
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// getStory - Get a copy of the story as it was last saved in the dialog.
-/// @return a copy of the story as it was last saved.
+/// getTileName - Returns a copy of the tile's new name.
 ///----------------------------------------------------------------------------
 
-const std::string EditStoryDialog::getStory() {
-    return storyText;
+const std::string EditTileDescriptionDialog::getTileName() const {
+    return tileName;
 }
 
 ///----------------------------------------------------------------------------
-/// getSummary - Get a copy of the world's summary as it was last saved in the
-/// dialog.
-/// @return a copy of the summary as it was last saved.
+/// getTileDescription - Returns a copy of the tile's new description.
 ///----------------------------------------------------------------------------
 
-const std::string EditStoryDialog::getSummary() {
-    return summaryText;
+const std::string EditTileDescriptionDialog::getTileDescription() const {
+    return tileDescription;
 }
 
 //=============================================================================
@@ -43,16 +41,16 @@ const std::string EditStoryDialog::getSummary() {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// setStoryAndSummary - Set the story and summary that the Game World has so
-/// that it can be altered by the user.
-/// @param a string containing the text of the story.
-/// @param a string containing the summary of the story
+/// setTileDescription - Give the dialog a copy of the the name and description
+/// the tile already has set.
+/// @param a constant reference to the tile's name.
+/// @param a constant reference to the tile's description.
 ///----------------------------------------------------------------------------
 
-void EditStoryDialog::setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText) {
-    if(txtStory.IsWindow()) {
-        txtStory.SetWindowText(AtoW(inStoryText.c_str()));
-        txtSummary.SetWindowText(AtoW(inSummaryText.c_str()));
+void EditTileDescriptionDialog::setTileDescription(const std::string& inName, const std::string& inDescription) {
+    if(txtTileName.IsWindow()) {
+        txtTileName.SetWindowText(AtoW(inName.c_str()));
+        txtTileDescription.SetWindowText(AtoW(inDescription.c_str()));
     }
 }
 
@@ -65,8 +63,8 @@ void EditStoryDialog::setStoryAndSummary(const std::string& inStoryText, const s
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-void EditStoryDialog::OnClose() {
-
+void EditTileDescriptionDialog::OnClose() {
+    
     // First we'll see if we can actually close the dialog.
     if(!tryClose()) {
         return;
@@ -74,8 +72,9 @@ void EditStoryDialog::OnClose() {
 
     // Then we'll end the dialog and inform the parent window
     // that we are done.
-    endModal(&MainWindowInterface::finishedEditStoryDialog);
-   
+    
+    endModal(&MainWindowInterface::finishedEditTileDescriptionDialog);
+
 }
 
 ///----------------------------------------------------------------------------
@@ -83,23 +82,24 @@ void EditStoryDialog::OnClose() {
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
-
-    const WORD ctrlID = LOWORD(wParam);
-    const WORD notifyCode = HIWORD(wParam);
+BOOL EditTileDescriptionDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
     if(lParam) {
-        if(ctrlID == IDOK || ctrlID == IDCANCEL || ctrlID == DefControlIDs::IDAPPLY) {
-            if(notifyCode == BN_CLICKED) {
-                dialogButtonPressed(ctrlID);
-                return TRUE;
-            }
-        }
-        else if(ctrlID == ControlIDs::SummaryText || ctrlID == ControlIDs::StoryText) {
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if(ctrlID == ControlIDs::Name || ctrlID == ControlIDs::Description) {
             if(notifyCode == EN_CHANGE) {
                 madeChange();
                 return TRUE;
             }
+        }
+        else if(ctrlID == IDOK || ctrlID == IDCANCEL || 
+            ctrlID == DefControlIDs::IDAPPLY) {
+
+            dialogButtonPressed(ctrlID);
+            return TRUE;
+
         }
     }
 
@@ -112,50 +112,49 @@ BOOL EditStoryDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
+int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
+
+    const int retVal = CWnd::OnCreate(cs);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
+    lblTileName.Create(*this, 0, SS_SIMPLE);
+    SetWindowTextFromLangMapString("TileNameLabel", lblTileName, caption, langMap);
 
-    lblSummary.Create(*this, 0, SS_SIMPLE);
-    
-    SetWindowTextFromLangMapString("SummaryLabel", lblSummary, caption, langMap);
+    txtTileName.Create(*this, 0, ES_AUTOHSCROLL);
+    txtTileName.SetExStyle(txtTileName.GetExStyle() | WS_EX_CLIENTEDGE);
+    txtTileName.SetDlgCtrlID(ControlIDs::Name);
+    txtTileName.SetLimitText(GameMapConstants::MaxTileName);
 
-    txtSummary.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
-    txtSummary.SetExStyle(WS_EX_CLIENTEDGE);
-    txtSummary.LimitText(GameMapConstants::MaxSummaryText);
-    txtSummary.SetDlgCtrlID(ControlIDs::SummaryText);
+    lblTileDescription.Create(*this, 0, SS_SIMPLE);
+    SetWindowTextFromLangMapString("TileDescriptionLabel", lblTileDescription, caption, langMap);
 
-    lblStory.Create(*this, 0, SS_SIMPLE);
-    SetWindowTextFromLangMapString("StoryLabel", lblStory, caption, langMap);
-
-    txtStory.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
-    txtStory.SetExStyle(WS_EX_CLIENTEDGE);
-    txtStory.LimitText(GameMapConstants::MaxStoryText);
-    txtStory.SetDlgCtrlID(ControlIDs::SummaryText);
+    txtTileDescription.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
+    txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
+    txtTileDescription.SetDlgCtrlID(ControlIDs::Description);
+    txtTileDescription.SetLimitText(GameMapConstants::MaxTileDescription);
 
     for(int i = 0; i < 3; ++i) {
-        dialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
+        btnDialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
     }
 
-    SetWindowTextFromLangMapString("OKButton", dialogButtons[0], caption, langMap);
-    SetWindowTextFromLangMapString("CancelButton", dialogButtons[1], caption, langMap);
-    SetWindowTextFromLangMapString("ApplyButton", dialogButtons[2], caption, langMap);
+    SetWindowTextFromLangMapString("OKButton", btnDialogButtons[0], caption, langMap);
+    SetWindowTextFromLangMapString("CancelButton", btnDialogButtons[1], caption, langMap);
+    SetWindowTextFromLangMapString("ApplyButton", btnDialogButtons[2], caption, langMap);
 
-    dialogButtons[0].SetStyle(dialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
-
-    dialogButtons[0].SetDlgCtrlID(IDOK);
-    dialogButtons[1].SetDlgCtrlID(IDCANCEL);
-    dialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-    dialogButtons[2].EnableWindow(FALSE);
+    btnDialogButtons[0].SetStyle(btnDialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
+    btnDialogButtons[0].SetDlgCtrlID(IDOK);
+    btnDialogButtons[1].SetDlgCtrlID(IDCANCEL);
+    btnDialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+    btnDialogButtons[2].EnableWindow(FALSE);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
     moveControls();
-    
-    return CWnd::OnCreate(cs);
+
+    return retVal;
 }
 
 
@@ -163,9 +162,9 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 /// PreRegisterClass - Override defaults for the dialog
 ///----------------------------------------------------------------------------
 
-void EditStoryDialog::PreRegisterClass(WNDCLASS& wc) {
+void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditStoryDialog";
+    wc.lpszClassName = L"EditTileDescriptionDialog";
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -177,27 +176,29 @@ void EditStoryDialog::PreRegisterClass(WNDCLASS& wc) {
 /// notifyChangeMade - Change the apply button to be useable.
 ///----------------------------------------------------------------------------
 
-void EditStoryDialog::notifyChangeMade() {
-    dialogButtons[2].EnableWindow(TRUE);
+void EditTileDescriptionDialog::notifyChangeMade() {
+    btnDialogButtons[2].EnableWindow(TRUE);
 }
 
 ///----------------------------------------------------------------------------
 /// notifyChangesSaved - Change the apply button to be unusable.
 ///----------------------------------------------------------------------------
 
-void EditStoryDialog::notifyChangesSaved() {
-    dialogButtons[2].EnableWindow(FALSE);
+void EditTileDescriptionDialog::notifyChangesSaved() {
+    btnDialogButtons[2].EnableWindow(FALSE);
 }
 
 ///----------------------------------------------------------------------------
-/// trySaveData - Confirm data is valid, and if it is save it. This function
-/// should not be called directly and instead trySave should be called instead.
-/// @return Always true.
+/// trySaveData - Confirm that data in the dialog is valid, and if it is, save
+/// it. This function should not be called directly.
+/// @return Always true
 ///----------------------------------------------------------------------------
 
-bool EditStoryDialog::trySaveData() {
-    storyText = WtoA(txtStory.GetWindowText().Left(GameMapConstants::MaxStoryText));
-    summaryText = WtoA(txtSummary.GetWindowText().Left(GameMapConstants::MaxSummaryText));
+bool EditTileDescriptionDialog::trySaveData() {
+
+    tileName = WtoA(txtTileName.GetWindowText().Left(GameMapConstants::MaxTileName));
+    tileDescription = WtoA(txtTileDescription.GetWindowText().Left(GameMapConstants::MaxTileDescription));
+    
     return true;
 }
 
@@ -209,38 +210,33 @@ bool EditStoryDialog::trySaveData() {
 /// moveControls - Move the controls into their proper positions
 ///----------------------------------------------------------------------------
 
-void EditStoryDialog::moveControls() {
+void EditTileDescriptionDialog::moveControls() {
 
-    // TODO: At some point, make this dialog resizeable 
+    // TODO: At some point, make this dialog resizable, also figure out actual width
 
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
 
     const int minWidth = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
-    const int boundryWidth = minWidth - CS.XWINDOW_MARGIN * 2;
+    const int innerWidth = minWidth - (CS.XWINDOW_MARGIN * 2);
 
     CPoint cPos(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN);
 
-    lblSummary.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YLABEL);
+    lblTileName.MoveWindow(cPos.x, cPos.y, innerWidth, CD.YLABEL);
+    cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
+    
+    txtTileName.MoveWindow(cPos.x, cPos.y, innerWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
+    cPos.Offset(0, CD.YTEXTBOX_ONE_LINE_ALONE + CS.YRELATED_MARGIN);
 
+    lblTileDescription.MoveWindow(cPos.x, cPos.y, innerWidth, CD.YLABEL);
     cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
 
-    txtSummary.MoveWindow(cPos.x, cPos.y,
-                          boundryWidth, CD.YTEXTBOX_ONE_LINE_ALONE + (CD.YTEXTBOX_ADDITIONAL_LINES * 5));
-
-    cPos.Offset(0, txtSummary.GetClientRect().Height() + CS.YRELATED_MARGIN);
-
-    lblStory.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YLABEL);
-
-    cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
-
-    txtStory.MoveWindow(cPos.x, cPos.y,
-                        boundryWidth, CD.YTEXTBOX_ONE_LINE_ALONE + (CD.YTEXTBOX_ADDITIONAL_LINES * 5));
-
-    cPos.Offset(boundryWidth - (CD.XBUTTON), txtSummary.GetClientRect().Height() + CS.YUNRELATED_MARGIN);
+    txtTileDescription.MoveWindow(cPos.x, cPos.y, innerWidth, (CD.YTEXTBOX_ONE_LINE_ALONE) + (CD.YTEXTBOX_ADDITIONAL_LINES * 5));
+    cPos.Offset(innerWidth - (CD.XBUTTON),
+                txtTileDescription.GetClientRect().Height() + CS.YUNRELATED_MARGIN);
 
     for(int i = 2; i >= 0; --i) {
-        dialogButtons[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        btnDialogButtons[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
         cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
     }
 

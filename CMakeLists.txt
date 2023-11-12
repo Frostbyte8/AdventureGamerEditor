@@ -121,6 +121,36 @@ file(GLOB WIN_SOURCES
     src/win32pp/*.cpp
 )
 
+file(GLOB WIN_SOURCES_OBJECTDLG
+    src/win32pp/objectdlg/*.h
+    src/win32pp/objectdlg/*.cpp
+)
+
+file(GLOB WIN_SOURCES_CHARDLG
+    src/win32pp/chardlg/*.h
+    src/win32pp/chardlg/*.cpp
+)
+
+file(GLOB WIN_SOURCES_RESIZEDLG
+    src/win32pp/resizedlg/*.h
+    src/win32pp/resizedlg/*.cpp
+)
+
+file(GLOB WIN_SOURCES_STORYDLG
+    src/win32pp/storydlg/*.h
+    src/win32pp/storydlg/*.cpp
+)
+
+file(GLOB WIN_SOURCES_TILEDESCDLG
+    src/win32pp/tiledescdlg/*.h
+    src/win32pp/tiledescdlg/*.cpp
+)
+
+file(GLOB WIN_SOURCES_WORLDINFODLG
+    src/win32pp/worldinfodlg/*.h
+    src/win32pp/worldinfodlg/*.cpp
+)
+
 #------------------------------------------------------------------------------
 # Compatiblity Headers
 #------------------------------------------------------------------------------
@@ -164,6 +194,12 @@ SOURCE_GROUP("util"                 FILES ${UTIL})
 SOURCE_GROUP("resources"            FILES ${WIN32_RESOURCES})
 SOURCE_GROUP("thirdparty/simpleson" FILES ${JSON_LIB})
 SOURCE_GROUP("win32pp"              FILES ${WIN_SOURCES})
+SOURCE_GROUP("win32pp/objectdlg"    FILES ${WIN_SOURCES_OBJECTDLG})
+SOURCE_GROUP("win32pp/chardlg"      FILES ${WIN_SOURCES_CHARDLG})
+SOURCE_GROUP("win32pp/resizedlg"    FILES ${WIN_SOURCES_RESIZEDLG})
+SOURCE_GROUP("win32pp/storydlg"     FILES ${WIN_SOURCES_STORYDLG})
+SOURCE_GROUP("win32pp/tiledescdlg"  FILES ${WIN_SOURCES_TILEDESCDLG})
+SOURCE_GROUP("win32pp/worldinfodlg" FILES ${WIN_SOURCES_WORLDINFODLG})
 SOURCE_GROUP("win32"                FILES ${WIN32_SOURCES})
 
 #if(WINAPI_BUILD)
@@ -243,7 +279,7 @@ if(MSVC)
         # Get the user to set the lib and include folders
         
         # Setup the executable
-        add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${WIN32_SOURCES} ${WIN32_RESOURCES} ${COMPAT} ${UTIL} ${JSON_LIB} ${COMPAT} ${INTERFACES} ${DATA_MODELS} ${CONTROLLERS} ${WIN_SOURCES} ${WINBUILD_SOURCES})
+        add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${WIN32_SOURCES} ${WIN_SOURCES_OBJECTDLG} ${WIN_SOURCES_CHARDLG} ${WIN_SOURCES_RESIZEDLG} ${WIN_SOURCES_STORYDLG} ${WIN_SOURCES_TILEDESCDLG} ${WIN_SOURCES_WORLDINFODLG} ${WIN32_RESOURCES} ${COMPAT} ${UTIL} ${JSON_LIB} ${COMPAT} ${INTERFACES} ${DATA_MODELS} ${CONTROLLERS} ${WIN_SOURCES} ${WINBUILD_SOURCES})
         set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "advedit")
 
         # Set the libs to link

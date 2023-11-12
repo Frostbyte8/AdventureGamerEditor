@@ -3,10 +3,10 @@
 
 #include <wxx_wincore.h>
 #include <wxx_stdcontrols.h>
-#include "../util/win32pp_extras.h"
-#include "../util/inputvalidator.h"
-#include "../win32/window_metrics.h"
-#include "editdialog_base.h"
+#include "../../util/win32pp_extras.h"
+#include "../../util/inputvalidator.h"
+#include "../../win32/window_metrics.h"
+#include "../editdialog_base.h"
 
 class ResizeWorldDialog : public EditDialogBase {
 

@@ -1,8 +1,8 @@
 #include "editobject_tabviews.h"
-#include "../model/gameobject.h"
+#include "../../model/gameobject.h"
 #include <algorithm>
 
-#include "shared_functions.h"
+#include "../shared_functions.h"
 
 namespace ControlIDs {
     const WORD OnGround         = 101;

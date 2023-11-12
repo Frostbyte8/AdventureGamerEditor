@@ -4,16 +4,16 @@
 #include <wxx_wincore.h>
 #include <wxx_stdcontrols.h>
 
-#include "../util/languagemapper.h"
-#include "../util/win32pp_extras.h"
-#include "../util/inputvalidator.h"
-#include "../win32/window_metrics.h"
+#include "../../util/languagemapper.h"
+#include "../../util/win32pp_extras.h"
+#include "../../util/inputvalidator.h"
+#include "../../win32/window_metrics.h"
 
-#include "../model/gameobject.h"
-#include "../model/gamecharacter.h"
-#include "../model/gamemap.h"
+#include "../../model/gameobject.h"
+#include "../../model/gamecharacter.h"
+#include "../../model/gamemap.h"
 
-#include "editdialog_base.h"
+#include "../editdialog_base.h"
 
 //=============================================================================
 // EOTabViewBase - The base class for all tab pages within the Edit Object 

@@ -6,13 +6,13 @@
 #include <wxx_imagelist.h> // Needed for wxx_tab
 #include <wxx_tab.h>
 
-#include "../model/gameobject.h"
-#include "../model/gamecharacter.h"
-#include "../model/gamemap.h"
+#include "../../model/gameobject.h"
+#include "../../model/gamecharacter.h"
+#include "../../model/gamemap.h"
 
-#include "../interface/mainwindow_interface.h"
+#include "../../interface/mainwindow_interface.h"
 #include "editobject_tabviews.h"
-#include "editdialog_base.h"
+#include "../editdialog_base.h"
 
 // TODO: Minimum Size and Maximum Size
 

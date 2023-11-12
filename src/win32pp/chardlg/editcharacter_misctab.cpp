@@ -1,7 +1,7 @@
 #include "editcharacter_tabviews.h"
-#include "../model/gamecharacter.h"
+#include "../../model/gamecharacter.h"
 
-#include "shared_functions.h"
+#include "../shared_functions.h"
 
 namespace ControlIDs {
     const WORD XTextCoord   = 101;
