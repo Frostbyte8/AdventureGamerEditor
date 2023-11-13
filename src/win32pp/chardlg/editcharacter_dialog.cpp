@@ -5,7 +5,7 @@
 // Constructors
 //=============================================================================
 
-EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
+EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap,
 HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inParentHandle),
 gameMap(inGameMap), descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL),
 isEditCharacter(inEditCharacter) {
@@ -104,7 +104,9 @@ BOOL EditCharacterDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
-    const int numDialogButtons = isEditCharacter ? 3 : 2;
+    // If the Dialog is editing the character, then there are 3 buttons, not 2.
+    const int NUM_DIALOG_BUTTONS = isEditCharacter ? 3 : 2;
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
@@ -132,18 +134,18 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     // We also need to create the Ok, Cancel and Apply buttons too.
 
-    for(int i = 0; i < numDialogButtons; ++i) {
+    for(int i = 0; i < NUM_DIALOG_BUTTONS; ++i) {
         btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
     }
 
     btnDialogControl[0].SetDlgCtrlID(IDOK);
     btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
 
-    SetWindowTextFromLangMapString("OKButton",
-                      btnDialogControl[0], caption, langMap);
+    SetWindowTextFromLangMapString("OKButton", btnDialogControl[0], caption, 
+                                   langMap);
 
-    SetWindowTextFromLangMapString("CancelButton",
-                      btnDialogControl[1], caption, langMap);
+    SetWindowTextFromLangMapString("CancelButton", btnDialogControl[1],
+                                   caption, langMap);
 
     btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
 
@@ -159,6 +161,8 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
+
+    // Finally, move the controls into place, and select the first tab page.
 
     moveControls();
     tabControl.SelectPage(0);
@@ -190,7 +194,7 @@ LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be useable.
+/// notifyChangeMade - Change the apply button to be usable.
 ///----------------------------------------------------------------------------
 
 void EditCharacterDialog::notifyChangeMade() {
@@ -210,15 +214,15 @@ void EditCharacterDialog::notifyChangesSaved() {
 }
 
 ///----------------------------------------------------------------------------
-/// moveControls 
-/// dialog window.
-/// @returns a Copy of a GameObject::Builder object.
+/// moveControls - Move controls into their proper place based on the current
+/// Window Metrics.
 ///----------------------------------------------------------------------------
 
 void EditCharacterDialog::moveControls() {
 
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
+
     const int numDialogButtons = isEditCharacter ? 3 : 2;
 
     // Now to find the widest point. We'll see what is longer:

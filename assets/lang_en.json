@@ -201,6 +201,14 @@
     "CancelButton"              : "Cancel",
     "ApplyButton"               : "Apply",
     "BrowseButton"              : "Browse...",
+    
+    // Common Dialog Boxes
+    
+    "CBDFindImageFilterText"    : "Image Files",
+    "CDBFindImageTitle"         : "Find Image File",
+    
+    "CBDFindSoundFilterText"    : "Sound Files",
+    "CBDFindSoundTitle"         : "Find Sound File",
 
     // Program Messages
 
@@ -211,7 +219,7 @@
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
     "ErrTileInvalidRowColTitle"     : "Error getting tile",
-    "ErrGamerFileReadText"          : "Unable to read Aventure Gamer File: %s",
+    "ErrGamerFileReadText"          : "Unable to read Adventure Gamer File: %s",
     "ErrGamerFileReadTitle"         : "Error reading file",
     "ErrAllocatingDialogText"       : "The dialog could not be created because there is not enough memory to allocate it.",
     "ErrAllocatingDialogTitle"      : "Allocating Dialog Failed",
@@ -234,7 +242,9 @@
 
     "ErrCharLimitReachedText"       : "Game Worlds cannot exceed %d number of characters.",
     "ErrCharLimitReachedTitle"      : "Character limit reached",
-
+    
+    "ErrPathConversionText"         : "Unable to turn long file path into a short file path.",
+    "ErrPathConversionTitle"        : "File Path Conversion Error",
     
     // Validators
 

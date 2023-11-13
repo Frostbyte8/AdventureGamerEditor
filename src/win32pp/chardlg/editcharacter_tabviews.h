@@ -55,7 +55,7 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
 
         EditCharacterDescriptionsTab(EditDialogBase* inParent) : ECTabViewBase(inParent) {}
 
-        // Pure Virtual Functions (implemented) 
+        // Pure Virtual Functions
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
@@ -67,7 +67,6 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        //virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 
@@ -84,14 +83,17 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
 };
 
 //=============================================================================
-// EditCharacterQualitesTab - 
+// EditCharacterQualitesTab - Contains information about the qualities the
+// character has
 //=============================================================================
 
 class EditCharacterQualitiesTab : public ECTabViewBase {
 
     public:
+        
         EditCharacterQualitiesTab(const GameMap* inGameMap, EditDialogBase* inParent) : ECTabViewBase(inParent), gameMap(inGameMap) {}
-        // Pure Virtual Functions (implemented) 
+        
+        // Pure Virtual Functions
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
@@ -103,7 +105,6 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        //virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 
@@ -124,15 +125,18 @@ class EditCharacterQualitiesTab : public ECTabViewBase {
 };
 
 //=============================================================================
-// EditCharacterAttributesTab - 
+// EditCharacterAttributesTab - Contains information about the Attributes a
+// Character has
 //=============================================================================
 
 class EditCharacterAttributesTab : public ECTabViewBase {
 
     public:
 
-        // Pure Virtual Functions (implemented) 
         EditCharacterAttributesTab(EditDialogBase* inParent) : ECTabViewBase(inParent) {}
+
+        // Pure Virtual Functions
+
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
@@ -144,7 +148,6 @@ class EditCharacterAttributesTab : public ECTabViewBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        //virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 
@@ -162,7 +165,8 @@ class EditCharacterAttributesTab : public ECTabViewBase {
 };
 
 //=============================================================================
-// EditCharacterMiscTab - 
+// EditCharacterMiscTab - Contains the remaining misc information about a
+// Character
 //=============================================================================
 
 class EditCharacterMiscTab : public ECTabViewBase {
@@ -171,7 +175,7 @@ class EditCharacterMiscTab : public ECTabViewBase {
 
         EditCharacterMiscTab(const GameMap* inGameMap, EditDialogBase* inParent) : ECTabViewBase(inParent), gameMap(inGameMap) {}
 
-        // Pure Virtual Functions (implemented) 
+        // Pure Virtual Functions
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
@@ -183,7 +187,6 @@ class EditCharacterMiscTab : public ECTabViewBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        //virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 

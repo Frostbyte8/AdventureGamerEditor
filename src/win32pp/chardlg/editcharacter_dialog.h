@@ -12,9 +12,14 @@
 
 #include "../../win32/window_metrics.h"
 #include "../../interface/mainwindow_interface.h"
-#include "editcharacter_tabviews.h"
 
+#include "editcharacter_tabviews.h"
 #include "../editdialog_base.h"
+
+//=============================================================================
+// EditCharacterDialog - A Dialog that allows to user to Create a new
+// Character, or alter an existing one.
+//=============================================================================
 
 class EditCharacterDialog : public EditDialogBase {
 
@@ -33,10 +38,14 @@ class EditCharacterDialog : public EditDialogBase {
 
     protected:
 
+        // Win32++ Overrides
+
         virtual void OnClose();
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
+
+        // Dialog Base Virtual Functions
 
         virtual void notifyChangeMade();
         virtual void notifyChangesSaved();
@@ -48,7 +57,6 @@ class EditCharacterDialog : public EditDialogBase {
     private:
 
         LONG    findLongestTab(const bool getWidth);
-        //LRESULT onSize(WPARAM& wParam, LPARAM& lParam);
                
         EditCharacterDescriptionsTab*   descriptionsTab;
         EditCharacterQualitiesTab*      qualitiesTab;

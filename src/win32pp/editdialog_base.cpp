@@ -173,10 +173,11 @@ bool EditDialogBase::tryClose() {
     if(optionChosen != IDCANCEL) {
 
         if(changeMade) {
+
             LanguageMapper& langMap = LanguageMapper::getInstance();
 
-            const int retVal = askYesNoQuestion(langMap.get("FileMenu"),
-                                                langMap.get("FileMenu"),
+            const int retVal = askYesNoQuestion(langMap.get("UnsavedChangesText"), 
+                                                langMap.get("UnsavedChangesTitle"), 
                                                 true);
             
             if(retVal == GenericInterfaceResponses::Yes) {
@@ -188,7 +189,7 @@ bool EditDialogBase::tryClose() {
 
             }
             else if(retVal == GenericInterfaceResponses::No) {
-                // If they select no, we'll simplly act as if they had
+                // If they select no, we'll simply act as if they had
                 // pressed cancel button on the dialog, not the message box.
                 optionChosen = IDCANCEL;
             }

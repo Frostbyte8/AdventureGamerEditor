@@ -1,8 +1,8 @@
-#include "editcharacter_tabviews.h"
-#include "../../model/gamecharacter.h"
 #include <wxx_commondlg.h>
-
 #include "../shared_functions.h"
+#include "../../model/gamecharacter.h"
+
+#include "editcharacter_tabviews.h"
 
 namespace ControlIDs {
     const WORD NameText     = 101;
@@ -52,6 +52,7 @@ BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 ///----------------------------------------------------------------------------
 
 int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
+
     const int retVal = CWnd::OnCreate(cs);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -115,6 +116,7 @@ void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
 ///----------------------------------------------------------------------------
 
 void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMetrics) {
+    
     pageWidth = 0;
 
     // The Width will be the size of the widest control, in this case, it will be
@@ -130,6 +132,7 @@ void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windo
 
     const WindowMetrics::ControlSpacing cs = windowMetrics.GetControlSpacing();
     pageWidth += (cs.XGROUPBOX_MARGIN * 2) + (cs.XWINDOW_MARGIN * 2);
+
 }
 
 ///----------------------------------------------------------------------------
@@ -138,9 +141,6 @@ void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windo
 ///----------------------------------------------------------------------------
 
 void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
-
-    // TODO: For the controller version of this, send the text and let the controller
-    // do the string capping.
 
     CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameCharacterConstants::MaxCharacterName);
     builder.description(WtoA(wideDesc).c_str(), 0);
@@ -164,7 +164,7 @@ void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
 
 ///----------------------------------------------------------------------------
 /// moveControls - Move/resize the controls to their desired positions
-/// @param a constant refrence to the dialog's window metrics object to be used
+/// @param a constant reference to the dialog's window metrics object to be used
 /// to move and size the controls.
 ///----------------------------------------------------------------------------
 
@@ -235,7 +235,7 @@ void EditCharacterDescriptionsTab::moveControls(const WindowMetrics& windowMetri
 }
 
 ///----------------------------------------------------------------------------
-/// populateFields - Fill the tab page with the relevenat data from the
+/// populateFields - Fill the tab page with the relevant data from the
 /// Game Character being worked on.
 /// @param a constant reference to the Game Character containing the data to be
 /// used to fill out the fields.
@@ -288,19 +288,34 @@ InputValidator* EditCharacterDescriptionsTab::validateFields() {
 /// @return always TRUE.
 ///----------------------------------------------------------------------------
 
-// TODO: Split this into a shared function?
+// TODO: Split this into a shared function since the other dialog uses the
+// exact same thing.
 
 BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
 
 	CFileDialog fileDialog(TRUE, NULL, NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, NULL);
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
     if(findIcon) {
-        fileDialog.SetFilter(L"Image Files (*.BMP;*.ICO)|*.BMP;*.ICO");
-        fileDialog.SetTitle(L"Find Image File");
+
+        CString dialogTitle = AtoW(langMap.get("CDBFindImageTitle").c_str(), CP_UTF8);
+        CString filterCaption = AtoW(langMap.get("CBDFindImageFilterText").c_str(), CP_UTF8);
+        filterCaption += L" (*.BMP;*.ICO)|*.BMP;*.ICO|";
+
+        fileDialog.SetFilter(filterCaption);
+        fileDialog.SetTitle(dialogTitle);
+
     }
     else {
-        fileDialog.SetFilter(L"Sound Files (*.WAV)|*.WAV");
-        fileDialog.SetTitle(L"Find Sound File");
+
+        CString dialogTitle = AtoW(langMap.get("CBDFindSoundTitle").c_str(), CP_UTF8);
+        CString filterCaption = AtoW(langMap.get("CBDFindSoundFilterText").c_str(), CP_UTF8);
+        filterCaption += L" (*.WAV)|*.WAV|";
+
+        fileDialog.SetFilter(filterCaption);
+        fileDialog.SetTitle(dialogTitle);
+
     }
 
 	if(fileDialog.DoModal(GetParent().GetHwnd()) == IDOK) {
@@ -315,7 +330,11 @@ BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
 
         const int lastSlash = fileName.ReverseFind(L"\\") + 1;
         if(lastSlash < 0) {
-            MessageBox(L"Could not turn long path name into a short path name.", L"File Path Error", MB_OK | MB_ICONERROR);
+
+            CString errText = AtoW(langMap.get("ErrPathConversionText").c_str(), CP_UTF8);
+            CString errTitle = AtoW(langMap.get("ErrPathConversionTitle").c_str(), CP_UTF8);
+
+            MessageBox(errText, errTitle, MB_OK | MB_ICONERROR);
             return TRUE;
         }
 
