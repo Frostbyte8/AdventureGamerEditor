@@ -15,6 +15,54 @@
 
 #include "../editdialog_base.h"
 
+namespace EditCharacterDialogConstants {
+
+    namespace DescriptionsTab {
+        namespace ControlIDs {
+
+            const WORD NameText     = 101;
+            const WORD OnSightText  = 102;
+            const WORD OnFightText  = 103;
+            const WORD OnDeathText  = 104;
+            const WORD BrowseIcon   = 105;
+            const WORD BrowseSound  = 106;
+
+        }
+    }
+
+    namespace QualitiesTab {
+        namespace ControlIDs {
+            const WORD MoneyOnHand      = 101;
+            const WORD CharType         = 102;
+            const WORD FlagEnterDark    = 103;
+            const WORD FlagEnterHazard  = 104;
+            const WORD FlagCanJump      = 105;
+            const WORD FlagBypassGates  = 106;
+            const WORD FlagBypassDoors  = 107;
+            const WORD FlagCanClimb     = 108;
+            const WORD FlagWanderer     = 109;
+            const WORD FlagStalker      = 110;
+        }
+    }
+
+    namespace AttributesTab {
+        namespace ControlIDs {
+            const WORD Energy       = 101;
+            const WORD Skill        = 102;
+            const WORD Willpower    = 103;
+            const WORD Luck         = 104;
+            const WORD SightType    = 105;
+        }
+    }
+
+    namespace MiscTab {
+        namespace ControlIDs {
+            const WORD XTextCoord   = 101;
+            const WORD YTextCoord   = 102;
+        }
+    }
+}
+
 //=============================================================================
 // ECTabViewBase - The base class for all tab pages within the Edit Character 
 // Dialog Window.
@@ -176,7 +224,7 @@ class EditCharacterMiscTab : public ECTabViewBase {
         EditCharacterMiscTab(const GameMap* inGameMap, EditDialogBase* inParent) : ECTabViewBase(inParent), gameMap(inGameMap) {}
 
         // Pure Virtual Functions
-        virtual void calculatePageWidth(const WindowMetrics& windowMetrics) {}
+        virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
         virtual void insertData(GameCharacter::Builder& builder);
         virtual void populateFields(const GameCharacter& gameCharacter);
         virtual void moveControls(const WindowMetrics& windowMetrics);

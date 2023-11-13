@@ -3,10 +3,7 @@
 
 #include "../shared_functions.h"
 
-namespace ControlIDs {
-    const WORD XTextCoord   = 101;
-    const WORD YTextCoord   = 102;
-}
+using namespace EditCharacterDialogConstants::MiscTab;
 
 //=============================================================================
 // Win32++ Functions
@@ -38,43 +35,6 @@ BOOL EditCharacterMiscTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 }
 
 ///----------------------------------------------------------------------------
-/// OnCreate - Set some defaults for the tab, and create remaining child
-/// controls.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
-
-    const int retVal = CWnd::OnCreate(cs);
-    
-    CString caption;
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    grpLocations.Create(*this, 0, BS_GROUPBOX);
-    SetWindowTextFromLangMapString("CharLocationGroup", grpLocations, caption, langMap);
-
-    for(int i = 0; i < 2; ++i) {
-        lblCoords[i].Create(*this, 0, SS_SIMPLE);
-        txtCoords[i].Create(*this, 0, ES_AUTOHSCROLL);
-        txtCoords[i].SetExStyle(WS_EX_CLIENTEDGE);
-        txtCoords[i].SetDlgCtrlID(ControlIDs::XTextCoord+i);
-    }
-
-    SetWindowTextFromLangMapString("XCoord", lblCoords[0], caption, langMap);
-    SetWindowTextFromLangMapString("YCoord", lblCoords[1], caption, langMap);
-
-    grpInventory.Create(*this, 0, BS_GROUPBOX);
-    SetWindowTextFromLangMapString("CharInventoryLabel", grpInventory, caption, langMap);
-
-    lsbInventory.Create(*this, 0, LBS_STANDARD | WS_VSCROLL | LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL);
-
-    coordValidator[0] = IntegerValidator(&txtCoords[0], 0, gameMap->getWidth() - 1);
-    coordValidator[1] = IntegerValidator(&txtCoords[1], 0, gameMap->getHeight() - 1);
-
-    return retVal;
-}
-
-///----------------------------------------------------------------------------
 /// PreRegisterClass - Override defaults for dialog
 ///----------------------------------------------------------------------------
 
@@ -99,7 +59,7 @@ void EditCharacterMiscTab::insertData(GameCharacter::Builder& builder) {
     int groundY = 0;
 
 #ifdef _DEBUG
-    // The data was previously validated, so unless a programming error occured
+    // The data was previously validated, so unless a programming error occurred
     // this should not fail.
     try {
 #endif // _DEBUG
@@ -117,50 +77,6 @@ void EditCharacterMiscTab::insertData(GameCharacter::Builder& builder) {
 
     builder.location(groundX, groundY);
 
-}
-
-void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
-    
-    const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
-    const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
-    
-    // The max width of a row is the size of the tab page, less the margins of the
-    // Group Box and the window.
-
-    const int maxGroupBoxWidth  = GetClientRect().right - (CS.XWINDOW_MARGIN * 2);
-    const int maxRowWidth       = maxGroupBoxWidth - (CS.XGROUPBOX_MARGIN * 2);
-
-    CPoint cPos(CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN,
-                CS.YFIRST_GROUPBOX_MARGIN + CS.YRELATED_MARGIN + CS.YWINDOW_MARGIN);
-
-    const int coordWidth = windowMetrics.CalculateStringWidth(L"MM");
-    const int txtWidth = windowMetrics.CalculateStringWidth(L"0000");
-
-    for(int i = 0; i < 2; ++i) {
-        lblCoords[i].MoveWindow(cPos.x, cPos.y, coordWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
-        cPos.Offset(coordWidth, 0);
-        txtCoords[i].MoveWindow(cPos.x, cPos.y, txtWidth, CD.YTEXTBOX_ONE_LINE_ALONE);
-        cPos.Offset(txtWidth + CS.XRELATED_MARGIN, 0);
-    }
-
-    cPos.x = CS.XGROUPBOX_MARGIN + CS.XWINDOW_MARGIN;
-    cPos.y += CD.YTEXTBOX_ONE_LINE_ALONE;
-
-    grpLocations.MoveWindow(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN,
-                            maxGroupBoxWidth, cPos.y);
-
-    cPos.Offset(0, CS.YUNRELATED_MARGIN + CS.YFIRST_GROUPBOX_MARGIN);
-    
-    lsbInventory.MoveWindow(cPos.x, cPos.y, 
-                            maxRowWidth, CD.YTEXTBOX_ONE_LINE_ALONE * 5);
-
-    cPos.Offset(0, - CS.YFIRST_GROUPBOX_MARGIN);
-
-    grpInventory.MoveWindow(CS.XWINDOW_MARGIN, cPos.y,
-                            maxGroupBoxWidth, CS.YFIRST_GROUPBOX_MARGIN + (CD.YTEXTBOX_ONE_LINE_ALONE * 5) + CS.YLAST_GROUPBOX_MARGIN);
-    
-    // TODO: Fix this, this is incorrect
-    pageHeight = grpInventory.GetClientRect().Height() + CS.YUNRELATED_MARGIN;
 }
 
 ///----------------------------------------------------------------------------
