@@ -62,6 +62,16 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 }
 
 ///----------------------------------------------------------------------------
+/// PreRegisterClass - Override defaults for dialog
+///----------------------------------------------------------------------------
+
+void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
+    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = L"EditCharacterDescriptionsTab";
+    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+}
+
+///----------------------------------------------------------------------------
 /// calculateWidth - Calculates the width of the tab page.
 ///----------------------------------------------------------------------------
 
@@ -233,6 +243,15 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
 }
 
+///----------------------------------------------------------------------------
+/// PreRegisterClass - Override defaults for dialog
+///----------------------------------------------------------------------------
+
+void EditCharacterQualitiesTab::PreRegisterClass(WNDCLASS& wc) {
+    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = L"EditCharacterQualitiesTab";
+    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+}
 
 ///----------------------------------------------------------------------------
 /// calculatePageWidth - Finds how wide the tab page needs to be display the
@@ -395,6 +414,15 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
     return retVal;
 }
 
+///----------------------------------------------------------------------------
+/// PreRegisterClass - Override defaults for dialog
+///----------------------------------------------------------------------------
+
+void EditCharacterAttributesTab::PreRegisterClass(WNDCLASS& wc) {
+    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = L"EditCharacterAttributesTab";
+    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+}
 
 ///----------------------------------------------------------------------------
 /// calculatePageWidth - Finds how wide the tab page needs to be display the
@@ -416,7 +444,6 @@ void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowM
     pageWidth += CS.XGROUPBOX_MARGIN * 2;
 
 }
-
 
 ///----------------------------------------------------------------------------
 /// moveControls - Move the controls to their desired positions
@@ -519,6 +546,16 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
                                          gameMap->getHeight() - 1);
 
     return retVal;
+}
+
+///----------------------------------------------------------------------------
+/// PreRegisterClass - Override defaults for dialog
+///----------------------------------------------------------------------------
+
+void EditCharacterMiscTab::PreRegisterClass(WNDCLASS& wc) {
+    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wc.lpszClassName = L"EditCharacterMiscTab";
+    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
 ///----------------------------------------------------------------------------

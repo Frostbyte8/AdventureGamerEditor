@@ -45,16 +45,6 @@ BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
     return FALSE;
 }
 
-///----------------------------------------------------------------------------
-/// PreRegisterClass - Override defaults for dialog
-///----------------------------------------------------------------------------
-
-void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
-    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditCharacterDescriptionsTab";
-    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-}
-
 //=============================================================================
 // Public Functions
 //=============================================================================
