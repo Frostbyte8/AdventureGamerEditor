@@ -1,4 +1,3 @@
-#include <wxx_commondlg.h>
 #include "../shared_functions.h"
 #include "../../model/gamecharacter.h"
 #include "editcharacter_tabviews.h"

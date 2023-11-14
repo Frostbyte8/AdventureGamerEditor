@@ -33,11 +33,21 @@ BOOL EditObjectDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
         if(ctrlID >= ControlIDs::Name && ctrlID <= ControlIDs::OnLastUse) {
             if(ctrlAction == EN_CHANGE) {
                 parentWindow->madeChange();
+
             }
+            return TRUE;
         }
-        else if(ctrlAction == BN_CLICKED && 
-          (ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound)) {
-                return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
+        else if (ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound) {
+            if (ctrlAction == BN_CLICKED) {
+                const bool findIcon     = ctrlID == ControlIDs::BrowseIcon ? true : false;
+                const int whichControl  = findIcon ? 4 : 5;
+
+                if (dlgOnBrowseForMedia(*this, txtDescriptions[whichControl], findIcon)) {
+                    parentWindow->madeChange();
+                }
+
+                return TRUE;
+            }
         }
 
     }
@@ -284,53 +294,4 @@ InputValidator* EditObjectDescriptionsTab::validateFields() {
     }
 
     return NULL;
-}
-
-//=============================================================================
-// Private Functions
-//=============================================================================
-
-///----------------------------------------------------------------------------
-/// onBrowseForMedia - When the Browse for Icon or Sound icon is pressed,
-/// search for one.
-/// @param if true, it will search for an icon, otherwise, search for a sound.
-///----------------------------------------------------------------------------
-
-BOOL EditObjectDescriptionsTab::onBrowseForMedia(const bool findIcon) {
-
-	CFileDialog fileDialog(TRUE, NULL, NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, NULL);
-
-    if(findIcon) {
-        fileDialog.SetFilter(L"Image Files (*.BMP;*.ICO)|*.BMP;*.ICO");
-        fileDialog.SetTitle(L"Find Image File");
-    }
-    else {
-        fileDialog.SetFilter(L"Sound Files (*.WAV)|*.WAV");
-        fileDialog.SetTitle(L"Find Sound File");
-    }
-
-	if(fileDialog.DoModal(GetParent().GetHwnd()) == IDOK) {
-
-        // Convert the Long Path Name of the file into a short one. We can't use long paths
-        // As the game was written for Windows 3.1.
-
-        CString fileName;
-        const long strLength = GetShortPathName(fileDialog.GetPathName(), NULL, 0);
-        GetShortPathName(fileDialog.GetPathName(), fileName.GetBuffer(strLength), strLength + 1);
-        fileName.ReleaseBuffer();
-
-        const int lastSlash = fileName.ReverseFind(L"\\") + 1;
-        if(lastSlash < 0) {
-            MessageBox(L"Could not turn long path name into a short path name.", L"File Path Error", MB_OK | MB_ICONERROR);
-            return TRUE;
-        }
-
-        fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash); 
-
-        txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);
-	}
-
-    parentWindow->madeChange();
-    return TRUE;
-
 }

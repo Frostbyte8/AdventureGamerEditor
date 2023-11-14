@@ -75,8 +75,6 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
 
     private:
 
-        BOOL onBrowseForMedia(const bool forIcon);
-
         CButton                 grpDescriptions;
         CStatic                 lblDescriptions[6];
         CAnsiEdit               txtDescriptions[6];
