@@ -23,7 +23,15 @@ BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 
         if(ctrlID == ControlIDs::BrowseIcon || ctrlID == ControlIDs::BrowseSound) {
             if(ctrlAction == BN_CLICKED) {
-                return onBrowseForMedia(ctrlID == ControlIDs::BrowseIcon ? true : false);
+
+                const bool findIcon     = ctrlID == ControlIDs::BrowseIcon ? true : false;
+                const int whichControl  = findIcon ? 4 : 5;
+
+                if (dlgOnBrowseForMedia(*this, txtDescriptions[whichControl], findIcon)) {
+                    parentWindow->madeChange();
+                }
+
+                return TRUE;
             }
         }
         else if(ctrlID >= ControlIDs::NameText && ctrlID <= ControlIDs::OnDeathText) {
@@ -123,76 +131,4 @@ InputValidator* EditCharacterDescriptionsTab::validateFields() {
     }
 
     return NULL;
-}
-
-//=============================================================================
-// Private Functions
-//=============================================================================
-
-///----------------------------------------------------------------------------
-/// onBrowseForMedia - When the Browse for Icon or Sound icon is pressed,
-/// search for one.
-/// @param if true, it will search for an icon, otherwise, search for a sound.
-/// @return always TRUE.
-///----------------------------------------------------------------------------
-
-// TODO: Split this into a shared function since the other dialog uses the
-// exact same thing.
-
-BOOL EditCharacterDescriptionsTab::onBrowseForMedia(const bool findIcon) {
-
-	CFileDialog fileDialog(TRUE, NULL, NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, NULL);
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    if(findIcon) {
-
-        CString dialogTitle = AtoW(langMap.get("CDBFindImageTitle").c_str(), CP_UTF8);
-        CString filterCaption = AtoW(langMap.get("CBDFindImageFilterText").c_str(), CP_UTF8);
-        filterCaption += L" (*.BMP;*.ICO)|*.BMP;*.ICO|";
-
-        fileDialog.SetFilter(filterCaption);
-        fileDialog.SetTitle(dialogTitle);
-
-    }
-    else {
-
-        CString dialogTitle = AtoW(langMap.get("CBDFindSoundTitle").c_str(), CP_UTF8);
-        CString filterCaption = AtoW(langMap.get("CBDFindSoundFilterText").c_str(), CP_UTF8);
-        filterCaption += L" (*.WAV)|*.WAV|";
-
-        fileDialog.SetFilter(filterCaption);
-        fileDialog.SetTitle(dialogTitle);
-
-    }
-
-	if(fileDialog.DoModal(GetParent().GetHwnd()) == IDOK) {
-
-        // Convert the Long Path Name of the file into a short one. We can't use long paths
-        // As the game was written for Windows 3.1.
-
-        CString fileName;
-        const long strLength = GetShortPathName(fileDialog.GetPathName(), NULL, 0);
-        GetShortPathName(fileDialog.GetPathName(), fileName.GetBuffer(strLength), strLength + 1);
-        fileName.ReleaseBuffer();
-
-        const int lastSlash = fileName.ReverseFind(L"\\") + 1;
-        if(lastSlash < 0) {
-
-            CString errText = AtoW(langMap.get("ErrPathConversionText").c_str(), CP_UTF8);
-            CString errTitle = AtoW(langMap.get("ErrPathConversionTitle").c_str(), CP_UTF8);
-
-            MessageBox(errText, errTitle, MB_OK | MB_ICONERROR);
-            return TRUE;
-        }
-
-        fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash); 
-
-        txtDescriptions[(findIcon ? 4 : 5)].SetWindowText(fileName);
-
-        parentWindow->madeChange();
-	}
-
-    return TRUE;
-
 }

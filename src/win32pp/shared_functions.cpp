@@ -1,4 +1,5 @@
 #include "shared_functions.h"
+#include <wxx_commondlg.h>
 
 ///----------------------------------------------------------------------------
 /// centerWindowOnCurrentMonitor - Center's the window on the monitor is is currently on.
@@ -34,7 +35,7 @@ void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window) 
 /// @param the height of the box to be drawn
 /// @param species how thick the border should be. It will always have a
 /// thickness of 1, and any number smaller than 1 will be rounded up to 1. 
-/// In addition, the border caps at the seclection Width even if a bigger
+/// In addition, the border caps at the selection Width even if a bigger
 /// thickness is specified.
 ///----------------------------------------------------------------------------
 
@@ -56,4 +57,71 @@ void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
     
     inDC.SelectObject(oldBrush);
 
+}
+
+///----------------------------------------------------------------------------
+/// dlgOnBrowseForMedia - When the Browse for Icon or Sound is pressed on the
+/// Edit Character/Object Dialog, opens a Common Dialog box to search for
+/// an icon or sound.
+/// @param const reference to the dialog making the request
+/// @param the edit control that will receive the result.
+/// @param if true, it will search for an icon, otherwise, search for a sound.
+/// @return true if successful, false if not
+///----------------------------------------------------------------------------
+
+bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool findIcon) {
+
+    CFileDialog fileDialog(TRUE, NULL, NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST, NULL);
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (findIcon) {
+
+        CString dialogTitle = AtoW(langMap.get("CDBFindImageTitle").c_str(), CP_UTF8);
+        CString filterCaption = AtoW(langMap.get("CBDFindImageFilterText").c_str(), CP_UTF8);
+        filterCaption += L" (*.BMP;*.ICO)|*.BMP;*.ICO|";
+
+        fileDialog.SetFilter(filterCaption);
+        fileDialog.SetTitle(dialogTitle);
+
+    } else {
+
+        CString dialogTitle = AtoW(langMap.get("CBDFindSoundTitle").c_str(), CP_UTF8);
+        CString filterCaption = AtoW(langMap.get("CBDFindSoundFilterText").c_str(), CP_UTF8);
+        filterCaption += L" (*.WAV)|*.WAV|";
+
+        fileDialog.SetFilter(filterCaption);
+        fileDialog.SetTitle(dialogTitle);
+
+    }
+
+    if (fileDialog.DoModal(parentDialog.GetHwnd()) == IDOK) {
+
+        // Convert the Long Path Name of the file into a short one. We can't use long paths
+        // As the game was written for Windows 3.1.
+
+        CString fileName;
+        const long strLength = GetShortPathName(fileDialog.GetPathName(), NULL, 0);
+        GetShortPathName(fileDialog.GetPathName(), fileName.GetBuffer(strLength), strLength + 1);
+        fileName.ReleaseBuffer();
+
+        const int lastSlash = fileName.ReverseFind(L"\\") + 1;
+        if (lastSlash < 0) {
+
+            CString errText = AtoW(langMap.get("ErrPathConversionText").c_str(), CP_UTF8);
+            CString errTitle = AtoW(langMap.get("ErrPathConversionTitle").c_str(), CP_UTF8);
+
+            parentDialog.MessageBox(errText, errTitle, MB_OK | MB_ICONERROR);
+            return false;
+        }
+
+        fileName = fileName.Mid(lastSlash, fileName.GetLength() - lastSlash);
+
+        txtOut.SetWindowText(fileName);
+
+        return true;
+
+    }
+
+    return false;
 }

@@ -117,8 +117,6 @@ class EditCharacterDescriptionsTab : public ECTabViewBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
 
     private:
-
-        BOOL onBrowseForMedia(const bool forIcon);
         
         StringValidator     iconDescValidator;
         StringValidator     soundDescValidator;
