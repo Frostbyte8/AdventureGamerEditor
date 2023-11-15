@@ -1,8 +1,9 @@
 #ifndef __WIN32PP_EXTRAS_H__
 #define __WIN32PP_EXTRAS_H__
 
-#include "wxx_wincore.h"
-#include "wxx_controls.h"
+#include <wxx_wincore.h>
+#include <wxx_controls.h>
+#include <wxx_tab.h>
 
 class CAnsiEdit : public CEdit {
 
@@ -20,6 +21,16 @@ inline bool IsScrollBarKey(const int& vk) {
     }
     return false;
 }
+
+class CTabClassic : public CTab {
+
+    protected:
+        LRESULT OnSetFocus(UINT msg, WPARAM wparam, LPARAM lparam) {
+            // By default CTab disables keyboard navigation which is annoying.
+            // This repairs that.
+            return FinalWindowProc(msg, wparam, lparam);
+        }
+};
 
 ///----------------------------------------------------------------------------
 /// SetWindowTextFromStr - Set the caption of the given control to the given 

@@ -188,6 +188,10 @@ void EditObjectEffectsTab::PreRegisterClass(WNDCLASS& wc) {
 
 BOOL EditObjectEffectsTab::PreTranslateMessage(MSG &msg) {
 
+    if (msg.message == WM_KEYDOWN) {
+    }
+
+
     if(IsDialogMessage(msg)) {
         return TRUE;
     }

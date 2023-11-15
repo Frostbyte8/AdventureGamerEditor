@@ -117,7 +117,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    tabControl.Create(*this); 
+    tabControl.Create(*this, 0, WS_TABSTOP);
 
     // Create the tab pages for the dialog
 
@@ -162,7 +162,10 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
         btnDialogControl[2].EnableWindow(FALSE);
         SetWindowTextFromLangMapString("ApplyButton",
                           btnDialogControl[2], caption, langMap);
+
     }
+
+    tabControl.SetWindowPos(btnDialogControl[numDialogButtons - 1], 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     // The font must be set on the controls before we do any kind of sizing
     // so we can reliably test widths on the controls
@@ -271,12 +274,27 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     return WndProcDefault(msg, wParam, lParam);
 }
 
+///----------------------------------------------------------------------------
+/// PreTranslateMessage - Intercept messages, and check if the tab needs
+/// to process them.
+///----------------------------------------------------------------------------
+
+BOOL EditObjectDialog::PreTranslateMessage(MSG &msg) {
+
+    if (IsDialogMessage(msg)) {
+        return TRUE;
+    }
+
+    return CWnd::PreTranslateMessage(msg);
+
+}
+
 //=============================================================================
 // Protected Functions
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be useable.
+/// notifyChangeMade - Change the apply button to be usable.
 ///----------------------------------------------------------------------------
 
 void EditObjectDialog::notifyChangeMade() {

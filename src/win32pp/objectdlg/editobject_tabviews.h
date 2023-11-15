@@ -15,6 +15,20 @@
 
 #include "../editdialog_base.h"
 
+namespace EditObjectDialogConstants {
+
+    namespace DescriptionsTab {
+        namespace ControlIDs {
+            const WORD BrowseIcon       = 101;
+            const WORD BrowseSound      = 102;
+            const WORD Name             = 103;
+            const WORD Sight            = 104;
+            const WORD OnUse            = 105;
+            const WORD OnLastUse        = 106;
+        }
+    }
+}
+
 //=============================================================================
 // EOTabViewBase - The base class for all tab pages within the Edit Object 
 // Dialog Window.
@@ -70,8 +84,8 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 
@@ -109,7 +123,11 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         virtual InputValidator* validateFields();
 
     protected:
-                
+        
+        void PreCreate(CREATESTRUCT& cs) {
+            cs.style |= WS_GROUP;
+        }
+
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);

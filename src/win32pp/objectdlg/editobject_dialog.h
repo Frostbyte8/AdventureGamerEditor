@@ -37,6 +37,7 @@ class EditObjectDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
+        virtual BOOL PreTranslateMessage(MSG& msg);
 
         virtual LRESULT OnNotify(WPARAM wParam, LPARAM lParam);
         virtual void notifyChangeMade();
@@ -56,7 +57,7 @@ class EditObjectDialog : public EditDialogBase {
         EditObjectEffectsTab*           effectsTab;
         EditObjectLocationsTab*         locationsTab;
         CButton                         btnDialogControl[3];
-        CTab                            tabControl;
+        CTabClassic                     tabControl;
 
         const GameMap*                  gameMap;
         const bool                      isEditObject;
