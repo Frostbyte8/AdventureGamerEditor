@@ -25,10 +25,18 @@ inline bool IsScrollBarKey(const int& vk) {
 class CTabClassic : public CTab {
 
     protected:
+
+        // Restore the default Windows behavior for tabs. This ensures
+        // that you can use keyboard navigation
+
         LRESULT OnSetFocus(UINT msg, WPARAM wparam, LPARAM lparam) {
-            // By default CTab disables keyboard navigation which is annoying.
-            // This repairs that.
             return FinalWindowProc(msg, wparam, lparam);
+        }
+
+        LRESULT OnTCNSelChange(LPNMHDR lp) {
+            CTab::OnTCNSelChange(lp);
+            SetFocus();
+            return 0;
         }
 };
 
