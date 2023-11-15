@@ -19,12 +19,79 @@ namespace EditObjectDialogConstants {
 
     namespace DescriptionsTab {
         namespace ControlIDs {
+
             const WORD BrowseIcon       = 101;
             const WORD BrowseSound      = 102;
             const WORD Name             = 103;
             const WORD Sight            = 104;
             const WORD OnUse            = 105;
             const WORD OnLastUse        = 106;
+
+        }
+    }
+
+    namespace QualitiesTab {
+        namespace ControlIDs {
+
+            const WORD MasterKey    = 101;
+            const WORD Invisible    = 102;
+            const WORD Climber      = 103;
+            const WORD Protection   = 104;
+            const WORD Torch        = 105;
+            const WORD Worn         = 106;
+            const WORD Fixed        = 107;
+            const WORD Money        = 108;
+            const WORD UsesBox      = 109;
+            const WORD MoneyBox     = 110;
+            const WORD UsedWith     = 111;
+
+        }
+    }
+
+    namespace EffectsTab {
+        namespace ControlIDs {
+
+            const WORD EnergyBase            = 101;
+            const WORD EnergyRandom          = 102;
+            const WORD SkillBase             = 103;
+            const WORD SkillRandom           = 104;
+            const WORD WillpowerBase         = 105;
+            const WORD WillpowerRandom       = 106;
+            const WORD LuckBase              = 107;
+            const WORD LuckRandom            = 108;
+            const WORD TorchLifeBase         = 109;
+            const WORD TorchLifeRandom       = 110;
+            const WORD MakesSight            = 111;
+            const WORD MakesHearing          = 112;
+            const WORD EffectsConsume        = 113;
+            const WORD EffectsTemp           = 114;
+            const WORD EnergyPosBTN          = 115;
+            const WORD EnergyNegBTN          = 116;
+            const WORD SkillPosBTN           = 117;
+            const WORD SkillNegBTN           = 118;
+            const WORD WillpowerPosBTN       = 119;
+            const WORD WillpowerNegBTN       = 120;
+            const WORD LuckPosBTN            = 121;
+            const WORD LuckNegBTN            = 122;
+            const WORD TorchPosBTN           = 123;
+            const WORD TorchNegBTN           = 124;
+
+        }
+    }
+
+    namespace LocationsTab {
+        namespace ControlIDs {
+
+            const WORD OnGround         = 101;
+            const WORD OnPlayer         = 102;
+            const WORD OnCharacter      = 103;
+            const WORD UnlocksDoor      = 104;
+            const WORD XGroundText      = 105;
+            const WORD YGroundText      = 106;
+            const WORD XDoorText        = 107;
+            const WORD YDoorText        = 108;
+            const WORD WhichCharacter   = 109;
+
         }
     }
 }
@@ -52,6 +119,10 @@ class EOTabViewBase : public CWnd {
         virtual void populateFields(const GameObject& gameObject, const GameMap& gameMap) = 0;
         virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
         virtual InputValidator* validateFields() = 0;
+
+        virtual void PreCreate(CREATESTRUCT& cs) {
+            cs.dwExStyle |= WS_EX_CONTROLPARENT;
+        }
 
     protected:
         
@@ -84,7 +155,6 @@ class EditObjectDescriptionsTab : public EOTabViewBase {
         
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
-        virtual void PreCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
 
     private:
@@ -108,7 +178,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
 
     public:
 
-        // Constuctor
+        // Constructor
         EditObjectQualitiesTab(const GameMap* inGameMap, EditDialogBase* inParent) : EOTabViewBase(inParent), gameMap(inGameMap) { }
 
         const BOOL isFixedFlagChecked() const {
@@ -124,14 +194,9 @@ class EditObjectQualitiesTab : public EOTabViewBase {
 
     protected:
         
-        void PreCreate(CREATESTRUCT& cs) {
-            cs.style |= WS_GROUP;
-        }
-
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 
@@ -175,7 +240,6 @@ class EditObjectEffectsTab : public EOTabViewBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual BOOL PreTranslateMessage(MSG& msg);
         
     private:
 
@@ -223,7 +287,6 @@ class EditObjectLocationsTab : public EOTabViewBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual BOOL PreTranslateMessage(MSG& msg);
 
     private:
 
