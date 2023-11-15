@@ -28,6 +28,7 @@ class ResizeWorldDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
+        virtual BOOL PreTranslateMessage(MSG& msg);
         void moveControls();
 
         virtual void notifyChangeMade();
@@ -35,8 +36,6 @@ class ResizeWorldDialog : public EditDialogBase {
         virtual bool trySaveData();
 
         InputValidator* validateFields();
-
-        //virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
 

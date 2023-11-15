@@ -105,23 +105,10 @@ int ResizeWorldDialog::OnCreate(CREATESTRUCT& cs) {
     lblDimenions[0].SetWindowText(L"Width");
     lblDimenions[1].SetWindowText(L"Height");
     
-    // TODO: These dialog buttons appear in most dialogs, along with the font
-    // code and resize code. Look into making a function to replace this
-    // over repeated code.
+    createDefaultDialogButtons(*this, btnDialog, true);
 
-    for (int i = 0; i < 3; ++i) {
-        btnDialog[i].Create(*this, 0, BS_PUSHBUTTON);
-    }
-
-    SetWindowTextFromLangMapString("OKButton", btnDialog[0], caption, langMap);
-    SetWindowTextFromLangMapString("CancelButton", btnDialog[1], caption, langMap);
-    SetWindowTextFromLangMapString("ApplyButton", btnDialog[2], caption, langMap);
-
-    btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
-    btnDialog[0].SetDlgCtrlID(IDOK);
-    btnDialog[1].SetDlgCtrlID(IDCANCEL);
-    btnDialog[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-    btnDialog[2].EnableWindow(FALSE);
+    // TODO: Font code and the resize code here it in every dialog, it might
+    // Be possible to turn that into it's own function to reduce code reuse
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -153,12 +140,27 @@ void ResizeWorldDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
+///----------------------------------------------------------------------------
+/// PreTranslateMessage - Intercept messages, and check if the tab needs
+/// to process them.
+///----------------------------------------------------------------------------
+
+BOOL ResizeWorldDialog::PreTranslateMessage(MSG &msg) {
+
+    if (IsDialogMessage(msg)) {
+        return TRUE;
+    }
+
+    return CWnd::PreTranslateMessage(msg);
+
+}
+
 //=============================================================================
 // Protected Functions
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be useable.
+/// notifyChangeMade - Change the apply button to be usable.
 ///----------------------------------------------------------------------------
 
 void ResizeWorldDialog::notifyChangeMade() {

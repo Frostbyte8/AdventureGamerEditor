@@ -112,6 +112,11 @@ BOOL EditObjectDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 }
 
+///----------------------------------------------------------------------------
+/// OnNotify - Processes the WM_NOTIFY message.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
 LRESULT EditObjectDialog::OnNotify(WPARAM wParam, LPARAM lParam) {
 
     NMHDR* notifyHDR = reinterpret_cast<NMHDR*>(lParam);

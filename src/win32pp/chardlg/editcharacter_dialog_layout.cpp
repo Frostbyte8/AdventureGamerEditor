@@ -48,28 +48,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     // We also need to create the Ok, Cancel and Apply buttons too.
 
-    for (int i = 0; i < NUM_DIALOG_BUTTONS; ++i) {
-        btnDialogControl[i].Create(*this, 0, BS_PUSHBUTTON | WS_TABSTOP);
-    }
-
-    btnDialogControl[0].SetDlgCtrlID(IDOK);
-    btnDialogControl[1].SetDlgCtrlID(IDCANCEL);
-
-    SetWindowTextFromLangMapString("OKButton", btnDialogControl[0], caption,
-                                   langMap);
-
-    SetWindowTextFromLangMapString("CancelButton", btnDialogControl[1],
-                                   caption, langMap);
-
-    btnDialogControl[0].SetStyle(btnDialogControl[0].GetStyle() | BS_DEFPUSHBUTTON);
-
-    // If we have an apply button, do that here too.
-
-    if (isEditCharacter) {
-        btnDialogControl[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-        SetWindowTextFromLangMapString("ApplyButton",
-                                       btnDialogControl[2], caption, langMap);
-    }
+    createDefaultDialogButtons(*this, btnDialogControl, isEditCharacter);
 
     // Correct the tab order for the tab control
     tabControl.SetWindowPos(btnDialogControl[NUM_DIALOG_BUTTONS - 1], 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);

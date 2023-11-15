@@ -1,4 +1,5 @@
 #include "shared_functions.h"
+#include "editdialog_base.h"
 #include <wxx_commondlg.h>
 
 ///----------------------------------------------------------------------------
@@ -124,4 +125,38 @@ bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool fin
     }
 
     return false;
+}
+
+///----------------------------------------------------------------------------
+/// creatDefaultDialogButtons - Create the Ok, Cancel, and optionally Apply
+/// buttons found on every dialog.
+/// @param a reference to an array with exactly 3 buttons
+/// @param if true, create the apply button, if not, don't.
+///----------------------------------------------------------------------------
+
+void createDefaultDialogButtons(const CWnd& parentDialog, CButton (&dialogButtons)[3], const bool hasApply) {
+    
+    const int NUM_DIALOG_BUTTONS = hasApply ? 3 : 2;
+
+    for (int i = 0; i < NUM_DIALOG_BUTTONS; ++i) {
+        dialogButtons[i].Create(parentDialog, 0, WS_TABSTOP | BS_PUSHBUTTON);
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    SetWindowTextFromLangMapString("OKButton", dialogButtons[0], caption, langMap);
+    SetWindowTextFromLangMapString("CancelButton", dialogButtons[1], caption, langMap);
+
+    dialogButtons[0].SetStyle(dialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
+    dialogButtons[0].SetDlgCtrlID(IDOK);
+    dialogButtons[1].SetDlgCtrlID(IDCANCEL);
+    
+    if (hasApply) {
+        SetWindowTextFromLangMapString("ApplyButton", dialogButtons[2], caption, langMap);
+        dialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+        dialogButtons[2].EnableWindow(FALSE);
+    }
+
+
 }

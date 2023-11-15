@@ -49,6 +49,8 @@ inline void AddStringFromLangMap(const std::string& ID, CComboBox& widget, CStri
 
 bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool findIcon);
 
+void createDefaultDialogButtons(const CWnd& parentDialog, CButton (&dialogButtons)[3], const bool hasApply);
+
 void centerWindowOnCurrentMonitor(const HMONITOR& currentMonitor, CWnd& window);
 
 void DrawTileSelectionBox(CMemDC& inDC, const int& xOffset, const int& yOffset,
