@@ -97,6 +97,21 @@ BOOL EditCharacterDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 }
 
 ///----------------------------------------------------------------------------
+/// PreTranslateMessage - Intercept messages, and check if the tab needs
+/// to process them.
+///----------------------------------------------------------------------------
+
+BOOL EditCharacterDialog::PreTranslateMessage(MSG &msg) {
+
+    if (IsDialogMessage(msg)) {
+        return TRUE;
+    }
+
+    return CWnd::PreTranslateMessage(msg);
+
+}
+
+///----------------------------------------------------------------------------
 /// WndProc - Window Procedure for the Frame.
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------

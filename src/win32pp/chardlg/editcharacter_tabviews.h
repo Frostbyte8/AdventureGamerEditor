@@ -85,6 +85,10 @@ class ECTabViewBase : public CWnd {
         virtual void moveControls(const WindowMetrics& windowMetrics) = 0;
         virtual InputValidator* validateFields() = 0;
 
+        virtual void PreCreate(CREATESTRUCT& cs) {
+            cs.dwExStyle |= WS_EX_CONTROLPARENT;
+        }
+
     protected:
 
         LONG pageWidth;

@@ -44,6 +44,7 @@ class EditCharacterDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
+        virtual BOOL PreTranslateMessage(MSG& msg);
 
         // Dialog Base Virtual Functions
 
@@ -63,7 +64,7 @@ class EditCharacterDialog : public EditDialogBase {
         EditCharacterAttributesTab*     attributesTab;
         EditCharacterMiscTab*           miscTab;
         CButton                         btnDialogControl[3];
-        CTab                            tabControl;
+        CTabClassic                     tabControl;
 
         const GameMap*                  gameMap;
         const bool                      isEditCharacter;

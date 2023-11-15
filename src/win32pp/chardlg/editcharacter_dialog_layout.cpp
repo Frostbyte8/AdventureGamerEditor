@@ -24,7 +24,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    tabControl.Create(*this);
+    tabControl.Create(*this, 0, WS_TABSTOP);
 
     // Create the tab pages for the dialog
 
@@ -71,6 +71,9 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
                                        btnDialogControl[2], caption, langMap);
     }
 
+    // Correct the tab order for the tab control
+    tabControl.SetWindowPos(btnDialogControl[NUM_DIALOG_BUTTONS - 1], 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
     // Set the font to the font specified within window metrics.
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
@@ -80,6 +83,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     moveControls();
     tabControl.SelectPage(0);
+    tabControl.SetFocus();
 
     return CWnd::OnCreate(cs);
 }
@@ -259,7 +263,7 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
         // For the last two in the range, we will give them browse buttons.
         if (i > 3) {
-            btnBrowse[i - 4].Create(*this, 0, BS_PUSHBUTTON);
+            btnBrowse[i - 4].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
             btnBrowse[i - 4].SetDlgCtrlID(DescriptionsTab::ControlIDs::BrowseIcon + (i - 4));
 
             txtDescriptions[i].EnableWindow(FALSE);
@@ -439,7 +443,7 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     lblMoney.Create(*this, 0, SS_SIMPLE);
     SetWindowTextFromLangMapString("MoneyCharHas", lblMoney, caption, langMap);
 
-    txtMoney.Create(*this, 0, ES_AUTOHSCROLL);
+    txtMoney.Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
     txtMoney.SetExStyle(WS_EX_CLIENTEDGE);
     txtMoney.LimitText(5);
     txtMoney.SetDlgCtrlID(QualitiesTab::ControlIDs::MoneyOnHand);
@@ -605,7 +609,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
     for (int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
         lblAttribType[i].Create(*this, 0, SS_SIMPLE);
-        txtAttribType[i].Create(*this, 0, ES_AUTOHSCROLL);
+        txtAttribType[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtAttribType[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtAttribType[i].LimitText(2);
         txtAttribType[i].SetDlgCtrlID(AttributesTab::ControlIDs::Energy + i);
@@ -750,7 +754,7 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
 
     for (int i = 0; i < 2; ++i) {
         lblCoords[i].Create(*this, 0, SS_SIMPLE);
-        txtCoords[i].Create(*this, 0, ES_AUTOHSCROLL);
+        txtCoords[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
         txtCoords[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtCoords[i].SetDlgCtrlID(MiscTab::ControlIDs::XTextCoord + i);
     }
@@ -762,7 +766,7 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
     SetWindowTextFromLangMapString("CharInventoryLabel", grpInventory,
                                    caption, langMap);
 
-    lsbInventory.Create(*this, 0, LBS_STANDARD | WS_VSCROLL |
+    lsbInventory.Create(*this, 0, WS_TABSTOP | WS_VSCROLL | LBS_STANDARD |
                         LBS_NOINTEGRALHEIGHT | LBS_DISABLENOSCROLL);
 
     coordValidator[0] = IntegerValidator(&txtCoords[0], 0,
