@@ -134,6 +134,9 @@ bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool fin
 /// @param if true, create the apply button, if not, don't.
 ///----------------------------------------------------------------------------
 
+// TODO: This would probably be better used in EditDialogBase, and it could be used
+// to reduce the calls to notifyChangeMade and notifyChangesSaved
+
 void createDefaultDialogButtons(const CWnd& parentDialog, CButton (&dialogButtons)[3], const bool hasApply) {
     
     const int NUM_DIALOG_BUTTONS = hasApply ? 3 : 2;

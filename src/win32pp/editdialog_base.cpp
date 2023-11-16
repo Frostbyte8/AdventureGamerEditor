@@ -33,6 +33,19 @@ void EditDialogBase::setDefaultDialogTitle(const CString& inTitle) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// OnClose - Called when the dialog is trying to be closed
+///----------------------------------------------------------------------------
+
+void EditDialogBase::OnClose() {
+
+    if (!tryClose()) {
+        return;
+    }
+
+    endModal();
+}
+
+///----------------------------------------------------------------------------
 /// PreCreate - Override Window creation for the dialog
 ///----------------------------------------------------------------------------
 
@@ -43,16 +56,18 @@ void EditDialogBase::PreCreate(CREATESTRUCT& cs) {
 }
 
 ///----------------------------------------------------------------------------
-/// OnClose - Called when the dialog is trying to be closed
+/// PreTranslateMessage - Intercept messages, and check if the tab needs
+/// to process them.
 ///----------------------------------------------------------------------------
 
-void EditDialogBase::OnClose() {
+BOOL EditDialogBase::PreTranslateMessage(MSG &msg) {
 
-    if (!tryClose()) {
-        return;
+    if (IsDialogMessage(msg)) {
+        return TRUE;
     }
-    
-    endModal();
+
+    return CWnd::PreTranslateMessage(msg);
+
 }
 
 //=============================================================================

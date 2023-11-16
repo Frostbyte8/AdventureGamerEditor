@@ -154,7 +154,7 @@ void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be useable.
+/// notifyChangeMade - Change the apply button to be usable.
 ///----------------------------------------------------------------------------
 
 void EditTileDescriptionDialog::notifyChangeMade() {

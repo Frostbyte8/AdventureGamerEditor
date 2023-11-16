@@ -127,21 +127,6 @@ void ResizeWorldDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
-///----------------------------------------------------------------------------
-/// PreTranslateMessage - Intercept messages, and check if the tab needs
-/// to process them.
-///----------------------------------------------------------------------------
-
-BOOL ResizeWorldDialog::PreTranslateMessage(MSG &msg) {
-
-    if (IsDialogMessage(msg)) {
-        return TRUE;
-    }
-
-    return CWnd::PreTranslateMessage(msg);
-
-}
-
 //=============================================================================
 // Protected Functions
 //=============================================================================

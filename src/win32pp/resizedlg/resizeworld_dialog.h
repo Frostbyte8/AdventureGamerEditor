@@ -27,7 +27,6 @@ class ResizeWorldDialog : public EditDialogBase {
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual BOOL PreTranslateMessage(MSG& msg);
         void moveControls();
 
         virtual void notifyChangeMade();

@@ -47,6 +47,7 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
 
         // Win32 Functions
         virtual void PreCreate(CREATESTRUCT& cs);
+        virtual BOOL PreTranslateMessage(MSG& msg);
         virtual void OnClose();
 
         // Pure virtual functions
