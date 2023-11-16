@@ -24,7 +24,6 @@ class ResizeWorldDialog : public EditDialogBase {
 
     protected:
 
-        virtual void OnClose();
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);

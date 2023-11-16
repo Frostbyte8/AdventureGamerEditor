@@ -12,7 +12,7 @@ namespace ControlIDs {
 //=============================================================================
 
 EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
-EditDialogBase(inMainWindow, inParentHandle), optionChosen(IDCLOSE), dialogCaption("") {
+EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditStoryDialog), optionChosen(IDCLOSE), dialogCaption("") {
 }
 
 //=============================================================================
@@ -59,24 +59,6 @@ void EditStoryDialog::setStoryAndSummary(const std::string& inStoryText, const s
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// OnClose - Processes the WM_CLOSE message.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-void EditStoryDialog::OnClose() {
-
-    // First we'll see if we can actually close the dialog.
-    if(!tryClose()) {
-        return;
-    }
-
-    // Then we'll end the dialog and inform the parent window
-    // that we are done.
-    endModal(&MainWindowInterface::finishedEditStoryDialog);
-   
-}
 
 ///----------------------------------------------------------------------------
 /// OnCommand - Processes the WM_COMMAND message.

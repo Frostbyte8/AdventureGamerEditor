@@ -5,10 +5,12 @@
 // Constructors
 //=============================================================================
 
-EditDialogBase::EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow) : 
+EditDialogBase::EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow, void (MainWindowInterface::*finishDialogFunc)()) :
 mainWindow(inMainWindow), parentWindow(inParentWindow), optionChosen(IDCLOSE), 
 changeMade(false), areSavedChanges(false), dialogReady(false), 
-originalWindowTitle(""), finishFunction(NULL) {}
+originalWindowTitle(""), finishFunc(finishDialogFunc) {
+    assert(finishFunc); // Finish function CANNOT be NULL.
+}
 
 //=============================================================================
 // Mutators
@@ -49,13 +51,8 @@ void EditDialogBase::OnClose() {
     if (!tryClose()) {
         return;
     }
-
-    if (finishFunction != NULL) {
-        //(mainWindow->*finishFunction)();
-
-        endModal(finishFunction);
-    }
-
+    
+    endModal();
 }
 
 //=============================================================================
@@ -117,7 +114,7 @@ void EditDialogBase::dialogButtonPressed(const int& which) {
 /// endModal - Enables the parent window and closes the dialog window.
 ///----------------------------------------------------------------------------
 
-void EditDialogBase::endModal(void (MainWindowInterface::*finishFunction)() ) {
+void EditDialogBase::endModal() {
 
     if(parentWindow != NULL) {
         ::EnableWindow(parentWindow, TRUE);
@@ -127,9 +124,7 @@ void EditDialogBase::endModal(void (MainWindowInterface::*finishFunction)() ) {
 
     CWnd::OnClose();
 
-    // Finish function cannot be NULL. It *must* be specified.
-    assert(finishFunction);
-    (mainWindow->*finishFunction)();
+    (mainWindow->*finishFunc)();
 
 }
 

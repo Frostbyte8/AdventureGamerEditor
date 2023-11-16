@@ -23,7 +23,6 @@ class EditStoryDialog : public EditDialogBase {
 
     protected:
 
-        virtual void OnClose(); 
         virtual int OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);

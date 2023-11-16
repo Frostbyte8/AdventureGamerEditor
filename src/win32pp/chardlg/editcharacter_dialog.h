@@ -40,7 +40,6 @@ class EditCharacterDialog : public EditDialogBase {
 
         // Win32++ Overrides
 
-        virtual void OnClose();
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);

@@ -6,7 +6,7 @@
 //=============================================================================
 
 EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap,
-HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inParentHandle),
+HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditCharacterDialog),
 gameMap(inGameMap), descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL),
 isEditCharacter(inEditCharacter) {
 }
@@ -56,21 +56,6 @@ void EditCharacterDialog::setCharacterToEdit(const GameCharacter& gameCharacter)
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// OnClose - Processes the WM_CLOSE message.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-void EditCharacterDialog::OnClose() {
-
-    if(!tryClose()) {
-        return;
-    }
-    
-    endModal(&MainWindowInterface::finishedEditCharacterDialog);
-
-}
 
 ///----------------------------------------------------------------------------
 /// OnCommand - Processes the WM_COMMAND message.

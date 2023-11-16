@@ -13,7 +13,7 @@ namespace ControlIDs {
 //=============================================================================
 
 EditTileDescriptionDialog::EditTileDescriptionDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
-EditDialogBase(inMainWindow, inParentHandle) {
+EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditTileDescriptionDialog) {
 }
 
 //=============================================================================
@@ -57,25 +57,6 @@ void EditTileDescriptionDialog::setTileDescription(const std::string& inName, co
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// OnClose - Processes the WM_CLOSE message.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-void EditTileDescriptionDialog::OnClose() {
-    
-    // First we'll see if we can actually close the dialog.
-    if(!tryClose()) {
-        return;
-    }
-
-    // Then we'll end the dialog and inform the parent window
-    // that we are done.
-    
-    endModal(&MainWindowInterface::finishedEditTileDescriptionDialog);
-
-}
 
 ///----------------------------------------------------------------------------
 /// OnCommand - Processes the WM_COMMAND message.

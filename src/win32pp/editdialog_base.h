@@ -27,7 +27,7 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
 
         // Public Functions
         bool goModal();         // Dialog is now modal
-        void endModal(void (MainWindowInterface::*finishFunction)() = NULL);        // Dialog is no longer modal
+        void endModal();        // Dialog is no longer modal
  
         void dialogButtonPressed(const int& which); // Ok/Cancel/Apply were clicked
         void changesSaved();    // Indicate changes were saved
@@ -43,7 +43,7 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
 
     protected:
 
-        EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow);
+        EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow, void (MainWindowInterface::*finishDialogFunc)());
 
         // Win32 Functions
         virtual void PreCreate(CREATESTRUCT& cs);
@@ -70,9 +70,9 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         int                         optionChosen;
         bool                        dialogReady;
 
-        void (MainWindowInterface::*finishFunction)();
-
     private:
+
+        void (MainWindowInterface::*finishFunc)();
 
 };
 

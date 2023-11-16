@@ -13,11 +13,9 @@
 //=============================================================================
 
 EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inParentHandle),
+HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditObjectDialog),
 gameMap(inGameMap), descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0),
-isEditObject(inEditObject) {
-    finishFunction = &MainWindowInterface::finishedEditObjectDialog;
-}
+isEditObject(inEditObject) {}
 
 //=============================================================================
 // Accessors
@@ -69,28 +67,6 @@ void EditObjectDialog::setObjectToEdit(const GameObject& gameObject) {
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// OnClose - Processes the WM_CLOSE message.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-void EditObjectDialog::OnClose() {
-
-    EditDialogBase::OnClose();
-
-    /*
-    // First we'll see if we can actually close the dialog.
-    if(!tryClose()) {
-        return;
-    }
-
-    // Then we'll end the dialog and inform the parent window
-    // that we are done.
-    
-    endModal(&MainWindowInterface::finishedEditObjectDialog);
-    */
-}
 
 ///----------------------------------------------------------------------------
 /// OnCommand - Processes the WM_COMMAND message.

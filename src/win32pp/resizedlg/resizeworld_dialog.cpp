@@ -14,7 +14,7 @@ namespace ControlIDs {
 //=============================================================================
 
 ResizeWorldDialog::ResizeWorldDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) :
-EditDialogBase(inMainWindow, inParentHandle) {
+EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedResizeWorldDialog) {
 }
 
 //=============================================================================
@@ -33,25 +33,6 @@ void ResizeWorldDialog::setWorldDimensions(const int& currentWidth, const int& c
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// OnClose - Processes the WM_CLOSE message.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-void ResizeWorldDialog::OnClose() {
-
-    // First we'll see if we can actually close the dialog.
-    if (!tryClose()) {
-        return;
-    }
-
-    // Then we'll end the dialog and inform the parent window
-    // that we are done.
-
-    endModal(&MainWindowInterface::finishedResizeWorldDialog);
-
-}
 
 ///----------------------------------------------------------------------------
 /// OnCommand - Processes the WM_COMMAND message.
