@@ -1,5 +1,6 @@
 #include "editdialog_base.h"
 #include "../util/languagemapper.h"
+#include "shared_functions.h"
 
 //=============================================================================
 // Constructors
@@ -7,7 +8,7 @@
 
 EditDialogBase::EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow, void (MainWindowInterface::*finishDialogFunc)()) :
 mainWindow(inMainWindow), parentWindow(inParentWindow), optionChosen(IDCLOSE), 
-changeMade(false), areSavedChanges(false), dialogReady(false), 
+changeMade(false), areSavedChanges(false), dialogReady(false), hasApplyButton(false),
 originalWindowTitle(""), finishFunc(finishDialogFunc) {
     assert(finishFunc); // Finish function CANNOT be NULL.
 }
@@ -160,21 +161,26 @@ bool EditDialogBase::goModal() {
 }
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - By default does nothing. Override this to do stuff
-/// when the dialog makes a change
+/// notifyChangeMade - A field on the dialog was changed. Override this to be
+/// notified of changes in a dialog. By default, it will enable the apply
+/// button if one exists.
 ///----------------------------------------------------------------------------
 
 void EditDialogBase::notifyChangeMade() {
-    return;
+    if (hasApplyButton) {
+        btnDialog[2].EnableWindow(TRUE);
+    }
 }
 
 ///----------------------------------------------------------------------------
-/// notifyChangesSaved - By default does nothing. Override this to do stuff
-/// when the dialog successfully saves the changes made to it.
+/// notifyChangesSaved - Changes are being saved. Override this to be notified
+/// of such. By default it will disable the apply button if one exists.
 ///----------------------------------------------------------------------------
 
 void EditDialogBase::notifyChangesSaved() {
-    return;
+    if (hasApplyButton) {
+        btnDialog[2].EnableWindow(FALSE);
+    }
 }
 
 ///----------------------------------------------------------------------------
@@ -283,5 +289,39 @@ void EditDialogBase::displayErrorMessage(const std::string &inMessage,
     const UINT messageBoxFlags  = MB_ICONERROR;
 
     MessageBox(message, title, messageBoxFlags);
+
+}
+
+///----------------------------------------------------------------------------
+/// createDefaultDialogButtons - Create the Ok, Cancel, and optionally Apply
+/// buttons found on every dialog.
+/// @param a reference to an array with exactly 3 buttons
+/// @param if true, create the apply button, if not, don't.
+///----------------------------------------------------------------------------
+
+void EditDialogBase::createDefaultDialogButtons(const bool hasApply) {
+
+    hasApplyButton = hasApply;
+    const int NUM_DIALOG_BUTTONS = hasApply ? 3 : 2;
+
+    for (int i = 0; i < NUM_DIALOG_BUTTONS; ++i) {
+        btnDialog[i].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    SetWindowTextFromLangMapString("OKButton", btnDialog[0], caption, langMap);
+    SetWindowTextFromLangMapString("CancelButton", btnDialog[1], caption, langMap);
+
+    btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
+    btnDialog[0].SetDlgCtrlID(IDOK);
+    btnDialog[1].SetDlgCtrlID(IDCANCEL);
+
+    if (hasApply) {
+        SetWindowTextFromLangMapString("ApplyButton", btnDialog[2], caption, langMap);
+        btnDialog[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+        btnDialog[2].EnableWindow(FALSE);
+    }
 
 }

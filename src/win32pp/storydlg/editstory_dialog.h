@@ -26,9 +26,7 @@ class EditStoryDialog : public EditDialogBase {
         virtual int OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-        
-        virtual void notifyChangeMade();
-        virtual void notifyChangesSaved();
+
         virtual bool trySaveData();
 
     private:
@@ -42,7 +40,6 @@ class EditStoryDialog : public EditDialogBase {
         CStatic         lblSummary;
         CAnsiEdit       txtStory;
         CAnsiEdit       txtSummary;
-        CButton         dialogButtons[3];
 
         int             optionChosen;
         CString         dialogCaption;

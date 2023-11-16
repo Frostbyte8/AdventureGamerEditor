@@ -186,26 +186,6 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be usable.
-///----------------------------------------------------------------------------
-
-void EditObjectDialog::notifyChangeMade() {
-    if(isEditObject) {
-        btnDialogControl[2].EnableWindow(TRUE);
-    }
-}
-
-///----------------------------------------------------------------------------
-/// notifyChangesSaved - Change the apply button to be unusable.
-///----------------------------------------------------------------------------
-
-void EditObjectDialog::notifyChangesSaved() {
-    if(isEditObject) {
-        btnDialogControl[2].EnableWindow(FALSE);
-    }
-}
-
-///----------------------------------------------------------------------------
 /// trySaveData - Confirm that data in the dialog (in this case, each tab page)
 /// is valid, and if it is, save it. This function should not be called
 /// directly.
@@ -241,7 +221,7 @@ bool EditObjectDialog::trySaveData() {
 
             // TODO: Return an ID instead of a HWND
             // Also, tell the tab what action to take (IE: if it's a textbox,
-            // hilight it)
+            // highlight it)
             if(validatorFailed->getErrorCode() != errorCodes::ControlNotFound) {
                 validatorFailed->getWindow()->SetFocus();
             }

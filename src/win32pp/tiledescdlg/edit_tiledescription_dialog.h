@@ -28,9 +28,6 @@ class EditTileDescriptionDialog : public EditDialogBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         virtual bool trySaveData();
 
-        virtual void notifyChangeMade();
-        virtual void notifyChangesSaved();
-
     private:
 
         void moveControls();
@@ -39,8 +36,6 @@ class EditTileDescriptionDialog : public EditDialogBase {
         CAnsiEdit       txtTileName;
         CStatic         lblTileDescription;
         CAnsiEdit       txtTileDescription;
-        CButton         btnDialogButtons[3];
-
 
         std::string     tileName;
         std::string     tileDescription;

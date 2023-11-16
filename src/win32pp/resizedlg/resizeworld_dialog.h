@@ -29,8 +29,6 @@ class ResizeWorldDialog : public EditDialogBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         void moveControls();
 
-        virtual void notifyChangeMade();
-        virtual void notifyChangesSaved();
         virtual bool trySaveData();
 
         InputValidator* validateFields();

@@ -48,10 +48,10 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     // We also need to create the Ok, Cancel and Apply buttons too.
 
-    createDefaultDialogButtons(*this, btnDialogControl, isEditCharacter);
+    createDefaultDialogButtons(isEditCharacter);
 
     // Correct the tab order for the tab control
-    tabControl.SetWindowPos(btnDialogControl[NUM_DIALOG_BUTTONS - 1], 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    tabControl.SetWindowPos(btnDialog[NUM_DIALOG_BUTTONS - 1], 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
     // Set the font to the font specified within window metrics.
 
@@ -139,7 +139,7 @@ void EditCharacterDialog::moveControls() {
 
     // We have to go backwards though to place them
     for (int i = numDialogButtons - 1; i >= 0; --i) {
-        btnDialogControl[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        btnDialog[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
         cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
     }
 

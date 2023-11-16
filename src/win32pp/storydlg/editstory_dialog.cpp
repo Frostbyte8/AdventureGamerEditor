@@ -117,20 +117,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     txtStory.LimitText(GameMapConstants::MaxStoryText);
     txtStory.SetDlgCtrlID(ControlIDs::SummaryText);
 
-    for(int i = 0; i < 3; ++i) {
-        dialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
-    }
-
-    SetWindowTextFromLangMapString("OKButton", dialogButtons[0], caption, langMap);
-    SetWindowTextFromLangMapString("CancelButton", dialogButtons[1], caption, langMap);
-    SetWindowTextFromLangMapString("ApplyButton", dialogButtons[2], caption, langMap);
-
-    dialogButtons[0].SetStyle(dialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
-
-    dialogButtons[0].SetDlgCtrlID(IDOK);
-    dialogButtons[1].SetDlgCtrlID(IDCANCEL);
-    dialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-    dialogButtons[2].EnableWindow(FALSE);
+    createDefaultDialogButtons(true);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -154,22 +141,6 @@ void EditStoryDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Protected Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be useable.
-///----------------------------------------------------------------------------
-
-void EditStoryDialog::notifyChangeMade() {
-    dialogButtons[2].EnableWindow(TRUE);
-}
-
-///----------------------------------------------------------------------------
-/// notifyChangesSaved - Change the apply button to be unusable.
-///----------------------------------------------------------------------------
-
-void EditStoryDialog::notifyChangesSaved() {
-    dialogButtons[2].EnableWindow(FALSE);
-}
 
 ///----------------------------------------------------------------------------
 /// trySaveData - Confirm data is valid, and if it is save it. This function
@@ -222,7 +193,7 @@ void EditStoryDialog::moveControls() {
     cPos.Offset(boundryWidth - (CD.XBUTTON), txtSummary.GetClientRect().Height() + CS.YUNRELATED_MARGIN);
 
     for(int i = 2; i >= 0; --i) {
-        dialogButtons[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        btnDialog[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
         cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
     }
 

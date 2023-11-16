@@ -95,26 +95,6 @@ LRESULT EditCharacterDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be usable.
-///----------------------------------------------------------------------------
-
-void EditCharacterDialog::notifyChangeMade() {
-    if(isEditCharacter) {
-        btnDialogControl[2].EnableWindow(TRUE);
-    }
-}
-
-///----------------------------------------------------------------------------
-/// notifyChangesSaved - Change the apply button to be unusable.
-///----------------------------------------------------------------------------
-
-void EditCharacterDialog::notifyChangesSaved() {
-    if(isEditCharacter) {
-        btnDialogControl[2].EnableWindow(FALSE);
-    }
-}
-
-///----------------------------------------------------------------------------
 /// trySaveData - Confirm that data in the dialog (in this case, each tab page)
 /// is valid, and if it is, save it.
 /// @return true if the data was valid, false if it was not.

@@ -38,8 +38,6 @@ class EditObjectDialog : public EditDialogBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
 
         virtual LRESULT OnNotify(WPARAM wParam, LPARAM lParam);
-        virtual void notifyChangeMade();
-        virtual void notifyChangesSaved();
         virtual void moveControls();
         virtual bool trySaveData();
         
@@ -54,7 +52,6 @@ class EditObjectDialog : public EditDialogBase {
         EditObjectQualitiesTab*         qualitiesTab;
         EditObjectEffectsTab*           effectsTab;
         EditObjectLocationsTab*         locationsTab;
-        CButton                         btnDialogControl[3];
         CTabClassic                     tabControl;
 
         const GameMap*                  gameMap;

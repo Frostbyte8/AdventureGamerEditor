@@ -115,20 +115,8 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
     txtTileDescription.SetDlgCtrlID(ControlIDs::Description);
     txtTileDescription.SetLimitText(GameMapConstants::MaxTileDescription);
-
-    for(int i = 0; i < 3; ++i) {
-        btnDialogButtons[i].Create(*this, 0, BS_PUSHBUTTON);
-    }
-
-    SetWindowTextFromLangMapString("OKButton", btnDialogButtons[0], caption, langMap);
-    SetWindowTextFromLangMapString("CancelButton", btnDialogButtons[1], caption, langMap);
-    SetWindowTextFromLangMapString("ApplyButton", btnDialogButtons[2], caption, langMap);
-
-    btnDialogButtons[0].SetStyle(btnDialogButtons[0].GetStyle() | BS_DEFPUSHBUTTON);
-    btnDialogButtons[0].SetDlgCtrlID(IDOK);
-    btnDialogButtons[1].SetDlgCtrlID(IDCANCEL);
-    btnDialogButtons[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-    btnDialogButtons[2].EnableWindow(FALSE);
+    
+    createDefaultDialogButtons(true);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -154,22 +142,6 @@ void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be usable.
-///----------------------------------------------------------------------------
-
-void EditTileDescriptionDialog::notifyChangeMade() {
-    btnDialogButtons[2].EnableWindow(TRUE);
-}
-
-///----------------------------------------------------------------------------
-/// notifyChangesSaved - Change the apply button to be unusable.
-///----------------------------------------------------------------------------
-
-void EditTileDescriptionDialog::notifyChangesSaved() {
-    btnDialogButtons[2].EnableWindow(FALSE);
-}
-
-///----------------------------------------------------------------------------
 /// trySaveData - Confirm that data in the dialog is valid, and if it is, save
 /// it. This function should not be called directly.
 /// @return Always true
@@ -193,7 +165,7 @@ bool EditTileDescriptionDialog::trySaveData() {
 
 void EditTileDescriptionDialog::moveControls() {
 
-    // TODO: At some point, make this dialog resizable, also figure out actual width
+    // TODO: At some point, make this dialog resizeable, also figure out actual width
 
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
@@ -217,7 +189,7 @@ void EditTileDescriptionDialog::moveControls() {
                 txtTileDescription.GetClientRect().Height() + CS.YUNRELATED_MARGIN);
 
     for(int i = 2; i >= 0; --i) {
-        btnDialogButtons[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
+        btnDialog[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
         cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
     }
 

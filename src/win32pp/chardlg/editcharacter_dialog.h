@@ -46,8 +46,6 @@ class EditCharacterDialog : public EditDialogBase {
 
         // Dialog Base Virtual Functions
 
-        virtual void notifyChangeMade();
-        virtual void notifyChangesSaved();
         virtual void moveControls();
         virtual bool trySaveData();
 
@@ -61,7 +59,6 @@ class EditCharacterDialog : public EditDialogBase {
         EditCharacterQualitiesTab*      qualitiesTab;
         EditCharacterAttributesTab*     attributesTab;
         EditCharacterMiscTab*           miscTab;
-        CButton                         btnDialogControl[3];
         CTabClassic                     tabControl;
 
         const GameMap*                  gameMap;

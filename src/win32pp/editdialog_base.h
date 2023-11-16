@@ -2,6 +2,7 @@
 #define __EDITDIALOG_BASE_H__
 
 #include <wxx_wincore.h>
+#include <wxx_stdcontrols.h>
 #include "../model/gamemap.h"
 #include "../win32/window_metrics.h"
 #include "../interface/mainwindow_interface.h"
@@ -34,6 +35,8 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         bool tryClose();        // Attempt to close the window
         bool trySave();         // Attempt to Save Data
         void madeChange();      // Indicate a change was made
+
+        void createDefaultDialogButtons(const bool hasApply);
 
         // Interface functions
        
@@ -71,8 +74,11 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         int                         optionChosen;
         bool                        dialogReady;
 
+        CButton                     btnDialog[3];
+
     private:
 
+        bool                        hasApplyButton;
         void (MainWindowInterface::*finishFunc)();
 
 };

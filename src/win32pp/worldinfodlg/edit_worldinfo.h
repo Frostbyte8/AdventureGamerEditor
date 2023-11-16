@@ -28,8 +28,6 @@ class EditWorldInfoDialog : public EditDialogBase {
         virtual void PreRegisterClass(WNDCLASS& wc);
         void moveControls();
 
-        virtual void notifyChangeMade();
-        virtual void notifyChangesSaved();
         virtual bool trySaveData();
         
         InputValidator* validateFields();
@@ -49,7 +47,6 @@ class EditWorldInfoDialog : public EditDialogBase {
         CSpinButton     spnAttributes[5];
         CEdit           txtRandomAttributes[5];
         CSpinButton     spnRandomAttributes[5];
-        CButton         btnDialog[3];
         
         IntegerValidator    baseAttributeValidator[5];
         IntegerValidator    randomAttributeValidator[5];

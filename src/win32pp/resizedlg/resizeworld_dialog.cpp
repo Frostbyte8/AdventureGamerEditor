@@ -92,7 +92,7 @@ int ResizeWorldDialog::OnCreate(CREATESTRUCT& cs) {
     lblDimenions[0].SetWindowText(L"Width");
     lblDimenions[1].SetWindowText(L"Height");
     
-    createDefaultDialogButtons(*this, btnDialog, true);
+    createDefaultDialogButtons(true);
 
     // TODO: Font code and the resize code here it in every dialog, it might
     // Be possible to turn that into it's own function to reduce code reuse
@@ -130,22 +130,6 @@ void ResizeWorldDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Protected Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be usable.
-///----------------------------------------------------------------------------
-
-void ResizeWorldDialog::notifyChangeMade() {
-    btnDialog[2].EnableWindow(TRUE);
-}
-
-///----------------------------------------------------------------------------
-/// notifyChangesSaved - Change the apply button to be unusable.
-///----------------------------------------------------------------------------
-
-void ResizeWorldDialog::notifyChangesSaved() {
-    btnDialog[2].EnableWindow(FALSE);
-}
 
 ///----------------------------------------------------------------------------
 /// moveControls - Move the controls into their proper positions

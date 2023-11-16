@@ -172,19 +172,7 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     SetWindowTextFromLangMapString("LuckLabel", lblAttributes[3], caption, langMap);
     SetWindowTextFromLangMapString("TorchLifeLabel", lblAttributes[4], caption, langMap);
 
-    for(int i = 0; i < 3; ++i) {
-        btnDialog[i].Create(*this, 0, BS_PUSHBUTTON);
-    }
-
-    SetWindowTextFromLangMapString("OKButton", btnDialog[0], caption, langMap);
-    SetWindowTextFromLangMapString("CancelButton", btnDialog[1], caption, langMap);
-    SetWindowTextFromLangMapString("ApplyButton", btnDialog[2], caption, langMap);
-
-    btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
-    btnDialog[0].SetDlgCtrlID(IDOK);
-    btnDialog[1].SetDlgCtrlID(IDCANCEL);
-    btnDialog[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-    btnDialog[2].EnableWindow(FALSE);
+    createDefaultDialogButtons(true);
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
@@ -219,22 +207,6 @@ void EditWorldInfoDialog::PreRegisterClass(WNDCLASS& wc) {
 //=============================================================================
 // Protected Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// notifyChangeMade - Change the apply button to be useable.
-///----------------------------------------------------------------------------
-
-void EditWorldInfoDialog::notifyChangeMade() {
-    btnDialog[2].EnableWindow(TRUE);
-}
-
-///----------------------------------------------------------------------------
-/// notifyChangesSaved - Change the apply button to be unusable.
-///----------------------------------------------------------------------------
-
-void EditWorldInfoDialog::notifyChangesSaved() {
-    btnDialog[2].EnableWindow(FALSE);
-}
 
 ///----------------------------------------------------------------------------
 /// moveControls - Move the controls into their proper positions
