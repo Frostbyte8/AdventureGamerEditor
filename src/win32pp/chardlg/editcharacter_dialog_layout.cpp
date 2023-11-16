@@ -94,7 +94,7 @@ void EditCharacterDialog::moveControls() {
     // amount of space.
 
     LONG widestPoint = findLongestTab(true);
-    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XBUTTON_MARGIN * 2);
+    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
     widestPoint = std::max(widestPoint, minSize);
 
     // We have to adjust the tab control so it's the correct dimensions first

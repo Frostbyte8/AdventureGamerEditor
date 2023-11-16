@@ -39,7 +39,7 @@ class ResizeWorldDialog : public EditDialogBase {
 
     private:
 
-        LONG caclculateWindowWidth();
+        LONG calculateWindowWidth();
         //void insertData();
 
         CStatic         lblDimenions[2];

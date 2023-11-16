@@ -39,7 +39,7 @@ class EditWorldInfoDialog : public EditDialogBase {
 
     private:
 
-        LONG caclculateWindowWidth();
+        LONG calculateWindowWidth();
         void insertData();
       
         CButton         grpWorldInfo;

@@ -1,8 +1,8 @@
 #include "resizeworld_dialog.h"
-#include "../../util/languagemapper.h"
 #include "../shared_functions.h"
 #include "../../util/win32pp_extras.h"
 #include "../../adventuregamer_constants.h"
+#include "../../util/languagemapper.h"
 
 namespace ControlIDs {
     const WORD txtWidth = 101;
@@ -98,9 +98,15 @@ int ResizeWorldDialog::OnCreate(CREATESTRUCT& cs) {
         txtDimensions[i].SetDlgCtrlID(ControlIDs::txtWidth + i);
         txtDimensions[i].SetLimitText(2);
 
-        dimensionValidator[i] = IntegerValidator(&txtDimensions[i], 3, 99);
-
     }
+
+    dimensionValidator[0] = IntegerValidator(&txtDimensions[0], 
+                                             AdventureGamerConstants::MinWorldWidth,
+                                             AdventureGamerConstants::MaxWorldWidth);
+
+    dimensionValidator[1] = IntegerValidator(&txtDimensions[1],
+                                             AdventureGamerConstants::MinWorldHeight,
+                                             AdventureGamerConstants::MaxWorldHeight);
 
     lblDimenions[0].SetWindowText(L"Width");
     lblDimenions[1].SetWindowText(L"Height");
@@ -113,7 +119,7 @@ int ResizeWorldDialog::OnCreate(CREATESTRUCT& cs) {
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    const LONG contentWidth = caclculateWindowWidth();
+    const LONG contentWidth = calculateWindowWidth();
 
     // TODO: Finish calculating dimensions
     RECT rc ={ 0, 0,
@@ -227,8 +233,6 @@ void ResizeWorldDialog::moveControls() {
     SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
                  SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
 
-
-
 }
 
 ///----------------------------------------------------------------------------
@@ -270,12 +274,12 @@ bool ResizeWorldDialog::trySaveData() {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// caclculateCotentWidth - Calculates how wide the content of the window
+/// calculateWindowWidth - Calculates how wide the content of the window
 /// needs to be.
 /// @return a LONG integer containing the width of the content.
 ///----------------------------------------------------------------------------
 
-LONG ResizeWorldDialog::caclculateWindowWidth() {
+LONG ResizeWorldDialog::calculateWindowWidth() {
 
     const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();
@@ -285,15 +289,18 @@ LONG ResizeWorldDialog::caclculateWindowWidth() {
     // The Width will be the size of the widest control, in this case it'll likely
     // be the buttons.
 
+    const LONG minSize = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
+
     for (int i = 0; i < 2; ++i) {
         contentWidth = std::max(windowMetrics.CalculateStringWidth(
             lblDimenions[i].GetWindowTextW().c_str()), contentWidth);
-
-        // TODO: Add text boxes here.
     }
 
-    contentWidth += CS.XGROUPBOX_MARGIN * 2;
-    contentWidth = std::max(contentWidth, static_cast<LONG>((CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3)));
+    // Include margins
+    contentWidth += CS.XWINDOW_MARGIN * 2;
+    
+    // Now check if the labels are wider than the minimum size needed to display the buttons.
+    contentWidth = std::max(contentWidth, minSize);  
 
     return contentWidth;
 }

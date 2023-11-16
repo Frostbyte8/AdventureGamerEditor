@@ -208,7 +208,7 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
-    const LONG contentWidth = caclculateWindowWidth();
+    const LONG contentWidth = calculateWindowWidth();
 
     // TODO: Finish calculating dimensions
     RECT rc = {0, 0,
@@ -378,12 +378,12 @@ bool EditWorldInfoDialog::trySaveData() {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// caclculateCotentWidth - Calculates how wide the content of the window
+/// calculateWindowWidth - Calculates how wide the content of the window
 /// needs to be.
 /// @return a LONG integer containing the width of the content.
 ///----------------------------------------------------------------------------
 
-LONG EditWorldInfoDialog::caclculateWindowWidth() {
+LONG EditWorldInfoDialog::calculateWindowWidth() {
 
     const WindowMetrics::ControlSpacing CS      = windowMetrics.GetControlSpacing();
     const WindowMetrics::ControlDimensions CD   = windowMetrics.GetControlDimensions();

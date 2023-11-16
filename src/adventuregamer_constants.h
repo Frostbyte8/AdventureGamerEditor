@@ -24,6 +24,13 @@ namespace AdventureGamerConstants {
     const int MinObjectMonetaryValue        = 0;
     const int MaxNumUses                    = 10000;
     const int MinNumUses                    = 1;
+
+    const int MinWorldWidth                 = 3;
+    const int MaxWorldWidth                 = 99;
+
+    const int MinWorldHeight                = 3;
+    const int MaxWorldHeight                = 99;
+    
     
 }
 
