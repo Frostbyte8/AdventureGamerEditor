@@ -47,6 +47,7 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
 
         // Win32 Functions
         virtual void PreCreate(CREATESTRUCT& cs);
+        virtual void OnClose();
 
         // Pure virtual functions
         virtual void notifyChangeMade();
@@ -68,6 +69,8 @@ class EditDialogBase : public CWnd, public DialogBaseInterface {
         bool                        areSavedChanges;
         int                         optionChosen;
         bool                        dialogReady;
+
+        void (MainWindowInterface::*finishFunction)();
 
     private:
 

@@ -8,7 +8,7 @@
 EditDialogBase::EditDialogBase(MainWindowInterface* inMainWindow, HWND inParentWindow) : 
 mainWindow(inMainWindow), parentWindow(inParentWindow), optionChosen(IDCLOSE), 
 changeMade(false), areSavedChanges(false), dialogReady(false), 
-originalWindowTitle("") {}
+originalWindowTitle(""), finishFunction(NULL) {}
 
 //=============================================================================
 // Mutators
@@ -38,6 +38,24 @@ void EditDialogBase::PreCreate(CREATESTRUCT& cs) {
     if(cs.style & WS_VISIBLE) {
         cs.style &= ~WS_VISIBLE;
     }
+}
+
+///----------------------------------------------------------------------------
+/// OnClose - Called when the dialog is trying to be closed
+///----------------------------------------------------------------------------
+
+void EditDialogBase::OnClose() {
+
+    if (!tryClose()) {
+        return;
+    }
+
+    if (finishFunction != NULL) {
+        //(mainWindow->*finishFunction)();
+
+        endModal(finishFunction);
+    }
+
 }
 
 //=============================================================================

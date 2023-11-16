@@ -16,6 +16,7 @@ EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const Game
 HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inParentHandle),
 gameMap(inGameMap), descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0),
 isEditObject(inEditObject) {
+    finishFunction = &MainWindowInterface::finishedEditObjectDialog;
 }
 
 //=============================================================================
@@ -76,6 +77,9 @@ void EditObjectDialog::setObjectToEdit(const GameObject& gameObject) {
 
 void EditObjectDialog::OnClose() {
 
+    EditDialogBase::OnClose();
+
+    /*
     // First we'll see if we can actually close the dialog.
     if(!tryClose()) {
         return;
@@ -85,7 +89,7 @@ void EditObjectDialog::OnClose() {
     // that we are done.
     
     endModal(&MainWindowInterface::finishedEditObjectDialog);
-
+    */
 }
 
 ///----------------------------------------------------------------------------
