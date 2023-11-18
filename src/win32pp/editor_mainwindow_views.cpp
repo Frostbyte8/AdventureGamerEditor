@@ -2,6 +2,10 @@
 #include "shared_functions.h"
 #include "../util/languagemapper.h"
 
+//=============================================================================
+// Control IDs
+//=============================================================================
+
 namespace ControlIDs {
 
     const WORD AddObjectButton          = 201;
@@ -17,55 +21,26 @@ namespace ControlIDs {
 }
 
 //=============================================================================
-//
-// GameEntitiesView
-//
+// Constructors / Destructor
 //=============================================================================
 
-void GameEntitiesView::PreCreate(CREATESTRUCT& cs) {
-    cs.dwExStyle |= WS_EX_COMPOSITED;
+GameEntitiesPanel::GameEntitiesPanel(MainWindowInterface* inMainWindow,
+WindowMetrics* inWindowMetrics) : mainWindow(inMainWindow), windowMetrics(inWindowMetrics) {
+}
+
+GameEntitiesPanel::~GameEntitiesPanel() {
 }
 
 //=============================================================================
-// Public / Protected Functions
+// Win32++ Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
-/// for more information
-///----------------------------------------------------------------------------
-
-BOOL GameEntitiesView::OnCommand(WPARAM wParam, LPARAM lParam) {
-
-    if(lParam) {
-
-        const WORD ctrlID = LOWORD(wParam);
-        const WORD notifyCode = HIWORD(wParam);
-
-        if(ctrlID == ControlIDs::AddObjectButton) {
-            mainWindow->onAlterObject(AlterType::Add, 0);
-        }
-        else if(ctrlID == ControlIDs::AddCharacterButton) {
-            mainWindow->onAlterCharacter(AlterType::Add, 0);
-        }
-        else if(ctrlID == ControlIDs::EditObjectButton) {
-            mainWindow->onAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
-        }
-        else if(ctrlID == ControlIDs::EditCharacterButton) {
-            mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());
-        }
-
-    }
-
-    return FALSE;
-}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Creates child controls. 
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
+int GameEntitiesPanel::OnCreate(CREATESTRUCT& cs) {
 
     const int retVal = CWnd::OnCreate(cs);
 
@@ -82,18 +57,18 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
     charactersGroup.SetWindowText(caption);
 
     objectsListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
-    charactersListBox.Create(*this, 0, WS_CLIPSIBLINGS |  WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
+    charactersListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
 
-    for(int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
 
         alterObjectButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON);
         alterObjectButton[i].SetWindowText(caption);
-        alterObjectButton[i].SetDlgCtrlID(ControlIDs::AddObjectButton+i);
+        alterObjectButton[i].SetDlgCtrlID(ControlIDs::AddObjectButton + i);
 
         alterCharacterButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON);
         alterCharacterButton[i].SetWindowText(caption);
-        alterCharacterButton[i].SetDlgCtrlID(ControlIDs::AddCharacterButton+i);
-        
+        alterCharacterButton[i].SetDlgCtrlID(ControlIDs::AddCharacterButton + i);
+
     }
 
     alterObjectButton[0].SetWindowText(LM_toUTF8("AddButton", langMap));
@@ -109,65 +84,118 @@ int GameEntitiesView::OnCreate(CREATESTRUCT& cs) {
 }
 
 ///----------------------------------------------------------------------------
+/// OnCommand - Processes the WM_COMMAND message. See the Win32++ documentation
+/// for more information
+///----------------------------------------------------------------------------
+
+BOOL GameEntitiesPanel::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if (lParam) {
+
+        const WORD ctrlID = LOWORD(wParam);
+        const WORD notifyCode = HIWORD(wParam);
+
+        if (ctrlID == ControlIDs::AddObjectButton) {
+            mainWindow->onAlterObject(AlterType::Add, 0);
+        } else if (ctrlID == ControlIDs::AddCharacterButton) {
+            mainWindow->onAlterCharacter(AlterType::Add, 0);
+        } else if (ctrlID == ControlIDs::EditObjectButton) {
+            mainWindow->onAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
+        } else if (ctrlID == ControlIDs::EditCharacterButton) {
+            mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());
+        }
+
+    }
+
+    return FALSE;
+}
+
+///----------------------------------------------------------------------------
+/// PreCreate - Sets settings for the child window before it is created. See 
+/// the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+void GameEntitiesPanel::PreCreate(CREATESTRUCT& cs) {
+    cs.dwExStyle |= WS_EX_COMPOSITED;
+}
+
+///----------------------------------------------------------------------------
 /// PreRegisterClass - Called before the class is registered. Using it to set
 /// the background color of the view.
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-void GameEntitiesView::PreRegisterClass(WNDCLASS& wc) {
+void GameEntitiesPanel::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
     wc.lpszClassName = L"GameEntitiesView";
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
-///----------------------------------------------------------------------------
-/// updateLists - Test function for populating the list boxes
-///----------------------------------------------------------------------------
-
-void GameEntitiesView::updateLists(const std::vector<GameObject>& gameObjects, const std::vector<GameCharacter>& gameCharacters) {
-
-    objectsListBox.ClearStrings();
-
-    for(std::vector<GameObject>::const_iterator it = gameObjects.begin();
-        it != gameObjects.end(); ++it) {
-
-            CString objectName = AtoW(std::to_string(it->getID()).c_str(), CP_UTF8);
-            objectName += ". ";
-            objectName += AtoW(it->getName().c_str(), CP_UTF8);
-
-            //CString objectName = AtoW(it->getName().c_str(), CP_UTF8);
-            objectsListBox.AddString(objectName);
-    }
-
-
-    charactersListBox.ClearStrings();
-
-    for(std::vector<GameCharacter>::const_iterator it = gameCharacters.begin();
-        it != gameCharacters.end(); ++it) {
-            CString charName = AtoW(std::to_string(it->getID()).c_str(), CP_UTF8);
-            charName += ". ";
-            charName += AtoW(it->getName().c_str(), CP_UTF8);
-            charactersListBox.AddString(charName);
-    }
-}
 
 ///----------------------------------------------------------------------------
 /// WndProc - Window Procedure for the view.
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
+LRESULT GameEntitiesPanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    switch(msg) {
+    switch (msg) {
 
-        case WM_SIZE:
-            return OnSize(wParam, lParam);
-            break;
+    case WM_SIZE:
+        return OnSize(wParam, lParam);
+        break;
 
     }
 
     return WndProcDefault(msg, wParam, lParam);
 }
+
+//=============================================================================
+// Public / Protected Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// updateCharacterList - Updates the character listbox.
+/// @param a pointer to a vector with the list of characters in the game world. 
+///----------------------------------------------------------------------------
+
+void GameEntitiesPanel::updateCharacterList(const std::vector<GameCharacter>& characterList) {
+
+    charactersListBox.ClearStrings();
+
+    for(std::vector<GameCharacter>::const_iterator it = characterList.begin();
+        it != characterList.end(); ++it) {
+
+        CString charName = AtoW(std::to_string(it->getID()).c_str(), CP_UTF8);
+        charName += ". ";
+        charName += AtoW(it->getName().c_str(), CP_UTF8);
+        charactersListBox.AddString(charName);
+
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// updateObjectList - Updates the object listbox.
+/// @param a pointer to a vector with the list of objects in the game world. 
+///----------------------------------------------------------------------------
+
+void GameEntitiesPanel::updateObjectList(const std::vector<GameObject>& objectList) {
+
+    objectsListBox.ClearStrings();
+
+    for(std::vector<GameObject>::const_iterator it = objectList.begin();
+        it != objectList.end(); ++it) {
+
+        CString objectName = AtoW(std::to_string(it->getID()).c_str(), CP_UTF8);
+        objectName += ". ";
+        objectName += AtoW(it->getName().c_str(), CP_UTF8);
+        objectsListBox.AddString(objectName);
+
+    }
+
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================
@@ -177,7 +205,7 @@ LRESULT GameEntitiesView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 /// Refer to the Win32 on WM_SIZE for more information.
 ///----------------------------------------------------------------------------
 
-int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
+int GameEntitiesPanel::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     const WindowMetrics::ControlDimensions cd = windowMetrics->GetControlDimensions();
     const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
@@ -229,7 +257,7 @@ int GameEntitiesView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 /// TODO: Function name is misleading. Fix that.
 ///----------------------------------------------------------------------------
 
-void GameEntitiesView::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const CRect& dimensions,
+void GameEntitiesPanel::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const CRect& dimensions,
                                     const WindowMetrics::ControlSpacing& cs, 
                                     const WindowMetrics::ControlDimensions& cd) {
 

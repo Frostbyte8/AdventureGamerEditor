@@ -4,13 +4,14 @@
 #include <wxx_wincore.h>
 #include <wxx_dockframe.h>
 #include <wxx_stdcontrols.h>
-#include "editor_mainwindow_dockers.h"
 #include "../interface/mainwindow_interface.h"
 #include "../controller/gameworld_controller.h"
 #include "../win32/window_metrics.h"
 
-// Dialog windows
+// Dockers which contain each panel of related controls
+#include "editor_mainwindow_dockers.h"
 
+// Dialog windows
 #include "objectdlg/editobject_dialog.h"
 #include "chardlg/editcharacter_dialog.h"
 #include "worldinfodlg/edit_worldinfo.h"
@@ -20,7 +21,7 @@
 
 //=============================================================================
 // MainWindowFrame - The Primary view of the program where the map editor
-// resides.
+// resides, along with it's child dockers.
 //=============================================================================
 
 class MainWindowFrame : public CDockFrame, public MainWindowInterface {
@@ -97,7 +98,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         int     tileWidth;
         int     tileHeight;
 
-		GameEntitiesView*               entityView;
+		GameEntitiesPanel*               entityView;
 		GameMapDocker*                  gameMapDocker;
 		RoadSelectorDocker*             roadSelectorDocker;
 		EntitiesHereDocker*             entitiesHereDocker;

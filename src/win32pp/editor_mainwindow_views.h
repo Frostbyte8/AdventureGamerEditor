@@ -9,22 +9,35 @@
 #include "../win32/window_metrics.h"
 #include <vector>
 
+/*
+class PanelBaseClass : public CWnd {
+
+    public:
+        void setWindowMetrics(WindowMetrics* inWindowMetrics);
+        virtual void moveControls() = 0;
+        
+};
+*/
+
 ///----------------------------------------------------------------------------
-/// GameEntitiesView - Shows Objects and Characters defined by the game world.
+/// GameEntitiesPanel - Shows Objects and Characters defined by the game world.
 /// This is the right-most panel.
 ///----------------------------------------------------------------------------
 
-class GameEntitiesView : public CWnd {
+class GameEntitiesPanel : public CWnd {
 
 	public:
-		GameEntitiesView(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics) : mainWindow(inMainWindow), windowMetrics(inWindowMetrics) {}
-		virtual ~GameEntitiesView() {}
-        void updateLists(const std::vector<GameObject>& gameObject, const std::vector<GameCharacter>& gameCharacters);
+
+        GameEntitiesPanel(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics);
+        virtual ~GameEntitiesPanel();
+
+        void updateObjectList(const std::vector<GameObject>& objectList);
+        void updateCharacterList(const std::vector<GameCharacter>& characterList);
 
     protected:
+
         virtual void PreCreate(CREATESTRUCT& cs);
         virtual void PreRegisterClass(WNDCLASS& wc);
-
         virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
@@ -32,11 +45,16 @@ class GameEntitiesView : public CWnd {
 	private:
 
         int OnSize(const WPARAM& wParam, const LPARAM& lParam);
-        void sizeGroupBox(HDWP& hDWP, const bool doCharacters, const CRect& dimensions, const WindowMetrics::ControlSpacing& cs, const WindowMetrics::ControlDimensions& cd);
+        
+        void sizeGroupBox(HDWP& hDWP, const bool doCharacters, const CRect& dimensions, 
+                          const WindowMetrics::ControlSpacing& cs,
+                          const WindowMetrics::ControlDimensions& cd);
 
 		// Disable copy construction and assignment operator
-	    GameEntitiesView(const GameEntitiesView&);
-		GameEntitiesView& operator = (const GameEntitiesView&);
+        GameEntitiesPanel(const GameEntitiesPanel&);
+        GameEntitiesPanel& operator = (const GameEntitiesPanel&);
+
+        // Member Variables
 
         MainWindowInterface*    mainWindow;
         WindowMetrics*          windowMetrics;
@@ -47,6 +65,47 @@ class GameEntitiesView : public CWnd {
         CListBox                charactersListBox;
         CButton                 alterObjectButton[4];
         CButton                 alterCharacterButton[4];
+};
+
+
+///----------------------------------------------------------------------------
+/// EntitiesHereView - Displays what Objects / Characters are at the space that
+/// is currently selected.
+///----------------------------------------------------------------------------
+
+class EntitiesHereView : public CWnd {
+
+    public:
+        EntitiesHereView(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
+        virtual ~EntitiesHereView() {}
+        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+        virtual void PreRegisterClass(WNDCLASS& wc) {
+            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+            wc.lpszClassName = L"EntitiesHereView";
+            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+        }
+
+        void updateLists(const std::vector<GameObject>& objectVec, const std::vector<GameCharacter>& gameCharacters);
+
+    protected:
+        virtual void PreCreate(CREATESTRUCT& cs);
+        virtual int OnCreate(CREATESTRUCT& cs);
+
+    private:
+
+        int OnSize(const WPARAM& wParam, const LPARAM& lParam);
+
+        WindowMetrics*  windowMetrics;
+
+        CButton     objectsHereGroup;
+        CButton     charactersHereGroup;
+        CListBox    objectsHereListBox;
+        CListBox    charactersHereListBox;
+
+        // Disable copy construction and assignment operator
+        EntitiesHereView(const EntitiesHereView&);
+        EntitiesHereView& operator = (const EntitiesHereView&);
 };
 
 ///----------------------------------------------------------------------------
@@ -154,46 +213,5 @@ class GameMapView : public CScrollView {
         //int selectedRow;
         //int selectedCol;
 };
-
-///----------------------------------------------------------------------------
-/// EntitiesHereView - Displays what Objects / Characters are at the space that
-/// is currently selected.
-///----------------------------------------------------------------------------
-
-class EntitiesHereView : public CWnd {
-	
-	public:
-		EntitiesHereView(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
-		virtual ~EntitiesHereView() {}
-        virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
-
-        virtual void PreRegisterClass(WNDCLASS& wc) {
-            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-            wc.lpszClassName = L"EntitiesHereView";
-            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-        }
-
-        void updateLists(const std::vector<GameObject>& objectVec, const std::vector<GameCharacter>& gameCharacters);
-
-    protected:
-        virtual void PreCreate(CREATESTRUCT& cs);
-        virtual int OnCreate(CREATESTRUCT& cs);
-
-	private:
-
-        int OnSize(const WPARAM& wParam, const LPARAM& lParam);
-
-        WindowMetrics*  windowMetrics;
-
-        CButton     objectsHereGroup;
-        CButton     charactersHereGroup;
-        CListBox    objectsHereListBox;
-        CListBox    charactersHereListBox;
-
-		// Disable copy construction and assignment operator
-	    EntitiesHereView(const EntitiesHereView&);
-		EntitiesHereView& operator = (const EntitiesHereView&);
-};
-
 
 #endif // __EDITOR_MAINWINDOW_VIEWS_H__

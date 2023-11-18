@@ -86,7 +86,7 @@ roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObject
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
 editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0) {
     gameWorldController = new GameWorldController(this);
-	entityView = new GameEntitiesView(this, &windowMetrics);
+	entityView = new GameEntitiesPanel(this, &windowMetrics);
     LanguageMapper::getInstance();
     isSizing = false;
 }
@@ -458,7 +458,11 @@ BOOL MainWindowFrame::OnFileOpen() {
 
 		gameWorldController->loadWorld(filePath, fileName);
         reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
-        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
+        
+        
+        entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+
 	}
 
     return TRUE;
@@ -805,7 +809,7 @@ void MainWindowFrame::finishedEditCharacterDialog() {
             gameWorldController->tryReplaceCharacter(bd);
         }
 
-        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
+        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
 
     }
 
@@ -838,7 +842,7 @@ void MainWindowFrame::finishedEditObjectDialog() {
             gameWorldController->tryReplaceObject(bd);
         }
 
-        entityView->updateLists(gameWorldController->getGameMap()->getGameObjects(), gameWorldController->getGameMap()->getGameCharacters());
+        entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
 
     }    
 
