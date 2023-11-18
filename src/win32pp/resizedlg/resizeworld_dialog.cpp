@@ -21,6 +21,12 @@ EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedResiz
 // Mutators
 //=============================================================================
 
+///----------------------------------------------------------------------------
+/// setWorldDimensions - Set what the current width/height of the Game World is
+/// @param an integer specifying the width of the current world
+/// @param an integer specifying the height of the current world
+///----------------------------------------------------------------------------
+
 void ResizeWorldDialog::setWorldDimensions(const int& currentWidth, const int& currentHeight) {
     
     worldWidth = currentWidth;

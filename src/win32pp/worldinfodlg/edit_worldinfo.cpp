@@ -48,6 +48,8 @@ GameInfo EditWorldInfoDialog::getGameInfo() {
 ///----------------------------------------------------------------------------
 /// setWorldInfo - Give the dialog a GameInfo object to populate its fields
 /// with.
+/// @param a constant reference containing the GameInfo structure to copy
+/// the data from.
 ///----------------------------------------------------------------------------
 
 void EditWorldInfoDialog::setWorldInfo(const GameInfo& gameInfo) {

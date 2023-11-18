@@ -32,12 +32,9 @@ class EditWorldInfoDialog : public EditDialogBase {
         
         InputValidator* validateFields();
 
-        //virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
-
     private:
 
         LONG calculateWindowWidth();
-        void insertData();
       
         CButton         grpWorldInfo;
         CStatic         lblProperties[2]; // Name and Money

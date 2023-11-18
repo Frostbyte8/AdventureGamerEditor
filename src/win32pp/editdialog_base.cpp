@@ -87,6 +87,39 @@ void EditDialogBase::changesSaved() {
 }
 
 ///----------------------------------------------------------------------------
+/// createDefaultDialogButtons - Create the Ok, Cancel, and optionally Apply
+/// buttons found on every dialog.
+/// @param if true, the dialog has an apply button, if false it does not.
+///----------------------------------------------------------------------------
+
+void EditDialogBase::createDefaultDialogButtons(const bool hasApply) {
+
+    hasApplyButton = hasApply;
+    const int NUM_DIALOG_BUTTONS = hasApply ? 3 : 2;
+
+    for (int i = 0; i < NUM_DIALOG_BUTTONS; ++i) {
+        btnDialog[i].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString caption;
+
+    SetWindowTextFromLangMapString("OKButton", btnDialog[0], caption, langMap);
+    SetWindowTextFromLangMapString("CancelButton", btnDialog[1], caption, langMap);
+
+    btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
+    btnDialog[0].SetDlgCtrlID(IDOK);
+    btnDialog[1].SetDlgCtrlID(IDCANCEL);
+
+    if (hasApply) {
+        SetWindowTextFromLangMapString("ApplyButton", btnDialog[2], caption, langMap);
+        btnDialog[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
+        btnDialog[2].EnableWindow(FALSE);
+    }
+
+}
+
+///----------------------------------------------------------------------------
 /// dialogButtonPressed - do default processing when Ok, Cancel, or Apply are
 /// pressed.
 /// @param an integer that contains IDOK, IDCANCEL, or DefControlIDs::IDAPPLY
@@ -289,39 +322,5 @@ void EditDialogBase::displayErrorMessage(const std::string &inMessage,
     const UINT messageBoxFlags  = MB_ICONERROR;
 
     MessageBox(message, title, messageBoxFlags);
-
-}
-
-///----------------------------------------------------------------------------
-/// createDefaultDialogButtons - Create the Ok, Cancel, and optionally Apply
-/// buttons found on every dialog.
-/// @param a reference to an array with exactly 3 buttons
-/// @param if true, create the apply button, if not, don't.
-///----------------------------------------------------------------------------
-
-void EditDialogBase::createDefaultDialogButtons(const bool hasApply) {
-
-    hasApplyButton = hasApply;
-    const int NUM_DIALOG_BUTTONS = hasApply ? 3 : 2;
-
-    for (int i = 0; i < NUM_DIALOG_BUTTONS; ++i) {
-        btnDialog[i].Create(*this, 0, WS_TABSTOP | BS_PUSHBUTTON);
-    }
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    CString caption;
-
-    SetWindowTextFromLangMapString("OKButton", btnDialog[0], caption, langMap);
-    SetWindowTextFromLangMapString("CancelButton", btnDialog[1], caption, langMap);
-
-    btnDialog[0].SetStyle(btnDialog[0].GetStyle() | BS_DEFPUSHBUTTON);
-    btnDialog[0].SetDlgCtrlID(IDOK);
-    btnDialog[1].SetDlgCtrlID(IDCANCEL);
-
-    if (hasApply) {
-        SetWindowTextFromLangMapString("ApplyButton", btnDialog[2], caption, langMap);
-        btnDialog[2].SetDlgCtrlID(DefControlIDs::IDAPPLY);
-        btnDialog[2].EnableWindow(FALSE);
-    }
 
 }
