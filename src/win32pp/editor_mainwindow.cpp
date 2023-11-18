@@ -631,7 +631,11 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
 
     const std::vector<GameObject>& objectVec = gameMap->getGameObjectsAtRowCol(row, col);
     const std::vector<GameCharacter>& charVec = gameMap->getGameCharactersAtRowCol(row, col);
-    reinterpret_cast<EntitiesHereView&>(entitiesHereDocker->GetView()).updateLists(objectVec, charVec);
+
+    EntitiesHerePanel& herePanel = reinterpret_cast<EntitiesHerePanel&>(entitiesHereDocker->GetView());
+
+    herePanel.updateObjectList(objectVec);
+    herePanel.updateCharacterList(charVec);
 
     updateFeatureMenu(gameMap->indexFromRowCol(row, col));
     updateStatusbar(gameMap->indexFromRowCol(row, col));

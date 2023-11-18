@@ -13,39 +13,78 @@
 class PanelBaseClass : public CWnd {
 
     public:
+        
         void setWindowMetrics(WindowMetrics* inWindowMetrics);
         virtual void moveControls() = 0;
+        virtual void updateCaptions() = 0;
         
+        const virtual std::wstring getClassName() const = 0;
 };
 */
+
+class PanelBaseClass : public CWnd {
+
+    protected:
+
+        const virtual std::wstring getClassName() const = 0;
+
+        virtual void PreRegisterClass(WNDCLASS& wc) {
+            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+            className = getClassName(); //
+            wc.lpszClassName = className.c_str();
+            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+        }
+
+    private:
+        std::wstring className;
+
+};
+
+class PanelBaseTest : public CWnd {
+    
+    public:
+        const virtual std::wstring getClassName() const = 0;
+
+        virtual LRESULT WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+            
+            if (uMsg == WM_MOUSEMOVE) {
+                MessageBox(getClassName().c_str(), L"", MB_OK);
+            }
+
+            return WndProcDefault(uMsg, wParam, lParam);
+        }
+
+};
 
 ///----------------------------------------------------------------------------
 /// GameEntitiesPanel - Shows Objects and Characters defined by the game world.
 /// This is the right-most panel.
 ///----------------------------------------------------------------------------
 
-class GameEntitiesPanel : public CWnd {
+class GameEntitiesPanel : public PanelBaseClass {
 
 	public:
 
         GameEntitiesPanel(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics);
         virtual ~GameEntitiesPanel();
 
-        void updateObjectList(const std::vector<GameObject>& objectList);
         void updateCharacterList(const std::vector<GameCharacter>& characterList);
+        void updateObjectList(const std::vector<GameObject>& objectList);
 
     protected:
 
-        virtual void PreCreate(CREATESTRUCT& cs);
-        virtual void PreRegisterClass(WNDCLASS& wc);
-        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
         virtual int OnCreate(CREATESTRUCT& cs);
+        virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
+        virtual void PreCreate(CREATESTRUCT& cs);
+
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
+
+        const virtual std::wstring getClassName() const { return L"GameEntitiesPanel"; }
 
 	private:
 
         int OnSize(const WPARAM& wParam, const LPARAM& lParam);
-        
+
         void sizeGroupBox(HDWP& hDWP, const bool doCharacters, const CRect& dimensions, 
                           const WindowMetrics::ControlSpacing& cs,
                           const WindowMetrics::ControlDimensions& cd);
@@ -65,32 +104,32 @@ class GameEntitiesPanel : public CWnd {
         CListBox                charactersListBox;
         CButton                 alterObjectButton[4];
         CButton                 alterCharacterButton[4];
+
 };
 
 
 ///----------------------------------------------------------------------------
-/// EntitiesHereView - Displays what Objects / Characters are at the space that
+/// EntitiesHerePanel - Displays what Objects / Characters are at the space that
 /// is currently selected.
 ///----------------------------------------------------------------------------
 
-class EntitiesHereView : public CWnd {
+class EntitiesHerePanel : public PanelBaseClass {
 
     public:
-        EntitiesHereView(WindowMetrics* inWindowMetrics) : windowMetrics(inWindowMetrics) {}
-        virtual ~EntitiesHereView() {}
+
+        EntitiesHerePanel(WindowMetrics* inWindowMetrics);
+        virtual ~EntitiesHerePanel();
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
-        virtual void PreRegisterClass(WNDCLASS& wc) {
-            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-            wc.lpszClassName = L"EntitiesHereView";
-            wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-        }
-
-        void updateLists(const std::vector<GameObject>& objectVec, const std::vector<GameCharacter>& gameCharacters);
+        void updateCharacterList(const std::vector<GameCharacter>& characterList);
+        void updateObjectList(const std::vector<GameObject>& objectList);
 
     protected:
-        virtual void PreCreate(CREATESTRUCT& cs);
+        
         virtual int OnCreate(CREATESTRUCT& cs);
+        virtual void PreCreate(CREATESTRUCT& cs);
+        
+        const virtual std::wstring getClassName() const { return L"EntitiesHerePanel"; }
 
     private:
 
@@ -104,8 +143,8 @@ class EntitiesHereView : public CWnd {
         CListBox    charactersHereListBox;
 
         // Disable copy construction and assignment operator
-        EntitiesHereView(const EntitiesHereView&);
-        EntitiesHereView& operator = (const EntitiesHereView&);
+        EntitiesHerePanel(const EntitiesHerePanel&);
+        EntitiesHerePanel& operator = (const EntitiesHerePanel&);
 };
 
 ///----------------------------------------------------------------------------
@@ -181,9 +220,7 @@ class GameMapView : public CScrollView {
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
         virtual void PreCreate(CREATESTRUCT& cs) {
-            // Win32++ Erroneously sets the lpszclass name,
-            // so we have to fix that here.
-            // TODO: Fix that in custom fork.
+            // This has to be done as ScrollView is it's own custom control
             CScrollView::PreCreate(cs);
             cs.lpszClass = L"GameMapView";
         }

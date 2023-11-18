@@ -120,19 +120,6 @@ void GameEntitiesPanel::PreCreate(CREATESTRUCT& cs) {
 }
 
 ///----------------------------------------------------------------------------
-/// PreRegisterClass - Called before the class is registered. Using it to set
-/// the background color of the view.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-void GameEntitiesPanel::PreRegisterClass(WNDCLASS& wc) {
-    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"GameEntitiesView";
-    wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
-}
-
-
-///----------------------------------------------------------------------------
 /// WndProc - Window Procedure for the view.
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
@@ -312,11 +299,27 @@ void GameEntitiesPanel::sizeGroupBox(HDWP& hDWP, const bool doCharacters, const 
 //
 //=============================================================================
 
-void EntitiesHereView::PreCreate(CREATESTRUCT& cs) {
-    cs.dwExStyle |= WS_EX_COMPOSITED;
+//=============================================================================
+// Constructors / Destructor
+//=============================================================================
+
+EntitiesHerePanel::EntitiesHerePanel(WindowMetrics* inWindowMetrics) : 
+windowMetrics(inWindowMetrics) {
 }
 
-int EntitiesHereView::OnCreate(CREATESTRUCT& cs) {
+EntitiesHerePanel::~EntitiesHerePanel() {
+}
+
+//=============================================================================
+// Win32++ Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCreate - Creates child controls. 
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+int EntitiesHerePanel::OnCreate(CREATESTRUCT& cs) {
 
     const int retVal = CWnd::OnCreate(cs);
 
@@ -334,7 +337,83 @@ int EntitiesHereView::OnCreate(CREATESTRUCT& cs) {
     return retVal;
 }
 
-int EntitiesHereView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
+///----------------------------------------------------------------------------
+/// PreCreate - Sets settings for the child window before it is created. See 
+/// the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+void EntitiesHerePanel::PreCreate(CREATESTRUCT& cs) {
+    cs.dwExStyle |= WS_EX_COMPOSITED;
+}
+
+///----------------------------------------------------------------------------
+/// WndProc - Window Procedure for the view.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+LRESULT EntitiesHerePanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
+
+    if (msg == WM_SIZE) {
+        return OnSize(wParam, lParam);
+    }
+
+    return WndProcDefault(msg, wParam, lParam);
+}
+
+//=============================================================================
+// Public / Protected Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// updateCharacterList - Updates the character's here listbox.
+/// @param a pointer to a vector with the list of characters in the game world. 
+///----------------------------------------------------------------------------
+
+void EntitiesHerePanel::updateCharacterList(const std::vector<GameCharacter>& characterList) {
+
+    charactersHereListBox.ClearStrings();
+
+    if (!characterList.empty()) {
+        const size_t charSize = characterList.size();
+
+        for (size_t i = 0; i < charSize; ++i) {
+
+            charactersHereListBox.AddString(AtoW(characterList[i].getName().c_str(), CP_UTF8));
+        }
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// updateObjectList - Updates the object's here listbox.
+/// @param a pointer to a vector with the list of objects in the game world. 
+///----------------------------------------------------------------------------
+
+void EntitiesHerePanel::updateObjectList(const std::vector<GameObject>& objectList) {
+
+    objectsHereListBox.ClearStrings();
+
+    if (!objectList.empty()) {
+        const size_t objSize = objectList.size();
+
+        for (size_t i = 0; i < objSize; ++i) {
+
+            objectsHereListBox.AddString(AtoW(objectList[i].getName().c_str(), CP_UTF8));
+
+        }
+    }
+
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnSize - Processes the WM_SIZE message.
+///----------------------------------------------------------------------------
+
+int EntitiesHerePanel::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     const WindowMetrics::ControlDimensions cd = windowMetrics->GetControlDimensions();
     const WindowMetrics::ControlSpacing cs = windowMetrics->GetControlSpacing();
@@ -354,7 +433,7 @@ int EntitiesHereView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
                                objectGroupRect.top + cs.YFIRST_GROUPBOX_MARGIN,
                                objectGroupRect.right - cs.XGROUPBOX_MARGIN,
                                objectGroupRect.bottom - cs.YWINDOW_MARGIN);
-                               
+
     const CRect characterListRect(characterGroupRect.left + cs.XGROUPBOX_MARGIN,
                                   characterGroupRect.top + cs.YFIRST_GROUPBOX_MARGIN,
                                   characterGroupRect.right - cs.XGROUPBOX_MARGIN,
@@ -368,7 +447,7 @@ int EntitiesHereView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     charactersHereListBox.DeferWindowPos(hDWP, HWND_TOP, characterListRect, SWP_NOREDRAW);
 
     EndDeferWindowPos(hDWP);
-    
+
     SetRedraw(TRUE);
     RedrawWindow(RDW_UPDATENOW | RDW_ERASE | RDW_FRAME | RDW_INVALIDATE);
     UpdateWindow();
@@ -381,38 +460,4 @@ int EntitiesHereView::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     SetRedraw(FALSE);
 
     return 0;
-}
-
-LRESULT EntitiesHereView::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
-
-    if (msg == WM_SIZE) {
-        return OnSize(wParam, lParam);
-    }
-
-    return WndProcDefault(msg, wParam, lParam);
-}
-
-void EntitiesHereView::updateLists(const std::vector<GameObject>& objectVec, const std::vector<GameCharacter>& charVec) {
-    
-    objectsHereListBox.ClearStrings();
-    charactersHereListBox.ClearStrings();
-    
-    if(!objectVec.empty()) {
-        const size_t objSize = objectVec.size();
-
-        for(size_t i = 0; i < objSize; ++i) {
-            
-            objectsHereListBox.AddString(AtoW(objectVec[i].getName().c_str(), CP_UTF8));
-
-        }
-    }
-
-    if(!charVec.empty()) {
-        const size_t charSize = charVec.size();
-
-        for (size_t i = 0; i < charSize; ++i) {
-
-            charactersHereListBox.AddString(AtoW(charVec[i].getName().c_str(), CP_UTF8));
-        }
-    }
 }

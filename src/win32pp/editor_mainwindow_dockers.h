@@ -72,7 +72,7 @@ class EntitiesHereDocker : public CDocker {
 
 	private:
 
-		EntitiesHereView view;
+		EntitiesHerePanel view;
 
 		// Disable copy construction and assignment operator
 		EntitiesHereDocker(const EntitiesHereDocker&);
