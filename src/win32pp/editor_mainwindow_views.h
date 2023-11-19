@@ -9,6 +9,13 @@
 #include "../win32/window_metrics.h"
 #include <vector>
 
+//=============================================================================
+//
+// Abstract Base Classes - Meant to avoid repeating code
+//
+//=============================================================================
+
+
 /*
 class PanelBaseClass : public CWnd {
 
@@ -45,12 +52,18 @@ class ScrollPanelBaseClass : public CScrollView {
     protected:
 
         const virtual std::wstring getClassName() const = 0;
+        
+        const virtual LONG getClassStyles() const { 
+            return 0; 
+        }
 
         virtual void PreRegisterClass(WNDCLASS& wc) {
             wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
             className = getClassName();
             wc.lpszClassName = className.c_str();
             wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+            wc.style = getClassStyles();
+
         }
 
         virtual void PreCreate(CREATESTRUCT& cs) {
@@ -176,7 +189,7 @@ class RoadPalettePanel : public ScrollPanelBaseClass {
     protected:
 
         const virtual std::wstring getClassName() const { return L"RoadPalettePanel"; }
-
+        
         virtual int     OnCreate(CREATESTRUCT& cs);
         virtual void    OnDraw(CDC& dc);
         virtual LRESULT WndProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -203,43 +216,38 @@ class RoadPalettePanel : public ScrollPanelBaseClass {
 };
 
 ///----------------------------------------------------------------------------
-/// GameMapView - Displays the game world's map.
+/// GameMapPanel - Displays the game world's map.
 ///----------------------------------------------------------------------------
 
-class GameMapView : public CScrollView {
+class GameMapPanel : public ScrollPanelBaseClass {
 	
 	public:
 
-        GameMapView(MainWindowInterface* inMainWindow, GameWorldController* gwc);
-        virtual ~GameMapView() {}
+        GameMapPanel(MainWindowInterface* inMainWindow, GameWorldController* gwc);
+        virtual ~GameMapPanel();
+        
         //void onZoomChange();
+        
         void setTileset(CBitmap& inTileSet);
-        void UpdateBackBuffer();
+        void updateBackBuffer();
 
     protected:
-        virtual int OnCreate(CREATESTRUCT& cs);
-        virtual void OnDraw(CDC& dc);
-        LRESULT onLButtonDown(const WORD& xPos, const WORD& yPos);
-        LRESULT onLButtonDBLClick(const WORD& xPos, const WORD& yPos);
+
+        const virtual std::wstring getClassName() const { return L"GameMapPanel"; }
+        const LONG getClassStyles() const { return CS_DBLCLKS; }
+
+        virtual int     OnCreate(CREATESTRUCT& cs);
+        virtual void    OnDraw(CDC& dc);
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
-
-        virtual void PreCreate(CREATESTRUCT& cs) {
-            // This has to be done as ScrollView is it's own custom control
-            CScrollView::PreCreate(cs);
-            cs.lpszClass = L"GameMapView";
-        }
-
-        virtual void PreRegisterClass(WNDCLASS& wc) {
-            wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-            wc.lpszClassName = L"GameMapView";
-            wc.style = CS_DBLCLKS;
-        }
 
 	private:
 
+        LRESULT onLButtonDown(const WORD& xPos, const WORD& yPos);
+        LRESULT onLButtonDBLClick(const WORD& xPos, const WORD& yPos);
+
 		// Disable copy construction and assignment operator
-	    GameMapView(const GameMapView&);
-		GameMapView& operator = (const GameMapView&);
+        GameMapPanel(const GameMapPanel&);
+        GameMapPanel& operator = (const GameMapPanel&);
 
         CMemDC			    tilesetDC;
         
@@ -302,7 +310,7 @@ class GameMapDocker : public CDocker {
 
     private:
 
-        GameMapView view;
+        GameMapPanel view;
 
         // Disable copy construction and assignment operator
         GameMapDocker(const GameMapDocker&);

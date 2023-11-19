@@ -6,80 +6,91 @@
 // Constructors / Destructor
 //=============================================================================
 
-GameMapView::GameMapView(MainWindowInterface* inMainWindow, GameWorldController* gwc) : backBufferDC(NULL), 
-tilesetDC(NULL), mainWindow(inMainWindow), gameWorldController(gwc) {
+GameMapPanel::GameMapPanel(MainWindowInterface* inMainWindow, GameWorldController* gwc) :
+backBufferDC(NULL), tilesetDC(NULL), mainWindow(inMainWindow), gameWorldController(gwc) {
     fakeZoomLevel = 1;
     tileWidth = 0;
     tileHeight = 0;
 }
 
-//=============================================================================
-// Accessors
-//=============================================================================
+GameMapPanel::~GameMapPanel() {
+}
 
 //=============================================================================
-// Public / Protected functions
+// Mutators
 //=============================================================================
 
-void GameMapView::setTileset(CBitmap& bmp) {
-	
-	BITMAP bm;
-	bmp.GetObject(sizeof(BITMAP), &bm);
-	CMemDC memDC(NULL);
-	HBITMAP oldBMP = memDC.SelectObject(bmp);
-	tilesetDC.CreateCompatibleBitmap(memDC, bm.bmWidth, bm.bmHeight);
-	
-	tilesetDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, memDC, 0, 0, SRCCOPY);
-	memDC.SelectObject(oldBMP);
+///----------------------------------------------------------------------------
+/// setTileset - Copies the tileset bitmap into it's own DC for drawing, then
+/// makes sure the backbuffer gets updated.
+///----------------------------------------------------------------------------
+
+void GameMapPanel::setTileset(CBitmap& bmp) {
+
+    BITMAP bm;
+    bmp.GetObject(sizeof(BITMAP), &bm);
+    CMemDC memDC(NULL);
+    HBITMAP oldBMP = memDC.SelectObject(bmp);
+    tilesetDC.CreateCompatibleBitmap(memDC, bm.bmWidth, bm.bmHeight);
+
+    tilesetDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, memDC, 0, 0, SRCCOPY);
+    memDC.SelectObject(oldBMP);
 
     tileWidth = bm.bmWidth / EditorConstants::TilesPerRow;
     tileHeight = bm.bmHeight / EditorConstants::TilesPerCol;
 
-    UpdateBackBuffer();
+    updateBackBuffer();
+    InvalidateRect();
+
 }
 
-int GameMapView::OnCreate(CREATESTRUCT& cs) {
+
+//=============================================================================
+// Win32++ Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCreate - Create the out of Bounds Brush color so the background is black.
+/// where there are no visible tiles.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+int GameMapPanel::OnCreate(CREATESTRUCT& cs) {
+    
+    CBrush outOfBoundsColor(RGB(0, 0, 0));
+    SetScrollBkgnd(outOfBoundsColor);
+
     return CScrollView::OnCreate(cs);
-}
-
-void GameMapView::UpdateBackBuffer() {
-
-    const int mapWidth = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
-    const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
-
-    CSize abc(mapWidth, mapHeight);
-    SetScrollSizes(abc); // Otherwise it won't work.
-    CBrush outofbounds(RGB(0,0,0));
-    SetScrollBkgnd(outofbounds);
-    
-    CClientDC dc(*this);
-    backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);    
 
 }
 
 ///----------------------------------------------------------------------------
-/// OnDraw - 
+/// OnDraw - Draw the Game map to the back buffer, then present the backbuffer
+/// to the view.
+/// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-void GameMapView::OnDraw(CDC& dc) {
-    
+void GameMapPanel::OnDraw(CDC& dc) {
+
+    // TODO: All this code belong in the back buffer code.
+
     const GameMap* gameMap = gameWorldController->getGameMap();
 
     const std::vector<GameTile::DrawInfo> drawDataVec = gameMap->getTileDrawData();
 
-    if(backBufferBMP.GetHandle() && drawDataVec.size() != 0) {
+    if (backBufferBMP.GetHandle() && drawDataVec.size() != 0) {
 
         CBitmap oldBMP;
         oldBMP = backBufferDC.SelectObject(backBufferBMP);
 
-        BLENDFUNCTION fn = {0};
+        BLENDFUNCTION fn ={ 0 };
         fn.BlendOp = AC_SRC_OVER;
         fn.SourceConstantAlpha = 192;
         fn.AlphaFormat = 0;
 
         CMemDC alphaDC(dc);
         alphaDC.CreateCompatibleBitmap(dc, 1, 1);
-        alphaDC.SolidFill(RGB(0,0,192), CRect(0,0,1,1));
+        alphaDC.SolidFill(RGB(0, 0, 192), CRect(0, 0, 1, 1));
 
         // TODO: it might be better to return a reference to the entire gamemap
         // object as well   
@@ -88,22 +99,24 @@ void GameMapView::OnDraw(CDC& dc) {
         const int mapRows = gameMap->getHeight();
         const int width = tileWidth * fakeZoomLevel;
         const int height = tileHeight * fakeZoomLevel;
-       
-        for(int k = 0; k < mapRows; ++k) {
-            for(int i = 0; i < mapCols; ++i) {
+
+        for (int k = 0; k < mapRows; ++k) {
+            for (int i = 0; i < mapCols; ++i) {
 
                 const GameTile::DrawInfo drawInfo = drawDataVec[(k * mapCols) + i];
-            
+
                 const int srcX = drawInfo.spriteIndex * tileWidth;
                 const int srcY = drawInfo.spriteModifier * tileHeight;
                 const int destX = i * width;
                 const int destY = k * height;
 
-                backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC, 
-                                        srcX, srcY, tileWidth, tileHeight, SRCCOPY);
+                backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC,
+                                        srcX, srcY, tileWidth, 
+                                        tileHeight, SRCCOPY);
 
-                if(drawInfo.dark) {
-                    AlphaBlend(backBufferDC.GetHDC(), destX, destY, width, height, alphaDC, 0, 0, 1, 1, fn);
+                if (drawInfo.dark) {
+                    AlphaBlend(backBufferDC.GetHDC(), destX, destY, 
+                               width, height, alphaDC, 0, 0, 1, 1, fn);
                 }
 
             }
@@ -112,7 +125,9 @@ void GameMapView::OnDraw(CDC& dc) {
         const int selectedRow = gameWorldController->getSelectedRow();
         const int selectedCol = gameWorldController->getSelectedCol();
 
-        DrawTileSelectionBox(backBufferDC, selectedCol * tileWidth, selectedRow * tileHeight, tileWidth, tileHeight, 2);
+        DrawTileSelectionBox(backBufferDC, selectedCol * tileWidth, 
+                             selectedRow * tileHeight, tileWidth, 
+                             tileHeight, 2);
 
         backBufferDC.SelectObject(oldBMP);
         dc.SelectObject(backBufferBMP);
@@ -120,10 +135,49 @@ void GameMapView::OnDraw(CDC& dc) {
     }
 }
 
-LRESULT GameMapView::onLButtonDown(const WORD& xPos, const WORD& yPos) {
-    
+///----------------------------------------------------------------------------
+/// WndProc - Window Procedure for the view.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+LRESULT GameMapPanel::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
+
+    switch (msg) {
+        
+        case WM_LBUTTONDOWN:    
+            return onLButtonDown(LOWORD(lparam), HIWORD(lparam));
+
+        case WM_LBUTTONDBLCLK:
+            return onLButtonDBLClick(LOWORD(lparam), HIWORD(lparam));
+
+        case WM_RBUTTONDOWN:
+            // Eventually we will pop open a menu here to set features and 
+            // other things but we'll use this for debugging the drawing code
+            // in the mean time.
+            InvalidateRect();
+            break;
+    }
+
+    return WndProcDefault(msg, wparam, lparam);
+}
+
+//=============================================================================
+ // Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// onLButtonDown - Processes the WM_LBUTTONDOWN message. It will request
+/// that the controller change the selected tile to the one under the mouse.
+/// If that change happens, it will update the map.
+/// @param xPos of the mouse
+/// @param yPos of the mouse
+/// @return Always 0
+///----------------------------------------------------------------------------
+
+LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
+
     CPoint viewOffset = GetScrollPosition();
-       
+
     WORD row = (yPos + viewOffset.y) / tileHeight;
     WORD col = (xPos + viewOffset.x) / tileWidth;
 
@@ -134,7 +188,16 @@ LRESULT GameMapView::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     return 0;
 }
 
-LRESULT GameMapView::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
+///----------------------------------------------------------------------------
+/// onLButtonDBLClick - Processes the WM_LBUTTONDBLCLK message. It will request
+/// that the controller changes the selected tile to the one selected in the
+/// road palette. If that change happens, it will update the map.
+/// @param xPos of the mouse
+/// @param yPos of the mouse
+/// @return Always 0
+///----------------------------------------------------------------------------
+
+LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
 
     CPoint viewOffset = GetScrollPosition();
 
@@ -142,7 +205,10 @@ LRESULT GameMapView::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     WORD col = (xPos + viewOffset.x) / tileWidth;
 
     // Make sure the user is clicking the map when trying to alter a tile.
-    // TODO: Make sure it's the same tile twice.
+    
+    // TODO: Make sure it's the same tile twice. If not, forward the call to
+    // WM_LBUTTONDOWN
+    
     if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
         gameWorldController->tryChangeSelectedTile();
         InvalidateRect();
@@ -151,20 +217,26 @@ LRESULT GameMapView::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
 }
 
 ///----------------------------------------------------------------------------
-/// WndProc
+/// updateBackBuffer - Draws the next frame of the back buffer, or it is
+/// supposed to.
 ///----------------------------------------------------------------------------
 
-LRESULT GameMapView::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
+void GameMapPanel::updateBackBuffer() {
 
-    if (msg == WM_LBUTTONDOWN) {
-        return onLButtonDown(LOWORD(lparam), HIWORD(lparam));
-    }
-    else if (msg == WM_LBUTTONDBLCLK) {
-        return onLButtonDBLClick(LOWORD(lparam), HIWORD(lparam));
-    }
-    else if (msg == WM_RBUTTONDOWN) {        
-        InvalidateRect();
-    }
+    // TODO: updateScrollSize for the width and such.
 
-    return WndProcDefault(msg, wparam, lparam);
+    const int mapWidth = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
+    const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
+
+    CSize abc(mapWidth, mapHeight);
+    SetScrollSizes(abc); // Otherwise it won't work.
+
+    /*
+    CBrush outofbounds(RGB(0,0,0));
+    SetScrollBkgnd(outofbounds);
+    */
+    
+    CClientDC dc(*this);
+    backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);    
+
 }

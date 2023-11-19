@@ -282,7 +282,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(this, gameWorldController, &tilesetBMP), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
 	
-	reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).setTileset(tilesetBMP);
+	reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).setTileset(tilesetBMP);
 
 
 	roadSelectorDocker = static_cast<RoadSelectorDocker*>(gameMapDocker->AddDockedChild(
@@ -380,7 +380,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
     if (ID >= MenuIDs::AddStart && ID <= MenuIDs::AddSafeHaven) {
         if (gameWorldController->tryAddFeatureToTile((ID - MenuIDs::AddStart) + 1)) {
-            reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+            reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
         }
         return TRUE;
     }  
@@ -433,7 +433,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
 BOOL MainWindowFrame::OnFileNew() {
     gameWorldController->newWorld();
-    reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
     return TRUE;
 }
 
@@ -457,7 +457,7 @@ BOOL MainWindowFrame::OnFileOpen() {
 		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
 
 		gameWorldController->loadWorld(filePath, fileName);
-        reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
         
         
         entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
@@ -1151,7 +1151,7 @@ void MainWindowFrame::finishedResizeWorldDialog() {
 
     if (resizeWorldDialog->hasSavedChanges()) {
         gameWorldController->resize(resizeWorldDialog->getNewWidth() , resizeWorldDialog->getNewHeight());
-        reinterpret_cast<GameMapView&>(gameMapDocker->GetView()).UpdateBackBuffer();
+        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
 
         // TODO: Move selected tile cursor
     }
