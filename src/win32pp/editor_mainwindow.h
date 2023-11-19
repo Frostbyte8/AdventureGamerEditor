@@ -53,7 +53,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void onTileUpdated(const int& index);
         virtual bool onSelectedTileChanged(const int& row, const int& col);
         virtual void onAlterCharacter(const int& alterType, const size_t& index);
-        virtual void onAlterObject(const int& alterType, const size_t& index);
+        
         virtual void onEditStory();
         virtual void onEditTileDescription();
         virtual void onEditWorldInfo();

@@ -120,8 +120,8 @@ LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
 
     CPoint viewOffset = GetScrollPosition();
 
-    WORD row = (yPos + viewOffset.y) / tileHeight;
-    WORD col = (xPos + viewOffset.x) / tileWidth;
+    int row = static_cast<int>((yPos + viewOffset.y) / tileHeight);
+    int col = static_cast<int>((xPos + viewOffset.x) / tileWidth);
 
     if (gameWorldController->tryUpdateSelectedTile(row, col)) {
         updateBackBuffer();
@@ -144,8 +144,8 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
 
     CPoint viewOffset = GetScrollPosition();
 
-    WORD row = (yPos + viewOffset.y) / tileHeight;
-    WORD col = (xPos + viewOffset.x) / tileWidth;
+    int row = static_cast<int>((yPos + viewOffset.y) / tileHeight);
+    int col = static_cast<int>((xPos + viewOffset.x) / tileWidth);
 
     // Make sure the user is clicking the map when trying to alter a tile.
     

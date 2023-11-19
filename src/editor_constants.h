@@ -5,7 +5,7 @@
 #include "compat/stdint_compat.h"
 
 ///----------------------------------------------------------------------------
-/// EditorConstants - Useful constats that are used by the editor
+/// EditorConstants - Useful constants that are used by the editor
 ///----------------------------------------------------------------------------
 
 namespace EditorConstants {
@@ -13,8 +13,8 @@ namespace EditorConstants {
     unsigned int const TilesPerCol          = 16;
     unsigned int const DirtroadStartRow     = 8;
 
-	const unsigned int DefaultCols			= 10;
-	const unsigned int DefaultRows			= 10;
+	const int DefaultCols			        = 10;
+	const int DefaultRows			        = 10;
 }
 
 ///----------------------------------------------------------------------------

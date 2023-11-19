@@ -460,7 +460,7 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
         }
     }
     else if (alterType == AlterType::Edit) {
-        if (gameMap->getGameObjects().empty() || index > gameObjects.size() - 1) {
+        if (gameMap->getGameObjects().empty() || index > static_cast<int>(gameObjects.size()) - 1) {
             mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
                                             langMap.get("ErrInvalidObjIndexTitle"));
             return false;

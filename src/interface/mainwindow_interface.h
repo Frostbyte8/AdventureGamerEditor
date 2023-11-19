@@ -61,10 +61,11 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to add, edit
         /// place or delete an object
-        /// @param an integer specifying the type of action to take.
+        /// @param A GameObject::Builder containing the information about the
+        /// object we are editing. This is ignored if an object is being added.
+        /// @param a true if editing an existing object, false if adding a new
+        /// object
         ///--------------------------------------------------------------------
-        virtual void onAlterObject(const int& alterType, const size_t& index) = 0;
-
         virtual bool onAlterObject(GameObject::Builder& objectBuilder, const bool editingObject) = 0;
 
         ///--------------------------------------------------------------------

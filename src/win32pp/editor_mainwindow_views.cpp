@@ -109,12 +109,10 @@ BOOL GameEntitiesPanel::OnCommand(WPARAM wParam, LPARAM lParam) {
         if (ctrlID == ControlIDs::AddObjectButton) {
             //mainWindow->onAlterObject(AlterType::Add, 0);
             mainWindowController->tryAlterObject(AlterType::Add, 0);
-
-
         } else if (ctrlID == ControlIDs::AddCharacterButton) {
             //mainWindow->onAlterCharacter(AlterType::Add, 0);
         } else if (ctrlID == ControlIDs::EditObjectButton) {
-            //mainWindow->onAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
+            mainWindowController->tryAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
 
         } else if (ctrlID == ControlIDs::EditCharacterButton) {
             //mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());
@@ -591,7 +589,7 @@ LRESULT RoadPalettePanel::onLButtonDown(const WORD &x, const WORD &y) {
     // Sanitize input and ensure the the user clicked a valid tile
 
     if (newTileSelected < 0 || 
-        newTileSelected >= tileHeight * (EditorConstants::DefaultCols * 2)) {
+        newTileSelected >= tileHeight * (EditorConstants::DefaultCols * 2)) { // warning C4018: '>=': signed/unsigned mismatch
 
         return 0;
     }
