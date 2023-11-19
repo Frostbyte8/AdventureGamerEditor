@@ -244,7 +244,12 @@ void MainWindowFrame::CreateMenuBar() {
 /// meant to be modal.
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::makeDialogModal(EditDialogBase& dialog) {
+void MainWindowFrame::makeDialogModal(EditDialogBase& dialog, const CString& caption) {
+
+    activeWindowHandle = dialog.GetHwnd();
+    dialog.SetExStyle(dialog.GetExStyle() | WS_EX_DLGMODALFRAME);
+    dialog.setDefaultDialogTitle(caption);
+
     dialog.goModal();
     // TODO: Make centerWindow use a handle rather than a CWND.
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(dialog));
@@ -724,12 +729,9 @@ bool MainWindowFrame::onAlterObject(GameObject::Builder& objectBuilder, const bo
         caption.Format(caption, AtoW(objectBuilder.base.description[GameObjectDescriptions::Name].c_str(), CP_UTF8).c_str());
     }
 
-    activeWindowHandle = editObjectDialog->GetHwnd();
-    editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    editObjectDialog->setDefaultDialogTitle(caption);
     editObjectDialog->setObjectToEdit(objectBuilder.build());
 
-    makeDialogModal(*editObjectDialog);
+    makeDialogModal(*editObjectDialog, caption);
 
     return true;
 
