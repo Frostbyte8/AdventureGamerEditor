@@ -9,7 +9,7 @@
 #include "../win32/window_metrics.h"
 
 // Dockers which contain each panel of related controls
-#include "editor_mainwindow_dockers.h"
+#include "editor_mainwindow_views.h"
 
 // Dialog windows
 #include "objectdlg/editobject_dialog.h"

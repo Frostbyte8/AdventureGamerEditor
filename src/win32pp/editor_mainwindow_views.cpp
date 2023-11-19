@@ -21,6 +21,12 @@ namespace ControlIDs {
 }
 
 //=============================================================================
+//
+// GameEntitiesPanel
+//
+//=============================================================================
+
+//=============================================================================
 // Constructors / Destructor
 //=============================================================================
 
@@ -460,4 +466,198 @@ int EntitiesHerePanel::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     SetRedraw(FALSE);
 
     return 0;
+}
+
+//=============================================================================
+//
+// RoadPalettePanel
+//
+//=============================================================================
+
+//=============================================================================
+// Constructors / Destructor
+//=============================================================================
+
+RoadPalettePanel::RoadPalettePanel(MainWindowInterface* inMainWindow, GameWorldController* gwc) :
+gameWorldController(gwc), backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow) {
+}
+
+RoadPalettePanel::~RoadPalettePanel() {
+}
+
+//=============================================================================
+// Mutators
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// setTileset - Copies the tileset bitmap into it's own DC for drawing, then
+/// makes sure the backbuffer gets updated.
+///----------------------------------------------------------------------------
+
+void RoadPalettePanel::setTileset(CBitmap& bmp) {
+
+    BITMAP bm;
+    bmp.GetObject(sizeof(BITMAP), &bm);
+    CMemDC memDC(NULL);
+    HBITMAP oldBMP = memDC.SelectObject(bmp);
+    tilesetDC.CreateCompatibleBitmap(memDC, bm.bmWidth, bm.bmHeight);
+    tilesetDC.BitBlt(0, 0, bm.bmWidth, bm.bmHeight, memDC, 0, 0, SRCCOPY);
+
+    tileWidth = bm.bmWidth / EditorConstants::TilesPerCol;
+    tileHeight = bm.bmHeight / EditorConstants::TilesPerRow;
+
+    memDC.SelectObject(oldBMP);
+
+    updateScrollSize();
+    updateBackBuffer();
+    InvalidateRect();
+
+}
+
+//=============================================================================
+// Win32++ Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// OnCreate - Create the out of Bounds Brush color so the background is black.
+/// where there are no visible tiles.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+int RoadPalettePanel::OnCreate(CREATESTRUCT& cs) {
+
+    CBrush outOfBoundsColor(RGB(0, 0, 0));
+    SetScrollBkgnd(outOfBoundsColor);
+
+    return CScrollView::OnCreate(cs);
+}
+
+///----------------------------------------------------------------------------
+/// OnDraw - Presents the back buffer as the currently visible frame.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+void RoadPalettePanel::OnDraw(CDC& dc) {
+    if (backBufferBMP.GetHandle()) {
+        dc.SelectObject(backBufferBMP);
+    }
+}
+
+///----------------------------------------------------------------------------
+/// WndProc - Window Procedure for the view.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+LRESULT RoadPalettePanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
+
+    if (msg == WM_LBUTTONDOWN) {
+        return onLButtonDown(LOWORD(lParam), HIWORD(lParam));
+    }
+
+    return WndProcDefault(msg, wParam, lParam);
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// onLButtonDown - Processes the WM_LBUTTONDOWN window message
+/// @param x coordinate on the road palette where the left mouse button was
+/// pressed.
+/// @param y coordinate on the road palette where the left mouse button was
+/// pressed.
+/// @return always 0.
+///----------------------------------------------------------------------------
+
+LRESULT RoadPalettePanel::onLButtonDown(const WORD &x, const WORD &y) {
+
+    SCROLLINFO si ={ 0 };
+    si.cbSize = sizeof(SCROLLBARINFO);
+    si.fMask = SIF_POS;
+    GetScrollInfo(SB_VERT, si);
+
+    const int newTileSelected =  (y + si.nPos) / tileHeight;
+
+    // Sanitize input and ensure the the user clicked a valid tile
+
+    if (newTileSelected < 0 || 
+        newTileSelected >= tileHeight * (EditorConstants::DefaultCols * 2)) {
+
+        return 0;
+    }
+
+    // TODO: Invalidate old rect and new rect, and
+    // TODO: UpdateBackBufferTile()
+
+    gameWorldController->setDrawingTileIndex(newTileSelected);
+    updateBackBuffer();
+    InvalidateRect(0);
+
+    return 0;
+}
+
+///----------------------------------------------------------------------------
+/// updateBackBuffer - Draws the next frame of the back buffer
+///----------------------------------------------------------------------------
+
+void RoadPalettePanel::updateBackBuffer() {
+
+    const int totalHeight = tileHeight * (EditorConstants::TilesPerRow * 2);
+
+    // TODO: Verify that the previous BMP is destroyed as per what the docs
+    // state?
+
+    CClientDC dc(*this);
+    backBufferBMP = CreateCompatibleBitmap(dc, tileWidth, totalHeight);
+    CBitmap oldBMP;
+    oldBMP = backBufferDC.SelectObject(backBufferBMP);
+
+
+    for (int i = 0; i < EditorConstants::TilesPerRow; ++i) {
+
+        // For each iteration, we draw two tiles: One for the normal tile,
+        // and one for it's dirt road version
+
+        const int yDest = i * tileHeight;
+        
+        const int yDirtDest = (i * tileHeight) + 
+                              (EditorConstants::TilesPerRow * tileHeight);
+
+        const int xSrc = i * tileWidth;
+
+        const int yDirtSrc = EditorConstants::DirtroadStartRow * tileHeight;
+
+        backBufferDC.BitBlt(0, yDest, tileWidth, tileHeight, 
+                            tilesetDC, xSrc, 0, SRCCOPY);
+
+        backBufferDC.BitBlt(0, yDirtDest, tileWidth, tileHeight,
+                            tilesetDC, xSrc, yDirtSrc, SRCCOPY);
+
+    }
+
+    // Finally, we will draw a selection box around the tile that the user
+    // is currently drawing with.
+
+    const int selectedTile = gameWorldController->getDrawingTileIndex();
+
+    DrawTileSelectionBox(backBufferDC, 0, selectedTile * tileHeight,
+                         tileWidth, tileHeight, 2);
+
+    backBufferDC.SelectObject(oldBMP);
+
+}
+
+///----------------------------------------------------------------------------
+/// updateScrollSize - Sets the scroll info for the view based on the current
+/// tileset
+///----------------------------------------------------------------------------
+
+void RoadPalettePanel::updateScrollSize() {
+
+    // There are 16 tile types, plus an additional 16 for dirt roads.
+    const int totalHeight = tileHeight * (EditorConstants::TilesPerRow * 2);
+    CSize scrollSize(tileWidth, totalHeight);
+    SetScrollSizes(scrollSize);
+
 }
