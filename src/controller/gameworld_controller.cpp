@@ -62,6 +62,143 @@ bool GameWorldController::canAddCharacter() const {
     return false;
 }
 
+///----------------------------------------------------------------------------
+/// openAlterObjectDialog - Tries to open the Alter Object Dialog.
+/// @param an integer specifying which mode the dialog box will be in. This
+/// function cannot be used with AlterType::Place or AlterType::Delete as they
+/// do not have dialog boxes.
+/// @param an integer specifying which mode the object is to be altered with
+/// @return true if the object was altered in some way, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::openAlterObjectDialog(const int& alterType, const int& index) {
+
+    if (alterType == AlterType::Place || alterType == AlterType::Delete) {
+        assert(false);
+        return false;
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::AlterObject)) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+
+    const std::vector<GameObject>& gameObjects = getGameMap()->getGameObjects();
+
+    bool wasDialogCreated = false;
+
+    if (alterType == AlterType::Add) {
+
+        if (!canAddObject()) {
+            mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
+                                            langMap.get("ErrObjLimitReachedTitle"));
+            return false;
+        } else {
+            GameObject::Builder objectBuilder = GameObject::Builder();
+            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, false);
+        }
+    } else if (alterType == AlterType::Edit) {
+        if (gameMap->getGameObjects().empty() || index < 0 || index > static_cast<int>(gameObjects.size()) - 1) {
+            mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
+                                            langMap.get("ErrInvalidObjIndexTitle"));
+            return false;
+        } else {
+            // Obtain the Object we will be editing
+            GameObject::Builder objectBuilder = GameObject::Builder(getGameMap()->getGameObjects()[index]);
+            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, true);
+        }
+    }
+
+    if (!wasDialogCreated) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+        mainWindow->onDialogEnd(EditorDialogTypes::AlterObject);
+        return false;
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryAddObject - Attempt to add a new object to the game world.
+/// @param a reference to a GameObject::Builder containing the object that will
+/// be verified and added to the world.
+/// @return true if it was able to add the object, false it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    objectBuilder.ID(gameMap->getFirstUnusedObjectID());
+
+    try {
+        gameMap->addObject(gmKey, objectBuilder.build());
+    } catch (const std::bad_alloc&) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrAddObjOutOfMemoryText"),
+                                        langMap.get("ErrAddObjOutOfMemoryTitle"));
+        return false;
+
+    }
+
+    mainWindow->onGameObjectsChanged();
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryReplaceObject - Attempt to replace an object that already exists in the
+/// game world.
+/// @param Object Builder containing the data to replace the object with.
+/// @param if true, send the notification to the main window that the object list
+/// has been updated, if false, don't send it. Default is true.
+/// @return true if the Object was replaced successfully, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, bool shouldNotify = true) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (objectBuilder.getID() == GameObjectConstants::NoID) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrObjectNoIDText"),
+                                        langMap.get("ErrObjectNoIDTitle"));
+        return false;
+
+    }
+
+    // Located the object we are replacing
+    const size_t index = gameMap->objectIndexFromID(objectBuilder.getID());
+
+    if (index == (size_t)-1) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrReplaceObjIDNotFoundText"),
+                                        langMap.get("ErrReplaceObjIDNotFoundTitle"));
+        return false;
+
+    } else {
+        gameMap->replaceObject(gmKey, index, objectBuilder.build());
+    }
+    
+    if (shouldNotify) {
+        mainWindow->onGameObjectsChanged();
+    }
+
+    return true;
+
+}
+
+// tryDeleteObject
+// tryPlaceObject (This just calls tryReplaceObject)
+
 ///-----------------------------------------------------------------------------
 /// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
 /// the file, it will avoid erasing the currently loaded world.
@@ -420,135 +557,6 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
     }
 
     gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
-
-    return true;
-
-}
-
-///----------------------------------------------------------------------------
-/// openAlterObjectDialog - Tries to open the Alter Object Dialog.
-/// @param an integer specifying which mode the dialog box will be in. This
-/// function cannot be used with AlterType::Place or AlterType::Delete as they
-/// do not have dialog boxes.
-/// @param an integer specifying which mode the object is to be altered with
-/// @return true if the object was altered in some way, false if it was not
-///----------------------------------------------------------------------------
-
-bool GameWorldController::openAlterObjectDialog(const int& alterType, const int& index) {
-    
-    if (alterType == AlterType::Place || alterType == AlterType::Delete) {
-        assert(false);
-        return false;
-    }
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    if (!mainWindow->canCreateDialog(EditorDialogTypes::AlterObject)) {
-
-        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
-                                        langMap.get("ErrCreatingDialogTItle"));
-        return false;
-    }
-
-
-    const std::vector<GameObject>& gameObjects = getGameMap()->getGameObjects();
-    
-    bool wasDialogCreated = false;
-
-    if (alterType == AlterType::Add) {
-        if (gameObjects.size() >= AdventureGamerConstants::MaxNumObjects) {
-            mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
-                                            langMap.get("ErrObjLimitReachedTitle"));
-            return false;
-        }
-        else {
-            GameObject::Builder objectBuilder = GameObject::Builder();
-            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, false);
-        }
-    }
-    else if (alterType == AlterType::Edit) {
-        if (gameMap->getGameObjects().empty() || index < 0 || index > static_cast<int>(gameObjects.size()) - 1) {
-            mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
-                                            langMap.get("ErrInvalidObjIndexTitle"));
-            return false;
-        }
-        else {
-            // Obtain the Object we will be editing
-            GameObject::Builder objectBuilder = GameObject::Builder(getGameMap()->getGameObjects()[index]);
-            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, true);
-        }
-    }
-
-    if (!wasDialogCreated) {
-        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
-                                        langMap.get("ErrCreatingDialogTitle"));
-        mainWindow->onDialogEnd(EditorDialogTypes::AlterObject);
-        return false;
-    }
-
-    return true;
-
-}
-
-///----------------------------------------------------------------------------
-/// tryAddObject - Attempt to add a new object to the game world.
-/// @param a reference to a GameObject::Builder containing the object that will
-/// be verified and added to the world.
-/// @return true if it was able to add the object, false it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-            
-    objectBuilder.ID(gameMap->getFirstUnusedObjectID());
-
-    try {
-        gameMap->addObject(gmKey, objectBuilder.build());
-    } catch (const std::bad_alloc&) {
-
-        mainWindow->displayErrorMessage(langMap.get("ErrAddObjOutOfMemoryText"),
-                                        langMap.get("ErrAddObjOutOfMemoryTitle"));
-        return false;
-
-    }
-
-    mainWindow->onGameObjectsChanged();
-
-    return true;
-
-}
-
-///----------------------------------------------------------------------------
-/// tryReplaceObject
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder) {
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    if (objectBuilder.getID() == GameObjectConstants::NoID) {
-
-        mainWindow->displayErrorMessage(langMap.get("ErrObjectNoIDText"),
-                                        langMap.get("ErrObjectNoIDTitle"));
-        return false;
-
-    }
-
-    // Located the object we are replacing
-    const size_t index = gameMap->objectIndexFromID(objectBuilder.getID());
-
-    if (index == (size_t)-1) {
-
-        mainWindow->displayErrorMessage(langMap.get("ErrReplaceObjIDNotFoundText"),
-                                        langMap.get("ErrReplaceObjIDNotFoundTitle"));
-        return false;
-
-    } else {
-        gameMap->replaceObject(gmKey, index, objectBuilder.build());
-    }
-
-    mainWindow->onGameObjectsChanged();
 
     return true;
 
