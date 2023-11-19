@@ -426,10 +426,69 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
 }
 
 ///----------------------------------------------------------------------------
+/// tryAlterObject - Attempts to alter an object, either by adding a new one,
+/// editing an existing one, or deleting it.
+/// @param an integer specifying which mode the object is to be altered with
+/// @return true if the object was altered in some way, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAlterObject(const int& alterType, const int& index) {
+    
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::AlterObject)) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+
+    const std::vector<GameObject>& gameObjects = getGameMap()->getGameObjects();
+    
+    bool wasDialogCreated = false;
+
+    if (alterType == AlterType::Add) {
+        if (gameObjects.size() >= AdventureGamerConstants::MaxNumObjects) {
+            mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
+                                            langMap.get("ErrObjLimitReachedTitle"));
+            return false;
+        }
+        else {
+            GameObject::Builder objectBuilder = GameObject::Builder();
+            wasDialogCreated = mainWindow->onAlterObject(objectBuilder, false);
+        }
+    }
+    else if (alterType == AlterType::Edit) {
+        if (gameMap->getGameObjects().empty() || index > gameObjects.size() - 1) {
+            mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
+                                            langMap.get("ErrInvalidObjIndexTitle"));
+            return false;
+        }
+        else {
+            // Obtain the Object we will be editing
+            GameObject::Builder objectBuilder = GameObject::Builder(getGameMap()->getGameObjects()[index]);
+            wasDialogCreated = mainWindow->onAlterObject(objectBuilder, true);
+        }
+    }
+
+    if (!wasDialogCreated) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+        mainWindow->onDialogEnd(EditorDialogTypes::AlterObject);
+        return false;
+    }
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// <!> DEPERCATED <!>
 /// tryAddObject - Attempts to add an Object.
 /// @param A reference to a Object Builder object that will get finalized
 /// before being added.
 /// @return true if the operation was successful, false if it was not.
+/// <!> DEPERCATED <!>
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {

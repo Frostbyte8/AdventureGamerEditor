@@ -40,6 +40,8 @@ class GameWorldController {
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
         bool tryAddObject(GameObject::Builder& objectBuilder);
 
+        bool tryAlterObject(const int& alterType, const int& index);
+
         bool tryReplaceObject(GameObject::Builder& objectBuilder);
         bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
 

@@ -2,7 +2,17 @@
 #define __MAINWINDOW_INTERFACE_H__
 
 #include "shared_interface_definitions.h"
+#include "../model/gameobject.h"
 #include <string>
+
+namespace EditorDialogTypes {
+    int const AlterObject           = 0;
+    int const AlterCharacter        = 1;
+    int const EditStory             = 2;
+    int const EditTileDescription   = 3;
+    int const EditWorldInfo         = 4;
+    int const ResizeWorld           = 5;
+}
 
 class MainWindowInterface {
 
@@ -25,6 +35,21 @@ class MainWindowInterface {
         /// @param Title of the message box, if necessary.
         ///--------------------------------------------------------------------
         virtual void displayErrorMessage(const std::string& message, const std::string& title) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the window is being asked if it can create a dialog of a
+        /// specific type.
+        /// @param Which dialog to try and create
+        /// @returns true if it can create the dialog, false if it cannot
+        /// create it or an invalid dialog type is given.
+        ///--------------------------------------------------------------------
+        virtual bool canCreateDialog(const int& whichDialogType) const = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when a dialog has been closed
+        /// @param Which dialog was closed
+        ///--------------------------------------------------------------------
+        virtual void onDialogEnd(const int& whichDialogType) = 0;
        
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to add, edit
@@ -39,6 +64,8 @@ class MainWindowInterface {
         /// @param an integer specifying the type of action to take.
         ///--------------------------------------------------------------------
         virtual void onAlterObject(const int& alterType, const size_t& index) = 0;
+
+        virtual bool onAlterObject(GameObject::Builder& objectBuilder, const bool editingObject) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 

@@ -92,7 +92,7 @@ class GameEntitiesPanel : public PanelBaseClass {
 
 	public:
 
-        GameEntitiesPanel(MainWindowInterface* inMainWindow, WindowMetrics* inWindowMetrics);
+        GameEntitiesPanel(GameWorldController* gwc, WindowMetrics* inWindowMetrics);
         virtual ~GameEntitiesPanel();
 
         void updateCharacterList(const std::vector<GameCharacter>& characterList);
@@ -122,7 +122,7 @@ class GameEntitiesPanel : public PanelBaseClass {
 
         // Member Variables
 
-        MainWindowInterface*    mainWindow;
+        GameWorldController*    mainWindowController;
         WindowMetrics*          windowMetrics;
 
         CButton                 objectsGroup;

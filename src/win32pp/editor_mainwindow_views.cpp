@@ -30,8 +30,11 @@ namespace ControlIDs {
 // Constructors / Destructor
 //=============================================================================
 
-GameEntitiesPanel::GameEntitiesPanel(MainWindowInterface* inMainWindow,
-WindowMetrics* inWindowMetrics) : mainWindow(inMainWindow), windowMetrics(inWindowMetrics) {
+// TODO: There is no reason for the Panel to be aware of the Main Window.
+
+GameEntitiesPanel::GameEntitiesPanel(GameWorldController* gwc,
+WindowMetrics* inWindowMetrics) : mainWindowController(gwc),
+windowMetrics(inWindowMetrics) {
 }
 
 GameEntitiesPanel::~GameEntitiesPanel() {
@@ -101,14 +104,20 @@ BOOL GameEntitiesPanel::OnCommand(WPARAM wParam, LPARAM lParam) {
         const WORD ctrlID = LOWORD(wParam);
         const WORD notifyCode = HIWORD(wParam);
 
+        // TODO: This is incorrect. The Controller should be called.
+
         if (ctrlID == ControlIDs::AddObjectButton) {
-            mainWindow->onAlterObject(AlterType::Add, 0);
+            //mainWindow->onAlterObject(AlterType::Add, 0);
+            mainWindowController->tryAlterObject(AlterType::Add, 0);
+
+
         } else if (ctrlID == ControlIDs::AddCharacterButton) {
-            mainWindow->onAlterCharacter(AlterType::Add, 0);
+            //mainWindow->onAlterCharacter(AlterType::Add, 0);
         } else if (ctrlID == ControlIDs::EditObjectButton) {
-            mainWindow->onAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
+            //mainWindow->onAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
+
         } else if (ctrlID == ControlIDs::EditCharacterButton) {
-            mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());
+            //mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());
         }
 
     }

@@ -86,7 +86,7 @@ roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObject
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
 editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0) {
     gameWorldController = new GameWorldController(this);
-	entityView = new GameEntitiesPanel(this, &windowMetrics);
+	entityView = new GameEntitiesPanel(gameWorldController, &windowMetrics);
     LanguageMapper::getInstance();
     isSizing = false;
 }
@@ -647,76 +647,75 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
 // onAlterObject
 //-----------------------------------------------------------------------------
 
-void MainWindowFrame::onAlterObject(const int& alterType, const size_t& index) {
+bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
 
-    if(editObjectDialog || activeWindowHandle != GetHwnd()) {
-        return;
+    if (activeWindowHandle != GetHwnd()) {
+        return false;
     }
 
-    const std::vector<GameObject>& gameObjects = gameWorldController->getGameMap()->getGameObjects();
-    const bool editingObject = (alterType == AlterType::Edit) ? true : false;
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    if(editingObject) {
-        
-        if(gameObjects.empty() || index > gameObjects.size() - 1) {
-            displayErrorMessage(langMap.get("ErrInvalidObjIndexText"), langMap.get("ErrInvalidObjIndexTitle"));
-            return;
-        }
+    switch (whichDialogType) {
+        case EditorDialogTypes::AlterObject: return editObjectDialog ? false : true;
     }
-    else {
-        // TODO: Prevent the editor from getting here outside the controller so this check isn't done twice.
-        if(gameWorldController->canAddObject() == false) {
-            displayErrorMessage(langMap.get("ErrObjLimitReachedText"), langMap.get("ErrObjLimitReachedTitle"));
-            return;
-        }
-    }
+   
+    return false;
+}
 
+void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
+    
+    switch (whichDialogType) {
+        case EditorDialogTypes::AlterObject:
+            if (editObjectDialog) {
+                delete editObjectDialog;
+                editObjectDialog = NULL;
+            }
+            break;
+    }
+    
+    activeWindowHandle = GetHwnd();
+}
+
+const LONG DIALOG_EX_STYLES = WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT;
+const LONG DIALOG_WS_STYLES = WS_POPUPWINDOW | WS_DLGFRAME;
+
+bool MainWindowFrame::onAlterObject(GameObject::Builder& objectBuilder, const bool editingObject) {
+
+    // TODO: The controller can easily catch this.
     editObjectDialog = new (std::nothrow) EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
 
-    if(!editObjectDialog) {
-        displayErrorMessage(langMap.get("ErrAllocatingDialogText"), langMap.get("ErrAllocatingDialogTitle"));
-        return;
+    if (!editObjectDialog) {
+        return false;
     }
 
-    editObjectDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
+    editObjectDialog->Create(GetHwnd(), DIALOG_EX_STYLES, 
+                             DIALOG_WS_STYLES);
 
-    if(!editObjectDialog->IsWindow()) {
-        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
-        delete editObjectDialog;
-        return;
+    if (!editObjectDialog->IsWindow()) {
+        return false;
     }
-
-    editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    
-    activeWindowHandle = editObjectDialog->GetHwnd();
-
 
     CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    if(alterType == AlterType::Add) {
-        GameObject::Builder bd;
-        editObjectDialog->setObjectToEdit(bd.build());
-        CString caption = LM_toUTF8("CreateObjectTitle", langMap);
-        editObjectDialog->setDefaultDialogTitle(caption);
-        
+    if (!editingObject) {
+        caption = LM_toUTF8("CreateObjectTitle", langMap);
+    } 
+    else {
+        caption = LM_toUTF8("EditObjectTitle", langMap);
+        caption.Format(caption, AtoW(objectBuilder.base.description[GameObjectDescriptions::Name].c_str(), CP_UTF8).c_str());
     }
-    else if (alterType == AlterType::Edit) {
-        // TODO: make sure the character exists before doing this.
-        const GameObject& gameObject = gameWorldController->getGameMap()->getGameObjects().at(index);
-        GameObject::Builder objectToEdit(gameObject);
-        editObjectDialog->setObjectToEdit(objectToEdit.build());
-        caption = LM_toUTF8("EditObjectTitle", langMap);       
-        caption.Format(caption, AtoW(gameObject.getName().c_str(), CP_UTF8).c_str());
-        editObjectDialog->setDefaultDialogTitle(caption);
-    }
+
+    activeWindowHandle = editObjectDialog->GetHwnd();
+    editObjectDialog->SetExStyle(editObjectDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
+    editObjectDialog->setDefaultDialogTitle(caption);
+    editObjectDialog->setObjectToEdit(objectBuilder.build());
 
     // Dialog is ready to go modal
+    // TODO: We can split this into a function to do these three lines on all dialogs
     editObjectDialog->goModal();
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editObjectDialog));
     editObjectDialog->ShowWindow(SW_SHOW);
 
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -737,14 +736,19 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     const std::vector<GameCharacter>& gameCharacters = gameWorldController->getGameMap()->getGameCharacters();
     const bool editingChar = (alterType == AlterType::Edit) ? true : false;
 
+    // TODO: Since the Controller calls this function, the Controller should prevent you from getting this far anyways.
+    // So basically, this entire block of code is pointless.
+
     if(editingChar) {
-        
+       
         if(gameCharacters.empty() || index > gameCharacters.size() - 1) {
             displayErrorMessage("Invalid character index", "error");
             return;
         }
+
     }
     else {
+
         if(gameWorldController->canAddCharacter() == false) {
             displayErrorMessage(langMap.get("ErrCharLimitReachedText"), langMap.get("ErrCharLimitReachedTitle"));
             return;
@@ -753,6 +757,9 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 
 
     editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingChar);
+
+    // TODO: Flags should be constants since they're the same for all the dialogs.
+
     editCharacterDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
 
     if(!editCharacterDialog->IsWindow()) {
@@ -785,6 +792,8 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
     }
     
     editCharacterDialog->goModal();
+
+    // onStartModal
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
     editCharacterDialog->ShowWindow(SW_SHOW);
 
@@ -819,6 +828,8 @@ void MainWindowFrame::finishedEditCharacterDialog() {
 
     delete editCharacterDialog;
     editCharacterDialog = NULL;
+
+    // OnEndModal
     activeWindowHandle = GetHwnd();
 
 }
