@@ -44,7 +44,6 @@ void GameMapPanel::setTileset(CBitmap& bmp) {
 
 }
 
-
 //=============================================================================
 // Win32++ Functions
 //=============================================================================
@@ -72,67 +71,10 @@ int GameMapPanel::OnCreate(CREATESTRUCT& cs) {
 
 void GameMapPanel::OnDraw(CDC& dc) {
 
-    // TODO: All this code belong in the back buffer code.
-
-    const GameMap* gameMap = gameWorldController->getGameMap();
-
-    const std::vector<GameTile::DrawInfo> drawDataVec = gameMap->getTileDrawData();
-
-    if (backBufferBMP.GetHandle() && drawDataVec.size() != 0) {
-
-        CBitmap oldBMP;
-        oldBMP = backBufferDC.SelectObject(backBufferBMP);
-
-        BLENDFUNCTION fn ={ 0 };
-        fn.BlendOp = AC_SRC_OVER;
-        fn.SourceConstantAlpha = 192;
-        fn.AlphaFormat = 0;
-
-        CMemDC alphaDC(dc);
-        alphaDC.CreateCompatibleBitmap(dc, 1, 1);
-        alphaDC.SolidFill(RGB(0, 0, 192), CRect(0, 0, 1, 1));
-
-        // TODO: it might be better to return a reference to the entire gamemap
-        // object as well   
-
-        const int mapCols = gameMap->getWidth();
-        const int mapRows = gameMap->getHeight();
-        const int width = tileWidth * fakeZoomLevel;
-        const int height = tileHeight * fakeZoomLevel;
-
-        for (int k = 0; k < mapRows; ++k) {
-            for (int i = 0; i < mapCols; ++i) {
-
-                const GameTile::DrawInfo drawInfo = drawDataVec[(k * mapCols) + i];
-
-                const int srcX = drawInfo.spriteIndex * tileWidth;
-                const int srcY = drawInfo.spriteModifier * tileHeight;
-                const int destX = i * width;
-                const int destY = k * height;
-
-                backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC,
-                                        srcX, srcY, tileWidth, 
-                                        tileHeight, SRCCOPY);
-
-                if (drawInfo.dark) {
-                    AlphaBlend(backBufferDC.GetHDC(), destX, destY, 
-                               width, height, alphaDC, 0, 0, 1, 1, fn);
-                }
-
-            }
-        }
-
-        const int selectedRow = gameWorldController->getSelectedRow();
-        const int selectedCol = gameWorldController->getSelectedCol();
-
-        DrawTileSelectionBox(backBufferDC, selectedCol * tileWidth, 
-                             selectedRow * tileHeight, tileWidth, 
-                             tileHeight, 2);
-
-        backBufferDC.SelectObject(oldBMP);
+    if (backBufferBMP.GetHandle()) {
         dc.SelectObject(backBufferBMP);
-
     }
+
 }
 
 ///----------------------------------------------------------------------------
@@ -182,7 +124,8 @@ LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     WORD col = (xPos + viewOffset.x) / tileWidth;
 
     if (gameWorldController->tryUpdateSelectedTile(row, col)) {
-        InvalidateRect();
+        updateBackBuffer();
+        InvalidateRect(0);
     }
 
     return 0;
@@ -211,7 +154,8 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     
     if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
         gameWorldController->tryChangeSelectedTile();
-        InvalidateRect();
+        updateBackBuffer();
+        InvalidateRect(0);
     }
     return 0;
 }
@@ -223,20 +167,74 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
 
 void GameMapPanel::updateBackBuffer() {
 
-    // TODO: updateScrollSize for the width and such.
-
-    const int mapWidth = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
+    const int mapWidth  = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
     const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
+
+    CClientDC dc(*this);
+    backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);
+
+    const GameMap* gameMap = gameWorldController->getGameMap();
+    const std::vector<GameTile::DrawInfo> drawDataVec = gameMap->getTileDrawData();
+
+    if (backBufferBMP.GetHandle() && drawDataVec.size() != 0) {
+
+        CBitmap oldBMP;
+        oldBMP = backBufferDC.SelectObject(backBufferBMP);
+
+        BLENDFUNCTION fn ={ 0 };
+        fn.BlendOp = AC_SRC_OVER;
+        fn.SourceConstantAlpha = 192;
+        fn.AlphaFormat = 0;
+
+        CMemDC alphaDC(dc);
+        alphaDC.CreateCompatibleBitmap(dc, 1, 1);
+        alphaDC.SolidFill(RGB(0, 0, 192), CRect(0, 0, 1, 1));
+
+        // TODO: it might be better to return a reference to the entire gamemap
+        // object as well   
+
+        const int mapCols = gameMap->getWidth();
+        const int mapRows = gameMap->getHeight();
+        const int width = tileWidth * fakeZoomLevel;
+        const int height = tileHeight * fakeZoomLevel;
+
+        for (int k = 0; k < mapRows; ++k) {
+            for (int i = 0; i < mapCols; ++i) {
+
+                const GameTile::DrawInfo drawInfo = drawDataVec[(k * mapCols) + i];
+
+                const int srcX = drawInfo.spriteIndex * tileWidth;
+                const int srcY = drawInfo.spriteModifier * tileHeight;
+                const int destX = i * width;
+                const int destY = k * height;
+
+                backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC,
+                                        srcX, srcY, tileWidth,
+                                        tileHeight, SRCCOPY);
+
+                if (drawInfo.dark) {
+                    AlphaBlend(backBufferDC.GetHDC(), destX, destY,
+                               width, height, alphaDC, 0, 0, 1, 1, fn);
+                }
+
+            }
+        }
+
+        const int selectedRow = gameWorldController->getSelectedRow();
+        const int selectedCol = gameWorldController->getSelectedCol();
+
+        DrawTileSelectionBox(backBufferDC, selectedCol * tileWidth,
+                             selectedRow * tileHeight, tileWidth,
+                             tileHeight, 2);
+
+        backBufferDC.SelectObject(oldBMP);
+
+    }
+
+
+    // TODO: updateScrollSize for the width and such. We'll just leave this here for now.
 
     CSize abc(mapWidth, mapHeight);
     SetScrollSizes(abc); // Otherwise it won't work.
-
-    /*
-    CBrush outofbounds(RGB(0,0,0));
-    SetScrollBkgnd(outofbounds);
-    */
-    
-    CClientDC dc(*this);
-    backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);    
-
+     
 }

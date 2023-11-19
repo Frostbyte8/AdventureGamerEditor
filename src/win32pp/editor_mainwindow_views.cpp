@@ -610,6 +610,7 @@ void RoadPalettePanel::updateBackBuffer() {
 
     CClientDC dc(*this);
     backBufferBMP = CreateCompatibleBitmap(dc, tileWidth, totalHeight);
+
     CBitmap oldBMP;
     oldBMP = backBufferDC.SelectObject(backBufferBMP);
 
