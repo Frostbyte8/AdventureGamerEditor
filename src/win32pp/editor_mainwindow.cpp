@@ -239,6 +239,19 @@ void MainWindowFrame::CreateMenuBar() {
 }
 
 ///----------------------------------------------------------------------------
+/// makeDialogModal - Make the given dialog modal
+/// @param a reference to a dialog that inherits from EditDialogBase that is
+/// meant to be modal.
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::makeDialogModal(EditDialogBase& dialog) {
+    dialog.goModal();
+    // TODO: Make centerWindow use a handle rather than a CWND.
+    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(dialog));
+    dialog.ShowWindow(SW_SHOW);
+}
+
+///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the frame, and create remaining child
 /// controls.
 /// Refer to the Win32++ documentation for more information.
@@ -644,8 +657,11 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
 }
 
 //-----------------------------------------------------------------------------
-// onAlterObject
+// canCreateDialog
 //-----------------------------------------------------------------------------
+
+const LONG DIALOG_EX_STYLES = WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT;
+const LONG DIALOG_WS_STYLES = WS_POPUPWINDOW | WS_DLGFRAME;
 
 bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
 
@@ -659,6 +675,10 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
    
     return false;
 }
+
+//-----------------------------------------------------------------------------
+// onDialogEnd
+//-----------------------------------------------------------------------------
 
 void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
     
@@ -674,12 +694,12 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
     activeWindowHandle = GetHwnd();
 }
 
-const LONG DIALOG_EX_STYLES = WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT;
-const LONG DIALOG_WS_STYLES = WS_POPUPWINDOW | WS_DLGFRAME;
+//-----------------------------------------------------------------------------
+// onAlterObject
+//-----------------------------------------------------------------------------
 
 bool MainWindowFrame::onAlterObject(GameObject::Builder& objectBuilder, const bool editingObject) {
 
-    // TODO: The controller can easily catch this.
     editObjectDialog = new (std::nothrow) EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
 
     if (!editObjectDialog) {
@@ -709,13 +729,10 @@ bool MainWindowFrame::onAlterObject(GameObject::Builder& objectBuilder, const bo
     editObjectDialog->setDefaultDialogTitle(caption);
     editObjectDialog->setObjectToEdit(objectBuilder.build());
 
-    // Dialog is ready to go modal
-    // TODO: We can split this into a function to do these three lines on all dialogs
-    editObjectDialog->goModal();
-    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editObjectDialog));
-    editObjectDialog->ShowWindow(SW_SHOW);
+    makeDialogModal(*editObjectDialog);
 
     return true;
+
 }
 
 //-----------------------------------------------------------------------------

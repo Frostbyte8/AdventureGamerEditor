@@ -77,6 +77,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
 	private:
 
+        inline void makeDialogModal(EditDialogBase&);
+
         void addJumpConnection(const int& whichPoint);
         void addSwitchConnection(const int& whichPoint);
         void updateStatusbar(const int& index);
