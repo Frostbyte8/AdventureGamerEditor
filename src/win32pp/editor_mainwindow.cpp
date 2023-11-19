@@ -238,23 +238,7 @@ void MainWindowFrame::CreateMenuBar() {
 
 }
 
-///----------------------------------------------------------------------------
-/// makeDialogModal - Make the given dialog modal
-/// @param a reference to a dialog that inherits from EditDialogBase that is
-/// meant to be modal.
-///----------------------------------------------------------------------------
 
-void MainWindowFrame::makeDialogModal(EditDialogBase& dialog, const CString& caption) {
-
-    activeWindowHandle = dialog.GetHwnd();
-    dialog.SetExStyle(dialog.GetExStyle() | WS_EX_DLGMODALFRAME);
-    dialog.setDefaultDialogTitle(caption);
-
-    dialog.goModal();
-    // TODO: Make centerWindow use a handle rather than a CWND.
-    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(dialog));
-    dialog.ShowWindow(SW_SHOW);
-}
 
 ///----------------------------------------------------------------------------
 /// OnCreate - Set some defaults for the frame, and create remaining child
@@ -662,82 +646,6 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
 }
 
 //-----------------------------------------------------------------------------
-// canCreateDialog
-//-----------------------------------------------------------------------------
-
-const LONG DIALOG_EX_STYLES = WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT;
-const LONG DIALOG_WS_STYLES = WS_POPUPWINDOW | WS_DLGFRAME;
-
-bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
-
-    if (activeWindowHandle != GetHwnd()) {
-        return false;
-    }
-
-    switch (whichDialogType) {
-        case EditorDialogTypes::AlterObject: return editObjectDialog ? false : true;
-    }
-   
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// onDialogEnd
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
-    
-    switch (whichDialogType) {
-        case EditorDialogTypes::AlterObject:
-            if (editObjectDialog) {
-                delete editObjectDialog;
-                editObjectDialog = NULL;
-            }
-            break;
-    }
-    
-    activeWindowHandle = GetHwnd();
-}
-
-//-----------------------------------------------------------------------------
-// onAlterObject
-//-----------------------------------------------------------------------------
-
-bool MainWindowFrame::onAlterObject(GameObject::Builder& objectBuilder, const bool editingObject) {
-
-    editObjectDialog = new (std::nothrow) EditObjectDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingObject);
-
-    if (!editObjectDialog) {
-        return false;
-    }
-
-    editObjectDialog->Create(GetHwnd(), DIALOG_EX_STYLES, 
-                             DIALOG_WS_STYLES);
-
-    if (!editObjectDialog->IsWindow()) {
-        return false;
-    }
-
-    CString caption;
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    if (!editingObject) {
-        caption = LM_toUTF8("CreateObjectTitle", langMap);
-    } 
-    else {
-        caption = LM_toUTF8("EditObjectTitle", langMap);
-        caption.Format(caption, AtoW(objectBuilder.base.description[GameObjectDescriptions::Name].c_str(), CP_UTF8).c_str());
-    }
-
-    editObjectDialog->setObjectToEdit(objectBuilder.build());
-
-    makeDialogModal(*editObjectDialog, caption);
-
-    return true;
-
-}
-
-//-----------------------------------------------------------------------------
 // onAlterCharacter
 //-----------------------------------------------------------------------------
 
@@ -849,39 +757,6 @@ void MainWindowFrame::finishedEditCharacterDialog() {
     editCharacterDialog = NULL;
 
     // OnEndModal
-    activeWindowHandle = GetHwnd();
-
-}
-
-//-----------------------------------------------------------------------------
-// finishedEditObjectDialog
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::finishedEditObjectDialog() {
-
-    if(!editObjectDialog) {
-        return;
-    }
-
-    const int alterType = editObjectDialog->isEditingObject() ? AlterType::Edit : AlterType::Add; 
-
-    if(editObjectDialog->hasSavedChanges() && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
-
-        GameObject::Builder bd = editObjectDialog->getAlteredObject();
-
-        if(alterType == AlterType::Add) {
-            gameWorldController->tryAddObject(bd);
-        }
-        else {
-            gameWorldController->tryReplaceObject(bd);
-        }
-
-        entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
-
-    }    
-
-    delete editObjectDialog;
-    editObjectDialog = NULL;
     activeWindowHandle = GetHwnd();
 
 }

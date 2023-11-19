@@ -108,11 +108,11 @@ BOOL GameEntitiesPanel::OnCommand(WPARAM wParam, LPARAM lParam) {
 
         if (ctrlID == ControlIDs::AddObjectButton) {
             //mainWindow->onAlterObject(AlterType::Add, 0);
-            mainWindowController->tryAlterObject(AlterType::Add, 0);
+            mainWindowController->openAlterObjectDialog(AlterType::Add, 0);
         } else if (ctrlID == ControlIDs::AddCharacterButton) {
             //mainWindow->onAlterCharacter(AlterType::Add, 0);
         } else if (ctrlID == ControlIDs::EditObjectButton) {
-            mainWindowController->tryAlterObject(AlterType::Edit, objectsListBox.GetCurSel());
+            mainWindowController->openAlterObjectDialog(AlterType::Edit, objectsListBox.GetCurSel());
 
         } else if (ctrlID == ControlIDs::EditCharacterButton) {
             //mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());

@@ -52,21 +52,38 @@ class MainWindowInterface {
         virtual void onDialogEnd(const int& whichDialogType) = 0;
        
         ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to add, edit
-        /// place or delete a character
-        /// @param an integer specifying the type of action to take.
-        ///--------------------------------------------------------------------
-        virtual void onAlterCharacter(const int& alterType, const size_t& index) = 0;
-
-        ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to add, edit
-        /// place or delete an object
+        /// Sent when window is being told that the user wants to add or edit
+        /// an object. Place and Delete do not have dialog boxes, at least
+        /// not at this time with Win32.
         /// @param A GameObject::Builder containing the information about the
         /// object we are editing. This is ignored if an object is being added.
         /// @param a true if editing an existing object, false if adding a new
         /// object
         ///--------------------------------------------------------------------
-        virtual bool onAlterObject(GameObject::Builder& objectBuilder, const bool editingObject) = 0;
+        virtual bool startEditObjectDialog(GameObject::Builder& objectBuilder, const bool editingObject) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit Object Dialog Window is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedAlterObjectDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent to notify the main window that the object list has been
+        /// changed
+        ///--------------------------------------------------------------------
+        virtual void onGameObjectsChanged() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit Character Dialog Window is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedEditCharacterDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to add, edit
+        /// place or delete a character
+        /// @param an integer specifying the type of action to take.
+        ///--------------------------------------------------------------------
+        virtual void onAlterCharacter(const int& alterType, const size_t& index) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
@@ -102,16 +119,6 @@ class MainWindowInterface {
         /// Sent when a tile is changed
         ///--------------------------------------------------------------------
         virtual void onTileUpdated(const int& index) = 0;
-
-        ///--------------------------------------------------------------------
-        /// Sent when the Edit Character Dialog Window is finished
-        ///--------------------------------------------------------------------
-        virtual void finishedEditCharacterDialog() = 0;
-
-        ///--------------------------------------------------------------------
-        /// Sent when the Edit Object Dialog Window is finished
-        ///--------------------------------------------------------------------
-        virtual void finishedEditObjectDialog() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Story Dialog Window is finished

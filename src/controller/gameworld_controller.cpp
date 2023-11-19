@@ -426,14 +426,21 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
 }
 
 ///----------------------------------------------------------------------------
-/// tryAlterObject - Attempts to alter an object, either by adding a new one,
-/// editing an existing one, or deleting it.
+/// openAlterObjectDialog - Tries to open the Alter Object Dialog.
+/// @param an integer specifying which mode the dialog box will be in. This
+/// function cannot be used with AlterType::Place or AlterType::Delete as they
+/// do not have dialog boxes.
 /// @param an integer specifying which mode the object is to be altered with
 /// @return true if the object was altered in some way, false if it was not
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryAlterObject(const int& alterType, const int& index) {
+bool GameWorldController::openAlterObjectDialog(const int& alterType, const int& index) {
     
+    if (alterType == AlterType::Place || alterType == AlterType::Delete) {
+        assert(false);
+        return false;
+    }
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     if (!mainWindow->canCreateDialog(EditorDialogTypes::AlterObject)) {
@@ -456,11 +463,11 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
         }
         else {
             GameObject::Builder objectBuilder = GameObject::Builder();
-            wasDialogCreated = mainWindow->onAlterObject(objectBuilder, false);
+            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, false);
         }
     }
     else if (alterType == AlterType::Edit) {
-        if (gameMap->getGameObjects().empty() || index > static_cast<int>(gameObjects.size()) - 1) {
+        if (gameMap->getGameObjects().empty() || index < 0 || index > static_cast<int>(gameObjects.size()) - 1) {
             mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
                                             langMap.get("ErrInvalidObjIndexTitle"));
             return false;
@@ -468,7 +475,7 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
         else {
             // Obtain the Object we will be editing
             GameObject::Builder objectBuilder = GameObject::Builder(getGameMap()->getGameObjects()[index]);
-            wasDialogCreated = mainWindow->onAlterObject(objectBuilder, true);
+            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, true);
         }
     }
 
@@ -480,46 +487,71 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
     }
 
     return true;
+
 }
 
 ///----------------------------------------------------------------------------
-/// <!> DEPERCATED <!>
-/// tryAddObject - Attempts to add an Object.
-/// @param A reference to a Object Builder object that will get finalized
-/// before being added.
-/// @return true if the operation was successful, false if it was not.
-/// <!> DEPERCATED <!>
+/// tryAddObject - Attempt to add a new object to the game world.
+/// @param a reference to a GameObject::Builder containing the object that will
+/// be verified and added to the world.
+/// @return true if it was able to add the object, false it was not.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryAddObject(GameObject::Builder& gameObject) {
+bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 
-    // TODO: At some future point, have tryCharacter access the main window's
-    // function to spawn the add dialog
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+            
+    objectBuilder.ID(gameMap->getFirstUnusedObjectID());
 
-    if(!canAddObject()) {
-        showErrorMessage("ErrObjLimitReachedText", "ErrObjLimitReachedTitle");
+    try {
+        gameMap->addObject(gmKey, objectBuilder.build());
+    } catch (const std::bad_alloc&) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrAddObjOutOfMemoryText"),
+                                        langMap.get("ErrAddObjOutOfMemoryTitle"));
         return false;
+
     }
 
-    if(gameObject.getID() == GameObjectConstants::NoID) {
-
-        const int nextID = gameMap->getFirstUnusedObjectID();
-        gameObject.ID(nextID);
-
-        try {
-            gameMap->addObject(gmKey, gameObject.build());
-        }
-        catch (const std::bad_alloc&) {
-            showErrorMessage("ErrAddObjOutOfMemoryText", "ErrAddObjOutOfMemoryTitle");
-            return false;
-        }
-    }
-    else {
-        showErrorMessage("ErrObjNoIDText", "ErrObjNoIDTitle");
-        return false;
-    }
+    mainWindow->onGameObjectsChanged();
 
     return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryReplaceObject
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (objectBuilder.getID() == GameObjectConstants::NoID) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrObjectNoIDText"),
+                                        langMap.get("ErrObjectNoIDTitle"));
+        return false;
+
+    }
+
+    // Located the object we are replacing
+    const size_t index = gameMap->objectIndexFromID(objectBuilder.getID());
+
+    if (index == (size_t)-1) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrReplaceObjIDNotFoundText"),
+                                        langMap.get("ErrReplaceObjIDNotFoundTitle"));
+        return false;
+
+    } else {
+        gameMap->replaceObject(gmKey, index, objectBuilder.build());
+    }
+
+    mainWindow->onGameObjectsChanged();
+
+    return true;
+
 }
 
 ///----------------------------------------------------------------------------
@@ -547,37 +579,6 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
     }
     else {
         mainWindow->displayErrorMessage("Invalid Character ID given.", "Invalid ID");
-        return false;
-    }
-
-    return true;
-}
-
-///----------------------------------------------------------------------------
-/// tryReplaceObject - Attempts to replace an Object.
-/// @param A reference to a Object Builder object. Must have a valid ID of an
-/// already existing object.
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder) {
-
-    // Find out if Adventure Gamer has a hard limit on the number of Objects.
-
-    if(objectBuilder.getID() != GameObjectConstants::NoID) {
- 
-        const size_t index = gameMap->objectIndexFromID(objectBuilder.getID());
-
-        if(index == (size_t)-1) {
-            mainWindow->displayErrorMessage("Could not find object to replace: ID not found.", "ID not found");
-            return false;
-        }
-
-        gameMap->replaceObject(gmKey, index, objectBuilder.build());
-
-    }
-    else {
-        mainWindow->displayErrorMessage("Invalid Object ID given.", "Invalid ID");
         return false;
     }
 

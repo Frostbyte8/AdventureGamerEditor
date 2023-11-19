@@ -38,13 +38,18 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
-        virtual bool canCreateDialog(const int& whichDialogType) const;
+        virtual void onGameObjectsChanged();
         
-        virtual bool onAlterObject(GameObject::Builder& objectBuilder, const bool editingObject);
+        virtual bool canCreateDialog(const int& whichDialogType) const;
         virtual void onDialogEnd(const int& whichDialogType);
 
+        virtual bool startEditObjectDialog(GameObject::Builder& objectBuilder, const bool editingObject);
+        virtual void finishedAlterObjectDialog();      
+        
+
+
         virtual void finishedEditCharacterDialog();
-        virtual void finishedEditObjectDialog();
+        
         virtual void finishedEditStoryDialog();
         virtual void finishedEditTileDescriptionDialog();
         virtual void finishedEditWorldInfoDialog();

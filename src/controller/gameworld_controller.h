@@ -38,11 +38,14 @@ class GameWorldController {
         }
 
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
+        
+
+        bool openAlterObjectDialog(const int& alterType, const int& index);
         bool tryAddObject(GameObject::Builder& objectBuilder);
-
-        bool tryAlterObject(const int& alterType, const int& index);
-
         bool tryReplaceObject(GameObject::Builder& objectBuilder);
+
+        //bool tryAlterObject(GameObject::Builder& objectBuilder, const int& alterType);
+        //bool tryReplaceObject(GameObject::Builder& objectBuilder);
         bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
 
         bool tryRemoveCharacter(const int& charID);

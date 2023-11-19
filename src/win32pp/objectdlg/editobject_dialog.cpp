@@ -13,7 +13,7 @@
 //=============================================================================
 
 EditObjectDialog::EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditObjectDialog),
+HWND inParentHandle, bool inEditObject) : EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedAlterObjectDialog),
 gameMap(inGameMap), descriptionsTab(0), qualitiesTab(0), effectsTab(0), locationsTab(0),
 isEditObject(inEditObject) {}
 
