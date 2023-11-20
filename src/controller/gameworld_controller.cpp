@@ -5,7 +5,7 @@
 #include "../util/languagemapper.h"
 
 //=============================================================================
-// Constructors / Destructors
+// Constructors / Destructor
 //=============================================================================
 
 GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {
@@ -83,7 +83,7 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
 
         // Verify the Index
 
-        if (gameMap->getGameObjects().empty() || index < 0 || index > static_cast<int>(gameObjects.size()) - 1) {
+        if(!vecIndexInRange(gameObjects, index)) {
             mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
                                             langMap.get("ErrInvalidObjIndexTitle"));
             return false;
@@ -93,25 +93,26 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
 
         if(alterType == AlterType::Place) {
 
-            GameObject::Builder objectBuilder = GameObject::Builder(gameMap->getGameObjects()[index]);
+            GameObject::Builder objectBuilder = GameObject::Builder(gameObjects[index]);
             objectBuilder.location(selectedCol, selectedRow);
             return tryReplaceObject(objectBuilder, false);
 
         }
         else if(alterType == AlterType::Delete) {
-            return tryDeleteObject(gameMap->getGameObjects()[index].getID());
+            return tryDeleteObject(gameObjects[index].getID());
         }
 
     }
     else {
 
-        // or Verify if we can even add an object
+        // Verify if we can add an object
 
         if (!canAddObject()) {
             mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
                                             langMap.get("ErrObjLimitReachedTitle"));
             return false;
         }
+
     }
 
     // If we need to open a dialog box, we can now do that here.
@@ -131,7 +132,7 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
     } 
     else if (alterType == AlterType::Edit) {
         // Obtain the Object we will be editing
-        GameObject::Builder objectBuilder = GameObject::Builder(gameMap->getGameObjects()[index]);
+        GameObject::Builder objectBuilder = GameObject::Builder(gameObjects[index]);
         wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, true);
     }
 
@@ -274,6 +275,181 @@ bool GameWorldController::tryDeleteObject(const int& objectID) {
     }
 
     return false;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryAlterCharacter - Alters an Character. How it does that depends on the
+/// alter type.
+/// @param Add and Edit open a Dialog box to alter the object. Place updates
+/// where an existing character is, and delete removes it.
+/// do not have dialog boxes.
+/// @param index of the character being altered. Ignored if alter type is Add.
+/// @return true if the character was altered in some way, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAlterCharacter(const int& alterType, const int& index) {
+
+    assert(alterType >= AlterType::Add && alterType <= AlterType::Delete);
+
+    const std::vector<GameCharacter>& gameCharacters = gameMap->getGameCharacters();
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (alterType == AlterType::Edit || alterType == AlterType::Place || alterType == AlterType::Delete) {
+
+        // Verify the Index
+
+        if (!vecIndexInRange(gameCharacters, index)) {
+            mainWindow->displayErrorMessage(langMap.get("ErrInvalidCharIndexText"),
+                                            langMap.get("ErrInvalidCharIndexTitle"));
+            return false;
+        }
+
+        // Place and delete do not need a dialog (at least at this time), so deal with them here.
+
+        if (alterType == AlterType::Place) {
+
+            GameCharacter::Builder characterBuilder = GameCharacter::Builder(gameCharacters[index]);
+            characterBuilder.location(selectedCol, selectedRow);
+            return tryReplaceCharacter(characterBuilder, false);
+
+        }
+        else if (alterType == AlterType::Delete) {
+            return tryDeleteCharacter(gameCharacters[index].getID());
+        }
+
+    }
+    else {
+
+        // Verify if we can add a character
+
+        if (!canAddCharacter()) {
+            mainWindow->displayErrorMessage(langMap.get("ErrCharLimitReachedText"),
+                                            langMap.get("ErrCharLimitReachedTitle"));
+            return false;
+        }
+
+    }
+
+    // If we need to open a dialog box, we can now do that here.
+
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::AlterCharacter)) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+    bool wasDialogCreated = false;
+
+    if (alterType == AlterType::Add) {
+        GameCharacter::Builder characterBuilder = GameCharacter::Builder();
+        wasDialogCreated = mainWindow->startEditCharacterDialog(characterBuilder, false);
+    }
+    else if (alterType == AlterType::Edit) {
+        // Obtain the Object we will be editing
+        GameCharacter::Builder characterBuilder = GameCharacter::Builder(gameCharacters[index]);
+        wasDialogCreated = mainWindow->startEditCharacterDialog(characterBuilder, true);
+    }
+
+    if (!wasDialogCreated) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+        mainWindow->onDialogEnd(EditorDialogTypes::AlterCharacter);
+        return false;
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryAddCharacter - Attempt to add a new character to the game world.
+/// @param a reference to a GameCharacter::Builder containing the character 
+/// that will be verified and added to the world.
+/// @return true if it was able to add the character, false it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuilder) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    characterBuilder.ID(gameMap->getFirstUnusedCharacterID());
+
+    try {
+        gameMap->addCharacter(gmKey, characterBuilder.build());
+    }
+    catch (const std::bad_alloc&) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrAddCharOutOfMemoryText"),
+                                        langMap.get("ErrAdaCharOutOfMemoryTitle"));
+        return false;
+
+    }
+
+    mainWindow->onGameCharactersChanged();
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryReplaceCharacter - Attempt to replace an character that already exists
+/// in the game world.
+/// @param Character Builder containing the data to replace the character with.
+/// @param if true, send the notification to the main window that the character
+/// list has been updated, if false, don't send it. Default is true.
+/// @return true if the character was replaced successfully, false if it was
+/// not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterBuilder, const bool shouldNotify) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (characterBuilder.getID() == GameCharacterConstants::NoID) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrCharNoIDText"),
+                                        langMap.get("ErrCharNoIDTitle"));
+        return false;
+
+    }
+
+    // Located the character we are replacing
+    const size_t index = gameMap->characterIndexFromID(characterBuilder.getID());
+
+    if (index == (size_t)-1) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrReplaceCharIDNotFoundText"),
+                                        langMap.get("ErrReplaceCharIDNotFoundTitle"));
+        return false;
+
+    }
+    else {
+        gameMap->replaceCharacter(gmKey, index, characterBuilder.build());
+    }
+
+    if (shouldNotify) {
+        mainWindow->onGameCharactersChanged();
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryDeleteCharacter - Attempts to delete a character. If it finds that this
+/// character is holding an item, it will inform the user that the item will be
+/// moved to 0,0 on the map before continuing.
+/// @param the ID (not index) of the character to remove
+/// @return true if the character was removed, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryDeleteCharacter(const int& charID) {
+
+    // TODO: Write this. 
+    return false;
+
 }
 
 ///-----------------------------------------------------------------------------
@@ -571,37 +747,6 @@ bool GameWorldController::tryPlaceObjectAtTile(const int& row, const int& col, c
 }
 
 ///----------------------------------------------------------------------------
-/// tryAddCharacter - Attempts to add a Character.
-/// @param A reference to a Character Builder object that will get finalized
-/// before being added.
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuilder) {
-
-    // TODO: At some future point, have tryCharacter access the main window's
-    // function to spawn the add dialog
-
-    if(!canAddCharacter()) {
-        showErrorMessage("ErrCharLimitReachedText", "ErrCharLimitReachedTitle");
-        return false;
-    }
-
-    const int nextID = gameMap->getFirstUnusedCharacterID();
-
-    characterBuilder.ID(nextID);
-
-    try {
-        gameMap->addCharacter(gmKey, characterBuilder.build());
-    }
-    catch (const std::bad_alloc&) {
-        showErrorMessage("ErrAddCharOutOfMemoryText", "ErrAddCharOutOfMemoryTitle");
-        return false;
-    }
-    return true;
-}
-
-///----------------------------------------------------------------------------
 /// tryAddFeatureToTile - Attempts to Add a feature to a tile.
 /// @param What feature to try and set to the tile
 /// @return true if the operation was successful, false if it was not.
@@ -637,37 +782,6 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
 
     return true;
 
-}
-
-///----------------------------------------------------------------------------
-/// tryReplaceCharacter - Attempts to replace a Character
-/// @param A reference to a Character Builder object. Must have a valid ID of an
-/// already existing character.
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterBuilder) {
-
-    // Find out if Adventure Gamer has a hard limit on the number of Characters.
-
-    if(characterBuilder.getID() != GameCharacterConstants::NoID) {
- 
-        const size_t index = gameMap->characterIndexFromID(characterBuilder.getID());
-
-        if(index == (size_t)-1) {
-            mainWindow->displayErrorMessage("Could not find character to replace: ID not found.", "ID not found");
-            return false;
-        }
-
-        gameMap->replaceCharacter(gmKey, index, characterBuilder.build());
-
-    }
-    else {
-        mainWindow->displayErrorMessage("Invalid Character ID given.", "Invalid ID");
-        return false;
-    }
-
-    return true;
 }
 
 ///----------------------------------------------------------------------------
@@ -1049,4 +1163,25 @@ bool GameWorldController::tryMakeTileDark() {
     gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
 
     return true;
+}
+
+//=============================================================================
+// Private Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// vecIndexInRange - Tests if the index given is in range in the vector given.
+/// @param Vector to test the range on
+/// @param index to be checked
+/// @return true if the index is in range, false if it is not.
+///----------------------------------------------------------------------------
+
+template <typename T>
+bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) const {
+    if (!vec.empty()) {
+        if (index >= 0 && index < vec.size()) {
+            return true;
+        }
+    }
+    return false;
 }

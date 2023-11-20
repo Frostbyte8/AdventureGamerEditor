@@ -37,15 +37,20 @@ class GameWorldController {
             drawingTileIndex = newDrawIndex;
         }
 
-        bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
+        
         
         bool tryAlterObject(const int& alterType, const int& index);
         bool tryAddObject(GameObject::Builder& objectBuilder);
         bool tryReplaceObject(GameObject::Builder& objectBuilder, const bool shouldNotify = true);
         bool tryDeleteObject(const int& charID);
 
-        bool tryReplaceCharacter(GameCharacter::Builder& characterBuilder);
-
+        bool tryAlterCharacter(const int& alterType, const int& index);
+        bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
+        bool tryReplaceCharacter(GameCharacter::Builder& objectBuilder, const bool shouldNotify = true);
+        bool tryDeleteCharacter(const int& charID);
+        
+        
+        
         bool tryRemoveCharacter(const int& charID);
         
 
@@ -81,6 +86,8 @@ class GameWorldController {
 
         GameWorldController() {};
         
+        template <typename T>
+        bool vecIndexInRange(const T& vec, const size_t& index) const;
         
 
         void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;

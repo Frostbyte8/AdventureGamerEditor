@@ -3,6 +3,7 @@
 
 #include "shared_interface_definitions.h"
 #include "../model/gameobject.h"
+#include "../model/gamecharacter.h"
 #include <string>
 
 namespace EditorDialogTypes {
@@ -68,10 +69,39 @@ class MainWindowInterface {
         virtual void finishedAlterObjectDialog() = 0;
 
         ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to add or edit
+        /// a character. Place and Delete do not have dialog boxes, at least
+        /// not at this time with Win32.
+        /// @param A GameCharacter::Builder containing the information about
+        /// the character we are editing. This is ignored if an character is
+        /// being added.
+        /// @param a true if editing an existing character, false if adding a
+        /// character
+        ///--------------------------------------------------------------------
+        virtual bool startEditCharacterDialog(GameCharacter::Builder& objectCharacter, const bool editingCharacter) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit Character Dialog Window is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedAlterCharacterDialog() = 0;
+
+        ///--------------------------------------------------------------------
         /// Sent to notify the main window that the object list has been
         /// changed
         ///--------------------------------------------------------------------
         virtual void onGameObjectsChanged() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent to notify the main window that the character list has been
+        /// changed
+        ///--------------------------------------------------------------------
+        virtual void onGameCharactersChanged() = 0;
+                     
+
+
+
+
+
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Character Dialog Window is finished

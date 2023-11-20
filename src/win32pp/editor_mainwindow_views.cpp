@@ -115,10 +115,22 @@ BOOL GameEntitiesPanel::OnCommand(WPARAM wParam, LPARAM lParam) {
                 mainWindowController->tryAlterObject(ctrlID - ControlIDs::AddObjectButton, 
                                                      objectsListBox.GetCurSel());
                 break;
+
+            case ControlIDs::AddCharacterButton:
+                mainWindowController->tryAlterCharacter(AlterType::Add, 0);
+                break;
+
+            case ControlIDs::EditCharacterButton:
+            case ControlIDs::PlaceCharacterButton:
+            case ControlIDs::DeleteCharacterButton:
+                mainWindowController->tryAlterCharacter(ctrlID - ControlIDs::AddCharacterButton,
+                                                        charactersListBox.GetCurSel());
+                break;
         }
 
     }
 
+    // TODO: When do we return TRUE?
     return FALSE;
 }
 

@@ -12,8 +12,20 @@ const LONG DIALOG_WS_STYLES = WS_POPUPWINDOW | WS_DLGFRAME;
 // Interface Functions
 //-----------------------------------------------------------------------------
 
+///----------------------------------------------------------------------------
+/// onGameObjectsChanged
+///----------------------------------------------------------------------------
+
 void MainWindowFrame::onGameObjectsChanged() {
     entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+}
+
+///----------------------------------------------------------------------------
+/// onGameCharactersChanged
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onGameCharactersChanged() {
+    entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
 }
 
 //-----------------------------------------------------------------------------
@@ -32,6 +44,7 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
 
     switch (whichDialogType) {
         case EditorDialogTypes::AlterObject: return editObjectDialog ? false : true;
+        case EditorDialogTypes::AlterCharacter: return editCharacterDialog ? false : true;
     }
 
     return false;
@@ -49,6 +62,12 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
             assert(editObjectDialog != NULL);
             delete editObjectDialog;
             editObjectDialog = NULL;
+            break;
+
+        case EditorDialogTypes::AlterCharacter:
+            assert(editCharacterDialog != NULL);
+            delete editCharacterDialog;
+            editCharacterDialog = NULL;
             break;
 
     }
@@ -79,7 +98,7 @@ void MainWindowFrame::makeDialogModal(EditDialogBase& dialog, const CString& cap
 //-----------------------------------------------------------------------------
 
 ///----------------------------------------------------------------------------
-/// onAlterObject
+/// startEditObjectDialog
 ///----------------------------------------------------------------------------
 
 bool MainWindowFrame::startEditObjectDialog(GameObject::Builder& objectBuilder, const bool editingObject) {
@@ -116,7 +135,7 @@ bool MainWindowFrame::startEditObjectDialog(GameObject::Builder& objectBuilder, 
 }
 
 ///----------------------------------------------------------------------------
-/// finishAlterObjectDialog
+/// finishedAlterObjectDialog
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::finishedAlterObjectDialog() {
@@ -134,5 +153,65 @@ void MainWindowFrame::finishedAlterObjectDialog() {
     }
 
     onDialogEnd(EditorDialogTypes::AlterObject);
+
+}
+
+///----------------------------------------------------------------------------
+/// startEditCharacterDialog
+///----------------------------------------------------------------------------
+
+bool MainWindowFrame::startEditCharacterDialog(GameCharacter::Builder& characterBuilder, const bool editingCharacter) {
+
+    editCharacterDialog = new (std::nothrow) EditCharacterDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingCharacter);
+
+    if (!editCharacterDialog) {
+        return false;
+    }
+
+    editCharacterDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
+                             DIALOG_WS_STYLES);
+
+    if (!editCharacterDialog->IsWindow()) {
+        return false;
+    }
+
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (!editingCharacter) {
+        caption = LM_toUTF8("CreateCharacterTitle", langMap);
+    }
+    else {
+        caption = LM_toUTF8("EditCharacterTitle", langMap);
+        caption.Format(caption, AtoW(characterBuilder.base.description[GameObjectDescriptions::Name].c_str(), CP_UTF8).c_str());
+    }
+
+    editCharacterDialog->setCharacterToEdit(characterBuilder.build());
+
+    makeDialogModal(*editCharacterDialog, caption);
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// finishedAlterCharacterDialog
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::finishedAlterCharacterDialog() {
+
+    assert(editCharacterDialog != NULL);
+
+    if (editCharacterDialog->hasSavedChanges()) {
+
+        if (editCharacterDialog->isEditingCharacter()) {
+            gameWorldController->tryReplaceCharacter(editCharacterDialog->getAlteredCharacter());
+        }
+        else {
+            gameWorldController->tryAddCharacter(editCharacterDialog->getAlteredCharacter());
+        }
+    }
+
+    onDialogEnd(EditorDialogTypes::AlterCharacter);
 
 }
