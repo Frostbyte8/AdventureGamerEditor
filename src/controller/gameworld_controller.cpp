@@ -74,6 +74,8 @@ bool GameWorldController::canAddCharacter() const {
 
 bool GameWorldController::tryAlterObject(const int& alterType, const int& index) {
 
+    assert(alterType >= AlterType::Add && alterType <= AlterType::Delete);
+
     const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
