@@ -49,10 +49,7 @@ class GameWorldController {
         bool tryReplaceCharacter(GameCharacter::Builder& objectBuilder, const bool shouldNotify = true);
         bool tryDeleteCharacter(const int& charID);
         
-        
-        
-        bool tryRemoveCharacter(const int& charID);
-        
+        //
 
         bool tryPlaceObjectAtTile(const int& row, const int& col, const int& objectID);
         bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);

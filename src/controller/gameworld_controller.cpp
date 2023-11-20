@@ -447,7 +447,51 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
 
 bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
-    // TODO: Write this. 
+    const size_t charIndex = gameMap->characterIndexFromID(charID);
+
+    if (charIndex != (size_t)-1) {
+
+        const std::vector<size_t> objectIndices = gameMap->getCharacterInventory(charID);
+
+        if (!objectIndices.empty()) {
+
+            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+            const size_t objectIndicesSize = objectIndices.size();
+
+
+            LanguageMapper& langMap = LanguageMapper::getInstance();
+            std::string message = langMap.get("MoveCharHeldObjectsTextStart");
+
+            message.append("\n");
+
+            for (size_t i = 0; i < objectIndicesSize; ++i) {
+                message.append("\n" + gameObjects[objectIndices[i]].getName());
+            }
+
+            message.append("\n\n");
+            message.append(langMap.get("MoveCharHeldObjectsTextEnd"));
+
+            std::string messageTitle = langMap.get("MoveCharHeldObjectsTitle");
+
+            if (mainWindow->askYesNoQuestion(message, messageTitle, true) != GenericInterfaceResponses::Yes) {
+                return false;
+            }
+
+            for (size_t k = 0; k < objectIndicesSize; ++k) {
+
+                GameObject::Builder movedObject(gameObjects[objectIndices[k]]);
+                movedObject.location(0, 0);
+                gameMap->replaceObject(gmKey, objectIndices[k], movedObject.build());
+
+            }
+
+        }
+
+        gameMap->deleteCharacter(gmKey, charIndex);
+        mainWindow->onGameCharactersChanged();
+        return true;
+    }
+
     return false;
 
 }
@@ -782,57 +826,6 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
 
     return true;
 
-}
-
-///----------------------------------------------------------------------------
-/// tryRemoveCharacter - Attempts to remove a character. It also alters the
-/// location property of objects that are attached to it by setting their
-/// location to "0,0".
-/// @param the ID (not index) of the Character to remove
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryRemoveCharacter(const int& charID) {
-
-    const size_t charIndex = gameMap->characterIndexFromID(charID);
-
-    if(charIndex != (size_t)-1) {
-
-        const std::vector<size_t> objectIndices = gameMap->getCharacterInventory(charID);
-        
-        if(!objectIndices.empty()) {
-
-            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
-
-            const size_t objectIndicesSize = objectIndices.size(); 
-
-            std::string message = "The following objects will be placed at 0,0 if this object is deleted:\n";
-            
-            for(size_t i = 0; i < objectIndicesSize; ++i) {
-                message.append("\n" + gameObjects[objectIndices[i]].getName());
-            }
-
-            message.append("\n\nDo you still wish to delete this Character?");
-
-            if(mainWindow->askYesNoQuestion(message, "Remove Character?", true) != GenericInterfaceResponses::Yes) {
-                return false;
-            }
-
-            for(size_t k = 0; k < objectIndicesSize; ++k) {
-
-                GameObject::Builder movedObject(gameObjects[objectIndices[k]]);
-                movedObject.location(0, 0);
-                gameMap->replaceObject(gmKey, objectIndices[k], movedObject.build());
-
-            }
-
-        }
-
-        gameMap->deleteCharacter(gmKey, charIndex);
-        return true;
-    }  
-
-    return false;
 }
 
 ///----------------------------------------------------------------------------

@@ -217,7 +217,11 @@
 
 	"ReliantObjectsTextStart"   : "Deleting this object will affect the following objects:",
 	"ReliantObjectsTextEnd"		: "Do you still want to delete this object?",
-	"ReliantObjectsTitle"		: "Delete Object?",
+	"ReliantObjectsTitle"		: "Update Reliant Objects?",
+
+	"MoveCharHeldObjectsTextStart"	: "The following objects this character is holding will be placed at 0,0 if this character is deleted:",
+	"MoveCharHeldObjectsTextEnd"	: "Do you still want to delete this character?",
+	"MoveCharHeldObjectsTitle"		: "Move Held Objects?",
 
     // Error Messages
 
