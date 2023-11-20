@@ -104,18 +104,17 @@ BOOL GameEntitiesPanel::OnCommand(WPARAM wParam, LPARAM lParam) {
         const WORD ctrlID = LOWORD(wParam);
         const WORD notifyCode = HIWORD(wParam);
 
-        // TODO: This is incorrect. The Controller should be called.
+        switch(ctrlID) {
+            case ControlIDs::AddObjectButton:
+                mainWindowController->tryAlterObject(AlterType::Add, 0);
+                break;
 
-        if (ctrlID == ControlIDs::AddObjectButton) {
-            //mainWindow->onAlterObject(AlterType::Add, 0);
-            mainWindowController->openAlterObjectDialog(AlterType::Add, 0);
-        } else if (ctrlID == ControlIDs::AddCharacterButton) {
-            //mainWindow->onAlterCharacter(AlterType::Add, 0);
-        } else if (ctrlID == ControlIDs::EditObjectButton) {
-            mainWindowController->openAlterObjectDialog(AlterType::Edit, objectsListBox.GetCurSel());
-
-        } else if (ctrlID == ControlIDs::EditCharacterButton) {
-            //mainWindow->onAlterCharacter(AlterType::Edit, charactersListBox.GetCurSel());
+            case ControlIDs::EditObjectButton:
+            case ControlIDs::PlaceObjectButton:
+            case ControlIDs::DeleteObjectButton:
+                mainWindowController->tryAlterObject(ctrlID - ControlIDs::AddObjectButton, 
+                                                     objectsListBox.GetCurSel());
+                break;
         }
 
     }

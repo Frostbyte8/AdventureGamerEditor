@@ -215,6 +215,10 @@
     "UnsavedChangesText"        : "You have unsaved changes. Do you want to save them now?",
     "UnsavedChangesTitle"       : "Save Changes?",
 
+	"ReliantObjectsTextStart"   : "Deleting this object will affect the following objects:",
+	"ReliantObjectsTextEnd"		: "Do you still want to delete this object?",
+	"ReliantObjectsTitle"		: "Delete Object?",
+
     // Error Messages
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",

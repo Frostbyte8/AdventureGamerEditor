@@ -63,22 +63,56 @@ bool GameWorldController::canAddCharacter() const {
 }
 
 ///----------------------------------------------------------------------------
-/// openAlterObjectDialog - Tries to open the Alter Object Dialog.
-/// @param an integer specifying which mode the dialog box will be in. This
-/// function cannot be used with AlterType::Place or AlterType::Delete as they
+/// tryAlterObject - Alters an object. How it does that depends on the
+/// alter type.
+/// @param Add and Edit open a Dialog box to alter the object. Place updates
+/// where an existing object is, and delete removes it.
 /// do not have dialog boxes.
-/// @param an integer specifying which mode the object is to be altered with
+/// @param index of the object being altered. Ignored if alter type is Add.
 /// @return true if the object was altered in some way, false if it was not
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::openAlterObjectDialog(const int& alterType, const int& index) {
+bool GameWorldController::tryAlterObject(const int& alterType, const int& index) {
 
-    if (alterType == AlterType::Place || alterType == AlterType::Delete) {
-        assert(false);
-        return false;
+    const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (alterType == AlterType::Edit || alterType == AlterType::Place || alterType == AlterType::Delete) {
+
+        // Verify the Index
+
+        if (gameMap->getGameObjects().empty() || index < 0 || index > static_cast<int>(gameObjects.size()) - 1) {
+            mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
+                                            langMap.get("ErrInvalidObjIndexTitle"));
+            return false;
+        }
+
+        // Place and delete do not need a dialog (at least at this time), so deal with them here.
+
+        if(alterType == AlterType::Place) {
+
+            GameObject::Builder objectBuilder = GameObject::Builder(gameMap->getGameObjects()[index]);
+            objectBuilder.location(selectedCol, selectedRow);
+            return tryReplaceObject(objectBuilder, false);
+
+        }
+        else if(alterType == AlterType::Delete) {
+            return tryDeleteObject(gameMap->getGameObjects()[index].getID());
+        }
+
+    }
+    else {
+
+        // or Verify if we can even add an object
+
+        if (!canAddObject()) {
+            mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
+                                            langMap.get("ErrObjLimitReachedTitle"));
+            return false;
+        }
     }
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
+    // If we need to open a dialog box, we can now do that here.
 
     if (!mainWindow->canCreateDialog(EditorDialogTypes::AlterObject)) {
 
@@ -87,31 +121,16 @@ bool GameWorldController::openAlterObjectDialog(const int& alterType, const int&
         return false;
     }
 
-
-    const std::vector<GameObject>& gameObjects = getGameMap()->getGameObjects();
-
     bool wasDialogCreated = false;
 
     if (alterType == AlterType::Add) {
-
-        if (!canAddObject()) {
-            mainWindow->displayErrorMessage(langMap.get("ErrObjLimitReachedText"),
-                                            langMap.get("ErrObjLimitReachedTitle"));
-            return false;
-        } else {
-            GameObject::Builder objectBuilder = GameObject::Builder();
-            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, false);
-        }
-    } else if (alterType == AlterType::Edit) {
-        if (gameMap->getGameObjects().empty() || index < 0 || index > static_cast<int>(gameObjects.size()) - 1) {
-            mainWindow->displayErrorMessage(langMap.get("ErrInvalidObjIndexText"),
-                                            langMap.get("ErrInvalidObjIndexTitle"));
-            return false;
-        } else {
-            // Obtain the Object we will be editing
-            GameObject::Builder objectBuilder = GameObject::Builder(getGameMap()->getGameObjects()[index]);
-            wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, true);
-        }
+        GameObject::Builder objectBuilder = GameObject::Builder();
+        wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, false);
+    } 
+    else if (alterType == AlterType::Edit) {
+        // Obtain the Object we will be editing
+        GameObject::Builder objectBuilder = GameObject::Builder(gameMap->getGameObjects()[index]);
+        wasDialogCreated = mainWindow->startEditObjectDialog(objectBuilder, true);
     }
 
     if (!wasDialogCreated) {
@@ -140,7 +159,8 @@ bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 
     try {
         gameMap->addObject(gmKey, objectBuilder.build());
-    } catch (const std::bad_alloc&) {
+    } 
+    catch (const std::bad_alloc&) {
 
         mainWindow->displayErrorMessage(langMap.get("ErrAddObjOutOfMemoryText"),
                                         langMap.get("ErrAddObjOutOfMemoryTitle"));
@@ -163,7 +183,7 @@ bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 /// @return true if the Object was replaced successfully, false if it was not.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, bool shouldNotify = true) {
+bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, const bool shouldNotify) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -184,7 +204,8 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, b
                                         langMap.get("ErrReplaceObjIDNotFoundTitle"));
         return false;
 
-    } else {
+    }
+    else {
         gameMap->replaceObject(gmKey, index, objectBuilder.build());
     }
     
@@ -196,8 +217,62 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, b
 
 }
 
-// tryDeleteObject
-// tryPlaceObject (This just calls tryReplaceObject)
+///----------------------------------------------------------------------------
+/// tryDeleteObject - Attempts to delete an object. If it finds that this
+/// object is required by another object, it will ask the user if it wants
+/// to update that object before continuing.
+/// @param the ID (not index) of the Object to remove
+/// @return true if the object was removed, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryDeleteObject(const int& objectID) {
+
+    const size_t objectIndex = gameMap->objectIndexFromID(objectID);
+
+    if (objectIndex != (size_t)-1) {
+        const std::vector<size_t> objectIndices = gameMap->getReliantObjectsFromID(objectID);
+
+        if (!objectIndices.empty()) {
+
+            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
+            const size_t objectIndicesSize = objectIndices.size();
+
+            LanguageMapper& langMap = LanguageMapper::getInstance();
+            std::string message = langMap.get("ReliantObjectsTextStart");
+            message.append("\n");
+
+            for (size_t i = 0; i < objectIndicesSize; ++i) {
+                message.append("\n" + gameObjects[objectIndices[i]].getName());
+            }
+
+            message.append("\n\n");
+            message.append(langMap.get("ReliantObjectsTextEnd"));
+
+            std::string messageTitle = langMap.get("ReliantObjectsTitle");
+
+            if (mainWindow->askYesNoQuestion(message, messageTitle, true) != GenericInterfaceResponses::Yes) {
+                return false;
+            }
+
+            for (size_t k = 0; k < objectIndicesSize; ++k) {
+
+                GameObject::Builder updatedObject(gameObjects[objectIndices[k]]);
+                updatedObject.usedWithID(GameObjectConstants::UsedAlone);
+                gameMap->replaceObject(gmKey, objectIndices[k], updatedObject.build());
+
+            }
+
+        }
+
+        gameMap->deleteObject(gmKey, objectIndex);
+
+        mainWindow->onGameObjectsChanged();
+
+        return true;
+    }
+
+    return false;
+}
 
 ///-----------------------------------------------------------------------------
 /// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
@@ -640,54 +715,6 @@ bool GameWorldController::tryRemoveCharacter(const int& charID) {
         gameMap->deleteCharacter(gmKey, charIndex);
         return true;
     }  
-
-    return false;
-}
-
-///----------------------------------------------------------------------------
-/// tryRemoveObject - Attempts to remove an object. If it finds that this
-/// object is required by another object, it will ask the user if it wants
-/// to update that object before continuing.
-/// @param the ID (not index) of the Object to remove
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryRemoveObject(const int& objectID) {
-
-    const size_t objectIndex = gameMap->objectIndexFromID(objectID);
-
-    if(objectIndex != (size_t)-1) {
-        const std::vector<size_t> objectIndices = gameMap->getReliantObjectsFromID(objectID);
-
-        if(!objectIndices.empty()) {
-
-            const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
-            const size_t objectIndicesSize = objectIndices.size(); 
-
-            std::string message = "The following objects rely on this object, and will be updated to no longer require it:\n";
-            
-            for(size_t i = 0; i < objectIndicesSize; ++i) {
-                message.append("\n" + gameObjects[objectIndices[i]].getName());
-            }
-
-            message.append("\n\nDo you still wish to delete this Object?");
-
-            if(mainWindow->askYesNoQuestion(message, "Remove Object?", true) != GenericInterfaceResponses::Yes) {
-                return false;
-            }
-
-            for(size_t k = 0; k < objectIndicesSize; ++k) {
-
-                GameObject::Builder updatedObject(gameObjects[objectIndices[k]]);
-                updatedObject.usedWithID(GameObjectConstants::UsedAlone);
-                gameMap->replaceObject(gmKey, objectIndices[k], updatedObject.build());
-
-            }
-
-        }
-
-        gameMap->deleteObject(gmKey, objectIndex);
-    }
 
     return false;
 }
