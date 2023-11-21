@@ -60,6 +60,7 @@ class MainWindowInterface {
         /// object we are editing. This is ignored if an object is being added.
         /// @param a true if editing an existing object, false if adding a new
         /// object
+        /// @return true if the dialog was created, false if it was not.
         ///--------------------------------------------------------------------
         virtual bool startEditObjectDialog(GameObject::Builder& objectBuilder, const bool editingObject) = 0;
 
@@ -77,6 +78,7 @@ class MainWindowInterface {
         /// being added.
         /// @param a true if editing an existing character, false if adding a
         /// character
+        /// @return true if the dialog was created, false if it was not.
         ///--------------------------------------------------------------------
         virtual bool startEditCharacterDialog(GameCharacter::Builder& objectCharacter, const bool editingCharacter) = 0;
 
@@ -97,35 +99,33 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void onGameCharactersChanged() = 0;
                      
-
-
-
-
-
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to edit the
+        /// name/description of a tile.
+        /// @param String containing the current name of the tile.
+        /// @param String containing the current description of the tile.
+        /// @return true if the dialog was created, false if it was not.
+        ///--------------------------------------------------------------------
+        virtual bool startEditTileDescriptionDialog(const std::string& name, const std::string& description) = 0;
 
         ///--------------------------------------------------------------------
-        /// Sent when the Edit Character Dialog Window is finished
+        /// Sent when window is being told that the edit tile description
+        /// dialog is finished
         ///--------------------------------------------------------------------
-        virtual void finishedEditCharacterDialog() = 0;
+        virtual void finishedEditTileDescriptionDialog() = 0;
 
-        ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to add, edit
-        /// place or delete a character
-        /// @param an integer specifying the type of action to take.
-        ///--------------------------------------------------------------------
-        virtual void onAlterCharacter(const int& alterType, const size_t& index) = 0;
+
+
+
+
+
+
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
         /// Game World's story
         ///--------------------------------------------------------------------
         virtual void onEditStory() = 0;
-
-        ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to edit a tile's 
-        /// name or description.
-        ///--------------------------------------------------------------------
-        virtual void onEditTileDescription() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
@@ -160,11 +160,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void finishedEditWorldInfoDialog() = 0;
 
-        ///--------------------------------------------------------------------
-        /// Sent when window is being told that the edit tile description
-        /// dialog is finished
-        ///--------------------------------------------------------------------
-        virtual void finishedEditTileDescriptionDialog() = 0;
+
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the resize world dialog is

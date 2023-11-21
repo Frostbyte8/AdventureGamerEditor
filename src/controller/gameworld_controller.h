@@ -41,15 +41,26 @@ class GameWorldController {
         
         bool tryAlterObject(const int& alterType, const int& index);
         bool tryAddObject(GameObject::Builder& objectBuilder);
-        bool tryReplaceObject(GameObject::Builder& objectBuilder, const bool shouldNotify = true);
+
+        bool tryReplaceObject(GameObject::Builder& objectBuilder, 
+                              const bool shouldNotify = true);
+
         bool tryDeleteObject(const int& charID);
 
         bool tryAlterCharacter(const int& alterType, const int& index);
         bool tryAddCharacter(GameCharacter::Builder& characterBuilder);
-        bool tryReplaceCharacter(GameCharacter::Builder& objectBuilder, const bool shouldNotify = true);
+
+        bool tryReplaceCharacter(GameCharacter::Builder& objectBuilder,
+                                 const bool shouldNotify = true);
+
         bool tryDeleteCharacter(const int& charID);
         
-        void tryUpdateTileDescription(const std::string& inName, const std::string& inDescription);
+        bool tryEditTileDescription(const int& row = EditorConstants::IGNORE_ROW, 
+                                    const int& col = EditorConstants::IGNORE_COL);
+
+        bool tryUpdateTileDescription(const std::string& inName, const std::string& inDescription,
+                                      const int& row = EditorConstants::IGNORE_ROW,
+                                      const int& col = EditorConstants::IGNORE_COL);
         
         
         //
@@ -79,6 +90,9 @@ class GameWorldController {
     private:
 
         GameWorldController() {};
+
+        inline bool validRequestedTileRowCol(const int& row, const int& col) const;
+        inline bool wasRowColSpecified(const int& row, const int& col) const;
         
         template <typename T>
         bool vecIndexInRange(const T& vec, const size_t& index) const;

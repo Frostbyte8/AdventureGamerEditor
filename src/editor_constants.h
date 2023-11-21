@@ -14,8 +14,11 @@ namespace EditorConstants {
     unsigned int const DirtroadStartRow     = 8;
 
 	const int DefaultCols			        = 10;
-	const int DefaultRows			        = 10;
-}
+    const int DefaultRows			        = 10;
+
+    const int IGNORE_ROW                    = -1;
+    const int IGNORE_COL                    = -1;
+}           
 
 ///----------------------------------------------------------------------------
 /// AlterTypes - Add / Edit / Place / Delete an Object

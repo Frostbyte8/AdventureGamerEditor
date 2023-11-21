@@ -569,6 +569,7 @@ bool GameMap::isRowColInMapBounds(const int& row, const int& col) const {
 
 bool GameMap::isIndexInMapBounds(const int& index) const {
 
+    // warning C4018: '>=': signed/unsigned mismatch
     if (index >= tiles.size()) {
         return false;
     }

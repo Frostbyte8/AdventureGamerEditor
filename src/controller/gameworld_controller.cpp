@@ -73,7 +73,8 @@ bool GameWorldController::canAddCharacter() const {
 /// where an existing object is, and delete removes it.
 /// do not have dialog boxes.
 /// @param index of the object being altered. Ignored if alter type is Add.
-/// @return true if the object was altered in some way, false if it was not
+/// @return true if the window opened the dialog box for the object to be
+/// edited. If false, the operation failed.
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryAlterObject(const int& alterType, const int& index) {
@@ -289,7 +290,8 @@ bool GameWorldController::tryDeleteObject(const int& objectID) {
 /// where an existing character is, and delete removes it.
 /// do not have dialog boxes.
 /// @param index of the character being altered. Ignored if alter type is Add.
-/// @return true if the character was altered in some way, false if it was not
+/// @return true if the window opened the dialog box for the character to be
+/// edited. If false, the operation failed.
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryAlterCharacter(const int& alterType, const int& index) {
@@ -504,9 +506,95 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 // Tiles
 //-----------------------------------------------------------------------------
 
-void GameWorldController::tryUpdateTileDescription(const std::string& inName, const std::string& inDescription) {
+///----------------------------------------------------------------------------
+/// tryEditTileDescription - Attempts to edit a tile's name and description.
+/// It does this by requesting the main window open a dialog box. By default
+/// it assumes the selected tile is the target.
+/// @param row of the tile to be edited. TODO: NOT IMPLEMENTED.
+/// @param col of the tile to be edited. TODO: NOT IMPLEMENTED.
+/// @return true if the dialog was started. false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryEditTileDescription(const int& row, const int& col) {
+    
+    int index = 0;
+
+    /*
+    if (wasRowColSpecified(row, col)) {
+        if (validRequestedTileRowCol(row, col)) {
+            index = gameMap->indexFromRowCol(row, col);
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        assert(gameMap->isIndexInMapBounds(selectedTileIndex));
+        index = selectedTileIndex;
+    }
+    */
+
+    // TODO: Ignore the above for now.
     assert(gameMap->isIndexInMapBounds(selectedTileIndex));
+    index = selectedTileIndex;
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(!mainWindow->canCreateDialog(EditorDialogTypes::EditTileDescription)) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+    const GameTile& gameTile = gameMap->getTile(index);
+
+    if(mainWindow->startEditTileDescriptionDialog(gameTile.getName(), gameTile.getDescription())) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+        mainWindow->onDialogEnd(EditorDialogTypes::EditTileDescription);
+        return false;
+    }
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// tryUpdateTileDescription - Attempts to update a tile description. If the
+/// row and col are not both specified, the tile that is currently selected
+/// is the target.
+/// @param a string containing the new name for the tile.
+/// @param a string containing the new description for the tile.
+/// @param the row of the tile to be updated. Col must also be set or this is
+/// ignored. By default this is ignored.
+/// @param the col of the tile to be updated. Row must also be set or this is
+/// ignored. By default, this is ignored.
+/// @return true if the tile was updated, false if it was not. Note that using
+/// the selected tile will always return true.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateTileDescription(const std::string& inName, 
+const std::string& inDescription, const int& row, const int& col) {
+    
+    int index = 0;
+
+    if(wasRowColSpecified(row, col)) {
+        if(validRequestedTileRowCol(row, col)) {
+            index = gameMap->indexFromRowCol(row, col);
+        }
+        else {
+            return false;
+        }
+    }
+    else {
+        assert(gameMap->isIndexInMapBounds(selectedTileIndex));
+        index = selectedTileIndex;
+    }
+    
     gameMap->updateTileDescription(gmKey, selectedTileIndex, inName, inDescription);
+
+    // TODO: Inform Main Window that a tile was updated, and which one it was.
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1091,5 +1179,28 @@ bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) con
             return true;
         }
     }
+    return false;
+}
+
+bool GameWorldController::validRequestedTileRowCol(const int& row, const int& col) const {
+
+    if (gameMap->isRowColInMapBounds(row, col)) {
+        return true;
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    mainWindow->displayErrorMessage(langMap.get("ErrRowColNotInBoundsText"),
+                                    langMap.get("ErrRowColNotInBoundsTitle"));
+
+    return false;
+
+}
+
+bool GameWorldController::wasRowColSpecified(const int& row, const int& col) const {
+
+    if (row != EditorConstants::IGNORE_ROW && col != EditorConstants::IGNORE_COL) {
+        return true;
+    }
+
     return false;
 }

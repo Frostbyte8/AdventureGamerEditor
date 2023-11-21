@@ -45,6 +45,7 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
     switch (whichDialogType) {
         case EditorDialogTypes::AlterObject: return editObjectDialog ? false : true;
         case EditorDialogTypes::AlterCharacter: return editCharacterDialog ? false : true;
+        case EditorDialogTypes::EditTileDescription: return editTileDescriptionDialog ? false : true;
     }
 
     return false;
@@ -68,6 +69,12 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
             assert(editCharacterDialog != NULL);
             delete editCharacterDialog;
             editCharacterDialog = NULL;
+            break;
+
+        case EditorDialogTypes::EditTileDescription:
+            assert(editTileDescriptionDialog != NULL);
+            delete editTileDescriptionDialog;
+            editTileDescriptionDialog = NULL;
             break;
 
     }
@@ -213,5 +220,53 @@ void MainWindowFrame::finishedAlterCharacterDialog() {
     }
 
     onDialogEnd(EditorDialogTypes::AlterCharacter);
+
+}
+
+///----------------------------------------------------------------------------
+/// startEditTileDescriptionDialog
+///----------------------------------------------------------------------------
+
+bool MainWindowFrame::startEditTileDescriptionDialog(const std::string& name, const std::string& description) {
+
+    editTileDescriptionDialog = new (std::nothrow) EditTileDescriptionDialog(this, GetHwnd());
+
+    if (!editTileDescriptionDialog) {
+        return false;
+    }
+
+    editTileDescriptionDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
+                                DIALOG_WS_STYLES);
+
+    if (!editTileDescriptionDialog->IsWindow()) {
+        return false;
+    }
+
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    caption = LM_toUTF8("CreateCharacterTitle", langMap);
+
+    editTileDescriptionDialog->setTileDescription(name, description);
+
+    makeDialogModal(*editTileDescriptionDialog, caption);
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// finishedEditTileDescriptionDialog
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::finishedEditTileDescriptionDialog() {
+
+    assert(editTileDescriptionDialog != NULL);
+
+    if (editTileDescriptionDialog->hasSavedChanges()) {
+        gameWorldController->tryUpdateTileDescription(editTileDescriptionDialog->getTileName(),
+                                                      editTileDescriptionDialog->getTileDescription());
+    }
+
+    onDialogEnd(EditorDialogTypes::EditTileDescription);
 
 }

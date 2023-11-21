@@ -51,10 +51,12 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedAlterCharacterDialog();
 
 
-        virtual void finishedEditCharacterDialog();
-        
-        virtual void finishedEditStoryDialog();
+        virtual bool startEditTileDescriptionDialog(const std::string& name, const std::string& description);
         virtual void finishedEditTileDescriptionDialog();
+
+
+
+        virtual void finishedEditStoryDialog();
         virtual void finishedEditWorldInfoDialog();
         virtual void finishedResizeWorldDialog();
         

@@ -6,7 +6,7 @@
 //=============================================================================
 
 EditCharacterDialog::EditCharacterDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap,
-HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditCharacterDialog),
+HWND inParentHandle, bool inEditCharacter) : EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedAlterCharacterDialog),
 gameMap(inGameMap), descriptionsTab(NULL), attributesTab(NULL), qualitiesTab(NULL), miscTab(NULL),
 isEditCharacter(inEditCharacter) {
 }

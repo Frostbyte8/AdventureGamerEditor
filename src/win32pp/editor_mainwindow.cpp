@@ -728,41 +728,6 @@ void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index
 }
 
 //-----------------------------------------------------------------------------
-// finishedEditCharacterDialog
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::finishedEditCharacterDialog() {
-
-    if(!editCharacterDialog) {
-        return;
-    }
-
-    const int alterType = editCharacterDialog->isEditingCharacter() ? AlterType::Edit : AlterType::Add;
-
-    if(editCharacterDialog->hasSavedChanges() && (alterType == AlterType::Add || alterType == AlterType::Edit)) {
-   
-        GameCharacter::Builder bd = editCharacterDialog->getAlteredCharacter();
-
-        if(alterType == AlterType::Add) {
-            gameWorldController->tryAddCharacter(bd);
-        }
-        else {
-            gameWorldController->tryReplaceCharacter(bd);
-        }
-
-        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
-
-    }
-
-    delete editCharacterDialog;
-    editCharacterDialog = NULL;
-
-    // OnEndModal
-    activeWindowHandle = GetHwnd();
-
-}
-
-//-----------------------------------------------------------------------------
 // onEditWorldInfo
 //-----------------------------------------------------------------------------
 
@@ -914,31 +879,6 @@ void MainWindowFrame::onEditTileDescription() {
 
     centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
     editTileDescriptionDialog->ShowWindow(SW_SHOW);
-}
-
-//-----------------------------------------------------------------------------
-// finishedEditTileDescriptionDialog
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::finishedEditTileDescriptionDialog() {
-    
-
-    if(!editTileDescriptionDialog) {
-        return;
-    }
-
-    if(editTileDescriptionDialog->hasSavedChanges()) {
-
-
-
-        gameWorldController->tryUpdateTileDescription(editTileDescriptionDialog->getTileName(),
-                                                      editTileDescriptionDialog->getTileDescription());
-    }
-
-    delete editTileDescriptionDialog;
-    editTileDescriptionDialog = NULL;
-    activeWindowHandle = GetHwnd();
-
 }
 
 //-----------------------------------------------------------------------------
