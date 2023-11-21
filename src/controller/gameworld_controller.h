@@ -49,6 +49,9 @@ class GameWorldController {
         bool tryReplaceCharacter(GameCharacter::Builder& objectBuilder, const bool shouldNotify = true);
         bool tryDeleteCharacter(const int& charID);
         
+        void tryUpdateTileDescription(const std::string& inName, const std::string& inDescription);
+        
+        
         //
        
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
@@ -60,9 +63,6 @@ class GameWorldController {
         bool tryUpdateSelectedTile(const int& newIndex);
         bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
         
-        bool tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription);
-        bool tryUpdateTileDescription(const int& index, const std::string& inName, const std::string& inDescription);
-
         bool tryAddFeatureToTile(const int& modType);
         bool tryAddFirstJumpConnection();
         bool tryAddSecondJumpConnection();

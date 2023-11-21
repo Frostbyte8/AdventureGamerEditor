@@ -930,7 +930,7 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
 
 
 
-        gameWorldController->tryUpdateTileDescription(gameWorldController->getSelectedTileIndex(), editTileDescriptionDialog->getTileName(),
+        gameWorldController->tryUpdateTileDescription(editTileDescriptionDialog->getTileName(),
                                                       editTileDescriptionDialog->getTileDescription());
     }
 

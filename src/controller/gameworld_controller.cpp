@@ -33,6 +33,10 @@ GameWorldController::~GameWorldController() {
 // Public Functions
 //=============================================================================
 
+//-----------------------------------------------------------------------------
+// Objects and Characters
+//-----------------------------------------------------------------------------
+
 ///----------------------------------------------------------------------------
 /// canAddObject - Checks to see if the limit on objects has been reached
 /// @returns true if an object can still be added, false if it cannot.
@@ -496,6 +500,19 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
 }
 
+//-----------------------------------------------------------------------------
+// Tiles
+//-----------------------------------------------------------------------------
+
+void GameWorldController::tryUpdateTileDescription(const std::string& inName, const std::string& inDescription) {
+    assert(gameMap->isIndexInMapBounds(selectedTileIndex));
+    gameMap->updateTileDescription(gmKey, selectedTileIndex, inName, inDescription);
+}
+
+//-----------------------------------------------------------------------------
+// Code that is being rewritten or cleaned still
+//-----------------------------------------------------------------------------
+
 ///-----------------------------------------------------------------------------
 /// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
 /// the file, it will avoid erasing the currently loaded world.
@@ -764,34 +781,6 @@ bool GameWorldController::tryUpdateGameInfo(const GameInfo& newInfo) {
 
     gameMap->updateGameInfo(gmKey, newInfo);
     //mainWindow->GameInfoUpdated(newInfo);
-    return true;
-}
-
-///----------------------------------------------------------------------------
-/// tryUpdateTileDescription - Attempts to update the tiles name and
-/// description. 
-/// @param row of the tile being changed
-/// @param col of the tile being changed
-/// @param Name of the tile to be used
-/// @param Long Description of the tile
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryUpdateTileDescription(const int& row, const int& col, const std::string& inName, const std::string& inDescription) {
-
-    if(!gameMap->isRowColInMapBounds(row, col)) {
-        // TODO: Handle error
-        return false;
-    }
-
-    gameMap->updateTileDescription(gmKey, gameMap->indexFromRowCol(row, col), inName, inDescription);
-
-    return true;
-}
-
-bool GameWorldController::tryUpdateTileDescription(const int& index, const std::string& inName, const std::string& inDescription) {
-    // TODO: index in bounds
-    gameMap->updateTileDescription(gmKey, index, inName, inDescription);
     return true;
 }
 
