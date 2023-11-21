@@ -79,6 +79,7 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
 
     }
 
+    EnableWindow();
     activeWindowHandle = GetHwnd();
 }
 

@@ -402,7 +402,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         // TODO: These all need to call the controller instead.
         case MenuIDs::SummaryAndStory: onEditStory(); break;
-        case MenuIDs::LongDescription: onEditTileDescription(); break;
+        case MenuIDs::LongDescription: gameWorldController->tryEditTileDescription(); break;
         case MenuIDs::WorldProperties: onEditWorldInfo(); break;
         case MenuIDs::ResizeWorld: onResizeWorld(); break;
 
@@ -841,44 +841,6 @@ void MainWindowFrame::finishedEditStoryDialog() {
         activeWindowHandle = GetHwnd();
     //}
 
-}
-
-//-----------------------------------------------------------------------------
-// onEditTileDescription
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::onEditTileDescription() {
-
-    if(editTileDescriptionDialog || activeWindowHandle != GetHwnd()) {
-        return;
-    }
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    editTileDescriptionDialog = new EditTileDescriptionDialog(this, GetHwnd());
-    editTileDescriptionDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-
-    if(!editTileDescriptionDialog->IsWindow()) {
-        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
-        delete editTileDescriptionDialog;
-        return;
-    }
-
-    editTileDescriptionDialog->SetExStyle(editTileDescriptionDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    const GameTile gt = gameWorldController->getSelectedTile();
-    editTileDescriptionDialog->setTileDescription(gt.getName(), gt.getDescription());
-
-    activeWindowHandle = editTileDescriptionDialog->GetHwnd();
-    editTileDescriptionDialog->goModal();
-
-    // TODO: Maybe make the dialog title part of the Constructor?
-    // Or even move this to OnCreate since that function already needs languagemapper and
-    // that's one less "getInstance".
-    const CString dialogCaption = LM_toUTF8("EditTileDescTitle", langMap);
-    editTileDescriptionDialog->setDefaultDialogTitle(dialogCaption);
-
-    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editTileDescriptionDialog));
-    editTileDescriptionDialog->ShowWindow(SW_SHOW);
 }
 
 //-----------------------------------------------------------------------------

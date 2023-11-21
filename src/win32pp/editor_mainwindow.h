@@ -65,7 +65,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void onAlterCharacter(const int& alterType, const size_t& index);
         
         virtual void onEditStory();
-        virtual void onEditTileDescription();
+
         virtual void onEditWorldInfo();
         virtual void onResizeWorld();
         virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);

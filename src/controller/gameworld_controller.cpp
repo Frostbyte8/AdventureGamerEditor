@@ -548,7 +548,7 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
 
     const GameTile& gameTile = gameMap->getTile(index);
 
-    if(mainWindow->startEditTileDescriptionDialog(gameTile.getName(), gameTile.getDescription())) {
+    if(!mainWindow->startEditTileDescriptionDialog(gameTile.getName(), gameTile.getDescription())) {
         mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
                                         langMap.get("ErrCreatingDialogTitle"));
         mainWindow->onDialogEnd(EditorDialogTypes::EditTileDescription);
