@@ -7,12 +7,18 @@
 #include <string>
 
 namespace EditorDialogTypes {
-    int const AlterObject           = 0;
-    int const AlterCharacter        = 1;
-    int const EditStory             = 2;
-    int const EditTileDescription   = 3;
-    int const EditWorldInfo         = 4;
-    int const ResizeWorld           = 5;
+    const int AlterObject           = 0;
+    const int AlterCharacter        = 1;
+    const int EditStory             = 2;
+    const int EditTileDescription   = 3;
+    const int EditWorldInfo         = 4;
+    const int ResizeWorld           = 5;
+}
+
+namespace EditorTileUpdateFlags {
+    const int Description       = 0x01;
+    const int Type              = 0x02;
+    const int Both              = 0x03;
 }
 
 class MainWindowInterface {
@@ -114,7 +120,12 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void finishedEditTileDescriptionDialog() = 0;
 
-
+        ///--------------------------------------------------------------------
+        /// Sent to notify the window that an individual tile has been updated.
+        /// @param an integer specifying the index of the tile being updated
+        /// @param an integer containing flags of how the tile is being updated
+        ///--------------------------------------------------------------------
+        virtual void onTileUpdated(const int& index, const int& tileUpdateFlags) = 0;
 
 
 
@@ -144,11 +155,6 @@ class MainWindowInterface {
         /// @return true if the selection was valid, false if it was not
         ///--------------------------------------------------------------------
         virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
-
-        ///--------------------------------------------------------------------
-        /// Sent when a tile is changed
-        ///--------------------------------------------------------------------
-        virtual void onTileUpdated(const int& index) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit Story Dialog Window is finished

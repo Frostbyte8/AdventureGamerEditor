@@ -506,57 +506,6 @@ bool MainWindowFrame::loadTileSet() {
 
 }
 
-//=============================================================================
-// Public Interface Functions
-// Refer to the interface header file for more information.
-//=============================================================================
-
-//-----------------------------------------------------------------------------
-// askYesNoQuestion
-//-----------------------------------------------------------------------------
-
-int MainWindowFrame::askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle,
-                                      bool allowCancel) {
-
-    const CString question      = AtoW(inQuestion.c_str(), CP_UTF8);
-    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
-    const UINT messageBoxFlags  = MB_ICONQUESTION | (allowCancel ? MB_YESNOCANCEL : MB_YESNO);
-
-    const int retVal = MessageBox(question, title, messageBoxFlags);
-
-    if (retVal == IDYES) {
-        return GenericInterfaceResponses::Yes;
-    }
-
-    return GenericInterfaceResponses::No;
-}
-
-//-----------------------------------------------------------------------------
-// displayErrorMessage
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
-                                          const std::string& inTitle) {
-
-    const CString message       = AtoW(inMessage.c_str(), CP_UTF8);
-    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
-    const UINT messageBoxFlags  = MB_ICONERROR;
-
-    MessageBox(message, title, messageBoxFlags);
-
-}
-
-//-----------------------------------------------------------------------------
-// onTileUpdated
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::onTileUpdated(const int& index) {
-    if (gameWorldController->getSelectedTileIndex() == index) {
-        updateFeatureMenu(index);
-        updateStatusbar(index);
-    }
-}
-
 void MainWindowFrame::updateStatusbar(const int& index) {
 
     const int currentRow = gameWorldController->getSelectedRow();
@@ -585,44 +534,49 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
     switch (roadType) {
 
-    case RoadTypes::StraightawayHorizontal:
-    case RoadTypes::StraightawayVertical:
-        featureMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
+        case RoadTypes::StraightawayHorizontal:
+        case RoadTypes::StraightawayVertical:
+            featureMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
 
-        if (roadType == RoadTypes::StraightawayHorizontal) {
-            straightAwayMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(3, MF_GRAYED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(4, MF_ENABLED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
-        }
-        else {
-            straightAwayMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(4, MF_GRAYED | MF_BYPOSITION);
-            straightAwayMenu.EnableMenuItem(5, MF_GRAYED | MF_BYPOSITION);
-        }
+            if (roadType == RoadTypes::StraightawayHorizontal) {
+                straightAwayMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(3, MF_GRAYED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(4, MF_ENABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
+            }
+            else {
+                straightAwayMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(4, MF_GRAYED | MF_BYPOSITION);
+                straightAwayMenu.EnableMenuItem(5, MF_GRAYED | MF_BYPOSITION);
+            }
 
-        break;
+            break;
 
-    case RoadTypes::CornerNE:
-    case RoadTypes::CornerNW:
-    case RoadTypes::CornerSE:
-    case RoadTypes::CornerSW:
-        featureMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
-        break;
+        case RoadTypes::CornerNE:
+        case RoadTypes::CornerNW:
+        case RoadTypes::CornerSE:
+        case RoadTypes::CornerSW:
+            featureMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
+            break;
 
-    case RoadTypes::DeadEndEast:
-    case RoadTypes::DeadEndNorth:
-    case RoadTypes::DeadEndSouth:
-    case RoadTypes::DeadEndWest:
-        featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
-        break;
+        case RoadTypes::DeadEndEast:
+        case RoadTypes::DeadEndNorth:
+        case RoadTypes::DeadEndSouth:
+        case RoadTypes::DeadEndWest:
+            featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+            break;
 
-    case RoadTypes::Crossroads:
-        featureMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
-        break;
+        case RoadTypes::Crossroads:
+            featureMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
+            break;
     }
 }
+
+//=============================================================================
+// Public Interface Functions
+// Refer to the interface header file for more information.
+//=============================================================================
 
 //-----------------------------------------------------------------------------
 // onSelectedTileChanged
@@ -644,87 +598,6 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
     updateStatusbar(gameMap->indexFromRowCol(row, col));
 
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// onAlterCharacter
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::onAlterCharacter(const int& alterType, const size_t& index) {
-
-    // Make sure that the dialog isn't already running, or that
-    // another modal window isn't already running.
-
-    if(editCharacterDialog || activeWindowHandle != GetHwnd()) {
-        return;
-    }
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    const std::vector<GameCharacter>& gameCharacters = gameWorldController->getGameMap()->getGameCharacters();
-    const bool editingChar = (alterType == AlterType::Edit) ? true : false;
-
-    // TODO: Since the Controller calls this function, the Controller should prevent you from getting this far anyways.
-    // So basically, this entire block of code is pointless.
-
-    if(editingChar) {
-       
-        if(gameCharacters.empty() || index > gameCharacters.size() - 1) {
-            displayErrorMessage("Invalid character index", "error");
-            return;
-        }
-
-    }
-    else {
-
-        if(gameWorldController->canAddCharacter() == false) {
-            displayErrorMessage(langMap.get("ErrCharLimitReachedText"), langMap.get("ErrCharLimitReachedTitle"));
-            return;
-        }
-    }
-
-
-    editCharacterDialog = new EditCharacterDialog(this, gameWorldController->getGameMap(), GetHwnd(), editingChar);
-
-    // TODO: Flags should be constants since they're the same for all the dialogs.
-
-    editCharacterDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-
-    if(!editCharacterDialog->IsWindow()) {
-        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
-        delete editCharacterDialog;
-        return;
-    }
-
-    editCharacterDialog->SetExStyle(editCharacterDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    activeWindowHandle = editCharacterDialog->GetHwnd();
-
-    // TODO: Set Caption
-
-    CString caption;
-
-    if(alterType == AlterType::Add) {
-        GameCharacter::Builder bd;
-        editCharacterDialog->setCharacterToEdit(bd.build());
-        CString caption = LM_toUTF8("CreateCharacterTitle", langMap);
-        editCharacterDialog->setDefaultDialogTitle(caption);
-    }
-    else if(alterType == AlterType::Edit) {
-
-        const GameCharacter& gameCharacter = gameWorldController->getGameMap()->getGameCharacters().at(index);
-        caption = LM_toUTF8("EditCharacterTitle", langMap);
-		caption.Format(caption, AtoW(gameCharacter.getName().c_str(), CP_UTF8).c_str());
-        GameCharacter::Builder charToEdit(gameCharacter);
-        editCharacterDialog->setCharacterToEdit(charToEdit.build());
-        editCharacterDialog->setDefaultDialogTitle(caption);
-    }
-    
-    editCharacterDialog->goModal();
-
-    // onStartModal
-    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editCharacterDialog));
-    editCharacterDialog->ShowWindow(SW_SHOW);
-
 }
 
 //-----------------------------------------------------------------------------

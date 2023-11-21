@@ -165,6 +165,10 @@ void EditDialogBase::dialogButtonPressed(const int& which) {
 
 void EditDialogBase::endModal() {
 
+    if(parentWindow != NULL) {
+        ::EnableWindow(parentWindow, TRUE);
+    }    
+
     dialogReady = false;
 
     CWnd::OnClose();

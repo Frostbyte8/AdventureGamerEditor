@@ -13,11 +13,38 @@ const LONG DIALOG_WS_STYLES = WS_POPUPWINDOW | WS_DLGFRAME;
 //-----------------------------------------------------------------------------
 
 ///----------------------------------------------------------------------------
-/// onGameObjectsChanged
+/// askYesNoQuestion
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::onGameObjectsChanged() {
-    entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+int MainWindowFrame::askYesNoQuestion(const std::string& inQuestion, const std::string& inTitle,
+                                      bool allowCancel) {
+
+    const CString question      = AtoW(inQuestion.c_str(), CP_UTF8);
+    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
+    const UINT messageBoxFlags  = MB_ICONQUESTION | (allowCancel ? MB_YESNOCANCEL : MB_YESNO);
+
+    const int retVal = MessageBox(question, title, messageBoxFlags);
+
+    if (retVal == IDYES) {
+        return GenericInterfaceResponses::Yes;
+    }
+
+    return GenericInterfaceResponses::No;
+}
+
+///----------------------------------------------------------------------------
+/// displayErrorMessage
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
+                                          const std::string& inTitle) {
+
+    const CString message       = AtoW(inMessage.c_str(), CP_UTF8);
+    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
+    const UINT messageBoxFlags  = MB_ICONERROR;
+
+    MessageBox(message, title, messageBoxFlags);
+
 }
 
 ///----------------------------------------------------------------------------
@@ -26,6 +53,31 @@ void MainWindowFrame::onGameObjectsChanged() {
 
 void MainWindowFrame::onGameCharactersChanged() {
     entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+}
+
+
+///----------------------------------------------------------------------------
+/// onGameObjectsChanged
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onGameObjectsChanged() {
+    entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+}
+
+///----------------------------------------------------------------------------
+/// onTileUpdated
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags) {
+
+    if(tileUpdateFlags & EditorTileUpdateFlags::Description) {
+        updateStatusbar(index);
+    }
+
+    if(tileUpdateFlags & EditorTileUpdateFlags::Type) {
+        updateFeatureMenu(index);
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -79,7 +131,11 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
 
     }
 
-    EnableWindow();
+    if(!IsWindowEnabled()) {
+        EnableWindow();
+        SetFocus();
+    }
+
     activeWindowHandle = GetHwnd();
 }
 

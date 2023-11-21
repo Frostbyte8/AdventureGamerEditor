@@ -53,16 +53,19 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual bool startEditTileDescriptionDialog(const std::string& name, const std::string& description);
         virtual void finishedEditTileDescriptionDialog();
+        virtual void onTileUpdated(const int& index, const int& tileUpdateFlags);
 
+
+        //
 
 
         virtual void finishedEditStoryDialog();
         virtual void finishedEditWorldInfoDialog();
         virtual void finishedResizeWorldDialog();
         
-        virtual void onTileUpdated(const int& index);
+        
+
         virtual bool onSelectedTileChanged(const int& row, const int& col);
-        virtual void onAlterCharacter(const int& alterType, const size_t& index);
         
         virtual void onEditStory();
 

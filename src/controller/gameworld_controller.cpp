@@ -142,9 +142,9 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
     }
 
     if (!wasDialogCreated) {
+        mainWindow->onDialogEnd(EditorDialogTypes::AlterObject);
         mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
                                         langMap.get("ErrCreatingDialogTitle"));
-        mainWindow->onDialogEnd(EditorDialogTypes::AlterObject);
         return false;
     }
 
@@ -359,9 +359,9 @@ bool GameWorldController::tryAlterCharacter(const int& alterType, const int& ind
     }
 
     if (!wasDialogCreated) {
+        mainWindow->onDialogEnd(EditorDialogTypes::AlterCharacter);
         mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
                                         langMap.get("ErrCreatingDialogTitle"));
-        mainWindow->onDialogEnd(EditorDialogTypes::AlterCharacter);
         return false;
     }
 
@@ -549,9 +549,10 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
     const GameTile& gameTile = gameMap->getTile(index);
 
     if(!mainWindow->startEditTileDescriptionDialog(gameTile.getName(), gameTile.getDescription())) {
+        mainWindow->onDialogEnd(EditorDialogTypes::EditTileDescription);
         mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
                                         langMap.get("ErrCreatingDialogTitle"));
-        mainWindow->onDialogEnd(EditorDialogTypes::EditTileDescription);
+        
         return false;
     }
 
@@ -571,6 +572,8 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
 /// @return true if the tile was updated, false if it was not. Note that using
 /// the selected tile will always return true.
 ///----------------------------------------------------------------------------
+
+// TODO: Would index work better?
 
 bool GameWorldController::tryUpdateTileDescription(const std::string& inName, 
 const std::string& inDescription, const int& row, const int& col) {
@@ -592,7 +595,7 @@ const std::string& inDescription, const int& row, const int& col) {
     
     gameMap->updateTileDescription(gmKey, selectedTileIndex, inName, inDescription);
 
-    // TODO: Inform Main Window that a tile was updated, and which one it was.
+    mainWindow->onTileUpdated(index, EditorTileUpdateFlags::Description);
 
     return true;
 }
@@ -792,7 +795,7 @@ bool GameWorldController::tryChangeSelectedTile() {
 
     gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
 
-    mainWindow->onTileUpdated(selectedTileIndex);
+    //mainWindow->onTileUpdated(selectedTileIndex);
 
     return true;
 
@@ -1034,7 +1037,7 @@ bool GameWorldController::tryUpdateConnectedTile(const GameTile& firstTile) {
 
     // Inform the main window this tile was updated, incase it needs to do anything
     // with it.
-    mainWindow->onTileUpdated(otherTileIndex);
+    //mainWindow->onTileUpdated(otherTileIndex);
 
     return true; // Removal was successful
 
