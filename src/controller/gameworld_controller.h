@@ -50,10 +50,7 @@ class GameWorldController {
         bool tryDeleteCharacter(const int& charID);
         
         //
-
-        bool tryPlaceObjectAtTile(const int& row, const int& col, const int& objectID);
-        bool tryPlaceCharacterAtTile(const int& row, const int& col, const int& charID);
-
+       
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         
         bool tryChangeSelectedTile();
