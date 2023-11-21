@@ -102,7 +102,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     lblTileName.Create(*this, 0, SS_SIMPLE);
     SetWindowTextFromLangMapString("TileNameLabel", lblTileName, caption, langMap);
 
-    txtTileName.Create(*this, 0, ES_AUTOHSCROLL);
+    txtTileName.Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
     txtTileName.SetExStyle(txtTileName.GetExStyle() | WS_EX_CLIENTEDGE);
     txtTileName.SetDlgCtrlID(ControlIDs::Name);
     txtTileName.SetLimitText(GameMapConstants::MaxTileName);
@@ -110,7 +110,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
     lblTileDescription.Create(*this, 0, SS_SIMPLE);
     SetWindowTextFromLangMapString("TileDescriptionLabel", lblTileDescription, caption, langMap);
 
-    txtTileDescription.Create(*this, 0, ES_MULTILINE | WS_VSCROLL);
+    txtTileDescription.Create(*this, 0, WS_TABSTOP | ES_MULTILINE | WS_VSCROLL);
     txtTileDescription.SetExStyle(txtTileDescription.GetExStyle() | WS_EX_CLIENTEDGE);
     txtTileDescription.SetDlgCtrlID(ControlIDs::Description);
     txtTileDescription.SetLimitText(GameMapConstants::MaxTileDescription);

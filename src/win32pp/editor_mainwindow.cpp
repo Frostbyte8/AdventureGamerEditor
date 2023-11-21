@@ -400,6 +400,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
                                            ? true : false);
             break;
 
+        // TODO: These all need to call the controller instead.
         case MenuIDs::SummaryAndStory: onEditStory(); break;
         case MenuIDs::LongDescription: onEditTileDescription(); break;
         case MenuIDs::WorldProperties: onEditWorldInfo(); break;

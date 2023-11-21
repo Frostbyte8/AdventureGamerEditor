@@ -7,12 +7,21 @@
 
 class CAnsiEdit : public CEdit {
 
+    public:
+        CAnsiEdit() : forceTabbing(true) {}
+
+        void alwaysAllowTabbing(const bool inForceTabbing) {
+            forceTabbing = inForceTabbing;
+        }
+
     protected:
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
         bool OnChar(const wchar_t& ch, const LONG& keyData);
         void OnPaste();
+
+        bool forceTabbing;
 };
 
 inline bool IsScrollBarKey(const int& vk) {

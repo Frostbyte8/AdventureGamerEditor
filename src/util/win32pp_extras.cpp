@@ -5,6 +5,13 @@
 LRESULT CAnsiEdit::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     
     switch(msg) {
+
+        case WM_GETDLGCODE:
+            if(forceTabbing) {
+                return (WndProcDefault(msg, wParam, lParam) & ~DLGC_WANTALLKEYS);
+            }
+            break;
+
         case WM_CHAR:
             if(!OnChar(static_cast<wchar_t>(wParam), static_cast<LONG>(lParam))) {
                 MessageBeep(0);
