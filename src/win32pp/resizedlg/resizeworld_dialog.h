@@ -39,7 +39,6 @@ class ResizeWorldDialog : public EditDialogBase {
 
         CStatic             lblDimenions[2];
         CEdit               txtDimensions[2];
-        CButton             btnDialog[3];
 
         IntegerValidator    dimensionValidator[2];
 

@@ -63,12 +63,14 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual void finishedEditWorldInfoDialog();
         virtual void onWorldInfoUpdated(const GameInfo& gameInfo);
 
-        //        
-        
+        virtual bool startResizeWorldDialog(const int& numRows, const int& numCols);
         virtual void finishedResizeWorldDialog();
-        
+        virtual void onWorldResized();
+
+        //        
+                
         virtual bool onSelectedTileChanged(const int& row, const int& col);
-        virtual void onResizeWorld();
+        //virtual void onResizeWorld();
         virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);
 
         virtual void RecalcDockLayout();

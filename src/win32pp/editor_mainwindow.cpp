@@ -405,7 +405,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case MenuIDs::LongDescription: gameWorldController->tryEditTileDescription(); break;
         case MenuIDs::SummaryAndStory: gameWorldController->tryEditSummaryAndStory(); break;
         case MenuIDs::WorldProperties: gameWorldController->tryEditWorldInfo(); break;
-        case MenuIDs::ResizeWorld: onResizeWorld(); break;
+        case MenuIDs::ResizeWorld: gameWorldController->tryEditWorldSize(); break;
 
 
         case MenuIDs::FirstJumpConnection:
@@ -668,62 +668,4 @@ void MainWindowFrame::addSwitchConnection(const int& whichPoint) {
 
     featureMenu.EnableMenuItem(6, MF_GRAYED | MF_BYPOSITION);
     featureMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
-}
-
-//-----------------------------------------------------------------------------
-// onResizeWorld
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::onResizeWorld() {
-
-    // Make sure that the dialog isn't already running, or that
-    // another modal window isn't already running.
-
-    if (resizeWorldDialog || activeWindowHandle != GetHwnd()) {
-        return;
-    }
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    resizeWorldDialog = new ResizeWorldDialog(this, GetHwnd());
-    resizeWorldDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-
-    if (!resizeWorldDialog->IsWindow()) {
-        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
-        delete resizeWorldDialog;
-        return;
-    }
-
-    resizeWorldDialog->SetExStyle(resizeWorldDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    resizeWorldDialog->setWorldDimensions(3, 3); // TODO
-
-    activeWindowHandle = resizeWorldDialog->GetHwnd();
-
-    resizeWorldDialog->setDefaultDialogTitle(LM_toUTF8("ResizeWorldTitle", langMap));
-    resizeWorldDialog->goModal();
-    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*resizeWorldDialog));
-    resizeWorldDialog->ShowWindow(SW_SHOW);
-}
-
-//-----------------------------------------------------------------------------
-// finishedResizeWorldDialog
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::finishedResizeWorldDialog() {
-
-    if (!resizeWorldDialog) {
-        return;
-    }
-
-    if (resizeWorldDialog->hasSavedChanges()) {
-        gameWorldController->resize(resizeWorldDialog->getNewWidth() , resizeWorldDialog->getNewHeight());
-        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
-
-        // TODO: Move selected tile cursor
-    }
-
-    delete resizeWorldDialog;
-    resizeWorldDialog = NULL;
-    activeWindowHandle = GetHwnd();
-
 }

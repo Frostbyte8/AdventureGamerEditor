@@ -97,6 +97,18 @@ void MainWindowFrame::onWorldInfoUpdated(const GameInfo& gameInfo) {
     // TODO: Update the dialog title.
 }
 
+///----------------------------------------------------------------------------
+/// onWorldResized
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onWorldResized() {
+    // TODO: Update the dialog title.
+
+    // Size the world has changed entirely, we need to update the back buffer
+    // as it's very possible many tiles have changed.
+    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
+}
+
 //-----------------------------------------------------------------------------
 // Shared Functions for Dialogs
 //-----------------------------------------------------------------------------
@@ -117,6 +129,7 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
         case EditorDialogTypes::EditTileDescription: return editTileDescriptionDialog ? false : true;
         case EditorDialogTypes::EditStoryAndSummary: return editStoryDialog ? false : true;
         case EditorDialogTypes::EditWorldInfo: return editWorldInfoDialog ? false : true;
+        case EditorDialogTypes::ResizeWorld: return resizeWorldDialog ? false : true;
     }
 
     return false;
@@ -158,6 +171,12 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
             assert(editWorldInfoDialog != NULL);
             delete editWorldInfoDialog;
             editWorldInfoDialog = NULL;
+            break;
+
+        case EditorDialogTypes::ResizeWorld:
+            assert(resizeWorldDialog != NULL);
+            delete resizeWorldDialog;
+            resizeWorldDialog = NULL;
             break;
 
     }
@@ -455,5 +474,53 @@ void MainWindowFrame::finishedEditWorldInfoDialog() {
     }
 
     onDialogEnd(EditorDialogTypes::EditWorldInfo);
+
+}
+
+///-----------------------------------------------------------------------------
+/// startResizeWorldDialog
+///-----------------------------------------------------------------------------
+
+bool MainWindowFrame::startResizeWorldDialog(const int& numRows, const int& numCols) {
+
+    resizeWorldDialog = new (std::nothrow) ResizeWorldDialog(this, GetHwnd());
+
+    if (!resizeWorldDialog) {
+        return false;
+    }
+
+    resizeWorldDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
+                                DIALOG_WS_STYLES);
+
+    if (!resizeWorldDialog->IsWindow()) {
+        return false;
+    }
+
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    caption = LM_toUTF8("ResizeWorldTitle", langMap);
+
+    resizeWorldDialog->setWorldDimensions(numCols, numRows);
+
+    makeDialogModal(*resizeWorldDialog, caption);
+
+    return true;
+
+}
+
+///-----------------------------------------------------------------------------
+/// finishedResizeWorldDialog
+///-----------------------------------------------------------------------------
+
+void MainWindowFrame::finishedResizeWorldDialog() {
+
+    assert(resizeWorldDialog != NULL);
+
+    if (resizeWorldDialog->hasSavedChanges()) {
+        gameWorldController->tryResizeWorld(resizeWorldDialog->getNewHeight(), resizeWorldDialog->getNewWidth());
+    }
+
+    onDialogEnd(EditorDialogTypes::ResizeWorld);
 
 }

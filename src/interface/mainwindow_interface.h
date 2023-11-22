@@ -150,6 +150,8 @@ class MainWindowInterface {
         /// Sent when window is being told that the user wants to edit the 
         /// Game World's properties
         /// @param A reference to the current world's properties (GameInfo)
+        /// @return true if the dialog was created successfully, false if it
+        /// was not
         ///--------------------------------------------------------------------
         virtual bool startEditWorldInfoDialog(const GameInfo& gameInfo) = 0;
 
@@ -163,6 +165,30 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void onWorldInfoUpdated(const GameInfo& gameInfo) = 0;
 
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to edit the 
+        /// Game World's dimensions
+        /// @param A reference to the number of rows the game world currently
+        /// has.
+        /// @param a reference to the number of cols the game world currently
+        /// has
+        /// @return true if the dialog was created successfully, false if it
+        /// was not
+        ///--------------------------------------------------------------------
+        virtual bool startResizeWorldDialog(const int& numRows, const int& numCols) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the resize world dialog is
+        /// finished
+        ///--------------------------------------------------------------------
+        virtual void finishedResizeWorldDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the dimensions of the game world have changed
+        ///--------------------------------------------------------------------
+        virtual void onWorldResized() = 0;
+
+
 
 
 
@@ -170,7 +196,7 @@ class MainWindowInterface {
         /// Sent when window is being told that the user wants to resize the
         /// Game World
         ///--------------------------------------------------------------------
-        virtual void onResizeWorld() = 0;
+        //virtual void onResizeWorld() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the user is trying to select a new tile
@@ -178,11 +204,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
 
-        ///--------------------------------------------------------------------
-        /// Sent when window is being told that the resize world dialog is
-        /// finished
-        ///--------------------------------------------------------------------
-        virtual void finishedResizeWorldDialog() = 0;
+
 
         ///--------------------------------------------------------------------
         /// Sent when the window needs to spawn the Save Dialog

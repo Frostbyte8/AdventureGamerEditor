@@ -68,6 +68,9 @@ class GameWorldController {
         bool tryEditWorldInfo();
         bool tryUpdateWorldInfo(const GameInfo& newInfo);
 
+        bool tryEditWorldSize();
+        bool tryResizeWorld(const int& numRows, const int& numCols);
+
         //
        
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
@@ -85,9 +88,6 @@ class GameWorldController {
         bool tryStartSwitchConnection();
         bool tryEndSwitchConnection();
 
-        void resize(const int& newWidth, const int& newHeight) {
-            gameMap->resizeMap(newWidth, newHeight);
-        }
         
     private:
 

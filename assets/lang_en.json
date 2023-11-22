@@ -59,6 +59,7 @@
     "EditWorldInfoTitle"        : "Editing World Properties",
     "EditTileDescTitle"         : "Editing Tile Description",
     "EditWorldStoryTitle"       : "Editing Story and Summary",
+	"ResizeWorldTitle"			: "Resize Game World",
     "ShowPlayerInventoryTitle"  : "Player Inventory",
     
     // Edit Object Dialog 

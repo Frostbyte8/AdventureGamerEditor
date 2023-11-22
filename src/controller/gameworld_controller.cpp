@@ -695,6 +695,68 @@ bool GameWorldController::tryUpdateWorldInfo(const GameInfo& newInfo) {
     return true;
 }
 
+///----------------------------------------------------------------------------
+/// tryEditWorldSize - Attempts to edit the size of the game world. It does
+/// this by requesting the main window open a dialog box.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryEditWorldSize() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::ResizeWorld)) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+    // TODO: Change this from getHeight to getRows.
+
+    if (!mainWindow->startResizeWorldDialog(gameMap->getHeight(), gameMap->getWidth())) {
+        mainWindow->onDialogEnd(EditorDialogTypes::ResizeWorld);
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+
+        return false;
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryResizeWorld - Attempts to resize the game world.
+/// @param the new number of rows the game world will have.
+/// @param the new number of columns the game world will have,.
+/// @return true if the operation was successful and the world size has 
+/// changed. False is it failed and the size did not change.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols) {
+
+    /*
+    if(numCols > EditorConstants::MaxCols) {
+    }
+
+    if(numRows > EditorConstants::MaxRows) {
+    }
+    */
+
+    // TODO: game map needs to have this changed so it's in row/col format.
+    if(!gameMap->resizeMap(numCols, numRows)) {
+
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+
+        mainWindow->displayErrorMessage(langMap.get("ErrResizingMapText"),
+                                        langMap.get("ErrResizingMapTitle"));
+        return false;
+    }
+
+    return true;
+}
+
+
 //-----------------------------------------------------------------------------
 // Code that is being rewritten or cleaned still
 //-----------------------------------------------------------------------------
