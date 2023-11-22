@@ -62,6 +62,7 @@ class GameWorldController {
                                       const int& row = EditorConstants::IGNORE_ROW,
                                       const int& col = EditorConstants::IGNORE_COL);
         
+        bool tryEditSummaryAndStory();
         
         //
        

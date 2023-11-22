@@ -502,6 +502,8 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
 }
 
+
+
 //-----------------------------------------------------------------------------
 // Tiles
 //-----------------------------------------------------------------------------
@@ -573,8 +575,6 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
 /// the selected tile will always return true.
 ///----------------------------------------------------------------------------
 
-// TODO: Would index work better?
-
 bool GameWorldController::tryUpdateTileDescription(const std::string& inName, 
 const std::string& inDescription, const int& row, const int& col) {
     
@@ -592,6 +592,10 @@ const std::string& inDescription, const int& row, const int& col) {
         assert(gameMap->isIndexInMapBounds(selectedTileIndex));
         index = selectedTileIndex;
     }
+
+    // TODO: For now, we will assume the selected tile was the target.
+    // In the future, we will only send this message if the selected tile is
+    // changing.
     
     gameMap->updateTileDescription(gmKey, selectedTileIndex, inName, inDescription);
 
@@ -599,6 +603,55 @@ const std::string& inDescription, const int& row, const int& col) {
 
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Story/Summary, World Properties, and Resize
+//-----------------------------------------------------------------------------
+
+bool GameWorldController::tryEditSummaryAndStory() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::EditStoryAndSummary)) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+    if (!mainWindow->startEditStoryAndSummaryDialog(gameMap->getStory(), gameMap->getSummary())) {
+        mainWindow->onDialogEnd(EditorDialogTypes::EditStoryAndSummary);
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+
+        return false;
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryUpdateStoryAndSummary - Attempts to update the story/summary, and then
+/// notifies the window that a change occurred.
+/// @param Story text to use for the story
+/// @param Summary text to use for the summary
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary) {
+
+    gameMap->setStory(gmKey, inStory);
+    gameMap->setSummary(gmKey, inSummary);
+
+    mainWindow->onStoryAndSummaryUpdated();
+
+    return true;
+
+}
+
+
+
+
 
 //-----------------------------------------------------------------------------
 // Code that is being rewritten or cleaned still
@@ -872,21 +925,6 @@ bool GameWorldController::tryUpdateGameInfo(const GameInfo& newInfo) {
 
     gameMap->updateGameInfo(gmKey, newInfo);
     //mainWindow->GameInfoUpdated(newInfo);
-    return true;
-}
-
-///----------------------------------------------------------------------------
-/// tryUpdateStoryAndSummary - Attempts to update the story/summary.
-/// @param Story text to use for the story
-/// @param Summary text to use for the summary
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary) {
-
-    gameMap->setStory(gmKey, inStory);
-    gameMap->setSummary(gmKey, inSummary);
-
     return true;
 }
 

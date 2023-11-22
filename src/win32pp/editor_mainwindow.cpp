@@ -401,8 +401,8 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
             break;
 
         // TODO: These all need to call the controller instead.
-        case MenuIDs::SummaryAndStory: onEditStory(); break;
         case MenuIDs::LongDescription: gameWorldController->tryEditTileDescription(); break;
+        case MenuIDs::SummaryAndStory: gameWorldController->tryEditSummaryAndStory(); break;
         case MenuIDs::WorldProperties: onEditWorldInfo(); break;
         case MenuIDs::ResizeWorld: onResizeWorld(); break;
 
@@ -659,6 +659,7 @@ void MainWindowFrame::finishedEditWorldInfoDialog() {
 // onEditStory
 //-----------------------------------------------------------------------------
 
+/*
 void MainWindowFrame::onEditStory() {
 
     if(editStoryDialog || activeWindowHandle != GetHwnd()) {
@@ -689,24 +690,24 @@ void MainWindowFrame::onEditStory() {
     editStoryDialog->ShowWindow(SW_SHOW);
     
 }
+*/
 
 //-----------------------------------------------------------------------------
 // finishedEditStoryDialog
 //-----------------------------------------------------------------------------
 
+/*
 void MainWindowFrame::finishedEditStoryDialog() {
 
     if(!editStoryDialog) {
         return;
     }
 
-    /*
-    if(!wasCanceled) {
-        gameWorldController->tryUpdateStoryAndSummary(editStoryDialog->getStory(),
-                                                      editStoryDialog->getSummary()); 
-    }
-    */
-
+    
+    //if(!wasCanceled) {
+    //    gameWorldController->tryUpdateStoryAndSummary(editStoryDialog->getStory(),
+    //                                                  editStoryDialog->getSummary()); 
+    //}
 
     //if(!pressedApply) {
         delete editStoryDialog;
@@ -715,6 +716,7 @@ void MainWindowFrame::finishedEditStoryDialog() {
     //}
 
 }
+*/
 
 //-----------------------------------------------------------------------------
 // onSaveFileDialog

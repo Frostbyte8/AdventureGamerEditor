@@ -9,7 +9,7 @@
 namespace EditorDialogTypes {
     const int AlterObject           = 0;
     const int AlterCharacter        = 1;
-    const int EditStory             = 2;
+    const int EditStoryAndSummary   = 2;
     const int EditTileDescription   = 3;
     const int EditWorldInfo         = 4;
     const int ResizeWorld           = 5;
@@ -127,16 +127,27 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void onTileUpdated(const int& index, const int& tileUpdateFlags) = 0;
 
-
-
-
-
-
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
-        /// Game World's story
+        /// Game World's story/summary
+        /// @param a string containing the game's story
+        /// @param a string containing the game's summary
         ///--------------------------------------------------------------------
-        virtual void onEditStory() = 0;
+        virtual bool startEditStoryAndSummaryDialog(const std::string& story, const std::string& summary) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit Story Dialog Window is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedEditStoryAndSummaryDialog() = 0;
+
+
+        ///--------------------------------------------------------------------
+        /// Sent when the Story and/or Summary were updated.
+        ///--------------------------------------------------------------------
+        virtual void onStoryAndSummaryUpdated() = 0;
+
+
+
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
@@ -156,10 +167,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
 
-        ///--------------------------------------------------------------------
-        /// Sent when the Edit Story Dialog Window is finished
-        ///--------------------------------------------------------------------
-        virtual void finishedEditStoryDialog() = 0;
+
 
         ///--------------------------------------------------------------------
         /// Sent when the Edit World Info Dialog is finished

@@ -80,6 +80,14 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
 
 }
 
+///----------------------------------------------------------------------------
+/// onStoryAndSummaryUpdated
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onStoryAndSummaryUpdated() {
+    // TODO: Update the dialog title.
+}
+
 //-----------------------------------------------------------------------------
 // Shared Functions for Dialogs
 //-----------------------------------------------------------------------------
@@ -98,6 +106,7 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
         case EditorDialogTypes::AlterObject: return editObjectDialog ? false : true;
         case EditorDialogTypes::AlterCharacter: return editCharacterDialog ? false : true;
         case EditorDialogTypes::EditTileDescription: return editTileDescriptionDialog ? false : true;
+        case EditorDialogTypes::EditStoryAndSummary: return editTileDescriptionDialog ? false : true;
     }
 
     return false;
@@ -129,9 +138,16 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
             editTileDescriptionDialog = NULL;
             break;
 
+        case EditorDialogTypes::EditStoryAndSummary:
+            assert(editStoryDialog != NULL);
+            delete editStoryDialog;
+            editStoryDialog = NULL;
+            break;
+
     }
 
     if(!IsWindowEnabled()) {
+        MessageBox(L"Debug: Had to force the window to re-enable itself. Was this intended?", L"Debug Message", MB_OK);
         EnableWindow();
         SetFocus();
     }
@@ -302,7 +318,7 @@ bool MainWindowFrame::startEditTileDescriptionDialog(const std::string& name, co
     CString caption;
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    caption = LM_toUTF8("CreateCharacterTitle", langMap);
+    caption = LM_toUTF8("EditTileDescTitle", langMap);
 
     editTileDescriptionDialog->setTileDescription(name, description);
 
@@ -325,5 +341,54 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
     }
 
     onDialogEnd(EditorDialogTypes::EditTileDescription);
+
+}
+
+///-----------------------------------------------------------------------------
+/// startEditStoryAndSummaryDialog
+///-----------------------------------------------------------------------------
+
+bool MainWindowFrame::startEditStoryAndSummaryDialog(const std::string& story, const std::string& summary) {
+
+    editStoryDialog = new (std::nothrow) EditStoryDialog(this, GetHwnd());
+
+    if (!editStoryDialog) {
+        return false;
+    }
+
+    editStoryDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
+                                      DIALOG_WS_STYLES);
+
+    if (!editStoryDialog->IsWindow()) {
+        return false;
+    }
+
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    caption = LM_toUTF8("EditWorldInfoTitle", langMap);
+
+    editStoryDialog->setStoryAndSummary(story, summary);
+
+    makeDialogModal(*editStoryDialog, caption);
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// finishedEditStoryAndSummaryDialog
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::finishedEditStoryAndSummaryDialog() {
+
+    assert(editStoryDialog != NULL);
+
+    if (editStoryDialog->hasSavedChanges()) {
+        gameWorldController->tryUpdateStoryAndSummary(editStoryDialog->getStory(),
+                                                      editStoryDialog->getSummary());
+    }
+
+    onDialogEnd(EditorDialogTypes::EditStoryAndSummary);
 
 }
