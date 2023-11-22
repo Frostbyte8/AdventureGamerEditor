@@ -4,6 +4,7 @@
 #include "shared_interface_definitions.h"
 #include "../model/gameobject.h"
 #include "../model/gamecharacter.h"
+#include "../model/gameinfo.h"
 #include <string>
 
 namespace EditorDialogTypes {
@@ -140,20 +141,30 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void finishedEditStoryAndSummaryDialog() = 0;
 
-
         ///--------------------------------------------------------------------
         /// Sent when the Story and/or Summary were updated.
         ///--------------------------------------------------------------------
         virtual void onStoryAndSummaryUpdated() = 0;
 
-
-
-
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
-        /// Game World's information
+        /// Game World's properties
+        /// @param A reference to the current world's properties (GameInfo)
         ///--------------------------------------------------------------------
-        virtual void onEditWorldInfo() = 0;
+        virtual bool startEditWorldInfoDialog(const GameInfo& gameInfo) = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the Edit World Info Dialog is finished
+        ///--------------------------------------------------------------------
+        virtual void finishedEditWorldInfoDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the World's info was updated
+        ///--------------------------------------------------------------------
+        virtual void onWorldInfoUpdated(const GameInfo& gameInfo) = 0;
+
+
+
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to resize the
@@ -166,15 +177,6 @@ class MainWindowInterface {
         /// @return true if the selection was valid, false if it was not
         ///--------------------------------------------------------------------
         virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
-
-
-
-        ///--------------------------------------------------------------------
-        /// Sent when the Edit World Info Dialog is finished
-        ///--------------------------------------------------------------------
-        virtual void finishedEditWorldInfoDialog() = 0;
-
-
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the resize world dialog is

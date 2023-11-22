@@ -57,21 +57,17 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual bool startEditStoryAndSummaryDialog(const std::string& story, const std::string& summary);
         virtual void finishedEditStoryAndSummaryDialog();
-
         virtual void onStoryAndSummaryUpdated();
 
-        //
-
-
-        
+        virtual bool startEditWorldInfoDialog(const GameInfo& gameInfo);
         virtual void finishedEditWorldInfoDialog();
+        virtual void onWorldInfoUpdated(const GameInfo& gameInfo);
+
+        //        
+        
         virtual void finishedResizeWorldDialog();
         
-        
-
         virtual bool onSelectedTileChanged(const int& row, const int& col);
-
-        virtual void onEditWorldInfo();
         virtual void onResizeWorld();
         virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);
 

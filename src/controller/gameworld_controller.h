@@ -63,15 +63,18 @@ class GameWorldController {
                                       const int& col = EditorConstants::IGNORE_COL);
         
         bool tryEditSummaryAndStory();
-        
+        bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
+
+        bool tryEditWorldInfo();
+        bool tryUpdateWorldInfo(const GameInfo& newInfo);
+
         //
        
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         
         bool tryChangeSelectedTile();
         bool tryMakeTileDark();
-
-        bool tryUpdateGameInfo(const GameInfo& newInfo);
+        
         bool tryUpdateSelectedTile(const int& newIndex);
         bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
         
@@ -81,8 +84,6 @@ class GameWorldController {
         
         bool tryStartSwitchConnection();
         bool tryEndSwitchConnection();
-
-        bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
 
         void resize(const int& newWidth, const int& newHeight) {
             gameMap->resizeMap(newWidth, newHeight);

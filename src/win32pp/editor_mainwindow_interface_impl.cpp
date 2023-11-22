@@ -88,6 +88,15 @@ void MainWindowFrame::onStoryAndSummaryUpdated() {
     // TODO: Update the dialog title.
 }
 
+///----------------------------------------------------------------------------
+/// onWorldInfoUpdated
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onWorldInfoUpdated(const GameInfo& gameInfo) {
+    const std::string& caption = gameInfo.getGameName();
+    // TODO: Update the dialog title.
+}
+
 //-----------------------------------------------------------------------------
 // Shared Functions for Dialogs
 //-----------------------------------------------------------------------------
@@ -106,7 +115,8 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
         case EditorDialogTypes::AlterObject: return editObjectDialog ? false : true;
         case EditorDialogTypes::AlterCharacter: return editCharacterDialog ? false : true;
         case EditorDialogTypes::EditTileDescription: return editTileDescriptionDialog ? false : true;
-        case EditorDialogTypes::EditStoryAndSummary: return editTileDescriptionDialog ? false : true;
+        case EditorDialogTypes::EditStoryAndSummary: return editStoryDialog ? false : true;
+        case EditorDialogTypes::EditWorldInfo: return editWorldInfoDialog ? false : true;
     }
 
     return false;
@@ -142,6 +152,12 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
             assert(editStoryDialog != NULL);
             delete editStoryDialog;
             editStoryDialog = NULL;
+            break;
+
+        case EditorDialogTypes::EditWorldInfo:
+            assert(editWorldInfoDialog != NULL);
+            delete editWorldInfoDialog;
+            editWorldInfoDialog = NULL;
             break;
 
     }
@@ -249,7 +265,7 @@ bool MainWindowFrame::startEditCharacterDialog(GameCharacter::Builder& character
     }
 
     editCharacterDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
-                             DIALOG_WS_STYLES);
+                                DIALOG_WS_STYLES);
 
     if (!editCharacterDialog->IsWindow()) {
         return false;
@@ -309,7 +325,7 @@ bool MainWindowFrame::startEditTileDescriptionDialog(const std::string& name, co
     }
 
     editTileDescriptionDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
-                                DIALOG_WS_STYLES);
+                                      DIALOG_WS_STYLES);
 
     if (!editTileDescriptionDialog->IsWindow()) {
         return false;
@@ -357,7 +373,7 @@ bool MainWindowFrame::startEditStoryAndSummaryDialog(const std::string& story, c
     }
 
     editStoryDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
-                                      DIALOG_WS_STYLES);
+                            DIALOG_WS_STYLES);
 
     if (!editStoryDialog->IsWindow()) {
         return false;
@@ -366,7 +382,7 @@ bool MainWindowFrame::startEditStoryAndSummaryDialog(const std::string& story, c
     CString caption;
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    caption = LM_toUTF8("EditWorldInfoTitle", langMap);
+    caption = LM_toUTF8("EditTileDescTitle", langMap);
 
     editStoryDialog->setStoryAndSummary(story, summary);
 
@@ -390,5 +406,54 @@ void MainWindowFrame::finishedEditStoryAndSummaryDialog() {
     }
 
     onDialogEnd(EditorDialogTypes::EditStoryAndSummary);
+
+}
+
+///-----------------------------------------------------------------------------
+/// startEditWorldInfoDialog
+///-----------------------------------------------------------------------------
+
+bool MainWindowFrame::startEditWorldInfoDialog(const GameInfo& gameInfo) {
+
+    editWorldInfoDialog = new (std::nothrow) EditWorldInfoDialog(this, GetHwnd());
+
+    if (!editWorldInfoDialog) {
+        return false;
+    }
+
+    editWorldInfoDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
+                                DIALOG_WS_STYLES);
+
+    if (!editWorldInfoDialog->IsWindow()) {
+        return false;
+    }
+
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    caption = LM_toUTF8("EditWorldInfoTitle", langMap);
+
+    editWorldInfoDialog->setWorldInfo(gameInfo);
+
+    makeDialogModal(*editWorldInfoDialog, caption);
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// finishedEditStoryAndSummaryDialog
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::finishedEditWorldInfoDialog() {
+
+    assert(editWorldInfoDialog != NULL);
+
+    if (editWorldInfoDialog->hasSavedChanges()) {
+        gameWorldController->tryUpdateWorldInfo(editWorldInfoDialog->getGameInfo());
+                                               
+    }
+
+    onDialogEnd(EditorDialogTypes::EditWorldInfo);
 
 }

@@ -73,6 +73,7 @@ void MainWindowFrame::RecalcDockLayout() {
         CDockFrame::RecalcDockLayout();
         UnLockWindowUpdate();
     }
+
 }
 
 
@@ -403,7 +404,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         // TODO: These all need to call the controller instead.
         case MenuIDs::LongDescription: gameWorldController->tryEditTileDescription(); break;
         case MenuIDs::SummaryAndStory: gameWorldController->tryEditSummaryAndStory(); break;
-        case MenuIDs::WorldProperties: onEditWorldInfo(); break;
+        case MenuIDs::WorldProperties: gameWorldController->tryEditWorldInfo(); break;
         case MenuIDs::ResizeWorld: onResizeWorld(); break;
 
 
@@ -599,124 +600,6 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
-// onEditWorldInfo
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::onEditWorldInfo() {
-
-    // Make sure that the dialog isn't already running, or that
-    // another modal window isn't already running.
-
-    if(editWorldInfoDialog || activeWindowHandle != GetHwnd()) {
-        return;
-    }
-    
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    editWorldInfoDialog = new EditWorldInfoDialog(this, GetHwnd());
-    editWorldInfoDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-
-    if(!editWorldInfoDialog->IsWindow()) {
-        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
-        delete editWorldInfoDialog;
-        return;
-    }
-
-    editWorldInfoDialog->SetExStyle(editWorldInfoDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    editWorldInfoDialog->setWorldInfo(gameWorldController->getGameMap()->getGameInfo());
-
-    activeWindowHandle = editWorldInfoDialog->GetHwnd();
-    
-    editWorldInfoDialog->setDefaultDialogTitle(LM_toUTF8("EditWorldInfoTitle", langMap));
-    editWorldInfoDialog->goModal();
-    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editWorldInfoDialog));
-    editWorldInfoDialog->ShowWindow(SW_SHOW);
-}
-
-//-----------------------------------------------------------------------------
-// finishedEditWorldInfoDialog
-//-----------------------------------------------------------------------------
-
-void MainWindowFrame::finishedEditWorldInfoDialog() {
-
-    if(!editWorldInfoDialog) {
-        return;
-    }
-    
-    if(editWorldInfoDialog->hasSavedChanges()) {
-        gameWorldController->tryUpdateGameInfo(editWorldInfoDialog->getGameInfo());
-    }
-
-    delete editWorldInfoDialog;
-    editWorldInfoDialog = NULL;
-    activeWindowHandle = GetHwnd();
-
-}
-
-//-----------------------------------------------------------------------------
-// onEditStory
-//-----------------------------------------------------------------------------
-
-/*
-void MainWindowFrame::onEditStory() {
-
-    if(editStoryDialog || activeWindowHandle != GetHwnd()) {
-        return;
-    }
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-
-    editStoryDialog = new EditStoryDialog(this, GetHwnd());
-    editStoryDialog->Create(GetHwnd(), WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT, WS_POPUPWINDOW | WS_DLGFRAME);
-
-    if(!editStoryDialog->IsWindow()) {
-        displayErrorMessage(langMap.get("ErrCreatingDialogText"), langMap.get("ErrCreatingDialogTitle"));
-        delete editStoryDialog;
-        return;
-    }
-
-    editStoryDialog->SetExStyle(editStoryDialog->GetExStyle() | WS_EX_DLGMODALFRAME);
-    editStoryDialog->setStoryAndSummary(gameWorldController->getGameMap()->getStory(), gameWorldController->getGameMap()->getSummary());
-
-    activeWindowHandle = editStoryDialog->GetHwnd();
-
-    const CString dialogCaption = LM_toUTF8("EditWorldStoryTitle", langMap);
-    editStoryDialog->setDefaultDialogTitle(dialogCaption);
-
-    editStoryDialog->goModal();
-    centerWindowOnCurrentMonitor(MonitorFromWindow(GetHwnd(), 0), reinterpret_cast<CWnd&>(*editStoryDialog));
-    editStoryDialog->ShowWindow(SW_SHOW);
-    
-}
-*/
-
-//-----------------------------------------------------------------------------
-// finishedEditStoryDialog
-//-----------------------------------------------------------------------------
-
-/*
-void MainWindowFrame::finishedEditStoryDialog() {
-
-    if(!editStoryDialog) {
-        return;
-    }
-
-    
-    //if(!wasCanceled) {
-    //    gameWorldController->tryUpdateStoryAndSummary(editStoryDialog->getStory(),
-    //                                                  editStoryDialog->getSummary()); 
-    //}
-
-    //if(!pressedApply) {
-        delete editStoryDialog;
-        editStoryDialog = NULL;
-        activeWindowHandle = GetHwnd();
-    //}
-
-}
-*/
 
 //-----------------------------------------------------------------------------
 // onSaveFileDialog

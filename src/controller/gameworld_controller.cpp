@@ -608,6 +608,12 @@ const std::string& inDescription, const int& row, const int& col) {
 // Story/Summary, World Properties, and Resize
 //-----------------------------------------------------------------------------
 
+///----------------------------------------------------------------------------
+/// tryEditSummaryAndStory - Attempts to edit the story and summary of the
+/// game world. It does this by requesting the main window open a dialog box.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
 bool GameWorldController::tryEditSummaryAndStory() {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -649,9 +655,45 @@ bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, c
 
 }
 
+///----------------------------------------------------------------------------
+/// tryEditWorldInfo - Attempts to edit the properties of the game world. It
+/// does this by requesting the main window open a dialog box.
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
 
+bool GameWorldController::tryEditWorldInfo() {
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
 
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::EditWorldInfo)) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+    if (!mainWindow->startEditWorldInfoDialog(gameMap->getGameInfo())) {
+        mainWindow->onDialogEnd(EditorDialogTypes::EditWorldInfo);
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+
+        return false;
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryUpdateWorldInfo - Attempts to update the game info for the world.
+/// @param A reference to a GameInfo object that contains the new info
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryUpdateWorldInfo(const GameInfo& newInfo) {
+    gameMap->updateGameInfo(gmKey, newInfo);
+    mainWindow->onWorldInfoUpdated(newInfo);
+    return true;
+}
 
 //-----------------------------------------------------------------------------
 // Code that is being rewritten or cleaned still
@@ -913,19 +955,6 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
 
     return true;
 
-}
-
-///----------------------------------------------------------------------------
-/// tryUpdateGameInfo - Attempts to update the game info for the world.
-/// @param A reference to a GameInfo object that contains the new info
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryUpdateGameInfo(const GameInfo& newInfo) {
-
-    gameMap->updateGameInfo(gmKey, newInfo);
-    //mainWindow->GameInfoUpdated(newInfo);
-    return true;
 }
 
 ///----------------------------------------------------------------------------
