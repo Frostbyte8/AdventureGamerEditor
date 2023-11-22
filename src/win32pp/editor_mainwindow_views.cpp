@@ -472,7 +472,6 @@ int EntitiesHerePanel::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 
     EndDeferWindowPos(hDWP);
 
-    SetRedraw(TRUE);
     RedrawWindow(RDW_UPDATENOW | RDW_ERASE | RDW_FRAME | RDW_INVALIDATE);
     UpdateWindow();
 
@@ -480,8 +479,6 @@ int EntitiesHerePanel::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
     charactersHereGroup.UpdateWindow();
     objectsHereListBox.UpdateWindow();
     charactersHereListBox.UpdateWindow();
-
-    SetRedraw(FALSE);
 
     return 0;
 }
