@@ -19,6 +19,58 @@
 #include "tiledescdlg/edit_tiledescription_dialog.h"
 #include "resizedlg/resizeworld_dialog.h"
 
+namespace MenuIDs {
+
+    const WORD LongDescription          = 201;
+    const WORD SummaryAndStory          = 202;
+    const WORD WorldProperties          = 203;
+    const WORD NewFile                  = 204;
+    const WORD OpenFile                 = 205;
+    const WORD SaveFile                 = 206;
+    const WORD SaveFileAs               = 207;
+    const WORD ResizeWorld              = 208;
+
+    // For these IDs, we'll just obtain their MOD flag count.
+
+    // Straight Aways
+
+    const WORD AddStart                 = 308;      // MOD1
+    const WORD AddFinish                = 309;      // MOD2
+    const WORD AddGate                  = 310;      // MOD1+MOD2.
+    const WORD AddLockedDoor            = 311;      // MOD3.
+
+    const WORD AddBarrierSouth          = 312;      // MOD1+MOD3
+    const WORD AddBarrierNorth          = 313;      // MOD2+MOD3
+
+    const WORD AddBarrierEast           = 312;      // MOD1+MOD3
+    const WORD AddBarrierWest           = 313;      // MOD2+MOD3
+
+    // Corners
+
+    const WORD AddSwitchOn              = 308;      // MOD1
+    const WORD AddSwitchOff             = 309;      // MOD2
+
+    // Dead Ends
+
+    const WORD AddJumpPad               = 310;      // MOD1+MOD2
+
+    // Cross Roads
+
+    const WORD AddHazard                = 311;      // MOD3
+    const WORD AddSafeHaven             = 314;      // ALLMODS
+
+    // Additional Menu Items
+
+    const WORD FirstJumpConnection      = 315;
+    const WORD SecondJumpConnection     = 316;
+
+    const WORD startSwitchConnection    = 317;
+    const WORD endSwitchConnection      = 318;
+
+    const WORD MakeTileDark             = 319;
+
+}
+
 //=============================================================================
 // MainWindowFrame - The Primary view of the program where the map editor
 // resides, along with it's child dockers.
@@ -30,9 +82,12 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
 		MainWindowFrame();
 		virtual ~MainWindowFrame();
-		virtual HWND Create(HWND parent = 0);
 
+        // Win32++ Definitions
+        virtual HWND Create(HWND parent = 0);
+		
         // Public Interface Functions
+
         virtual int askYesNoQuestion(const std::string& question, const std::string& title,
                                      bool allowCancel = true);
 
@@ -66,16 +121,16 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual bool startResizeWorldDialog(const int& numRows, const int& numCols);
         virtual void finishedResizeWorldDialog();
         virtual void onWorldResized();
+        
+        // Functions that are being cleaned
 
-        //        
-                
         virtual bool onSelectedTileChanged(const int& row, const int& col);
-        //virtual void onResizeWorld();
-        virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);
-
-        virtual void RecalcDockLayout();
+        virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);       
 
 	protected:
+
+        // Win32++ Definitions
+        virtual void RecalcDockLayout();
 
         virtual BOOL    OnCommand(WPARAM wparam, LPARAM lparam);
 		virtual int     OnCreate(CREATESTRUCT& cs);
@@ -99,8 +154,12 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         void CreateMenuBar();
         bool loadTileSet();
 
+        void updateTitleBar(const bool changeMadeOnly);
+
         BOOL OnFileNew();
         BOOL OnFileOpen();
+
+        CString originalWindowTitle;
 
         CMenu mainMenu;
         CMenu fileMenu;
@@ -113,6 +172,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         bool isSizing;
 
+        
         CBitmap tilesetBMP; 
 
         int     tileWidth;

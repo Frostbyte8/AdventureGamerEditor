@@ -20,7 +20,7 @@ fileOut:write("#define __GITINFO_H__\n\n")
 
 fileOut:write("#include <string>\n\n")
 
-fileOut:write('const std::string GIT_VERSION_INFO = "' .. gitInfo .. '"\n\n')
+fileOut:write('const std::string GIT_VERSION_INFO = "' .. gitInfo .. '";\n\n')
 
 fileOut:write("#endif // __GITINFO_H__")
 fileOut:close()

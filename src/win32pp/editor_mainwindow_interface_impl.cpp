@@ -85,7 +85,7 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::onStoryAndSummaryUpdated() {
-    // TODO: Update the dialog title.
+    updateTitleBar(true);
 }
 
 ///----------------------------------------------------------------------------
@@ -94,7 +94,7 @@ void MainWindowFrame::onStoryAndSummaryUpdated() {
 
 void MainWindowFrame::onWorldInfoUpdated(const GameInfo& gameInfo) {
     const std::string& caption = gameInfo.getGameName();
-    // TODO: Update the dialog title.
+    updateTitleBar(false);
 }
 
 ///----------------------------------------------------------------------------
