@@ -113,8 +113,8 @@ class GameCharacter {
                     base.ID         = GameCharacterConstants::NoID;
                     base.location   = "0,0";
                     base.money      = AdventureGamerConstants::MinAmountOfMoney;
-                    base.sight      = 0;
-                    base.type       = 0;
+                    base.sight      = 2; // Normal
+                    base.type       = 2; // Trader
                     base.unused     = 0;
                     base.x          = 0;
                     base.y          = 0;
