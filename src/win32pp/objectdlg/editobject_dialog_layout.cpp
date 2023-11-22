@@ -677,7 +677,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
     SetWindowTextFromLangMapString("MakesPlayerSightLabel", lblSenses[0], caption, langMap);
 
-    SetWindowTextFromLangMapString("MakesPlayerHaeringLabel", lblSenses[1], caption, langMap);
+    SetWindowTextFromLangMapString("MakesPlayerHearingLabel", lblSenses[1], caption, langMap);
 
     return retVal;
 

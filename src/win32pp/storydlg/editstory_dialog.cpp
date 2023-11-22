@@ -12,7 +12,7 @@ namespace ControlIDs {
 //=============================================================================
 
 EditStoryDialog::EditStoryDialog(MainWindowInterface* inMainWindow, HWND inParentHandle) : 
-EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditStoryDialog), optionChosen(IDCLOSE), dialogCaption("") {
+EditDialogBase(inMainWindow, inParentHandle, &MainWindowInterface::finishedEditStoryAndSummaryDialog), optionChosen(IDCLOSE), dialogCaption("") {
 }
 
 //=============================================================================

@@ -251,6 +251,7 @@ bool EditDialogBase::tryClose() {
                  // We will now act as if the use pressed the OK button.
 
                 if(!trySave()) {
+                    // Something went wrong, don't do anything.
                     return false;
                 }
 

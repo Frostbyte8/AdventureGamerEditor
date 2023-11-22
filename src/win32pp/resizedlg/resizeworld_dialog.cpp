@@ -95,8 +95,9 @@ int ResizeWorldDialog::OnCreate(CREATESTRUCT& cs) {
                                              AdventureGamerConstants::MinWorldHeight,
                                              AdventureGamerConstants::MaxWorldHeight);
 
-    lblDimenions[0].SetWindowText(L"Width");
-    lblDimenions[1].SetWindowText(L"Height");
+    
+    SetWindowTextFromLangMapString("MapWidthLabel", lblDimenions[0], caption, langMap);
+    SetWindowTextFromLangMapString("MapHeightLabel", lblDimenions[1], caption, langMap);
     
     createDefaultDialogButtons(true);
 
@@ -218,9 +219,22 @@ bool ResizeWorldDialog::trySaveData() {
         return false;
     }
 
+    const int newWorldWidth     = std::stoi(WtoA(txtDimensions[0].GetWindowText()).c_str());
+    const int newWorldHeight    = std::stoi(WtoA(txtDimensions[1].GetWindowText()).c_str());
 
-    worldWidth = std::stol(WtoA(txtDimensions[0].GetWindowText()).c_str());
-    worldHeight = std::stol(WtoA(txtDimensions[1].GetWindowText()).c_str());
+    if(newWorldWidth < worldWidth || newWorldHeight < worldHeight) {
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+
+        const int response = askYesNoQuestion(langMap.get("ResizeSmallerWarningText"),
+                                              langMap.get("ResizeSmallerWarningTitle"), true);
+
+        if(response != GenericInterfaceResponses::Yes) {
+            return false;
+        }
+    }
+
+    worldWidth = newWorldWidth;
+    worldHeight = newWorldHeight;
 
     return true;
 }

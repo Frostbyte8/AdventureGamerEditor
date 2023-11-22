@@ -735,23 +735,41 @@ bool GameWorldController::tryEditWorldSize() {
 
 bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols) {
 
-    /*
-    if(numCols > EditorConstants::MaxCols) {
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    // Sanitize input
+
+    if(numCols > AdventureGamerConstants::MaxWorldWidth || 
+       numRows > AdventureGamerConstants::MaxWorldHeight) {
+
+        mainWindow->displayErrorMessage(langMap.get("ErrNewSizeTooBigText"),
+                                        langMap.get("ErrNewSizeTooBigTitle"));
+
+        return false;
+    }
+    
+    if(numCols < AdventureGamerConstants::MinWorldWidth ||
+       numRows < AdventureGamerConstants::MinWorldHeight) {
+        
+        mainWindow->displayErrorMessage(langMap.get("ErrNewSizeTooSmallText"),
+                                        langMap.get("ErrNewSizeTooSmallTitle"));
+        return false;
     }
 
-    if(numRows > EditorConstants::MaxRows) {
-    }
-    */
 
     // TODO: game map needs to have this changed so it's in row/col format.
-    if(!gameMap->resizeMap(numCols, numRows)) {
-
-        LanguageMapper& langMap = LanguageMapper::getInstance();
+    if(!gameMap->resizeMap(numRows, numCols)) {
 
         mainWindow->displayErrorMessage(langMap.get("ErrResizingMapText"),
                                         langMap.get("ErrResizingMapTitle"));
         return false;
     }
+
+    // TODO: Replace this as this is using code that is being re-written.
+    // And we only need to update this if the cursor will be out of bounds.
+    tryUpdateSelectedTile(0);
+
+    mainWindow->onWorldResized();
 
     return true;
 }

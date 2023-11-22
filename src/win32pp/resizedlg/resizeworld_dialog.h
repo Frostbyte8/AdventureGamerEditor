@@ -16,8 +16,8 @@ class ResizeWorldDialog : public EditDialogBase {
         ResizeWorldDialog(MainWindowInterface* inMainWindow, HWND inParentHandle);
 
         // Accessors
-        const int getNewWidth() const { return worldWidth; }
-        const int getNewHeight() const { return worldHeight; }
+        const int getNewCols() const { return worldWidth; }
+        const int getNewRows() const { return worldHeight; }
 
         // Mutators
         void setWorldDimensions(const int& currentWidth, const int& currentHeight);

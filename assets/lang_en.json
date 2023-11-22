@@ -40,6 +40,7 @@
     "LongTileMenuItem"          : "&Long Tile Description...",
     "SummaryMenuItem"           : "&Summary and Story...",
     "WorldMenuItem"             : "&World Properties...",
+	"ResizeWorldMenuItem"		: "&Resize World...",
 
     "AddButton"                 : "Add",
     "EditButton"                : "Edit",
@@ -109,7 +110,7 @@
     "SightNormalOption"         : "Normal",
     "SightInfraredOption"       : "Infrared",
 
-    "MakesPlayerHearingLabel"   : "Make's Player's Hearing",
+    "MakesPlayerHearingLabel"   : "Makes Player's Hearing",
     "HearingNoEffectOption"     : "No Effect",
     "HearingDeafOption"         : "Deaf",
     "HearingNormalOption"       : "Normal",
@@ -186,6 +187,11 @@
     "TileNameLabel"             : "Tile Name",
     "TileDescriptionLabel"      : "Tile Description",
 
+	// Resize World Dialog
+
+	"MapWidthLabel"				: "Width",
+	"MapHeightLabel"			: "Height",
+
     // Shared
 
     "EnergyLabel"               : "Energy",
@@ -224,6 +230,10 @@
 	"MoveCharHeldObjectsTextEnd"	: "Do you still want to delete this character?",
 	"MoveCharHeldObjectsTitle"		: "Move Held Objects?",
 
+	"ResizeSmallerWarningText"		: "The new dimensions specified are smaller than the Game World's current size. Connected tiles may lose their features, and objects and characters that are outside thew new bounds will be moved to 0,0. Are you sure you want to do this?",
+	"ResizeSmallerWarningTitle"		: "Continue with Resize?",
+
+
     // Error Messages
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
@@ -257,7 +267,7 @@
     
     // Validators
 
-    "VAL_OutOfRangeText"        : "Value out of range. Must be between %d, and %d.",
+    "VAL_OutOfRangeText"        : "Value out of range. Must be between %d and %d.",
     "VAL_OutOfRangeTitle"       : "Out of Range",
 
     // Language Mapper Specific

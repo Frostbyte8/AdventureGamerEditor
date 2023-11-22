@@ -518,7 +518,7 @@ void MainWindowFrame::finishedResizeWorldDialog() {
     assert(resizeWorldDialog != NULL);
 
     if (resizeWorldDialog->hasSavedChanges()) {
-        gameWorldController->tryResizeWorld(resizeWorldDialog->getNewHeight(), resizeWorldDialog->getNewWidth());
+        gameWorldController->tryResizeWorld(resizeWorldDialog->getNewRows(), resizeWorldDialog->getNewCols());
     }
 
     onDialogEnd(EditorDialogTypes::ResizeWorld);

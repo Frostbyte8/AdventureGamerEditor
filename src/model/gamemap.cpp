@@ -1367,9 +1367,9 @@ void GameMap::updateTile(GMKey, const size_t& index, GameTile& gameTile) {
     tiles[index] = gameTile;
 }
 
-bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
-    
-    if (newWidth == numCols && newHeight == numRows) {
+bool GameMap::resizeMap(const int& newRows, const int& newCols) {
+
+    if (newCols == numCols && newRows == numRows) {
         return true;
     }
 
@@ -1378,20 +1378,20 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
     GameTile::Builder builder;
     GameTile gt = builder.build();
 
-    if (newWidth == numCols && newHeight > numRows) {
-        tiles.resize(newWidth * newHeight, gt);
+    if (newCols == numCols && newRows > numRows) {
+        tiles.resize(newCols * newRows, gt);
         return true;
     }
-    else if (newWidth == numCols && newHeight < numRows) {
-        tiles.resize(newWidth * newHeight, gt);
+    else if (newCols == numCols && newRows < numRows) {
+        tiles.resize(newCols * newRows, gt);
         onlyClearTiles = true;
     }
 
     // Unconnect old tiles, and move chars/objects to 0,0.
 
 
-    if (numCols - newHeight > 0 || numRows - newWidth > 0) {
-        
+    if (numCols - newRows > 0 || numRows - newCols > 0) {
+
         const std::vector<GameObject> objectList = getGameObjects();
         const std::vector<GameCharacter> characteList = getGameCharacters();
 
@@ -1401,7 +1401,7 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
             const GameObject& curObject = gameObjects[i];
 
             if (curObject.getIsLocated() == GameObjectConstants::LocatedOnGround) {
-                if (curObject.getY() >= newHeight || curObject.getX() >= newWidth) {
+                if (curObject.getY() >= newRows || curObject.getX() >= newCols) {
                     GameObject::Builder bd(curObject);
                     bd.location(0, 0);
                     replaceObject(gmKey, i, bd.build());
@@ -1415,7 +1415,7 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
         for (size_t i = 0; i < numChars; ++i) {
             const GameCharacter& curChar = gameCharacters[i];
 
-            if (curChar.getY() >= newHeight || curChar.getX() >= newWidth) {
+            if (curChar.getY() >= newRows || curChar.getX() >= newCols) {
                 GameCharacter::Builder bd(curChar);
                 bd.location(0, 0);
                 replaceCharacter(gmKey, i, bd.build());
@@ -1424,10 +1424,10 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
         }
 
         // TODO: Use remove_if
-        
+
         for (std::vector<ConnectionPoint>::iterator jumpIter = jumpPoints.begin(); jumpIter != jumpPoints.end();) {
-            if (jumpIter->getConnectPoint1().getX() >= newWidth || jumpIter->getConnectPoint2().getX() >= newWidth ||
-                jumpIter->getConnectPoint1().getY() >= newHeight || jumpIter->getConnectPoint2().getY() >= newHeight) {
+            if (jumpIter->getConnectPoint1().getX() >= newCols || jumpIter->getConnectPoint2().getX() >= newCols ||
+                jumpIter->getConnectPoint1().getY() >= newRows || jumpIter->getConnectPoint2().getY() >= newRows) {
                 jumpIter = jumpPoints.erase(jumpIter);
 
                 if (jumpIter == jumpPoints.end()) {
@@ -1441,13 +1441,13 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
         }
 
         for (std::vector<ConnectionPoint>::iterator switchIter = switchConnections.begin(); switchIter != switchConnections.end();) {
-            if (switchIter->getConnectPoint1().getX() >= newWidth || switchIter->getConnectPoint2().getX() >= newWidth ||
-                switchIter->getConnectPoint1().getY() >= newHeight || switchIter->getConnectPoint2().getY() >= newHeight) {
+            if (switchIter->getConnectPoint1().getX() >= newCols || switchIter->getConnectPoint2().getX() >= newCols ||
+                switchIter->getConnectPoint1().getY() >= newRows || switchIter->getConnectPoint2().getY() >= newRows) {
                 switchIter = switchConnections.erase(switchIter);
                 if (switchIter == switchConnections.end()) {
                     break;
                 }
-                
+
                 continue;
             }
 
@@ -1462,10 +1462,10 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
 
     // For everything else, we will copy everything into a new vector  
     std::vector<GameTile> newTiles;
-    newTiles.insert(newTiles.begin(), newWidth * newHeight, gt);
+    newTiles.insert(newTiles.begin(), newCols * newRows, gt);
 
-    for (int k = 0; k < newHeight; ++k) {
-        for (int i = 0; i < newWidth; ++i) {
+    for (int k = 0; k < newRows; ++k) {
+        for (int i = 0; i < newCols; ++i) {
 
             if (i >= numCols) {
                 break; // Nothing left to copy on this row.
@@ -1477,12 +1477,12 @@ bool GameMap::resizeMap(const int& newWidth, const int& newHeight) {
 
             const int oldOffset = (i + (k * numCols));
 
-            newTiles.at(i + (k * newWidth)) = tiles.at(oldOffset);
+            newTiles.at(i + (k * newCols)) = tiles.at(oldOffset);
         }
     }
 
     tiles = newTiles;
-    numRows = newHeight;
-    numCols = newWidth;
+    numRows = newRows;
+    numCols = newCols;
     return true;
 }

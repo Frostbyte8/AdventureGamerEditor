@@ -163,7 +163,8 @@ inline void processValidatorError(std::string& errorMessage, std::string& errorT
         if(errorCode == errorCodes::OutOfRange) {
             
             // TODO: Update String
-            errorMessage = langMap.get("FileMenu");
+            errorMessage = langMap.get("VAL_OutOfRangeText");
+            errorTitle = langMap.get("VAL_OutOfRangeTitle");
 
             // TODO: make this a loop
 
