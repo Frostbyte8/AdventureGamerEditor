@@ -95,16 +95,18 @@ class MainWindowInterface {
         virtual void finishedAlterCharacterDialog() = 0;
 
         ///--------------------------------------------------------------------
-        /// Sent to notify the main window that the object list has been
+        /// Sent to notify the main window that the objects have changed
+        /// @param the list has changed in size, or a name of an object has
         /// changed
         ///--------------------------------------------------------------------
-        virtual void onGameObjectsChanged() = 0;
+        virtual void onGameObjectsChanged(const bool listChanged) = 0;
 
         ///--------------------------------------------------------------------
-        /// Sent to notify the main window that the character list has been
+        /// Sent to notify the main window that the characters have changed
+        /// @param the list has changed in size, or a name of a character has
         /// changed
         ///--------------------------------------------------------------------
-        virtual void onGameCharactersChanged() = 0;
+        virtual void onGameCharactersChanged(const bool listChanged) = 0;
                      
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the
@@ -187,9 +189,6 @@ class MainWindowInterface {
         /// Sent when the dimensions of the game world have changed
         ///--------------------------------------------------------------------
         virtual void onWorldResized() = 0;
-
-
-
 
 
         ///--------------------------------------------------------------------

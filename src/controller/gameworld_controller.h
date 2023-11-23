@@ -16,10 +16,6 @@ class GameWorldController {
         GameWorldController(MainWindowInterface* inMainWindow);
 		~GameWorldController();
 
-        bool newWorld();
-        bool loadWorld(const std::string& filePath, const std::string& fileName);
-        bool saveWorld(bool saveAs = false);
-
         bool canAddObject() const;
         bool canAddCharacter() const;
 
@@ -31,6 +27,8 @@ class GameWorldController {
         const int& getSelectedCol() const { return selectedCol; }
         const int& getDrawingTileIndex() const { return drawingTileIndex; }
         const GameTile& getSelectedTile() const { return gameMap->getTile(selectedTileIndex); }
+
+        bool hasUnsavedChanges() const;
 
         void setDrawingTileIndex(const int& newDrawIndex) {
             // TODO: Caps
@@ -89,6 +87,10 @@ class GameWorldController {
         bool tryStartSwitchConnection();
         bool tryEndSwitchConnection();
 
+        bool newWorld();
+        bool loadWorld(const std::string& filePath, const std::string& fileName);
+        bool saveWorld(bool saveAs = false);
+
         
     private:
 
@@ -107,7 +109,7 @@ class GameWorldController {
         bool tryUpdateConnectedTile(const GameTile& firstTile);
         inline const SimplePoint* findConnectionPoint(const GameTile& tile) const;
         
-
+        bool                            changedSinceLastSave;
 
         MainWindowInterface*            mainWindow;
 

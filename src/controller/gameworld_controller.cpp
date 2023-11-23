@@ -8,7 +8,8 @@
 // Constructors / Destructor
 //=============================================================================
 
-GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow) {
+GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow),
+changedSinceLastSave(false) {
     gameMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
     worldFilePath = "";
     worldFileName = "";
@@ -28,6 +29,15 @@ GameWorldController::~GameWorldController() {
 //=============================================================================
 // Accessors
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// hasUnsavedChanges
+/// @returns true if there are unsaved changes, and false if there is not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::hasUnsavedChanges() const {
+    return changedSinceLastSave;
+}
 
 //=============================================================================
 // Public Functions
@@ -100,7 +110,7 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
 
             GameObject::Builder objectBuilder = GameObject::Builder(gameObjects[index]);
             objectBuilder.location(selectedCol, selectedRow);
-            return tryReplaceObject(objectBuilder, false);
+            return tryReplaceObject(objectBuilder);
 
         }
         else if(alterType == AlterType::Delete) {
@@ -176,7 +186,8 @@ bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 
     }
 
-    mainWindow->onGameObjectsChanged();
+    changedSinceLastSave = true;
+    mainWindow->onGameObjectsChanged(true);
 
     return true;
 
@@ -217,10 +228,12 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, c
         gameMap->replaceObject(gmKey, index, objectBuilder.build());
     }
     
-    if (shouldNotify) {
-        mainWindow->onGameObjectsChanged();
-    }
+    changedSinceLastSave = true;
 
+    // In some cases, replacing does not need the list to update IE: Moving
+    // an object's position on the map.
+    mainWindow->onGameObjectsChanged(shouldNotify);
+    
     return true;
 
 }
@@ -273,9 +286,9 @@ bool GameWorldController::tryDeleteObject(const int& objectID) {
         }
 
         gameMap->deleteObject(gmKey, objectIndex);
+        changedSinceLastSave = true;
 
-        mainWindow->onGameObjectsChanged();
-
+        mainWindow->onGameObjectsChanged(true);
         return true;
     }
 
@@ -393,8 +406,8 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 
     }
 
-    mainWindow->onGameCharactersChanged();
-
+    changedSinceLastSave = true;
+    mainWindow->onGameCharactersChanged(true);
     return true;
 
 }
@@ -435,9 +448,9 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
         gameMap->replaceCharacter(gmKey, index, characterBuilder.build());
     }
 
-    if (shouldNotify) {
-        mainWindow->onGameCharactersChanged();
-    }
+    changedSinceLastSave = true;
+
+    mainWindow->onGameCharactersChanged(shouldNotify);
 
     return true;
 
@@ -494,7 +507,8 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
         }
 
         gameMap->deleteCharacter(gmKey, charIndex);
-        mainWindow->onGameCharactersChanged();
+        changedSinceLastSave = true;
+        mainWindow->onGameCharactersChanged(true);
         return true;
     }
 
@@ -642,6 +656,7 @@ const std::string& inDescription, const int& row, const int& col) {
     index = selectedTileIndex;
     
     gameMap->updateTileDescription(gmKey, index, inName, inDescription);
+    changedSinceLastSave = true;
 
     mainWindow->onTileUpdated(index, EditorTileUpdateFlags::Description);
 
@@ -693,6 +708,7 @@ bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, c
     gameMap->setStory(gmKey, inStory);
     gameMap->setSummary(gmKey, inSummary);
 
+    changedSinceLastSave = true;
     mainWindow->onStoryAndSummaryUpdated();
 
     return true;
@@ -735,6 +751,7 @@ bool GameWorldController::tryEditWorldInfo() {
 
 bool GameWorldController::tryUpdateWorldInfo(const GameInfo& newInfo) {
     gameMap->updateGameInfo(gmKey, newInfo);
+    changedSinceLastSave = true;
     mainWindow->onWorldInfoUpdated(newInfo);
     return true;
 }
@@ -801,7 +818,6 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
     }
 
 
-    // TODO: game map needs to have this changed so it's in row/col format.
     if(!gameMap->resizeMap(numRows, numCols)) {
 
         mainWindow->displayErrorMessage(langMap.get("ErrResizingMapText"),
@@ -809,10 +825,13 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
         return false;
     }
 
-    // TODO: Replace this as this is using code that is being re-written.
-    // And we only need to update this if the cursor will be out of bounds.
-    trySelectNewTile(0);
+    // Move the cursor if it's out of bounds
 
+    if(!gameMap->isIndexInMapBounds(selectedTileIndex)) {
+        trySelectNewTile(0);
+    }
+
+    changedSinceLastSave = true;
     mainWindow->onWorldResized();
 
     return true;
@@ -886,7 +905,7 @@ bool GameWorldController::loadWorld(const std::string& filePath,
 
     drawingTileIndex = 0;
     trySelectNewTile(0);
-
+    changedSinceLastSave = false;
     return loadSuccessful;
 }
 
@@ -934,7 +953,7 @@ bool GameWorldController::newWorld() {
 
     trySelectNewTile(0);
     drawingTileIndex = 0;
-
+    changedSinceLastSave = false;
     return wasWorldCreated;
 }
 
@@ -977,6 +996,8 @@ bool GameWorldController::saveWorld(bool saveAs) {
         mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");
         return false;
     }
+
+    changedSinceLastSave = true;
 
     return true;
 }

@@ -51,8 +51,14 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 /// onGameCharactersChanged
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::onGameCharactersChanged() {
-    entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+void MainWindowFrame::onGameCharactersChanged(const bool listChanged) {
+
+    if(listChanged) {
+        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+    }
+
+    updateTitleBar(true);
+
 }
 
 
@@ -60,8 +66,14 @@ void MainWindowFrame::onGameCharactersChanged() {
 /// onGameObjectsChanged
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::onGameObjectsChanged() {
-    entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+void MainWindowFrame::onGameObjectsChanged(const bool listChanged) {
+
+    if(listChanged) {
+        entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+    }
+
+    updateTitleBar(true);
+
 }
 
 ///----------------------------------------------------------------------------
@@ -102,11 +114,8 @@ void MainWindowFrame::onWorldInfoUpdated(const GameInfo& gameInfo) {
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::onWorldResized() {
-    // TODO: Update the dialog title.
-
-    // Size the world has changed entirely, we need to update the back buffer
-    // as it's very possible many tiles have changed.
     reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onMapSizeChanged();
+    updateTitleBar(true);
 }
 
 //-----------------------------------------------------------------------------

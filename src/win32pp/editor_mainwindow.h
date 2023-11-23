@@ -93,8 +93,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
-        virtual void onGameObjectsChanged();
-        virtual void onGameCharactersChanged();
+        virtual void onGameObjectsChanged(const bool listChanged);
+        virtual void onGameCharactersChanged(const bool listChanged);
         
         virtual bool canCreateDialog(const int& whichDialogType) const;
         virtual void onDialogEnd(const int& whichDialogType);

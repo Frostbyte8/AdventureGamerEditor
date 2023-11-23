@@ -229,11 +229,12 @@ void MainWindowFrame::updateTitleBar(const bool changeMadeOnly) {
 
     }
     
-    // TODO: Check for unsaved changes
-    //if(hasChanges()) {
-    //originalWindowTitle.append("*");
-    //}
-
-    SetWindowText(originalWindowTitle);
+    if(gameWorldController->hasUnsavedChanges()) {
+        CString unsavedTitle = originalWindowTitle + "*";
+        SetWindowText(unsavedTitle);
+    }
+    else {
+        SetWindowText(originalWindowTitle);
+    }
 
 }
