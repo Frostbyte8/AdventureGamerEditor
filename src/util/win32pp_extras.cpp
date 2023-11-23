@@ -49,6 +49,12 @@ bool CAnsiEdit::OnChar(const wchar_t& ch, const LONG& keyData) {
         return false;
     }
 
+    for(std::string::iterator it = disallowedChars.begin(); it != disallowedChars.end(); ++it) {
+        if(ch == *it) {
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -80,6 +86,21 @@ void CAnsiEdit::OnPaste() {
                 if(!Frost::isCharANSI(pastedString.at(i))) {
                     pastedString.erase(i, 1);
                     continue;
+                }
+                else {
+                    bool strChanged = false;
+                    for (std::string::iterator it = disallowedChars.begin(); it != disallowedChars.end(); ++it) {
+                        if (pastedString.at(i) == *it) {
+                            pastedString.erase(i, 1);
+                            strChanged = true;
+                            break;
+                        }
+                    }
+
+                    if(strChanged) {
+                        continue;
+                    }
+
                 }
                 i++;
 

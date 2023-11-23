@@ -62,7 +62,7 @@ class GameWorldController {
         bool trySelectNewTile(const int& index);
 
         bool tryEditSummaryAndStory();
-        bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
+        bool tryUpdateStoryAndSummary(std::string inStory, std::string inSummary);
 
         bool tryEditWorldInfo();
         bool tryUpdateWorldInfo(const GameInfo& newInfo);

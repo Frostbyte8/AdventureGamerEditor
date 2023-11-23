@@ -1,6 +1,7 @@
 #include "gameworld_controller.h"
 #include <fstream>
 #include <stdexcept>
+#include <algorithm>
 #include "../compat/std_extras_compat.h"
 #include "../util/languagemapper.h"
 
@@ -697,13 +698,16 @@ bool GameWorldController::tryEditSummaryAndStory() {
 
 ///----------------------------------------------------------------------------
 /// tryUpdateStoryAndSummary - Attempts to update the story/summary, and then
-/// notifies the window that a change occurred.
-/// @param Story text to use for the story
-/// @param Summary text to use for the summary
+/// notifies the window that a change occurred. 
+/// @param A string of the new Story text to use for the story
+/// @param A string of the new Summary text to use for the summary
 /// @return true if the operation was successful, false if it was not.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary) {
+bool GameWorldController::tryUpdateStoryAndSummary(std::string inStory, std::string inSummary) {
+
+    inStory.erase(std::remove(inStory.begin(), inStory.end(), '\"'), inStory.end());
+    inSummary.erase(std::remove(inSummary.begin(), inSummary.end(), '\"'), inSummary.end());
 
     gameMap->setStory(gmKey, inStory);
     gameMap->setSummary(gmKey, inSummary);

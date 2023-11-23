@@ -8,20 +8,26 @@
 class CAnsiEdit : public CEdit {
 
     public:
-        CAnsiEdit() : forceTabbing(true) {}
+        CAnsiEdit() : forceTabbing(true), disallowedChars("\"") {}
 
         void alwaysAllowTabbing(const bool inForceTabbing) {
             forceTabbing = inForceTabbing;
+        }
+
+        void setDisallowedChars(std::string disallowChars) {
+            disallowedChars = disallowChars;
         }
 
     protected:
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:
+
         bool OnChar(const wchar_t& ch, const LONG& keyData);
         void OnPaste();
 
         bool forceTabbing;
+        std::string disallowedChars;
 };
 
 inline bool IsScrollBarKey(const int& vk) {
