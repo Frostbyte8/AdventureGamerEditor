@@ -918,6 +918,11 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     drawingTileIndex = 0;
     trySelectNewTile(0);
     changedSinceLastSave = false;
+
+    mainWindow->onGameCharactersChanged(true);
+    mainWindow->onGameObjectsChanged(true);
+    mainWindow->onWorldResized();
+
     return loadSuccessful;
 }
 
@@ -966,6 +971,11 @@ bool GameWorldController::newWorld() {
     trySelectNewTile(0);
     drawingTileIndex = 0;
     changedSinceLastSave = false;
+    
+    mainWindow->onGameCharactersChanged(true);
+    mainWindow->onGameObjectsChanged(true);
+    mainWindow->onWorldResized();
+
     return wasWorldCreated;
 }
 
