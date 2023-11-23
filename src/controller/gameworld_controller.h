@@ -106,9 +106,6 @@ class GameWorldController {
 
         void sanitizeObjectStrings(GameObject::Builder& objectBuilder);
         void sanitizeCharacterStrings(GameCharacter::Builder& characterBuilder);
-
-
-        void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
         
         bool tryUpdateConnectedTile(const GameTile& firstTile);
         inline const SimplePoint* findConnectionPoint(const GameTile& tile) const;

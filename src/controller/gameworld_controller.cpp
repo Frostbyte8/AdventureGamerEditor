@@ -1124,65 +1124,9 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
 
 }
 
-/*
-///----------------------------------------------------------------------------
-/// tryUpdateSelectedTileIndex - Attempts to change which tile is selected. It
-/// also caches the row and column values as well.
-/// @param new index of the tile to be selected
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryUpdateSelectedTile(const int& newIndex) {
-
-    if (!gameMap->isIndexInMapBounds(newIndex)) {
-        return false;
-    }
-
-    selectedTileIndex = newIndex;
-    gameMap->rowColFromIndex(selectedRow, selectedCol, selectedTileIndex);
-    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
-
-    return true;
-}
-
-///----------------------------------------------------------------------------
-/// tryUpdateSelectedTileIndex - Attempts to change which tile is selected. It
-/// also caches the row and column values as well.
-/// @param new row of the tile being selected
-/// @param new col of the tile being selected
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryUpdateSelectedTile(const int& newRow, const int& newCol) {
-
-    if(!gameMap->isRowColInMapBounds(newRow, newCol)) {
-        return false;
-    }
-
-    selectedRow = newRow;
-    selectedCol = newCol;
-    selectedTileIndex = gameMap->indexFromRowCol(newRow, newCol);
-    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
-
-    return true;
-}
-*/
-
 //=============================================================================
 // Private Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// showErrorMessage - Tells the main window to display the error message
-/// with the parameters given. This is for more simplistic messages.
-/// @param a string with the Language ID for the body of the text
-/// @param a string with the Language ID for the title of the message
-///----------------------------------------------------------------------------
-
-void GameWorldController::showErrorMessage(const std::string& errTextID, const std::string& errTitleID) const {
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    mainWindow->displayErrorMessage(langMap.get(errTextID), langMap.get(errTitleID));
-}
 
 //=============================================================================
 // New Functions to be moved after
