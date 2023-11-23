@@ -239,6 +239,12 @@
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
     "ErrTileInvalidRowColTitle"     : "Error getting tile",
 
+	"ErrRowColNotInBoundsText"		: "The Row and/or Column specified is outside the boundries of the map.",
+	"ErrRowColNotInBoundsTitle"		: "Out of Bounds",
+
+	"ErrNewTileSelectionBoundsText"		: "Attempted to select a tile that is outside the boundries of the map.",
+	"ErrNewTileSelectionBoundsTitle"	: "Out of Bounds",
+
     "ErrGamerFileReadText"          : "Unable to read Adventure Gamer File: %s",
     "ErrGamerFileReadTitle"         : "Error reading file",
 

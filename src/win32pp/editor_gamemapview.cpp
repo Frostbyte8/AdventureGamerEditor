@@ -40,6 +40,7 @@ void GameMapPanel::setTileset(CBitmap& bmp) {
     tileHeight = bm.bmHeight / EditorConstants::TilesPerCol;
 
     updateBackBuffer();
+    updateScrollSize();
     InvalidateRect();
 
 }
@@ -104,7 +105,32 @@ LRESULT GameMapPanel::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
 }
 
 //=============================================================================
- // Private Functions
+// Public Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// onMapSizeChanged - Update the back buffer and scrollbar sizes when the
+/// size of the map changes.
+///----------------------------------------------------------------------------
+
+void GameMapPanel::onMapSizeChanged() {
+    updateBackBuffer();
+    updateScrollSize();
+    InvalidateRect();
+}
+
+///----------------------------------------------------------------------------
+/// onNewTileSelected - The tile selected has changed, so update the backbuffer
+/// to reflect that.
+///----------------------------------------------------------------------------
+
+void GameMapPanel::onNewTileSelected() {
+    updateBackBuffer();
+    InvalidateRect();
+}
+
+//=============================================================================
+// Private Functions
 //=============================================================================
 
 ///----------------------------------------------------------------------------
@@ -123,10 +149,9 @@ LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     int row = static_cast<int>((yPos + viewOffset.y) / tileHeight);
     int col = static_cast<int>((xPos + viewOffset.x) / tileWidth);
 
-    if (gameWorldController->tryUpdateSelectedTile(row, col)) {
-        updateBackBuffer();
-        InvalidateRect(0);
-    }
+    // No need to verify the row and col, the function will do that for us.
+
+    gameWorldController->trySelectNewTile(row, col);
 
     return 0;
 }
@@ -153,7 +178,7 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     // WM_LBUTTONDOWN
     
     if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
-        gameWorldController->tryChangeSelectedTile();
+        gameWorldController->tryChangeTile();
         updateBackBuffer();
         InvalidateRect(0);
     }
@@ -230,11 +255,19 @@ void GameMapPanel::updateBackBuffer() {
         backBufferDC.SelectObject(oldBMP);
 
     }
-
-
-    // TODO: updateScrollSize for the width and such. We'll just leave this here for now.
-
-    CSize abc(mapWidth, mapHeight);
-    SetScrollSizes(abc); // Otherwise it won't work.
      
+}
+
+
+///----------------------------------------------------------------------------
+/// updateScrollSize - Updates the size of the scroll bars.
+///----------------------------------------------------------------------------
+
+void GameMapPanel::updateScrollSize() {
+
+    const int mapWidth  = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
+    const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
+    CSize newScrollSize(mapWidth, mapHeight);
+
+    SetScrollSizes(newScrollSize);
 }

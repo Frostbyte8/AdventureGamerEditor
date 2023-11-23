@@ -353,6 +353,9 @@ bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
     updateFeatureMenu(gameMap->indexFromRowCol(row, col));
     updateStatusbar(gameMap->indexFromRowCol(row, col));
 
+    GameMapPanel& mapPanel = reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView());
+    mapPanel.onNewTileSelected();
+
     return true;
 }
 

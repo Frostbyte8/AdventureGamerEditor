@@ -502,11 +502,46 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
 }
 
-
-
 //-----------------------------------------------------------------------------
 // Tiles
 //-----------------------------------------------------------------------------
+
+///----------------------------------------------------------------------------
+/// trySelectNewTile - Tries to change the tile that is selected on the game
+/// map. It will notify the main window if tile has changed.
+/// @param new row to be selected
+/// @param new column to be selected
+/// @return true if a new tile was selected, false if it does not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
+
+    if(!updateSelectionIfValid(row, col)) {
+        return false;
+    }
+
+    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// trySelectNewTile - Tries to change the tile that is selected on the game
+/// map. It will notify the main window if tile has changed.
+/// @param new tile index to be selected
+/// @return true if a new tile was selected, false if it does not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::trySelectNewTile(const int& index) {
+
+    if (updateSelectionIfValid(-1, -1, index)) {
+        return false;
+    }
+
+    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
+
+    return true;
+}
 
 ///----------------------------------------------------------------------------
 /// tryEditTileDescription - Attempts to edit a tile's name and description.
@@ -776,7 +811,7 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
 
     // TODO: Replace this as this is using code that is being re-written.
     // And we only need to update this if the cursor will be out of bounds.
-    tryUpdateSelectedTile(0);
+    trySelectNewTile(0);
 
     mainWindow->onWorldResized();
 
@@ -850,7 +885,7 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     worldFileName = fileName;
 
     drawingTileIndex = 0;
-    tryUpdateSelectedTile(0);
+    trySelectNewTile(0);
 
     return loadSuccessful;
 }
@@ -897,7 +932,7 @@ bool GameWorldController::newWorld() {
     worldFilePath = "";
     worldFileName = "";
 
-    tryUpdateSelectedTile(0);
+    trySelectNewTile(0);
     drawingTileIndex = 0;
 
     return wasWorldCreated;
@@ -952,7 +987,7 @@ bool GameWorldController::saveWorld(bool saveAs) {
 /// @returns true if the tile was changed successfully, false if it was not
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryChangeSelectedTile() {
+bool GameWorldController::tryChangeTile() {
 
     const GameTile& gameTile = gameMap->getTile(selectedTileIndex);
 
@@ -1046,6 +1081,7 @@ bool GameWorldController::tryAddFeatureToTile(const int& modType) {
 
 }
 
+/*
 ///----------------------------------------------------------------------------
 /// tryUpdateSelectedTileIndex - Attempts to change which tile is selected. It
 /// also caches the row and column values as well.
@@ -1087,6 +1123,7 @@ bool GameWorldController::tryUpdateSelectedTile(const int& newRow, const int& ne
 
     return true;
 }
+*/
 
 //=============================================================================
 // Private Functions
@@ -1362,4 +1399,55 @@ bool GameWorldController::wasRowColSpecified(const int& row, const int& col) con
     }
 
     return false;
+}
+
+///----------------------------------------------------------------------------
+/// updateSelectionIfValid - Updates what tile is selected IF the selection
+/// is valid. Index is used if specified. If it isn't, then it tries to use
+/// the row and column specified.
+/// @param row to be selected
+/// @param col to be selected
+/// @param the index to be selected
+/// @return true if the selection is valid and updated, false if it is invalid
+/// an remains unchanged
+///----------------------------------------------------------------------------
+
+bool GameWorldController::updateSelectionIfValid(const int& row, const int& col, const int& index) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(index >= 0) {
+
+        // Index was specified, so we'll use that.
+
+        if(!gameMap->isIndexInMapBounds(index)) {
+            mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
+                                            langMap.get("ErrNewTileSelectionBoundsTitle"));
+            return false;
+        }
+
+        selectedTileIndex = index;
+        gameMap->rowColFromIndex(selectedRow, selectedCol, index);
+
+    }
+    else if(row >= 0 && col >= 0) {
+        
+        if(!gameMap->isRowColInMapBounds(row, col)) {
+            mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
+                                            langMap.get("ErrNewTileSelectionBoundsTitle"));
+            return false;
+        }
+
+        selectedTileIndex = gameMap->indexFromRowCol(row, col);
+        selectedRow = row;
+        selectedCol = col;
+
+    }
+    else {
+        mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
+                                        langMap.get("ErrNewTileSelectionBoundsTitle"));
+        return false;
+    }
+
+    return true;
 }

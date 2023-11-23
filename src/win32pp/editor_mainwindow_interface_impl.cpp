@@ -106,7 +106,7 @@ void MainWindowFrame::onWorldResized() {
 
     // Size the world has changed entirely, we need to update the back buffer
     // as it's very possible many tiles have changed.
-    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
+    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onMapSizeChanged();
 }
 
 //-----------------------------------------------------------------------------

@@ -35,9 +35,7 @@ class GameWorldController {
         void setDrawingTileIndex(const int& newDrawIndex) {
             // TODO: Caps
             drawingTileIndex = newDrawIndex;
-        }
-
-        
+        }      
         
         bool tryAlterObject(const int& alterType, const int& index);
         bool tryAddObject(GameObject::Builder& objectBuilder);
@@ -54,14 +52,17 @@ class GameWorldController {
                                  const bool shouldNotify = true);
 
         bool tryDeleteCharacter(const int& charID);
-        
+       
         bool tryEditTileDescription(const int& row = EditorConstants::IGNORE_ROW, 
                                     const int& col = EditorConstants::IGNORE_COL);
 
         bool tryUpdateTileDescription(const std::string& inName, const std::string& inDescription,
                                       const int& row = EditorConstants::IGNORE_ROW,
                                       const int& col = EditorConstants::IGNORE_COL);
-        
+
+        bool trySelectNewTile(const int& row, const int& col);
+        bool trySelectNewTile(const int& index);
+
         bool tryEditSummaryAndStory();
         bool tryUpdateStoryAndSummary(const std::string& inStory, const std::string& inSummary);
 
@@ -75,11 +76,11 @@ class GameWorldController {
        
         bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
         
-        bool tryChangeSelectedTile();
+        bool tryChangeTile();
         bool tryMakeTileDark();
         
-        bool tryUpdateSelectedTile(const int& newIndex);
-        bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
+        //bool tryUpdateSelectedTile(const int& newIndex);
+        //bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
         
         bool tryAddFeatureToTile(const int& modType);
         bool tryAddFirstJumpConnection();
@@ -98,7 +99,8 @@ class GameWorldController {
         
         template <typename T>
         bool vecIndexInRange(const T& vec, const size_t& index) const;
-        
+
+        bool updateSelectionIfValid(const int& row = -1, const int& col = -1, const int& index = -1);       
 
         void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
         

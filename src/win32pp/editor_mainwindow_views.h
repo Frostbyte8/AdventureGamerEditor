@@ -227,6 +227,8 @@ class GameMapPanel : public ScrollPanelBaseClass {
         virtual ~GameMapPanel();
         
         //void onZoomChange();
+        void onMapSizeChanged();
+        void onNewTileSelected();
         
         void setTileset(CBitmap& inTileSet);
         void updateBackBuffer();
@@ -244,6 +246,8 @@ class GameMapPanel : public ScrollPanelBaseClass {
 
         LRESULT onLButtonDown(const WORD& xPos, const WORD& yPos);
         LRESULT onLButtonDBLClick(const WORD& xPos, const WORD& yPos);
+
+        void updateScrollSize();
 
 		// Disable copy construction and assignment operator
         GameMapPanel(const GameMapPanel&);
