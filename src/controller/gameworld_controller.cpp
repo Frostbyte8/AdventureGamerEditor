@@ -519,6 +519,7 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
 bool GameWorldController::tryEditTileDescription(const int& row, const int& col) {
     
+    LanguageMapper& langMap = LanguageMapper::getInstance();
     int index = 0;
 
     /*
@@ -540,15 +541,21 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
     assert(gameMap->isIndexInMapBounds(selectedTileIndex));
     index = selectedTileIndex;
 
-    LanguageMapper& langMap = LanguageMapper::getInstance();
+    const GameTile& gameTile = gameMap->getTile(index);
+
+    if (!gameTile.isAnyRoadTile() && !gameTile.isDirtRoad()) {
+        mainWindow->displayErrorMessage(langMap.get("ErrGrassCantHaveDescText"),
+                                        langMap.get("ErrGrassCantHaveDescTitle"));
+        return false;
+    }
+
+    
 
     if(!mainWindow->canCreateDialog(EditorDialogTypes::EditTileDescription)) {
         mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
                                         langMap.get("ErrCreatingDialogTItle"));
         return false;
     }
-
-    const GameTile& gameTile = gameMap->getTile(index);
 
     if(!mainWindow->startEditTileDescriptionDialog(gameTile.getName(), gameTile.getDescription())) {
         mainWindow->onDialogEnd(EditorDialogTypes::EditTileDescription);
@@ -578,6 +585,7 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
 bool GameWorldController::tryUpdateTileDescription(const std::string& inName, 
 const std::string& inDescription, const int& row, const int& col) {
     
+    LanguageMapper& langMap = LanguageMapper::getInstance();
     int index = 0;
 
     if(wasRowColSpecified(row, col)) {
@@ -596,8 +604,9 @@ const std::string& inDescription, const int& row, const int& col) {
     // TODO: For now, we will assume the selected tile was the target.
     // In the future, we will only send this message if the selected tile is
     // changing.
+    index = selectedTileIndex;
     
-    gameMap->updateTileDescription(gmKey, selectedTileIndex, inName, inDescription);
+    gameMap->updateTileDescription(gmKey, index, inName, inDescription);
 
     mainWindow->onTileUpdated(index, EditorTileUpdateFlags::Description);
 

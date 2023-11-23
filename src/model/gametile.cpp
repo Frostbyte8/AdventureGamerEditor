@@ -101,6 +101,15 @@ const uint8_t& GameTile::getSpriteIndex() const {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// isAnyRoadTile - Checks to see if a tile is a road tile and not grass/dirt
+/// @return true if it does, false if it does not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isAnyRoadTile() const {
+    return base.drawInfo.spriteIndex != RoadTypes::Empty ? true : false;
+}
+
+///----------------------------------------------------------------------------
 /// isCorner - Checks if a tile is a corner tile
 /// @return true if it is, false if it is not
 ///----------------------------------------------------------------------------

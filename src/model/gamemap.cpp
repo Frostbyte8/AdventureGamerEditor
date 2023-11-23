@@ -403,6 +403,15 @@ void GameMap::updateTileDescription(GMKey, const size_t& index,
                                     const std::string& tileName,
                                     const std::string& tileDescription) {
 
+#ifdef _DEBUG
+
+    if(!tiles[index].isAnyRoadTile() && !tiles[index].isDirtRoad()) {
+        assert(tileDescription.empty());
+    }
+
+#endif // _DEBUG
+
+
     GameTile::Builder bd = GameTile::Builder(tiles[index]);
 
     bd.name(tileName);

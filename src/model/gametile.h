@@ -303,6 +303,7 @@ class GameTile {
         const bool isDark() const;
         const bool isDeadend() const;
         const bool isDirtRoad() const;
+        const bool isAnyRoadTile() const;
         const bool isStraightaway() const;
 
         // IO Functions

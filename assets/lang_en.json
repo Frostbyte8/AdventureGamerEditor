@@ -238,12 +238,16 @@
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
     "ErrTileInvalidRowColTitle"     : "Error getting tile",
+
     "ErrGamerFileReadText"          : "Unable to read Adventure Gamer File: %s",
     "ErrGamerFileReadTitle"         : "Error reading file",
+
     "ErrAllocatingDialogText"       : "The dialog could not be created because there is not enough memory to allocate it.",
     "ErrAllocatingDialogTitle"      : "Allocating Dialog Failed",
+
     "ErrCreatingDialogText"         : "Dialog Window creation failed for an unknown reason.",
     "ErrCreatingDialogTitle"        : "Window Creation Failed",
+
     "ErrInvalidObjIndexText"        : "Invalid object index given.",
     "ErrInvalidObjIndexTitle"       : "Invalid object",
 
@@ -264,11 +268,17 @@
     
     "ErrPathConversionText"         : "Unable to turn long file path into a short file path.",
     "ErrPathConversionTitle"        : "File Path Conversion Error",
+
+	"ErrGrassCantHaveDescText"		: "Grass Tiles cannot have a name and description.",
+	"ErrGrassCantHaveDescTitle"		: "Invalid Tile",
     
     // Validators
 
-    "VAL_OutOfRangeText"        : "Value out of range. Must be between %d and %d.",
-    "VAL_OutOfRangeTitle"       : "Out of Range",
+    "VAL_OutOfRangeText"			: "Value out of range. Must be between %d and %d.",
+    "VAL_OutOfRangeTitle"			: "Out of Range",
+
+	"VAL_NotNumericText"			: "Input field can only contain digits (0-9).",
+	"VAL_NotNumericTitle"			: "Non-Numeric Input",
 
     // Language Mapper Specific
 
