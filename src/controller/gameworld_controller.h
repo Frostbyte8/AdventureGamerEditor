@@ -54,7 +54,7 @@ class GameWorldController {
         bool tryEditTileDescription(const int& row = EditorConstants::IGNORE_ROW, 
                                     const int& col = EditorConstants::IGNORE_COL);
 
-        bool tryUpdateTileDescription(const std::string& inName, const std::string& inDescription,
+        bool tryUpdateTileDescription(std::string tileName, std::string tileDescription,
                                       const int& row = EditorConstants::IGNORE_ROW,
                                       const int& col = EditorConstants::IGNORE_COL);
 
@@ -102,7 +102,11 @@ class GameWorldController {
         template <typename T>
         bool vecIndexInRange(const T& vec, const size_t& index) const;
 
-        bool updateSelectionIfValid(const int& row = -1, const int& col = -1, const int& index = -1);       
+        bool updateSelectionIfValid(const int& row = -1, const int& col = -1, const int& index = -1);
+
+        void sanitizeObjectStrings(GameObject::Builder& objectBuilder);
+        void sanitizeCharacterStrings(GameCharacter::Builder& characterBuilder);
+
 
         void showErrorMessage(const std::string& errTextID, const std::string& errTextTitle) const;
         

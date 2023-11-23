@@ -174,9 +174,11 @@ bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
+    sanitizeObjectStrings(objectBuilder);
     objectBuilder.ID(gameMap->getFirstUnusedObjectID());
-
+    
     try {
+        
         gameMap->addObject(gmKey, objectBuilder.build());
     } 
     catch (const std::bad_alloc&) {
@@ -226,6 +228,7 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, c
 
     }
     else {
+        sanitizeObjectStrings(objectBuilder);
         gameMap->replaceObject(gmKey, index, objectBuilder.build());
     }
     
@@ -394,6 +397,7 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
+    sanitizeCharacterStrings(characterBuilder);
     characterBuilder.ID(gameMap->getFirstUnusedCharacterID());
 
     try {
@@ -446,6 +450,7 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
 
     }
     else {
+        sanitizeCharacterStrings(characterBuilder);
         gameMap->replaceCharacter(gmKey, index, characterBuilder.build());
     }
 
@@ -632,8 +637,8 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
 /// the selected tile will always return true.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryUpdateTileDescription(const std::string& inName, 
-const std::string& inDescription, const int& row, const int& col) {
+bool GameWorldController::tryUpdateTileDescription(std::string tileName, 
+std::string tileDescription, const int& row, const int& col) {
     
     LanguageMapper& langMap = LanguageMapper::getInstance();
     int index = 0;
@@ -651,12 +656,15 @@ const std::string& inDescription, const int& row, const int& col) {
         index = selectedTileIndex;
     }
 
+    tileName.erase(std::remove(tileName.begin(), tileName.end(), '\"'), tileName.end());
+    tileDescription.erase(std::remove(tileDescription.begin(), tileDescription.end(), '\"'), tileDescription.end());
+
     // TODO: For now, we will assume the selected tile was the target.
     // In the future, we will only send this message if the selected tile is
     // changing.
     index = selectedTileIndex;
     
-    gameMap->updateTileDescription(gmKey, index, inName, inDescription);
+    gameMap->updateTileDescription(gmKey, index, tileName, tileDescription);
     changedSinceLastSave = true;
 
     mainWindow->onTileUpdated(index, EditorTileUpdateFlags::Description);
@@ -1403,6 +1411,47 @@ bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) con
     return false;
 }
 
+///----------------------------------------------------------------------------
+/// sanitizeCharacterStrings - Strip out Double quote characters from any
+/// strings attached the character.
+/// @param A reference to a Character Builder to sanitize. This will be
+/// modified.
+///----------------------------------------------------------------------------
+
+void GameWorldController::sanitizeCharacterStrings(GameCharacter::Builder& characterBuilder) {
+
+    for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
+        std::string desc = characterBuilder.base.description[0];
+        desc.erase(std::remove(desc.begin(), desc.end(), '\"'), desc.end());
+        characterBuilder.description(desc, i);
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// sanitizeObjectStrings - Strip out Double quote characters from any
+/// strings attached an object.
+/// @param A reference to a Object Builder to sanitize. This will be modified.
+///----------------------------------------------------------------------------
+
+void GameWorldController::sanitizeObjectStrings(GameObject::Builder& objectBuilder) {
+
+    for (int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
+        std::string desc = objectBuilder.base.description[0];
+        desc.erase(std::remove(desc.begin(), desc.end(), '\"'), desc.end());
+        objectBuilder.description(desc, i);
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// validRequestedTileRowCol - Checks if the Row/Col given is valid, if not,
+/// displays an error message about it.
+/// @param const reference to the row to check
+/// @param const reference to the column to check
+/// @return true if the Row and Col are valid, false if not.
+///----------------------------------------------------------------------------
+
 bool GameWorldController::validRequestedTileRowCol(const int& row, const int& col) const {
 
     if (gameMap->isRowColInMapBounds(row, col)) {
@@ -1416,6 +1465,14 @@ bool GameWorldController::validRequestedTileRowCol(const int& row, const int& co
     return false;
 
 }
+
+///----------------------------------------------------------------------------
+/// wasRowColSpecified - Given a Row and Col, check if those arguments were
+/// specified and not -1.
+/// @param const reference to the row to check
+/// @param const reference to the column to check
+/// @return true if row and col were both specified, false if not.
+///----------------------------------------------------------------------------
 
 bool GameWorldController::wasRowColSpecified(const int& row, const int& col) const {
 
