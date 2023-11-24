@@ -22,21 +22,23 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    // TODO: The tileset image should be created here and pass to the view on creation.
+    // Prevent Win32++ from using themes.
+    UseThemes(FALSE);
+
     if(!loadTileSet()) {
         MessageBox(L"Could not find tileset.bmp. Please ensure this file is in the same directory as advedit.exe. The program will now close.", L"Missing file tileset.bmp", MB_OK | MB_ICONERROR);
         Close();
         return 1;
     }
 
-    UseThemes(FALSE);				// Don't use themes    
-    SetStyle(GetStyle() | WS_CLIPCHILDREN);
+    
 
 	const int retVal = CDockFrame::OnCreate(cs);
 
-    updateTitleBar(false);
+    // Deal with the menubar and title bar next.
 
     CreateMenuBar();
+    updateTitleBar(false);
 
     CRect windowDims = GetClientRect();
 
@@ -45,9 +47,11 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	DWORD styleFlags = DS_NO_UNDOCK | DS_NO_CAPTION | DS_DEFAULT_CURSORS | DS_CLIENTEDGE;
 	SetDockStyle(styleFlags);
 
+    // Game map and road selector need to be aware of the tilest.
+
     gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(this, gameWorldController, &tilesetBMP), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
-	
+
 	reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).setTileset(tilesetBMP);
 
 
@@ -60,18 +64,22 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	entitiesHereDocker = static_cast<EntitiesHereDocker*>(gameMapDocker->AddDockedChild(
                                                           new EntitiesHereDocker(&windowMetrics), styleFlags | DS_DOCKED_BOTTOM, 128));
 
-    // The Road Selector is the Width of one tile plus the scroll bar
+    // The Road Selector is the Width of one tile plus the scroll bar.
     // TODO: Zoom Factor
+    // TODO: Restore Docker settings.
 
 	CRect rc;
 
-    const int tempTileWidth = tileWidth;
+    const int tempTileWidth = tileWidth; // * zoomFactor
 	rc.right = tempTileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
 	AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
 	const int newWidth = abs(rc.right - rc.left);
 	roadSelectorDocker->SetDockSize(newWidth);   
 
     windowDims.right -= newWidth;
+
+    // In addition to the Road Selector, we will also make it so the Game Map takes up
+    // 50% of the space on start up.
 
     const int mapSize = static_cast<int>(windowDims.right * 0.5);
     gameMapDocker->SetDockSize(mapSize);

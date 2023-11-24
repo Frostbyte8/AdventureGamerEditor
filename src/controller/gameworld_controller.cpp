@@ -189,8 +189,11 @@ bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 
     }
 
+    const bool updateHereList = (objectBuilder.getCol() == selectedCol && 
+                                 objectBuilder.getRow() == selectedRow) ? true : false;
+
     changedSinceLastSave = true;
-    mainWindow->onGameObjectsChanged(true);
+    mainWindow->onGameObjectsChanged(true, updateHereList);
 
     return true;
 
@@ -219,6 +222,7 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, c
 
     // Located the object we are replacing
     const size_t index = gameMap->objectIndexFromID(objectBuilder.getID());
+    bool updateHereList = false;
 
     if (index == (size_t)-1) {
 
@@ -228,15 +232,26 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, c
 
     }
     else {
+
+        const GameObject& originalObject = gameMap->getGameObjects()[index];
+
+        if(selectedCol == objectBuilder.getCol() && selectedRow == objectBuilder.getRow()) {
+            updateHereList = true;
+        }
+        else if(selectedCol == originalObject.getX() && selectedRow == originalObject.getY()) {
+            updateHereList = true;
+        }
+
         sanitizeObjectStrings(objectBuilder);
         gameMap->replaceObject(gmKey, index, objectBuilder.build());
     }
     
     changedSinceLastSave = true;
 
+
     // In some cases, replacing does not need the list to update IE: Moving
     // an object's position on the map.
-    mainWindow->onGameObjectsChanged(shouldNotify);
+    mainWindow->onGameObjectsChanged(shouldNotify, updateHereList);
     
     return true;
 
@@ -256,6 +271,8 @@ bool GameWorldController::tryDeleteObject(const int& objectID) {
 
     if (objectIndex != (size_t)-1) {
         const std::vector<size_t> objectIndices = gameMap->getReliantObjectsFromID(objectID);
+
+        const GameObject originalObject = gameMap->getGameObjects()[objectIndex];
 
         if (!objectIndices.empty()) {
 
@@ -289,10 +306,13 @@ bool GameWorldController::tryDeleteObject(const int& objectID) {
 
         }
 
+        const bool updateHereList = (selectedCol == originalObject.getX() && 
+                                     selectedRow == originalObject.getY()) ? true : false;
+
         gameMap->deleteObject(gmKey, objectIndex);
         changedSinceLastSave = true;
 
-        mainWindow->onGameObjectsChanged(true);
+        mainWindow->onGameObjectsChanged(true, updateHereList);
         return true;
     }
 
@@ -411,8 +431,11 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 
     }
 
+    const bool updateHereList = (characterBuilder.getCol() == selectedCol && 
+                                 characterBuilder.getRow() == selectedRow) ? true : false;
+
     changedSinceLastSave = true;
-    mainWindow->onGameCharactersChanged(true);
+    mainWindow->onGameCharactersChanged(true, updateHereList);
     return true;
 
 }
@@ -456,7 +479,10 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
 
     changedSinceLastSave = true;
 
-    mainWindow->onGameCharactersChanged(shouldNotify);
+    const bool updateHereList = (characterBuilder.getCol() == selectedCol &&
+                                 characterBuilder.getRow() == selectedRow) ? true : false;
+
+    mainWindow->onGameCharactersChanged(shouldNotify, updateHereList);
 
     return true;
 
@@ -514,7 +540,13 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
         gameMap->deleteCharacter(gmKey, charIndex);
         changedSinceLastSave = true;
-        mainWindow->onGameCharactersChanged(true);
+
+        // TODO: This is more complex. Deleting an object may also move and object
+        // Depending on what happens, both lists may need to be updated.
+
+
+        mainWindow->onGameObjectsChanged(false, true);
+        mainWindow->onGameCharactersChanged(true, true);
         return true;
     }
 
@@ -544,8 +576,7 @@ bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
         return false;
     }
 
-    // TODO: This function needs to be updated
-    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
+    mainWindow->onSelectedTileChanged();
 
     return true;
 }
@@ -566,8 +597,7 @@ bool GameWorldController::trySelectNewTile(const int& index) {
         return false;
     }
 
-    // TODO: This function needs to be updated
-    mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
+    mainWindow->onSelectedTileChanged();
 
     return true;
 }
@@ -1005,8 +1035,8 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     trySelectNewTile(0);
     changedSinceLastSave = false;
 
-    mainWindow->onGameCharactersChanged(true);
-    mainWindow->onGameObjectsChanged(true);
+    mainWindow->onGameCharactersChanged(true, true);
+    mainWindow->onGameObjectsChanged(true, true);
     mainWindow->onWorldResized();
     mainWindow->onWorldInfoUpdated();
 
@@ -1059,8 +1089,8 @@ bool GameWorldController::newWorld() {
     drawingTileIndex = 0;
     changedSinceLastSave = false;
     
-    mainWindow->onGameCharactersChanged(true);
-    mainWindow->onGameObjectsChanged(true);
+    mainWindow->onGameCharactersChanged(true, true);
+    mainWindow->onGameObjectsChanged(true, true);
     mainWindow->onWorldResized();
     mainWindow->onWorldInfoUpdated();
 

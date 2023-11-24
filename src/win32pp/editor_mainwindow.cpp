@@ -262,6 +262,29 @@ bool MainWindowFrame::loadTileSet() {
 
 }
 
+void MainWindowFrame::updateHereLists(const bool objectsHere, const bool charsHere,
+                                      const GameMap* inMap, const int* row, const int* col) {
+
+    const GameMap* gameMap = inMap ? inMap : gameWorldController->getGameMap();
+    const int& selectedRow = row ? *row : gameWorldController->getSelectedRow();
+    const int& selectedCol = col ? *col : gameWorldController->getSelectedCol();
+    
+    // Update the character's on the new tile.
+
+    EntitiesHerePanel& herePanel = reinterpret_cast<EntitiesHerePanel&>(entitiesHereDocker->GetView());
+
+    if(objectsHere) {
+        const std::vector<GameObject>& objectVec = gameMap->getGameObjectsAtRowCol(selectedRow, selectedCol);
+        herePanel.updateObjectList(objectVec);
+    }
+
+    if(charsHere) {
+        const std::vector<GameCharacter>& charVec = gameMap->getGameCharactersAtRowCol(selectedRow, selectedCol);
+        herePanel.updateCharacterList(charVec);
+    }
+
+}
+
 void MainWindowFrame::updateStatusbar(const int& index) {
 
     const int currentRow = gameWorldController->getSelectedRow();
@@ -333,31 +356,6 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 // Public Interface Functions
 // Refer to the interface header file for more information.
 //=============================================================================
-
-//-----------------------------------------------------------------------------
-// onSelectedTileChanged
-//-----------------------------------------------------------------------------
-
-bool MainWindowFrame::onSelectedTileChanged(const int& row, const int& col) {
-    
-    const GameMap* gameMap = gameWorldController->getGameMap();
-
-    const std::vector<GameObject>& objectVec = gameMap->getGameObjectsAtRowCol(row, col);
-    const std::vector<GameCharacter>& charVec = gameMap->getGameCharactersAtRowCol(row, col);
-
-    EntitiesHerePanel& herePanel = reinterpret_cast<EntitiesHerePanel&>(entitiesHereDocker->GetView());
-
-    herePanel.updateObjectList(objectVec);
-    herePanel.updateCharacterList(charVec);
-
-    updateFeatureMenu(gameMap->indexFromRowCol(row, col));
-    updateStatusbar(gameMap->indexFromRowCol(row, col));
-
-    GameMapPanel& mapPanel = reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView());
-    mapPanel.onNewTileSelected();
-
-    return true;
-}
 
 //-----------------------------------------------------------------------------
 // onSaveFileDialog

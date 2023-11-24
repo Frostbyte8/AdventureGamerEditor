@@ -98,15 +98,18 @@ class MainWindowInterface {
         /// Sent to notify the main window that the objects have changed
         /// @param the list has changed in size, or a name of an object has
         /// changed
+        /// @param true if the object was moved to the currently selected tile
         ///--------------------------------------------------------------------
-        virtual void onGameObjectsChanged(const bool listChanged) = 0;
+        virtual void onGameObjectsChanged(const bool listChanged, const bool updateHereList) = 0;
 
         ///--------------------------------------------------------------------
         /// Sent to notify the main window that the characters have changed
         /// @param the list has changed in size, or a name of a character has
         /// changed
+        /// @param true if the character was moved to the currently selected
+        /// tile
         ///--------------------------------------------------------------------
-        virtual void onGameCharactersChanged(const bool listChanged) = 0;
+        virtual void onGameCharactersChanged(const bool listChanged, const bool updateHereList) = 0;
                      
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the
@@ -122,6 +125,11 @@ class MainWindowInterface {
         /// dialog is finished
         ///--------------------------------------------------------------------
         virtual void finishedEditTileDescriptionDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when the tile the user is editing has changed
+        ///--------------------------------------------------------------------
+        virtual void onSelectedTileChanged() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent to notify the window that an individual tile has been updated.
@@ -194,15 +202,6 @@ class MainWindowInterface {
         /// Sent when the dimensions of the game world have changed
         ///--------------------------------------------------------------------
         virtual void onWorldResized() = 0;
-
-
-
-
-        ///--------------------------------------------------------------------
-        /// Sent when the user is trying to select a new tile
-        /// @return true if the selection was valid, false if it was not
-        ///--------------------------------------------------------------------
-        virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
 
 
 

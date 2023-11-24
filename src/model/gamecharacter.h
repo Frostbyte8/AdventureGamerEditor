@@ -212,6 +212,14 @@ class GameCharacter {
                 const int& getID() const {
                     return base.ID;
                 }
+
+                const int& getRow() const {
+                    return base.y;
+                }
+
+                const int& getCol() const {
+                    return base.x;
+                }
                 
 
             //private:

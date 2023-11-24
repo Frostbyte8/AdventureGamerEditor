@@ -93,8 +93,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
-        virtual void onGameObjectsChanged(const bool listChanged);
-        virtual void onGameCharactersChanged(const bool listChanged);
+        virtual void onGameObjectsChanged(const bool listChanged, const bool updateHereList);
+        virtual void onGameCharactersChanged(const bool listChanged, const bool updateHereList);
         
         virtual bool canCreateDialog(const int& whichDialogType) const;
         virtual void onDialogEnd(const int& whichDialogType);
@@ -109,6 +109,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual bool startEditTileDescriptionDialog(const std::string& name, const std::string& description);
         virtual void finishedEditTileDescriptionDialog();
         virtual void onTileUpdated(const int& index, const int& tileUpdateFlags);
+
+        virtual void onSelectedTileChanged();
         virtual void onDrawingTileChanged();
 
         virtual bool startEditStoryAndSummaryDialog(const std::string& story, const std::string& summary);
@@ -125,7 +127,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         
         // Functions that are being cleaned
 
-        virtual bool onSelectedTileChanged(const int& row, const int& col);
         virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);       
 
 	protected:
@@ -154,6 +155,10 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         void updateFeatureMenu(const int& index);
         void CreateMenuBar();
         bool loadTileSet();
+
+        void updateHereLists(const bool objectsHere, const bool charsHere, 
+                             const GameMap* inMap = NULL, const int* row = NULL, 
+                             const int* col = NULL);
 
         void updateTitleBar(const bool changeMadeOnly);
 

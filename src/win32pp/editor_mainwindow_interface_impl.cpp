@@ -51,10 +51,14 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 /// onGameCharactersChanged
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::onGameCharactersChanged(const bool listChanged) {
+void MainWindowFrame::onGameCharactersChanged(const bool listChanged, const bool updateHereList) {
 
     if(listChanged) {
         entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+    }
+
+    if(updateHereList) {
+        updateHereLists(false, true);
     }
 
     updateTitleBar(true);
@@ -65,16 +69,38 @@ void MainWindowFrame::onGameCharactersChanged(const bool listChanged) {
 /// onGameObjectsChanged
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::onGameObjectsChanged(const bool listChanged) {
+void MainWindowFrame::onGameObjectsChanged(const bool listChanged, const bool updateHereList) {
 
     if(listChanged) {
         entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+    }
+
+    if (updateHereList) {
+        updateHereLists(true, false);
     }
 
     updateTitleBar(true);
 
 }
 
+///----------------------------------------------------------------------------
+/// onSelectedTileChanged
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onSelectedTileChanged() {
+
+    const GameMap* gameMap = gameWorldController->getGameMap();
+    const int& selectedRow = gameWorldController->getSelectedRow();
+    const int& selectedCol = gameWorldController->getSelectedCol();
+
+    updateHereLists(true, true, gameMap, &selectedRow, &selectedCol);
+    updateStatusbar(gameWorldController->getSelectedTileIndex());
+
+    // Finally, we need to tell the map that it too needs to update.
+
+    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onNewTileSelected();
+
+}
 
 ///----------------------------------------------------------------------------
 /// onTileUpdated
@@ -82,7 +108,7 @@ void MainWindowFrame::onGameObjectsChanged(const bool listChanged) {
 
 void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags) {
 
-    // TODO: Statusbar and Feature Menu only need to be updated if this tile
+    // TODO: Status bar and Feature Menu only need to be updated if this tile
     // is the selected tile.
 
     if(tileUpdateFlags & EditorTileUpdateFlags::Description) {

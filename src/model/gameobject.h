@@ -287,8 +287,8 @@ class GameObject {
                     
                     // Update cached location information
                     
-                    base.x = 0;
-                    base.y = 0;
+                    base.x = -1;
+                    base.y = -1;
                     base.flags2 |= GameObjectFlags2::NotOnGround; // Set this if it isn't set already
                     base.isLocated = GameObjectConstants::LocatedOnCharacter;
                     base.creatureID = charID;
@@ -305,8 +305,8 @@ class GameObject {
 
                     // Update cached location information
 
-                    base.x = 0;
-                    base.y = 0;
+                    base.x = -1;
+                    base.y = -1;
                     base.flags2 |= GameObjectFlags2::NotOnGround; // Set this if it isn't set already
                     base.isLocated = GameObjectConstants::LocatedOnPlayer;
                     base.creatureID = GameObjectConstants::NotOnCreature;
@@ -366,6 +366,14 @@ class GameObject {
 
                 const uint8_t getFlags2() const  {
                     return base.flags2;
+                }
+
+                const int& getRow() const {
+                    return base.y;
+                }
+
+                const int& getCol() const {
+                    return base.x;
                 }
 
             //private:
