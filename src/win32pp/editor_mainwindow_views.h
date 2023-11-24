@@ -184,6 +184,7 @@ class RoadPalettePanel : public ScrollPanelBaseClass {
         RoadPalettePanel(MainWindowInterface* inMainWindow, GameWorldController* gwc);// : gameWorldController(gwc), backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow) {}
         virtual ~RoadPalettePanel();
         
+        void onDrawingTileChanged();
         void setTileset(CBitmap& inTileSet);
 
     protected:

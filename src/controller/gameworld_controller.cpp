@@ -537,9 +537,13 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
 
     if(!updateSelectionIfValid(row, col)) {
+        // Could be many reasons: Clicked out side the map bounds, some other
+        // function screwed up, so if an error happens, that will be the
+        // the caller's problem.
         return false;
     }
 
+    // TODO: This function needs to be updated
     mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
 
     return true;
@@ -558,7 +562,31 @@ bool GameWorldController::trySelectNewTile(const int& index) {
         return false;
     }
 
+    // TODO: This function needs to be updated
     mainWindow->onSelectedTileChanged(selectedRow, selectedCol);
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// trySetDrawingTile - Set which tile is being drawn with. If the index is
+/// invalid, change nothing.
+/// @param an integer specifying what tile to draw with. Must be between 0 and
+/// 31. 0-15 For grassy tiles, 16-31 for dirt tiles.
+/// @return true if the tile being drawn with has changed, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::trySetDrawingTile(const int& newDrawTileIndex) {
+
+    if(newDrawTileIndex < 0 || newDrawTileIndex > 31) {
+        // Could be many reasons: Click out side the map bounds, some other
+        // function screwed up, so if an error happens, that will be the
+        // the caller's problem.
+        return false;
+    }
+
+    drawingTileIndex = newDrawTileIndex;
+    mainWindow->onDrawingTileChanged();
 
     return true;
 }

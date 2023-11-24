@@ -131,6 +131,11 @@ class MainWindowInterface {
         virtual void onTileUpdated(const int& index, const int& tileUpdateFlags) = 0;
 
         ///--------------------------------------------------------------------
+        /// Sent when the user selected a new tile to draw with
+        ///--------------------------------------------------------------------
+        virtual void onDrawingTileChanged() = 0;
+
+        ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 
         /// Game World's story/summary
         /// @param a string containing the game's story
@@ -191,17 +196,15 @@ class MainWindowInterface {
         virtual void onWorldResized() = 0;
 
 
-        ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to resize the
-        /// Game World
-        ///--------------------------------------------------------------------
-        //virtual void onResizeWorld() = 0;
+
 
         ///--------------------------------------------------------------------
         /// Sent when the user is trying to select a new tile
         /// @return true if the selection was valid, false if it was not
         ///--------------------------------------------------------------------
         virtual bool onSelectedTileChanged(const int& row, const int& col) = 0;
+
+
 
 
 

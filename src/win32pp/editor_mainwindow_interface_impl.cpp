@@ -61,7 +61,6 @@ void MainWindowFrame::onGameCharactersChanged(const bool listChanged) {
 
 }
 
-
 ///----------------------------------------------------------------------------
 /// onGameObjectsChanged
 ///----------------------------------------------------------------------------
@@ -75,6 +74,7 @@ void MainWindowFrame::onGameObjectsChanged(const bool listChanged) {
     updateTitleBar(true);
 
 }
+
 
 ///----------------------------------------------------------------------------
 /// onTileUpdated
@@ -90,6 +90,14 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
         updateFeatureMenu(index);
     }
 
+}
+
+///----------------------------------------------------------------------------
+/// onDrawingTileChanged
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onDrawingTileChanged() {
+    reinterpret_cast<RoadPalettePanel&>(roadSelectorDocker->GetView()).onDrawingTileChanged();
 }
 
 ///----------------------------------------------------------------------------

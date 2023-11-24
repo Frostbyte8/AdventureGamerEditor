@@ -573,6 +573,19 @@ LRESULT RoadPalettePanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 //=============================================================================
+// Public Functions
+//=============================================================================
+
+///----------------------------------------------------------------------------
+/// onDrawingTileChanged - Received when the tile being drawn with has changed.
+///----------------------------------------------------------------------------
+
+void RoadPalettePanel::onDrawingTileChanged() {
+    updateBackBuffer();
+    InvalidateRect(0);
+}
+
+//=============================================================================
 // Private Functions
 //=============================================================================
 
@@ -593,21 +606,8 @@ LRESULT RoadPalettePanel::onLButtonDown(const WORD &x, const WORD &y) {
     GetScrollInfo(SB_VERT, si);
 
     const int newTileSelected =  (y + si.nPos) / tileHeight;
-
-    // Sanitize input and ensure the the user clicked a valid tile
-
-    if (newTileSelected < 0 || 
-        newTileSelected >= tileHeight * (EditorConstants::DefaultCols * 2)) { // warning C4018: '>=': signed/unsigned mismatch
-
-        return 0;
-    }
-
-    // TODO: Invalidate old rect and new rect, and
-    // TODO: UpdateBackBufferTile()
-
-    gameWorldController->setDrawingTileIndex(newTileSelected);
-    updateBackBuffer();
-    InvalidateRect(0);
+    
+    gameWorldController->trySetDrawingTile(newTileSelected);
 
     return 0;
 }

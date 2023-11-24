@@ -29,11 +29,6 @@ class GameWorldController {
         const GameTile& getSelectedTile() const { return gameMap->getTile(selectedTileIndex); }
 
         bool hasUnsavedChanges() const;
-
-        void setDrawingTileIndex(const int& newDrawIndex) {
-            // TODO: Caps
-            drawingTileIndex = newDrawIndex;
-        }      
         
         bool tryAlterObject(const int& alterType, const int& index);
         bool tryAddObject(GameObject::Builder& objectBuilder);
@@ -61,6 +56,9 @@ class GameWorldController {
         bool trySelectNewTile(const int& row, const int& col);
         bool trySelectNewTile(const int& index);
 
+        bool trySetDrawingTile(const int& newDrawTileIndex);
+
+
         bool tryEditSummaryAndStory();
         bool tryUpdateStoryAndSummary(std::string inStory, std::string inSummary);
 
@@ -76,10 +74,7 @@ class GameWorldController {
         
         bool tryChangeTile();
         bool tryMakeTileDark();
-        
-        //bool tryUpdateSelectedTile(const int& newIndex);
-        //bool tryUpdateSelectedTile(const int& newRow, const int& newCol);
-        
+                
         bool tryAddFeatureToTile(const int& modType);
         bool tryAddFirstJumpConnection();
         bool tryAddSecondJumpConnection();
