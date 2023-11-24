@@ -82,6 +82,9 @@ void MainWindowFrame::onGameObjectsChanged(const bool listChanged) {
 
 void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags) {
 
+    // TODO: Statusbar and Feature Menu only need to be updated if this tile
+    // is the selected tile.
+
     if(tileUpdateFlags & EditorTileUpdateFlags::Description) {
         updateStatusbar(index);
     }

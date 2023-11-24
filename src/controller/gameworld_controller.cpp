@@ -635,8 +635,17 @@ bool GameWorldController::tryDrawOnSelectedTile() {
             return false;
         }
     }
-    
+   
     gameMap->updateTile(gmKey, selectedTileIndex, drawingTile.build());
+
+    int updateFlags = EditorTileUpdateFlags::Type;
+
+    if(!gameMap->getTile(selectedTileIndex).getDescription().empty()) {
+        updateFlags |= EditorTileUpdateFlags::Description;
+    }
+
+    mainWindow->onTileUpdated(selectedTileIndex, updateFlags);
+
     return true;
 }
 
@@ -1150,6 +1159,10 @@ bool GameWorldController::tryChangeTile() {
 
 bool GameWorldController::tryAddFeatureToTile(const int& modType) {
     
+    mainWindow->displayErrorMessage("Don't bother. It doesn't work.", "Sorry");
+
+    return false;
+
     const GameTile& gameTile    = gameMap->getTile(selectedTileIndex);
     GameTile::Builder newTile(gameTile);
 
