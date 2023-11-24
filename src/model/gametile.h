@@ -180,6 +180,8 @@ class GameTile {
                     *this = sprite(base.drawInfo.spriteIndex +
                                    ((base.drawInfo.spriteModifier & 8) << 4));
 
+                    *this = flags(base.flags & ~(TileFlags::Dark));
+
                     return *this;
                 }
 

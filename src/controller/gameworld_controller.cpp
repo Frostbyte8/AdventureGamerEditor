@@ -625,16 +625,18 @@ bool GameWorldController::tryDrawOnSelectedTile() {
             return false;
         }
     }
+    else if(selectedTile.hasSwitch()) {
+        if(!tryRemoveSwitchSisterTile()) {
+            return false;
+        }
+    }
+    else if(selectedTile.isDark() || selectedTile.hasGate()) {        
+        if(!tryRemoveSwitch()) {
+            return false;
+        }
+    }
     
-    
-    // If Tile is Dark
-    // If Tile is Gate
-    // If Tile is Switch
-
-    // If Tile is Jumppad
-
     gameMap->updateTile(gmKey, selectedTileIndex, drawingTile.build());
-
     return true;
 }
 
@@ -1405,20 +1407,35 @@ bool GameWorldController::tryMakeTileDark() {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// vecIndexInRange - Tests if the index given is in range in the vector given.
-/// @param Vector to test the range on
-/// @param index to be checked
-/// @return true if the index is in range, false if it is not.
+/// askAndUpdateSisterTile - For connected tiles, prompt the user about those
+/// tiles being updated, and if they say yes, update them.
+/// @param the messageID from the langmap that should be displayed
+/// @param the titleID from the langmap that should be displayed
+/// @param the x-coordinate of the sister tile
+/// @param the y-coordinate of the sister tile
+/// @return true if the other tile was updated, false if it was not.
 ///----------------------------------------------------------------------------
 
-template <typename T>
-bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) const {
-    if (!vec.empty()) {
-        if (index >= 0 && index < vec.size()) {
-            return true;
-        }
+inline bool GameWorldController::askAndUpdateSisterTile(const std::string& messageId, const std::string& titleID,
+                                                        const int& x, const int& y) {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    std::string messageText = langMap.get(messageId);
+    const std::string messageTitle = langMap.get(titleID);
+
+    formatCoordinateString(messageText, x, y);
+
+    const int response = mainWindow->askYesNoQuestion(messageText, messageTitle, true);
+
+    if (response != GenericInterfaceResponses::Yes) {
+        return false;
     }
-    return false;
+
+    gameMap->clearTileFeature(gameMap->indexFromRowCol(y, x));
+
+    return true;
+
 }
 
 ///----------------------------------------------------------------------------
@@ -1447,14 +1464,13 @@ inline void GameWorldController::formatCoordinateString(std::string& str, const 
 
 ///----------------------------------------------------------------------------
 /// tryRemoveSisterJumppad - Attempts to remove the Jump pad that a jump pad is
-/// connected to, if one exists.
-/// @returns true if a Jump pad was removed, or if none existed, false if it
+/// connected to, if one exists. It does this by updating the tile to remove
+/// the jump feature and then updating the jump pad list.
+/// @return true if a Jump pad was removed, or if none existed, false if it
 /// could not be removed.
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryRemoveSisterJumppad() {
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
 
     // TODO: Make sure jump pads can only be connected once.
     // Possibly make a feature where jump pads can jump to any tile that does
@@ -1464,27 +1480,83 @@ bool GameWorldController::tryRemoveSisterJumppad() {
 
     if (otherJumpPad) {
 
-        // This jump pad is connected, so we need to make sure the user wants to remove that
-        // too.
-
-        std::string messageText = langMap.get("RemoveOtherJumppadText");
-        std::string messageTitle = langMap.get("RemoveOtherJumppadTitle");
-
-        formatCoordinateString(messageText, otherJumpPad->getX(), otherJumpPad->getY());
-
-        const int response = mainWindow->askYesNoQuestion(messageText, messageTitle, true);
-
-        if (response != GenericInterfaceResponses::Yes) {
+        if (!askAndUpdateSisterTile("RemoveOtherJumppadText", "RemoveOtherJumppadTitle", 
+                                    otherJumpPad->getX(), otherJumpPad->getY())) {
             return false;
         }
 
-        gameMap->clearTileFeature(gameMap->indexFromRowCol(otherJumpPad->getRow(), otherJumpPad->getColumn()));
         gameMap->removeJumpPoint(SimplePoint(selectedCol, selectedRow), *otherJumpPad);
 
     }
 
     return true; 
 
+}
+
+///----------------------------------------------------------------------------
+/// tryRemoveSwitch - Attempts to remove a switch that is connected to another
+/// tile. It does this by removing the switch feature from the the tile, and
+/// then removing that switch from the switch list.
+/// @return true if a switched was removed, or if none existed, false if it
+/// could not be removed.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryRemoveSwitch() {
+
+    const SimplePoint* connectedTilePoint = gameMap->findSwitchPoint(selectedRow, selectedCol);
+
+    if (connectedTilePoint) {
+
+        if(!askAndUpdateSisterTile("RemoveSwitchText", "RemoveSwitchTitle",
+                                   connectedTilePoint->getX(), connectedTilePoint->getY())) {
+            return false;
+        }
+
+        gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), *connectedTilePoint);
+
+    }
+    
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// tryRemoveSwitchSisterTile - Remove the other tile that is connected to the
+/// switch tile (Gate or Dark Tile).
+/// @return true if a gate or dark tile was removed, or none existed, false if
+/// was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryRemoveSwitchSisterTile() {
+
+    const SimplePoint* connectedTilePoint = gameMap->findSwitchPoint(selectedRow, selectedCol);
+
+    if (connectedTilePoint) {
+
+        const GameTile& sisterTile = gameMap->getTile(gameMap->indexFromRowCol(connectedTilePoint->getRow(),
+                                                                               connectedTilePoint->getColumn()));
+
+        std::string title;
+        std::string ID;
+
+        if(sisterTile.hasGate()) {
+            title = "RemoveGateText";
+            ID = "RemoveGateTitle";
+        }
+        else {
+            title = "RemoveDarknessText";
+            ID = "RemoveDarknessTitle";
+        }
+
+        if (!askAndUpdateSisterTile(title, ID,
+                                    connectedTilePoint->getX(), connectedTilePoint->getY())) {
+            return false;
+        }
+
+        gameMap->removeSwitch(SimplePoint(selectedCol, selectedRow), *connectedTilePoint);
+
+    }
+
+    return true;
 }
 
 ///----------------------------------------------------------------------------
@@ -1540,6 +1612,23 @@ bool GameWorldController::validRequestedTileRowCol(const int& row, const int& co
 
     return false;
 
+}
+
+///----------------------------------------------------------------------------
+/// vecIndexInRange - Tests if the index given is in range in the vector given.
+/// @param Vector to test the range on
+/// @param index to be checked
+/// @return true if the index is in range, false if it is not.
+///----------------------------------------------------------------------------
+
+template <typename T>
+bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) const {
+    if (!vec.empty()) {
+        if (index >= 0 && index < vec.size()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 ///----------------------------------------------------------------------------

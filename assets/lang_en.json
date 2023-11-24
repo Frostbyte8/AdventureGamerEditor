@@ -219,12 +219,12 @@
 
     // Program Messages
 
-    "UnsavedChangesText"        : "You have unsaved changes. Do you want to save them now?",
-    "UnsavedChangesTitle"       : "Save Changes?",
+    "UnsavedChangesText"			: "You have unsaved changes. Do you want to save them now?",
+    "UnsavedChangesTitle"			: "Save Changes?",
 
-	"ReliantObjectsTextStart"   : "Deleting this object will affect the following objects:",
-	"ReliantObjectsTextEnd"		: "Do you still want to delete this object?",
-	"ReliantObjectsTitle"		: "Update Reliant Objects?",
+	"ReliantObjectsTextStart"		: "Deleting this object will affect the following objects:",
+	"ReliantObjectsTextEnd"			: "Do you still want to delete this object?",
+	"ReliantObjectsTitle"			: "Update Reliant Objects?",
 
 	"MoveCharHeldObjectsTextStart"	: "The following objects this character is holding will be placed at 0,0 if this character is deleted:",
 	"MoveCharHeldObjectsTextEnd"	: "Do you still want to delete this character?",
@@ -233,9 +233,17 @@
 	"ResizeSmallerWarningText"		: "The new dimensions specified are smaller than the Game World's current size. Connected tiles may lose their features, and objects and characters that are outside thew new bounds will be moved to 0,0. Are you sure you want to do this?",
 	"ResizeSmallerWarningTitle"		: "Continue with Resize?",
 
-	"RemoveOtherJumppadText"		: "Editing this tile will also remove the Jump pad at (%d, %d). Continue?",
+	"RemoveOtherJumppadText"		: "Editing this tile will also remove the Jump pad at (%d,%d). Continue?",
 	"RemoveOtherJumppadTitle"		: "Remove other Jump pad?",
 
+	"RemoveSwitchText"				: "Editing this tile will also remove the switch at (%d,%d). Continue?",
+	"RemoveSwitchTitle"				: "Remove Switch?",
+
+	"RemoveGateText"				: "Editing this tile will also remove the Gate at (%d,%d). Continue?",
+	"RemoveGateTitle"				: "Remove Gate?",
+
+	"RemoveDarknessText"			: "Editing this tile will also remove the darkness on the tile at (%d,%d). Continue?",
+	"RemoveDarknessTitle"			: "Remove Darkness?",
 
     // Error Messages
 
