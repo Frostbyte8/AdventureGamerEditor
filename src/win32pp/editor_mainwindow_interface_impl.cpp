@@ -48,39 +48,25 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 }
 
 ///----------------------------------------------------------------------------
-/// onGameCharactersChanged
+/// onEntitiesChanged
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::onGameCharactersChanged(const bool listChanged, const bool updateHereList) {
+void MainWindowFrame::onEntitiesChanged(const bool& objectsListChanged, const bool& objectsHereChanged,
+                                        const bool& charsListChanged, const bool& charsHereChanged) {
 
-    if(listChanged) {
-        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
-    }
-
-    if(updateHereList) {
-        updateHereLists(false, true);
-    }
-
-    updateTitleBar(true);
-
-}
-
-///----------------------------------------------------------------------------
-/// onGameObjectsChanged
-///----------------------------------------------------------------------------
-
-void MainWindowFrame::onGameObjectsChanged(const bool listChanged, const bool updateHereList) {
-
-    if(listChanged) {
+    if (objectsListChanged) {
         entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
     }
 
-    if (updateHereList) {
-        updateHereLists(true, false);
+    if (charsListChanged) {
+        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+    }
+
+    if (objectsHereChanged || charsHereChanged) {
+        updateHereLists(objectsHereChanged, charsHereChanged);
     }
 
     updateTitleBar(true);
-
 }
 
 ///----------------------------------------------------------------------------
