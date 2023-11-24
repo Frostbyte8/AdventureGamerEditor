@@ -295,6 +295,8 @@
 	"ErrTriedInvalidFeatureText"	: "Tried to specify an invalid feature for the given tile type.",
 	"ErrTriedInvalidFeatureTitle"	: "Invalid Feature for Tile",
 
+	"ErrGateCantBeDarkText"			: "Tiles with Gate features cannot be made dark.",
+	"ErrGateCantBeDarkTitle"		: "Cannot add Darkness",
     
     // Validators
 

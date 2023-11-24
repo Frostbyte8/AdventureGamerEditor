@@ -611,6 +611,33 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 }
 
 ///----------------------------------------------------------------------------
+/// tryMakeTileDark - Attempts to make the selected tile tile dark.
+/// @return true if the dark flag was applied to the tile, or it was already
+/// dark. false if it was unable to make the tile dark.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryMakeTileDark() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+    
+    if(currentTile.hasGate()) {
+        mainWindow->displayErrorMessage(langMap.get("ErrGateCantBeDarkText"),
+                                        langMap.get("ErrGateCantBeDarkTitle"));
+        return false;
+    }
+    else if(currentTile.isDark()) {
+        return true;
+    }
+
+    GameTile::Builder updatedTile(currentTile);
+    updatedTile.flags(currentTile.getFlags() | TileFlags::Dark);
+    gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
 /// trySelectNewTile - Tries to change the tile that is selected on the game
 /// map. It will notify the main window if tile has changed.
 /// @param new row to be selected
@@ -1377,28 +1404,6 @@ bool GameWorldController::tryEndSwitchConnection() {
 
     return true;
 
-}
-
-///----------------------------------------------------------------------------
-/// tryMakeTileDark - Attempts to make a tile dark.
-/// @return true if the operation was successful, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryMakeTileDark() {
-
-    const GameTile& gameTile = gameMap->getTile(selectedTileIndex);
-
-    if (gameTile.hasGate()) {
-        return false;
-    }
-
-    GameTile::Builder newTile(gameTile);
-
-    newTile.flags(gameTile.getFlags() | TileFlags::Dark);
-
-    gameMap->updateTile(gmKey, selectedTileIndex, newTile.build());
-
-    return true;
 }
 
 //=============================================================================
