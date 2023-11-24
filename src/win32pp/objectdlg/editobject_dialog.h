@@ -22,7 +22,7 @@ class EditObjectDialog : public EditDialogBase {
 
         // Constructors
         EditObjectDialog(MainWindowInterface* inMainWindow, const GameMap* inGameMap, 
-                            HWND inParentHandle, bool inEditObject);
+                         HWND inParentHandle, bool inEditObject);
 
         // Accessors
         GameObject::Builder getAlteredObject();
@@ -40,7 +40,7 @@ class EditObjectDialog : public EditDialogBase {
         virtual LRESULT OnNotify(WPARAM wParam, LPARAM lParam);
         virtual void moveControls();
         virtual bool trySaveData();
-        
+       
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
     private:

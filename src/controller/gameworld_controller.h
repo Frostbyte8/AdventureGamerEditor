@@ -73,10 +73,9 @@ class GameWorldController {
 
         //
                
-        bool tryChangeTile();
         bool tryMakeTileDark();
                 
-        bool tryAddFeatureToTile(const int& modType);
+
         bool tryAddFirstJumpConnection();
         bool tryAddSecondJumpConnection();
         

@@ -297,7 +297,8 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
 
         txtProperties[0].EnableWindow(!isChecked);
 
-    } else if (ctrlID == QualitiesTab::ControlIDs::Money) {
+    } 
+    else if (ctrlID == QualitiesTab::ControlIDs::Money) {
 
         for (int i = 0; i < 8; ++i) {
             if (i != which &&
@@ -730,14 +731,16 @@ void EditObjectLocationsTab::locatedAtChanged(const WORD& ctrlID, const WORD& ct
     if (ctrlID == LocationsTab::ControlIDs::OnGround && isChecked) {
         txtGroundCoord[0].EnableWindow(TRUE);
         txtGroundCoord[1].EnableWindow(TRUE);
-    } else {
+    } 
+    else {
         txtGroundCoord[0].EnableWindow(FALSE);
         txtGroundCoord[1].EnableWindow(FALSE);
     }
 
     if (ctrlID == LocationsTab::ControlIDs::OnCharacter && isChecked) {
         cbxWhichCharacter.EnableWindow(TRUE);
-    } else {
+    } 
+    else {
         cbxWhichCharacter.EnableWindow(FALSE);
     }
 
@@ -766,13 +769,17 @@ void EditObjectLocationsTab::canBeHeldByEntities(const BOOL canHold) {
 
     btnLocatedAt[1].EnableWindow(canHold);
     btnLocatedAt[2].EnableWindow(canHold);
-    cbxWhichCharacter.EnableWindow(canHold);
 
     if (!canHold) {
         locatedAtChanged(LocationsTab::ControlIDs::OnGround, BN_CLICKED);
         btnLocatedAt[0].SetCheck(BST_CHECKED);
         btnLocatedAt[1].SetCheck(BST_UNCHECKED);
         btnLocatedAt[2].SetCheck(BST_UNCHECKED);
+    }
+    else {
+        if(btnLocatedAt[1].GetCheck() == BST_CHECKED) {
+            cbxWhichCharacter.EnableWindow(true);
+        }
     }
 
 }

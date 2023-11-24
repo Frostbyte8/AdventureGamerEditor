@@ -195,6 +195,11 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 bool EditObjectDialog::trySaveData() {
 
     std::vector<EOTabViewBase*> tabPages;
+
+    // TODO: This is a bug that needs to be fixed. The Tabs need some way of
+    // communicating with the dialog. So for now, unfortunately, a "cheap" hack.
+    // :(
+    locationsTab->canBeHeldByEntities(!qualitiesTab->isFixedFlagChecked());
     
     const size_t numTabs = 4;
     tabPages.reserve(numTabs);
