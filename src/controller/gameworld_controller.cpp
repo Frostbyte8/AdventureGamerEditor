@@ -1092,29 +1092,6 @@ bool GameWorldController::tryChangeTile() {
 }
 
 ///----------------------------------------------------------------------------
-/// tryGetTileCopy - tries to get a copy of the tile at the specified row/col.
-/// @param row of the tile get
-/// @param column of the tile to get
-/// @returns true if it was able to get a copy, false if it was not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const {
-
-    if(gameMap->isRowColInMapBounds(row, col)) {
-        const unsigned int index = gameMap->indexFromRowCol(row, col);
-        GameTile::Builder builder(gameMap->getTile(index));
-        outTile = builder.build();
-        return true;
-    }
-    else {
-        mainWindow->displayErrorMessage(LanguageMapper::getInstance().get("FileMenu"),
-                                        LanguageMapper::getInstance().get("FileMenu"));
-    }
-
-    return false;
-}
-
-///----------------------------------------------------------------------------
 /// tryAddFeatureToTile - Attempts to Add a feature to a tile.
 /// @param What feature to try and set to the tile
 /// @return true if the operation was successful, false if it was not.

@@ -69,9 +69,7 @@ class GameWorldController {
         bool tryResizeWorld(const int& numRows, const int& numCols);
 
         //
-       
-        bool tryGetTileCopy(const int& row, const int& col, GameTile& outTile) const;
-        
+               
         bool tryChangeTile();
         bool tryMakeTileDark();
                 
