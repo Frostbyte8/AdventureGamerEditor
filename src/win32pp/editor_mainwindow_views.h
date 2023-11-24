@@ -230,6 +230,7 @@ class GameMapPanel : public ScrollPanelBaseClass {
         //void onZoomChange();
         void onMapSizeChanged();
         void onNewTileSelected();
+        void onTileUpdated();
         
         void setTileset(CBitmap& inTileSet);
         void updateBackBuffer();

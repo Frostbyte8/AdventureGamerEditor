@@ -137,9 +137,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     const WORD ID = LOWORD(wParam);
     
     if (ID >= MenuIDs::AddStart && ID <= MenuIDs::AddSafeHaven) {
-        if (gameWorldController->tryAddFeatureToTile((ID - MenuIDs::AddStart) + 1)) {
-            reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
-        }
+        gameWorldController->tryAddFeatureToSelectedTile((ID - MenuIDs::AddStart) + 1);
         return TRUE;
     }  
 

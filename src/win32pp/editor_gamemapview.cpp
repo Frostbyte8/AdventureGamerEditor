@@ -121,10 +121,20 @@ void GameMapPanel::onMapSizeChanged() {
 
 ///----------------------------------------------------------------------------
 /// onNewTileSelected - The tile selected has changed, so update the backbuffer
-/// to reflect that.
+/// to reflect that. TODO: update and redraw the affected tiles.
 ///----------------------------------------------------------------------------
 
 void GameMapPanel::onNewTileSelected() {
+    updateBackBuffer();
+    InvalidateRect();
+}
+
+///----------------------------------------------------------------------------
+/// onTileUpdated - A tile was updated somewhere on the map, so update the
+/// back buffer. TODO: update and redraw the affected tiles.
+///----------------------------------------------------------------------------
+
+void GameMapPanel::onTileUpdated() {
     updateBackBuffer();
     InvalidateRect();
 }
@@ -178,15 +188,6 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     // WM_LBUTTONDOWN
 
     gameWorldController->tryDrawOnSelectedTile();
-    
-    /*
-    if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
-        gameWorldController->tryChangeTile();
-    }
-    */
-
-    updateBackBuffer();
-    InvalidateRect(0);
 
     return 0;
 }

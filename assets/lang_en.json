@@ -291,6 +291,10 @@
 
 	"ErrGrassCantHaveDescText"		: "Grass Tiles cannot have a name and description.",
 	"ErrGrassCantHaveDescTitle"		: "Invalid Tile",
+
+	"ErrTriedInvalidFeatureText"	: "Tried to specify an invalid feature for the given tile type.",
+	"ErrTriedInvalidFeatureTitle"	: "Invalid Feature for Tile",
+
     
     // Validators
 

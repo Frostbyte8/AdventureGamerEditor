@@ -80,6 +80,7 @@ void MainWindowFrame::onSelectedTileChanged() {
     const int& selectedCol = gameWorldController->getSelectedCol();
 
     updateHereLists(true, true, gameMap, &selectedRow, &selectedCol);
+    updateFeatureMenu(gameWorldController->getSelectedTileIndex());
     updateStatusbar(gameWorldController->getSelectedTileIndex());
 
     // Finally, we need to tell the map that it too needs to update.
@@ -103,6 +104,7 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
 
     if(tileUpdateFlags & EditorTileUpdateFlags::Type) {
         updateFeatureMenu(index);
+        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onTileUpdated();
     }
 
 }

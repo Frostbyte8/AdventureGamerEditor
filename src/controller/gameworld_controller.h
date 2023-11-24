@@ -46,18 +46,20 @@ class GameWorldController {
 
         bool tryDeleteCharacter(const int& charID);
        
-        bool tryEditTileDescription(const int& row = EditorConstants::IGNORE_ROW, 
-                                    const int& col = EditorConstants::IGNORE_COL);
-
-        bool tryUpdateTileDescription(std::string tileName, std::string tileDescription,
-                                      const int& row = EditorConstants::IGNORE_ROW,
-                                      const int& col = EditorConstants::IGNORE_COL);
+        bool tryAddFeatureToSelectedTile(const int& featureType);
 
         bool trySelectNewTile(const int& row, const int& col);
         bool trySelectNewTile(const int& index);
 
         bool trySetDrawingTile(const int& newDrawTileIndex);
         bool tryDrawOnSelectedTile();
+
+        bool tryEditTileDescription(const int& row = EditorConstants::IGNORE_ROW,
+                                    const int& col = EditorConstants::IGNORE_COL);
+
+        bool tryUpdateTileDescription(std::string tileName, std::string tileDescription,
+                                      const int& row = EditorConstants::IGNORE_ROW,
+                                      const int& col = EditorConstants::IGNORE_COL);
 
 
         bool tryEditSummaryAndStory();
@@ -93,6 +95,8 @@ class GameWorldController {
         inline bool validRequestedTileRowCol(const int& row, const int& col) const;
         inline bool wasRowColSpecified(const int& row, const int& col) const;
         inline void formatCoordinateString(std::string& str, const int& coord1, const int& coord2);
+
+        inline bool findAndRemoveConnection(const GameTile& tile);
 
         template <typename T>
         bool vecIndexInRange(const T& vec, const size_t& index) const;

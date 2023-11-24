@@ -105,7 +105,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual bool startEditCharacterDialog(GameCharacter::Builder& characterBuilder, const bool isEditingCharacter);
         virtual void finishedAlterCharacterDialog();
 
-
         virtual bool startEditTileDescriptionDialog(const std::string& name, const std::string& description);
         virtual void finishedEditTileDescriptionDialog();
         virtual void onTileUpdated(const int& index, const int& tileUpdateFlags);

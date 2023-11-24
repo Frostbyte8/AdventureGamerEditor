@@ -561,6 +561,56 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 //-----------------------------------------------------------------------------
 
 ///----------------------------------------------------------------------------
+/// tryAddFeatureToSelectedTile - Tries to add a feature to the tile that is
+/// currently selected
+/// @return true if the feature was added, or there was nothing to change,
+/// false if the feature could not be added.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
+
+    assert(featureType < TileModifiers::ALLMODS + 1);
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    // First, if the feature is already set, we won't do anything.
+
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if(currentTile.getSpriteModifier() == featureType) {
+        return true; // Nothing to do!
+    }
+
+    // Next we'll check to see if we can indeed add the specific modType to
+    // the tile
+
+    GameTile::Builder updatedTile(currentTile);
+    updatedTile.sprite(updatedTile.calculateSprite(currentTile.getSpriteIndex(), featureType));
+
+    if(!updatedTile.isModiferValid()) {
+        mainWindow->displayErrorMessage(langMap.get("ErrTriedInvalidFeatureText"),
+                                        langMap.get("ErrTriedInvalidFeatureTitle"));
+        return false;
+    }
+
+    // Okay, so this tile is okay, now we need to check if it has any
+    // connections to other tiles that may be affected by this tile being
+    // changed.
+
+    if (!findAndRemoveConnection(currentTile)) {
+        return false;
+    }
+
+    // Finally, we can update the tile.
+
+    gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
+    mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
 /// trySelectNewTile - Tries to change the tile that is selected on the game
 /// map. It will notify the main window if tile has changed.
 /// @param new row to be selected
@@ -649,23 +699,9 @@ bool GameWorldController::trySetDrawingTile(const int& newDrawTileIndex) {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryDrawOnSelectedTile() {
-
-    const GameTile& selectedTile = gameMap->getTile(selectedTileIndex);
-
-    if(selectedTile.hasJumpPad()) {
-        if(!tryRemoveSisterJumppad()) {
-            return false;
-        }
-    }
-    else if(selectedTile.hasSwitch()) {
-        if(!tryRemoveSwitchSisterTile()) {
-            return false;
-        }
-    }
-    else if(selectedTile.isDark() || selectedTile.hasGate()) {        
-        if(!tryRemoveSwitch()) {
-            return false;
-        }
+    
+    if(!findAndRemoveConnection(gameMap->getTile(selectedTileIndex))) {
+        return false;
     }
    
     gameMap->updateTile(gmKey, selectedTileIndex, drawingTile.build());
@@ -1480,6 +1516,35 @@ inline bool GameWorldController::askAndUpdateSisterTile(const std::string& messa
 
     return true;
 
+}
+
+///----------------------------------------------------------------------------
+/// findAndRemoveTile - Check if the tile has any connections to other tiles,
+/// if it does, update those tiles and remove jump or switch point.
+/// @param a constant reference to the game tile that may have connections
+/// @return true if the other tile was updated or there was no connection,
+/// false if the connection was not removed.
+///----------------------------------------------------------------------------
+
+inline bool GameWorldController::findAndRemoveConnection(const GameTile& tile) {
+    
+    if (tile.hasJumpPad()) {
+        if (!tryRemoveSisterJumppad()) {
+            return false;
+        }
+    }
+    else if (tile.hasSwitch()) {
+        if (!tryRemoveSwitchSisterTile()) {
+            return false;
+        }
+    }
+    else if (tile.isDark() || tile.hasGate()) {
+        if (!tryRemoveSwitch()) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 ///----------------------------------------------------------------------------
