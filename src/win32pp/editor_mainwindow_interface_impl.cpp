@@ -112,8 +112,7 @@ void MainWindowFrame::onStoryAndSummaryUpdated() {
 /// onWorldInfoUpdated
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::onWorldInfoUpdated(const GameInfo& gameInfo) {
-    const std::string& caption = gameInfo.getGameName();
+void MainWindowFrame::onWorldInfoUpdated() {
     updateTitleBar(false);
 }
 

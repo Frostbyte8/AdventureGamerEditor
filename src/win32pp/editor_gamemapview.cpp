@@ -176,12 +176,18 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     
     // TODO: Make sure it's the same tile twice. If not, forward the call to
     // WM_LBUTTONDOWN
+
+    gameWorldController->tryDrawOnSelectedTile();
     
+    /*
     if (gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
         gameWorldController->tryChangeTile();
-        updateBackBuffer();
-        InvalidateRect(0);
     }
+    */
+
+    updateBackBuffer();
+    InvalidateRect(0);
+
     return 0;
 }
 

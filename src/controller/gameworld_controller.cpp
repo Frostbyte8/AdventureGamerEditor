@@ -532,6 +532,7 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 /// @param new row to be selected
 /// @param new column to be selected
 /// @return true if a new tile was selected, false if it does not.
+/// False may indicate an error, that is up for the caller to decide.
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
@@ -559,6 +560,9 @@ bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
 bool GameWorldController::trySelectNewTile(const int& index) {
 
     if (updateSelectionIfValid(-1, -1, index)) {
+        // Could be many reasons: Clicked out side the map bounds, some other
+        // function screwed up, so if an error happens, that will be the
+        // the caller's problem.
         return false;
     }
 
@@ -574,6 +578,7 @@ bool GameWorldController::trySelectNewTile(const int& index) {
 /// @param an integer specifying what tile to draw with. Must be between 0 and
 /// 31. 0-15 For grassy tiles, 16-31 for dirt tiles.
 /// @return true if the tile being drawn with has changed, false if it was not.
+/// False may indicate an error, that is up for the caller to decide.
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::trySetDrawingTile(const int& newDrawTileIndex) {
@@ -586,7 +591,49 @@ bool GameWorldController::trySetDrawingTile(const int& newDrawTileIndex) {
     }
 
     drawingTileIndex = newDrawTileIndex;
+
+    uint8_t newSpriteIndex = newDrawTileIndex;
+
+    // Tiles 16 and up are just the dirt tiles, so since that flag is at 128
+    // we can simply add 112 to reach that.
+
+    if (newDrawTileIndex > 15) {
+        newSpriteIndex += 112;
+    }
+
+    drawingTile.sprite(newSpriteIndex);
+    assert(drawingTile.isModiferValid());
+
     mainWindow->onDrawingTileChanged();
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryDrawOnSelectedTile - Attempts to draw on the selected tile with the tile
+/// selected in the road palette.
+/// @return true if the tile was drawn to, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryDrawOnSelectedTile() {
+
+    const GameTile& selectedTile = gameMap->getTile(selectedTileIndex);
+
+    if(selectedTile.hasJumpPad()) {
+        if(!tryRemoveSisterJumppad()) {
+            return false;
+        }
+    }
+    
+    
+    // If Tile is Dark
+    // If Tile is Gate
+    // If Tile is Switch
+
+    // If Tile is Jumppad
+
+    gameMap->updateTile(gmKey, selectedTileIndex, drawingTile.build());
 
     return true;
 }
@@ -792,7 +839,7 @@ bool GameWorldController::tryEditWorldInfo() {
 bool GameWorldController::tryUpdateWorldInfo(const GameInfo& newInfo) {
     gameMap->updateGameInfo(gmKey, newInfo);
     changedSinceLastSave = true;
-    mainWindow->onWorldInfoUpdated(newInfo);
+    mainWindow->onWorldInfoUpdated();
     return true;
 }
 
@@ -950,6 +997,7 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     mainWindow->onGameCharactersChanged(true);
     mainWindow->onGameObjectsChanged(true);
     mainWindow->onWorldResized();
+    mainWindow->onWorldInfoUpdated();
 
     return loadSuccessful;
 }
@@ -1003,6 +1051,7 @@ bool GameWorldController::newWorld() {
     mainWindow->onGameCharactersChanged(true);
     mainWindow->onGameObjectsChanged(true);
     mainWindow->onWorldResized();
+    mainWindow->onWorldInfoUpdated();
 
     return wasWorldCreated;
 }
@@ -1269,6 +1318,8 @@ bool GameWorldController::tryAddSecondJumpConnection() {
         return false; // Can't jump to itself!
     }
 
+    // TODO: Ensure that firstJump is still valid.
+
     gameMap->addJump(gmKey, firstJumpConnection, secondJumpConnection);
 
     return true;
@@ -1371,6 +1422,72 @@ bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) con
 }
 
 ///----------------------------------------------------------------------------
+/// formatCoordinateString - Attempts to replace two %d's with coordinates
+/// in a given string.
+/// @param string to be modified
+/// @param the first coordinate to insert
+/// @param the second coordinate to insert
+///----------------------------------------------------------------------------
+
+inline void GameWorldController::formatCoordinateString(std::string& str, const int& coord1, const int& coord2) {
+    
+    std::size_t pos = str.find("%d");
+    if (pos != std::string::npos) {
+        std::string strVal = std::to_string(coord1);
+        str.replace(pos, 2, strVal);
+    }
+
+    pos = str.find("%d");
+    if (pos != std::string::npos) {
+        std::string strVal = std::to_string(coord2);
+        str.replace(pos, 2, strVal);
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// tryRemoveSisterJumppad - Attempts to remove the Jump pad that a jump pad is
+/// connected to, if one exists.
+/// @returns true if a Jump pad was removed, or if none existed, false if it
+/// could not be removed.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryRemoveSisterJumppad() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    // TODO: Make sure jump pads can only be connected once.
+    // Possibly make a feature where jump pads can jump to any tile that does
+    // not contain a jump pad. Complex, but that would be cool.
+
+    const SimplePoint* otherJumpPad = gameMap->findJumpPoint(selectedRow, selectedCol);
+
+    if (otherJumpPad) {
+
+        // This jump pad is connected, so we need to make sure the user wants to remove that
+        // too.
+
+        std::string messageText = langMap.get("RemoveOtherJumppadText");
+        std::string messageTitle = langMap.get("RemoveOtherJumppadTitle");
+
+        formatCoordinateString(messageText, otherJumpPad->getX(), otherJumpPad->getY());
+
+        const int response = mainWindow->askYesNoQuestion(messageText, messageTitle, true);
+
+        if (response != GenericInterfaceResponses::Yes) {
+            return false;
+        }
+
+        gameMap->clearTileFeature(gameMap->indexFromRowCol(otherJumpPad->getRow(), otherJumpPad->getColumn()));
+        gameMap->removeJumpPoint(SimplePoint(selectedCol, selectedRow), *otherJumpPad);
+
+    }
+
+    return true; 
+
+}
+
+///----------------------------------------------------------------------------
 /// sanitizeCharacterStrings - Strip out Double quote characters from any
 /// strings attached the character.
 /// @param A reference to a Character Builder to sanitize. This will be
@@ -1380,7 +1497,7 @@ bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) con
 void GameWorldController::sanitizeCharacterStrings(GameCharacter::Builder& characterBuilder) {
 
     for(int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
-        std::string desc = characterBuilder.base.description[0];
+        std::string desc = characterBuilder.base.description[i];
         desc.erase(std::remove(desc.begin(), desc.end(), '\"'), desc.end());
         characterBuilder.description(desc, i);
     }
@@ -1396,7 +1513,7 @@ void GameWorldController::sanitizeCharacterStrings(GameCharacter::Builder& chara
 void GameWorldController::sanitizeObjectStrings(GameObject::Builder& objectBuilder) {
 
     for (int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
-        std::string desc = objectBuilder.base.description[0];
+        std::string desc = objectBuilder.base.description[i];
         desc.erase(std::remove(desc.begin(), desc.end(), '\"'), desc.end());
         objectBuilder.description(desc, i);
     }
@@ -1462,8 +1579,8 @@ bool GameWorldController::updateSelectionIfValid(const int& row, const int& col,
         // Index was specified, so we'll use that.
 
         if(!gameMap->isIndexInMapBounds(index)) {
-            mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
-                                            langMap.get("ErrNewTileSelectionBoundsTitle"));
+            //mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
+            //                                langMap.get("ErrNewTileSelectionBoundsTitle"));
             return false;
         }
 
@@ -1474,8 +1591,8 @@ bool GameWorldController::updateSelectionIfValid(const int& row, const int& col,
     else if(row >= 0 && col >= 0) {
         
         if(!gameMap->isRowColInMapBounds(row, col)) {
-            mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
-                                            langMap.get("ErrNewTileSelectionBoundsTitle"));
+            //mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
+            //                                langMap.get("ErrNewTileSelectionBoundsTitle"));
             return false;
         }
 
@@ -1485,8 +1602,8 @@ bool GameWorldController::updateSelectionIfValid(const int& row, const int& col,
 
     }
     else {
-        mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
-                                        langMap.get("ErrNewTileSelectionBoundsTitle"));
+        //mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
+                                        //langMap.get("ErrNewTileSelectionBoundsTitle"));
         return false;
     }
 

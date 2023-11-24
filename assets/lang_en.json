@@ -233,6 +233,9 @@
 	"ResizeSmallerWarningText"		: "The new dimensions specified are smaller than the Game World's current size. Connected tiles may lose their features, and objects and characters that are outside thew new bounds will be moved to 0,0. Are you sure you want to do this?",
 	"ResizeSmallerWarningTitle"		: "Continue with Resize?",
 
+	"RemoveOtherJumppadText"		: "Editing this tile will also remove the Jump pad at (%d, %d). Continue?",
+	"RemoveOtherJumppadTitle"		: "Remove other Jump pad?",
+
 
     // Error Messages
 

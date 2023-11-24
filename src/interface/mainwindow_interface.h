@@ -170,7 +170,7 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         /// Sent when the World's info was updated
         ///--------------------------------------------------------------------
-        virtual void onWorldInfoUpdated(const GameInfo& gameInfo) = 0;
+        virtual void onWorldInfoUpdated() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when window is being told that the user wants to edit the 

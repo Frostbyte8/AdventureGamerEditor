@@ -1495,3 +1495,11 @@ bool GameMap::resizeMap(const int& newRows, const int& newCols) {
     numCols = newCols;
     return true;
 }
+
+void GameMap::clearTileFeature(const size_t& index) {
+
+    GameTile::Builder tileBuilder(tiles[index]);
+    tileBuilder.clearModifers();
+    tiles[index] = tileBuilder.build();
+
+}

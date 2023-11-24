@@ -57,6 +57,7 @@ class GameWorldController {
         bool trySelectNewTile(const int& index);
 
         bool trySetDrawingTile(const int& newDrawTileIndex);
+        bool tryDrawOnSelectedTile();
 
 
         bool tryEditSummaryAndStory();
@@ -91,7 +92,8 @@ class GameWorldController {
 
         inline bool validRequestedTileRowCol(const int& row, const int& col) const;
         inline bool wasRowColSpecified(const int& row, const int& col) const;
-        
+        inline void formatCoordinateString(std::string& str, const int& coord1, const int& coord2);
+
         template <typename T>
         bool vecIndexInRange(const T& vec, const size_t& index) const;
 
@@ -99,6 +101,8 @@ class GameWorldController {
 
         void sanitizeObjectStrings(GameObject::Builder& objectBuilder);
         void sanitizeCharacterStrings(GameCharacter::Builder& characterBuilder);
+
+        bool tryRemoveSisterJumppad();
         
         bool tryUpdateConnectedTile(const GameTile& firstTile);
         inline const SimplePoint* findConnectionPoint(const GameTile& tile) const;
@@ -110,6 +114,7 @@ class GameWorldController {
         std::string                     worldFilePath;
         std::string                     worldFileName;
 
+        GameTile::Builder               drawingTile;
         int                             selectedTileIndex;
         int                             selectedRow;
         int                             selectedCol;

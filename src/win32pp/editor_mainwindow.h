@@ -117,7 +117,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual bool startEditWorldInfoDialog(const GameInfo& gameInfo);
         virtual void finishedEditWorldInfoDialog();
-        virtual void onWorldInfoUpdated(const GameInfo& gameInfo);
+        virtual void onWorldInfoUpdated();
 
         virtual bool startResizeWorldDialog(const int& numRows, const int& numCols);
         virtual void finishedResizeWorldDialog();

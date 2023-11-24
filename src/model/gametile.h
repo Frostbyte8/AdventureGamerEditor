@@ -173,6 +173,16 @@ class GameTile {
 
                 }
 
+                Builder& clearModifers() {
+
+                    // The (& 8) << 4 will keep the dirt road set.
+
+                    *this = sprite(base.drawInfo.spriteIndex +
+                                   ((base.drawInfo.spriteModifier & 8) << 4));
+
+                    return *this;
+                }
+
                 Builder& flags(const uint8_t& flags) {
                     base.flags = flags;
                     base.drawInfo.dark = base.flags & TileFlags::Dark;

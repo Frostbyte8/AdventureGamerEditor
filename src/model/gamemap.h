@@ -82,6 +82,8 @@ class GameMap {
         void replaceCharacter(GMKey, const size_t& index, const GameCharacter& gameChar);
         void replaceObject(GMKey, const size_t& index, const GameObject& gameObject);
 
+        void clearTileFeature(const size_t& index);
+
         // TODO: Story and Summary should be part of INFO not Map
         void setStory(GMKey, const std::string& inStory);
         void setSummary(GMKey, const std::string& inSummary);
