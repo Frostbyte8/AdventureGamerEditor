@@ -613,12 +613,12 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 }
 
 ///----------------------------------------------------------------------------
-/// tryMakeTileDark - Attempts to make the selected tile tile dark.
-/// @return true if the dark flag was applied to the tile, or it was already
-/// dark. false if it was unable to make the tile dark.
+/// tryToggleTileDarkness - Attempts to toggle the darkness flag of a tile.
+/// @return true if the darkness was toggled successfully, false if it was not
+/// or the user tried to apply darkness to a gate tile.
 ///----------------------------------------------------------------------------
 
-bool GameWorldController::tryMakeTileDark() {
+bool GameWorldController::tryToggleTileDarkness() {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
@@ -628,15 +628,18 @@ bool GameWorldController::tryMakeTileDark() {
                                         langMap.get("ErrGateCantBeDarkTitle"));
         return false;
     }
-    else if(currentTile.isDark()) {
-        return true;
+
+    if (!findAndRemoveConnection(currentTile)) {
+        return false;
     }
 
+
     GameTile::Builder updatedTile(currentTile);
-    updatedTile.flags(currentTile.getFlags() | TileFlags::Dark);
+    updatedTile.flags(currentTile.getFlags() ^ TileFlags::Dark);
 
     changedSinceLastSave = true;
     gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
+    mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
 
     return true;
 }

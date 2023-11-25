@@ -54,6 +54,8 @@ class GameWorldController {
         bool trySetDrawingTile(const int& newDrawTileIndex);
         bool tryDrawOnSelectedTile();
 
+        bool tryToggleTileDarkness();
+
         bool tryEditTileDescription(const int& row = EditorConstants::IGNORE_ROW,
                                     const int& col = EditorConstants::IGNORE_COL);
 
@@ -73,7 +75,7 @@ class GameWorldController {
 
         //
                
-        bool tryMakeTileDark();
+        
                 
 
         bool tryAddFirstJumpConnection();

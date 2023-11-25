@@ -176,7 +176,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
             break;
 
         case MenuIDs::MakeTileDark:
-            gameWorldController->tryMakeTileDark();
+            gameWorldController->tryToggleTileDarkness();
             break;
 
         default: return FALSE;
@@ -309,6 +309,8 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
     const int numSubMenus = 4;
 
+    UINT enableDarkness = MF_ENABLED;
+
     for (int i = 0; i < numSubMenus; ++i) {
         featureMenu.EnableMenuItem(i, MF_GRAYED | MF_BYPOSITION);
     }
@@ -332,6 +334,10 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
                 straightAwayMenu.EnableMenuItem(5, MF_GRAYED | MF_BYPOSITION);
             }
 
+            if(gameTile.hasGate()) {
+                enableDarkness = MF_GRAYED;
+            }
+
             break;
 
         case RoadTypes::CornerNE:
@@ -352,6 +358,9 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
             featureMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
             break;
     }
+
+    featureMenu.EnableMenuItem(7, enableDarkness | MF_BYPOSITION);
+
 }
 
 //=============================================================================
