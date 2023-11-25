@@ -18,6 +18,7 @@ class GameWorldController {
 
         bool canAddObject() const;
         bool canAddCharacter() const;
+        bool hasFirstJumpConnectionBeenSet() const;
 
         const GameMap* getGameMap() const { return gameMap; }
         const int& getMapWidth() const { return gameMap->getWidth(); }
@@ -73,6 +74,8 @@ class GameWorldController {
         bool tryEditWorldSize();
         bool tryResizeWorld(const int& numRows, const int& numCols);
 
+        bool tryCreateJumpConnection();
+
         //
                
         
@@ -93,9 +96,12 @@ class GameWorldController {
 
         GameWorldController() {};
 
+        // void resetDefaults
+
         inline bool validRequestedTileRowCol(const int& row, const int& col) const;
         inline bool wasRowColSpecified(const int& row, const int& col) const;
         inline void formatCoordinateString(std::string& str, const int& coord1, const int& coord2);
+        inline void formatConnectionString(std::string& str, const SimplePoint& coord1, const SimplePoint& coord2);
 
         inline bool findAndRemoveConnection(const GameTile& tile);
 

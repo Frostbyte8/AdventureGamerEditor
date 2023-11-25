@@ -245,6 +245,12 @@
 	"RemoveDarknessText"			: "Editing this tile will also remove the darkness on the tile at (%d,%d). Continue?",
 	"RemoveDarknessTitle"			: "Remove Darkness?",
 
+	"SecondJumppadText"				: "This tile does not have a Jump pad. Are you sure you want your Jump pad to jump here?",
+	"SecondJumppadTitle"			: "Jump to non Jump pad tile?",
+
+	"JumppadAddedText"				: "Jump pad added: (%d,%d)-(%d,%d).",
+	"JumppadAddedTitle"				: "Jump padd added",
+
     // Error Messages
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
@@ -297,6 +303,15 @@
 
 	"ErrGateCantBeDarkText"			: "Tiles with Gate features cannot be made dark.",
 	"ErrGateCantBeDarkTitle"		: "Cannot add Darkness",
+
+	"ErrNoJumppadOnTileText"		: "Tile does not have a Jump pad feature.",
+	"ErrNoJumppadOnTileTitle"		: "Jump pad Missing",
+
+	"ErrCannotJumpToSelfText"		: "A Jump pad cannot jump to itself.",
+	"ErrCannotJumpToSelfTitle"		: "Error connecting Jump",
+
+	"ErrJumpAlreadyExistsText"		: "Tile already contains a Jump connection.",
+	"ErrJumpAlreadyExistsTitle"		: "Error Jump exists",
     
     // Validators
 

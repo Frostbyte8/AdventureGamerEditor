@@ -8,4 +8,9 @@ namespace GenericInterfaceResponses {
     int const Ok        = 4;
 }
 
+namespace GenericInterfaceMessageTypes {
+    int const Normal        = 0;
+    int const Information   = 1;
+}
+
 #endif // __SHARED_INTERFACE_DEFINITIONS_H__

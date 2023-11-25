@@ -93,6 +93,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         virtual void displayErrorMessage(const std::string& message, const std::string& title);
 
+        virtual void displayMessage(const std::string& message, const std::string& title, const int& type);
+
         virtual void onEntitiesChanged(const bool& objectsListChanged, const bool& objectsHereChanged,
                                        const bool& charsListChanged, const bool& charsHereChanged);
         

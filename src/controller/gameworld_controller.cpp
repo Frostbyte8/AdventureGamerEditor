@@ -18,6 +18,10 @@ changedSinceLastSave(false) {
     selectedTileIndex = 0;
     selectedRow = 0;
     selectedCol = 0;
+    firstJumpConnection = SimplePoint(-1, -1);
+    secondJumpConnection = SimplePoint(-1, -1);
+    firstSwitchConnection = SimplePoint(-1, -1);
+    secondJumpConnection = SimplePoint(-1, -1);
 }
 
 GameWorldController::~GameWorldController() {
@@ -38,6 +42,19 @@ GameWorldController::~GameWorldController() {
 
 bool GameWorldController::hasUnsavedChanges() const {
     return changedSinceLastSave;
+}
+
+///----------------------------------------------------------------------------
+/// hasUnsavedChanges
+/// @returns true if there are unsaved changes, and false if there is not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::hasFirstJumpConnectionBeenSet() const {
+    if(firstJumpConnection.getX() != -1) {
+        return true;
+    }
+
+    false;
 }
 
 //=============================================================================
@@ -1038,6 +1055,75 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Switch / Jump Pad connection
+//-----------------------------------------------------------------------------
+
+bool GameWorldController::tryCreateJumpConnection() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    const bool isSecondPoint = firstJumpConnection.getX() != -1 ? true : false;
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if(!currentTile.hasJumpPad()) {
+
+        if(!isSecondPoint) {
+            mainWindow->displayErrorMessage(langMap.get("ErrNoJumppadOnTileText"),
+                                            langMap.get("ErrNoJumppadOnTileTitle"));
+            return false;
+        }
+        else {
+            const int response = mainWindow->askYesNoQuestion(langMap.get("SecondJumppadText"),
+                                                              langMap.get("SecondJumppadTitle"),
+                                                              true);
+            if(response != GenericInterfaceResponses::Yes) {
+                return false;
+            }
+        }
+    }
+
+    if(isSecondPoint) {
+        if(selectedCol == firstJumpConnection.getColumn() && selectedRow == firstJumpConnection.getRow()) {
+            mainWindow->displayErrorMessage(langMap.get("ErrCannotJumpToSelfText"),
+                                            langMap.get("ErrCannotJumpToSelfTitle"));
+            return false;
+        }
+    }
+
+    const SimplePoint* alreadyExists = gameMap->findJumpPoint(selectedRow, selectedCol);
+
+    if(alreadyExists) {
+        mainWindow->displayErrorMessage(langMap.get("ErrJumpAlreadyExistsText"),
+                                        langMap.get("ErrJumpAlreadyExistsTitle"));
+        return false;
+    }
+
+    // Okay, no errors, so time to add the jump.
+
+    if(!isSecondPoint) {
+        firstJumpConnection = SimplePoint(selectedCol, selectedRow);
+    }
+    else {
+
+        secondJumpConnection = SimplePoint(selectedCol, selectedRow);
+
+        gameMap->addJump(gmKey, firstJumpConnection, secondJumpConnection);
+
+        std::string messageText = langMap.get("JumppadAddedText");
+        const std::string messageTitle = langMap.get("JumppadAddedTitle");
+        formatConnectionString(messageText, firstJumpConnection, secondJumpConnection);
+
+        mainWindow->displayMessage(messageText, messageTitle, GenericInterfaceMessageTypes::Information);
+
+        firstJumpConnection = SimplePoint(-1, -1);
+        secondJumpConnection = SimplePoint(-1, -1);        
+
+    }
+   
+    return true;
+}
+
 
 //-----------------------------------------------------------------------------
 // Code that is being rewritten or cleaned still
@@ -1428,6 +1514,42 @@ inline void GameWorldController::formatCoordinateString(std::string& str, const 
     if (pos != std::string::npos) {
         std::string strVal = std::to_string(coord2);
         str.replace(pos, 2, strVal);
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// formatConnectionString - Attempts to replace four %d's with coordinates
+/// in a given string
+/// @param string to be modified
+/// @param A SimplePoint containing the first set of coordinates
+/// @param A SimplePoint containing  the second  set of coordinates
+///----------------------------------------------------------------------------
+
+inline void GameWorldController::formatConnectionString(std::string& str, const SimplePoint& coord1, const SimplePoint& coord2) {
+
+    std::size_t pos = 0;
+    
+    for(int i = 0; i < 2; ++i) {
+        pos = str.find("%d", pos);
+        if (pos != std::string::npos) {
+            std::string strVal = std::to_string((i == 0 ? coord1.getX() : coord1.getY()));
+            str.replace(pos, 2, strVal);
+        }
+        else {
+            return;
+        }
+    }
+
+    for(int i = 0; i < 2; ++i) {
+        pos = str.find("%d", pos);
+        if (pos != std::string::npos) {
+            std::string strVal = std::to_string((i == 0 ? coord2.getX() : coord2.getY()));
+            str.replace(pos, 2, strVal);
+        }
+        else {
+            return;
+        }
     }
 
 }

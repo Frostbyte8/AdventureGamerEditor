@@ -48,6 +48,22 @@ void MainWindowFrame::displayErrorMessage(const std::string& inMessage,
 }
 
 ///----------------------------------------------------------------------------
+/// displayMessage
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::displayMessage(const std::string& inMessage, const std::string& inTitle,
+                                     const int& type) {
+    assert(type >= 0 && type < 2);
+
+    const CString message       = AtoW(inMessage.c_str(), CP_UTF8);
+    const CString title         = AtoW(inTitle.c_str(), CP_UTF8);
+    const UINT messageBoxFlags  = type == GenericInterfaceMessageTypes::Information ? MB_ICONINFORMATION : 0;
+
+    MessageBox(message, title, messageBoxFlags);
+
+}
+
+///----------------------------------------------------------------------------
 /// onEntitiesChanged
 ///----------------------------------------------------------------------------
 

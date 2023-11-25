@@ -45,6 +45,14 @@ class MainWindowInterface {
         virtual void displayErrorMessage(const std::string& message, const std::string& title) = 0;
 
         ///--------------------------------------------------------------------
+        /// Sent when the program wants to display a standard message
+        /// @param The message
+        /// @param Title of the message box, if necessary.
+        /// @param A GenericInterfaceMessageTypes
+        ///--------------------------------------------------------------------
+        virtual void displayMessage(const std::string& message, const std::string& title, const int& type) = 0;
+
+        ///--------------------------------------------------------------------
         /// Sent when the window is being asked if it can create a dialog of a
         /// specific type.
         /// @param Which dialog to try and create

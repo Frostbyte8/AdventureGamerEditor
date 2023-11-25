@@ -167,7 +167,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         case MenuIDs::FirstJumpConnection:
         case MenuIDs::SecondJumpConnection:
-            addJumpConnection(ID);
+            gameWorldController->tryCreateJumpConnection();
             break;
 
         case MenuIDs::startSwitchConnection:
@@ -312,8 +312,13 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
     UINT enableDarkness = MF_ENABLED;
 
     for (int i = 0; i < numSubMenus; ++i) {
-        featureMenu.EnableMenuItem(i, MF_GRAYED | MF_BYPOSITION);
+
+        if(i != 2) {
+            featureMenu.EnableMenuItem(i, MF_GRAYED | MF_BYPOSITION);
+        }
     }
+
+    deadendMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
 
     switch (roadType) {
 
@@ -351,7 +356,8 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
         case RoadTypes::DeadEndNorth:
         case RoadTypes::DeadEndSouth:
         case RoadTypes::DeadEndWest:
-            featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+            //featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
+            deadendMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
             break;
 
         case RoadTypes::Crossroads:
@@ -392,6 +398,8 @@ int MainWindowFrame::onSaveFileDialog(std::string& filePath, std::string& fileNa
 
 void MainWindowFrame::addJumpConnection(const int& whichPoint) {
     
+    /*
+
     if (whichPoint == MenuIDs::FirstJumpConnection) {
         if (gameWorldController->tryAddFirstJumpConnection()) {
             deadendMenu.EnableMenuItem(1, MF_GRAYED | MF_BYPOSITION);
@@ -412,6 +420,8 @@ void MainWindowFrame::addJumpConnection(const int& whichPoint) {
 
     deadendMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
     deadendMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
+
+    */
 
 }
 
