@@ -104,7 +104,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     
     SetWindowTextFromLangMapString("SummaryLabel", lblSummary, caption, langMap);
 
-    txtSummary.Create(*this, 0, ES_MULTILINE | WS_TABSTOP | WS_VSCROLL);
+    txtSummary.Create(*this, 0, ES_MULTILINE | ES_WANTRETURN | WS_TABSTOP | WS_VSCROLL);
     txtSummary.SetExStyle(WS_EX_CLIENTEDGE);
     txtSummary.LimitText(GameMapConstants::MaxSummaryText);
     txtSummary.SetDlgCtrlID(ControlIDs::SummaryText);
@@ -112,7 +112,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
     lblStory.Create(*this, 0, SS_SIMPLE);
     SetWindowTextFromLangMapString("StoryLabel", lblStory, caption, langMap);
 
-    txtStory.Create(*this, 0, ES_MULTILINE | WS_TABSTOP | WS_VSCROLL);
+    txtStory.Create(*this, 0, ES_MULTILINE | ES_WANTRETURN | WS_TABSTOP | WS_VSCROLL);
     txtStory.SetExStyle(WS_EX_CLIENTEDGE);
     txtStory.LimitText(GameMapConstants::MaxStoryText);
     txtStory.SetDlgCtrlID(ControlIDs::SummaryText);

@@ -7,7 +7,13 @@ LRESULT CAnsiEdit::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     switch(msg) {
 
         case WM_GETDLGCODE:
-            if(forceTabbing) {
+
+            if(wParam == VK_RETURN) {
+                if(GetStyle() & ES_WANTRETURN) {
+                    return DLGC_WANTMESSAGE;
+                }
+            }
+            else if(forceTabbing) {
                 return (WndProcDefault(msg, wParam, lParam) & ~DLGC_WANTALLKEYS);
             }
             break;
@@ -21,6 +27,12 @@ LRESULT CAnsiEdit::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_PASTE:
             OnPaste();
             return 0;
+            break;
+
+        case WM_KEYDOWN:
+            if(wParam == VK_RETURN) {
+                return 0;
+            }
             break;
     }
     
@@ -39,8 +51,9 @@ LRESULT CAnsiEdit::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 bool CAnsiEdit::OnChar(const wchar_t& ch, const LONG& keyData) {
 
     // Check for special keys first.
-    if(ch == 0x03 || ch == 0x16 || ch == 0x18 ||
-       ch == VK_DELETE || ch == VK_BACK || ch == VK_RETURN || VK_CONTROL) {
+    // 01 = CTRL-A, 03 = CTRL-C, 16 = CTRL-V, 18 = CTRL-X
+    if(ch == 0x01 || ch == 0x03 || ch == 0x16 || ch == 0x18 ||
+       ch == VK_DELETE || ch == VK_BACK || ch == VK_RETURN) {
            // Pass through.
            return true;
     }
