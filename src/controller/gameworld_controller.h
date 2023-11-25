@@ -113,7 +113,6 @@ class GameWorldController {
 
         inline bool askAndUpdateSisterTile(const std::string& messageID, const std::string& titleID, const int& x, const int& y);
         
-        bool tryUpdateConnectedTile(const GameTile& firstTile);
         inline const SimplePoint* findConnectionPoint(const GameTile& tile) const;
         
         bool                            changedSinceLastSave;
