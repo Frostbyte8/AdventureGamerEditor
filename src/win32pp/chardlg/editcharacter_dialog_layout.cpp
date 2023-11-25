@@ -422,7 +422,7 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
     lblMoney.Create(*this, 0, SS_SIMPLE);
     SetWindowTextFromLangMapString("MoneyCharHas", lblMoney, caption, langMap);
 
-    txtMoney.Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
+    txtMoney.Create(*this, 0, WS_TABSTOP | ES_NUMBER | ES_AUTOHSCROLL);
     txtMoney.SetExStyle(WS_EX_CLIENTEDGE);
     txtMoney.LimitText(5);
     txtMoney.SetDlgCtrlID(QualitiesTab::ControlIDs::MoneyOnHand);
@@ -588,7 +588,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
     for (int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
         lblAttribType[i].Create(*this, 0, SS_SIMPLE);
-        txtAttribType[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
+        txtAttribType[i].Create(*this, 0, WS_TABSTOP | ES_NUMBER | ES_AUTOHSCROLL);
         txtAttribType[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtAttribType[i].LimitText(2);
         txtAttribType[i].SetDlgCtrlID(AttributesTab::ControlIDs::Energy + i);
@@ -733,7 +733,7 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
 
     for (int i = 0; i < 2; ++i) {
         lblCoords[i].Create(*this, 0, SS_SIMPLE);
-        txtCoords[i].Create(*this, 0, WS_TABSTOP | ES_AUTOHSCROLL);
+        txtCoords[i].Create(*this, 0, WS_TABSTOP  | ES_NUMBER | ES_AUTOHSCROLL);
         txtCoords[i].SetExStyle(WS_EX_CLIENTEDGE);
         txtCoords[i].SetDlgCtrlID(MiscTab::ControlIDs::XTextCoord + i);
     }

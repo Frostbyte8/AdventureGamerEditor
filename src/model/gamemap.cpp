@@ -743,29 +743,6 @@ bool GameMap::removeSwitch(const SimplePoint& point1, const SimplePoint& point2)
 }
 
 ///----------------------------------------------------------------------------
-/// removeFeature - Removes a feature from a tile
-/// @param GMKey
-/// @param row of the tile to remove the feature from
-/// @param column of the tile to remove the feature from.
-/// @return true if the feature was removed, false if it was not
-///----------------------------------------------------------------------------
-
-bool GameMap::removeFeature(GMKey, const int& row, const int& col) {
-
-    const size_t index = indexFromRowCol(row, col);
-
-    GameTile::Builder tb(tiles[index]);
-
-    // When removing a feature, preserve the dirt road modifier.
-
-    tb.sprite(GameTile::Builder::calculateSprite(tiles[index].getSpriteIndex(), tiles[index].getSpriteModifier() & TileModifiers::DirtRoad));
-
-    tiles[index] = tb.build();
-
-    return true;
-}
-
-///----------------------------------------------------------------------------
 /// [!] DEPERCATED [!]
 /// updateTileFlags - Remove darkness from a tile
 /// @param GMKey
