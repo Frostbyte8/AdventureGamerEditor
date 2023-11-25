@@ -107,6 +107,8 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
         reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onTileUpdated();
     }
 
+    updateTitleBar(true);
+
 }
 
 ///----------------------------------------------------------------------------

@@ -603,6 +603,8 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 
     // Finally, we can update the tile.
 
+    changedSinceLastSave = true;
+
     gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
     mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
 
@@ -632,6 +634,8 @@ bool GameWorldController::tryMakeTileDark() {
 
     GameTile::Builder updatedTile(currentTile);
     updatedTile.flags(currentTile.getFlags() | TileFlags::Dark);
+
+    changedSinceLastSave = true;
     gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
 
     return true;
@@ -739,6 +743,7 @@ bool GameWorldController::tryDrawOnSelectedTile() {
         updateFlags |= EditorTileUpdateFlags::Description;
     }
 
+    changedSinceLastSave = true;
     mainWindow->onTileUpdated(selectedTileIndex, updateFlags);
 
     return true;
