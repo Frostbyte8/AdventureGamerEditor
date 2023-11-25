@@ -32,7 +32,12 @@ void ResizeWorldDialog::setWorldDimensions(const int& currentWidth, const int& c
     worldWidth = currentWidth;
     worldHeight = currentHeight;
 
-    CString caption;
+    if (txtDimensions[0].IsWindow()) {
+
+        txtDimensions[0].SetWindowText(AtoW(std::to_string(currentWidth).c_str()));
+        txtDimensions[1].SetWindowText(AtoW(std::to_string(currentHeight).c_str()));
+
+    }
 
 }
 
