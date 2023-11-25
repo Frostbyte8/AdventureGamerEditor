@@ -40,7 +40,7 @@ bool CAnsiEdit::OnChar(const wchar_t& ch, const LONG& keyData) {
 
     // Check for special keys first.
     if(ch == 0x03 || ch == 0x16 || ch == 0x18 ||
-       ch == VK_DELETE || ch == VK_BACK || ch == VK_RETURN) {
+       ch == VK_DELETE || ch == VK_BACK || ch == VK_RETURN || VK_CONTROL) {
            // Pass through.
            return true;
     }
