@@ -95,8 +95,33 @@ void MainWindowFrame::OnInitialUpdate() {
 
 LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-	/*
-    // Catch all CException types.
+	try {
+        switch (msg) {
+
+            case WM_ACTIVATEAPP:
+                ::BringWindowToTop(activeWindowHandle);
+                return 0;
+
+            case WM_ENTERSIZEMOVE:
+                isSizing = true;
+                break;
+
+            case WM_EXITSIZEMOVE:
+                isSizing = false;
+                break;
+
+            case WM_HELP:
+                // Disable the help dialog. TODO: See if there is a way
+                // to stop the exception from occurring if the dialog does not
+                // exist.
+                return 0;
+                break;
+
+        }
+
+	    return WndProcDefault(msg, wParam, lParam);
+
+    }
     catch (const CException& e)
     {
         // Display the exception and continue.
@@ -104,27 +129,6 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
         return 0;
     }
-	*/
-
-
-    switch (msg) {
-
-        case WM_ACTIVATEAPP:
-            ::BringWindowToTop(activeWindowHandle);
-            return 0;
-
-        case WM_ENTERSIZEMOVE:
-            isSizing = true;
-            break;
-
-        case WM_EXITSIZEMOVE:
-            isSizing = false;
-            break;
-
-    }
-
-
-	return WndProcDefault(msg, wParam, lParam);
 }
 
 ///----------------------------------------------------------------------------
