@@ -158,8 +158,8 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
                                            ? true : false);
             break;
 
-        // TODO: These all need to call the controller instead.
-        case MenuIDs::LongDescription: gameWorldController->tryEditTileDescription(); break;
+        
+        //case MenuIDs::LongDescription: gameWorldController->tryEditTileDescription(); break;
         case MenuIDs::SummaryAndStory: gameWorldController->tryEditSummaryAndStory(); break;
         case MenuIDs::WorldProperties: gameWorldController->tryEditWorldInfo(); break;
         case MenuIDs::ResizeWorld: gameWorldController->tryEditWorldSize(); break;
@@ -302,6 +302,9 @@ void MainWindowFrame::updateStatusbar(const int& index) {
 
 void MainWindowFrame::updateFeatureMenu(const int& index) {
 
+    // Broken
+
+    /*
     const GameMap* gameMap = gameWorldController->getGameMap();
     const GameTile& gameTile = gameMap->getTile(index);
 
@@ -366,6 +369,7 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
     }
 
     featureMenu.EnableMenuItem(7, enableDarkness | MF_BYPOSITION);
+    */
 
 }
 

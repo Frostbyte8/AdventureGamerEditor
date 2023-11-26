@@ -72,7 +72,6 @@ bool GameWorldController::hasFirstSwitchConnectionBeenSet() const {
     return false;
 }
 
-
 //=============================================================================
 // Public Functions
 //=============================================================================

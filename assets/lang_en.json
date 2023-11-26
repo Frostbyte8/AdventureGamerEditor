@@ -7,7 +7,9 @@
     "SaveAsMenuItem"            : "Save &As...",
     "ExitMenuItem"              : "E&xit",
 
-	"AddMenuItem"				: "&Add Feature",
+	"TileMenu"					: "&Tile",
+	"TileDescriptionMenuItem"   : "Edit Name and &Description...",
+	"AddFeatureMenuItem"		: "&Add Feature",
 	"StraightAwayMenuItem"		: "&Straight Aways",
 	"CornerMenuItem"			: "&Corners",
 	"DeadEndMenuItem"			: "&Dead-Ends",
@@ -36,10 +38,9 @@
 	"HazardMenuItem"			: "&Hazard",
 	"SafeHavenMenuItem"			: "&Safe Haven",
 
-    "EditMenu"                  : "&Edit",
-    "LongTileMenuItem"          : "&Long Tile Description...",
+    "WorldMenu"					: "&World",
     "SummaryMenuItem"           : "&Summary and Story...",
-    "WorldMenuItem"             : "&World Properties...",
+    "WorldPropertiesMenuItem"   : "&World Properties...",
 	"ResizeWorldMenuItem"		: "&Resize World...",
 
     "AddButton"                 : "Add",

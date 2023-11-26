@@ -21,14 +21,24 @@
 
 namespace MenuIDs {
 
-    const WORD LongDescription          = 201;
-    const WORD SummaryAndStory          = 202;
-    const WORD WorldProperties          = 203;
-    const WORD NewFile                  = 204;
-    const WORD OpenFile                 = 205;
-    const WORD SaveFile                 = 206;
-    const WORD SaveFileAs               = 207;
-    const WORD ResizeWorld              = 208;
+    // File Menu
+
+    const WORD FilePopupMenu            = 200;
+    const WORD NewFile                  = 201;
+    const WORD OpenFile                 = 202;
+    const WORD SaveFile                 = 203;
+    const WORD SaveFileAs               = 204;
+    const WORD FileMenuDiv1             = 205;
+    const WORD ExitItem                 = 206;
+
+    const WORD WorldPopupMenu           = 210;
+    const WORD SummaryAndStory          = 211;
+    const WORD WorldProperties          = 212;
+    const WORD ResizeWorld              = 213;
+
+    const WORD TilePopupMenu            = 220;
+    const WORD FeatureSubMenu           = 221;
+    const WORD EditDescription          = 222;
 
     // For these IDs, we'll just obtain their MOD flag count.
 
@@ -150,6 +160,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         inline void makeDialogModal(EditDialogBase& dialog, const CString& caption);
 
+        inline void appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id);
+
         void updateStatusbar(const int& index);
         void updateFeatureMenu(const int& index);
         void CreateMenuBar();
@@ -161,6 +173,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         void updateTitleBar(const bool changeMadeOnly);
 
+        void updateControlCaptions();
+
         BOOL OnFileNew();
         BOOL OnFileOpen();
 
@@ -168,7 +182,11 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         CMenu mainMenu;
         CMenu fileMenu;
-        CMenu editMenu;
+        CMenu worldMenu;
+
+        CMenu tileMenu;
+
+
         CMenu featureMenu;
         CMenu straightAwayMenu;
         CMenu cornerMenu;

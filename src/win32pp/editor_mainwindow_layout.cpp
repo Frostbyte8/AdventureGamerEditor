@@ -140,8 +140,12 @@ void MainWindowFrame::CreateMenuBar() {
 
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
-    editMenu.CreatePopupMenu();
+    worldMenu.CreatePopupMenu();
+
+    tileMenu.CreatePopupMenu();
+    
     featureMenu.CreatePopupMenu();
+
     straightAwayMenu.CreatePopupMenu();
     cornerMenu.CreatePopupMenu();
     deadendMenu.CreatePopupMenu();
@@ -149,21 +153,30 @@ void MainWindowFrame::CreateMenuBar() {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    fileMenu.AppendMenu(MF_STRING, MenuIDs::NewFile, LM_toUTF8("NewMenuItem", langMap));
-    fileMenu.AppendMenu(MF_STRING, MenuIDs::OpenFile, LM_toUTF8("OpenMenuItem", langMap));
-    fileMenu.AppendMenu(MF_STRING, MenuIDs::SaveFile, LM_toUTF8("SaveMenuItem", langMap));
-    fileMenu.AppendMenu(MF_STRING, MenuIDs::SaveFileAs, LM_toUTF8("SaveAsMenuItem", langMap));
-    fileMenu.AppendMenu(MF_STRING, 0, LM_toUTF8("ExitMenuItem", langMap));
+    
+    for (int i = MenuIDs::NewFile; i <= MenuIDs::ExitItem; ++i) {
 
-    editMenu.AppendMenu(MF_STRING, MenuIDs::LongDescription, LM_toUTF8("LongTileMenuItem", langMap));
-    editMenu.AppendMenu(MF_STRING, MenuIDs::SummaryAndStory, LM_toUTF8("SummaryMenuItem", langMap));
-    editMenu.AppendMenu(MF_STRING, MenuIDs::WorldProperties, LM_toUTF8("WorldMenuItem", langMap));
-    editMenu.AppendMenu(MF_STRING, MenuIDs::ResizeWorld, LM_toUTF8("ResizeWorldMenuItem", langMap));
+        if(i == MenuIDs::FileMenuDiv1) {
+            fileMenu.AppendMenu(MF_SEPARATOR);
+            continue;
+        }
+        
+        fileMenu.AppendMenu(MF_STRING, i);
+    }
+
+    for(int k = MenuIDs::SummaryAndStory; k <= MenuIDs::ResizeWorld; ++k) {
+        worldMenu.AppendMenu(MF_STRING, k);
+    }
 
     featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(straightAwayMenu.GetHandle()), LM_toUTF8("StraightAwayMenuItem", langMap));
     featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(cornerMenu.GetHandle()), LM_toUTF8("CornerMenuItem", langMap));
     featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(deadendMenu.GetHandle()), LM_toUTF8("DeadEndMenuItem", langMap));
     featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(crossroadMenu.GetHandle()), LM_toUTF8("CrossroadsMenuItem", langMap));
+    
+    appendPopupMenuWithID(tileMenu, featureMenu, MenuIDs::FeatureSubMenu);
+    tileMenu.AppendMenu(MF_STRING, MenuIDs::EditDescription);
+
+    updateControlCaptions();
 
     // Deal with all the Feature Sub-Menus
 
@@ -202,19 +215,49 @@ void MainWindowFrame::CreateMenuBar() {
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
                         reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
 
-    caption = AtoW(langMap.get("EditMenu").c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("TileMenu").c_str(), CP_UTF8);
 
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
-                        reinterpret_cast<UINT_PTR>(editMenu.GetHandle()), caption);
+                        reinterpret_cast<UINT_PTR>(tileMenu.GetHandle()), caption);
 
-    caption = AtoW(langMap.get("AddMenuItem").c_str(), CP_UTF8);
-
+    caption = AtoW(langMap.get("WorldMenu").c_str(), CP_UTF8);
+    
     mainMenu.AppendMenu(MF_STRING | MF_POPUP,
-                        reinterpret_cast<UINT_PTR>(featureMenu.GetHandle()), caption);
+                        reinterpret_cast<UINT_PTR>(worldMenu.GetHandle()), caption);
 
     SetFrameMenu(mainMenu);
 
 }
+
+///----------------------------------------------------------------------------
+/// updateControlCaptions - Updates the controls on the Window
+///----------------------------------------------------------------------------
+
+#define CHANGE_MENU_STRING(MENU, ITEMID, LANGID) MENU.ModifyMenu(ITEMID, MF_BYCOMMAND | MF_STRING, 0, LM_toUTF8(LANGID, langMap))
+
+void MainWindowFrame::updateControlCaptions() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    CHANGE_MENU_STRING(fileMenu, MenuIDs::NewFile, "NewMenuItem");
+    CHANGE_MENU_STRING(fileMenu, MenuIDs::OpenFile, "OpenMenuItem");
+    CHANGE_MENU_STRING(fileMenu, MenuIDs::SaveFile, "SaveMenuItem");
+    CHANGE_MENU_STRING(fileMenu, MenuIDs::SaveFileAs, "SaveAsMenuItem");
+    CHANGE_MENU_STRING(fileMenu, MenuIDs::ExitItem, "ExitMenuItem");
+
+    CHANGE_MENU_STRING(worldMenu, MenuIDs::SummaryAndStory, "SummaryMenuItem");
+    CHANGE_MENU_STRING(worldMenu, MenuIDs::WorldProperties, "WorldPropertiesMenuItem");
+    CHANGE_MENU_STRING(worldMenu, MenuIDs::ResizeWorld, "ResizeWorldMenuItem");
+
+    CHANGE_MENU_STRING(tileMenu, MenuIDs::FeatureSubMenu, "AddFeatureMenuItem");
+    CHANGE_MENU_STRING(tileMenu, MenuIDs::EditDescription, "TileDescriptionMenuItem");
+    
+
+    //worldMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(featureMenu.GetHandle()));
+
+}
+
+#undef CHANGE_MENU_STRING
 
 ///----------------------------------------------------------------------------
 /// updateTitleBar - Updates the Window's Caption
@@ -244,5 +287,27 @@ void MainWindowFrame::updateTitleBar(const bool changeMadeOnly) {
     else {
         SetWindowText(originalWindowTitle);
     }
+
+}
+
+///----------------------------------------------------------------------------
+/// appendPopupMenuWithID - Appends a Popup menu WITH an ID
+/// @param a reference to a CMenu object that will have the pop up added to it
+/// @param a reference to the CMenu to be added and IDed
+/// @param a reference to the ID to apply to the menu item.
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id) {
+
+    MENUITEMINFO mii;
+    ZeroMemory(&mii, sizeof(MENUITEMINFO));
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_ID;
+    mii.wID = id;
+
+    targetMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(popupMenu.GetHandle()));
+    const int menuPos = targetMenu.GetMenuItemCount() - 1;
+    targetMenu.SetMenuItemInfo(menuPos, mii, TRUE);
+
 
 }
