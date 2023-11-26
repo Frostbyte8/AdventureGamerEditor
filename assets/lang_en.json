@@ -8,8 +8,9 @@
     "ExitMenuItem"              : "E&xit",
 
 	"TileMenu"					: "&Tile",
-	"TileDescriptionMenuItem"   : "Edit Name and &Description...",
 	"AddFeatureMenuItem"		: "&Add Feature",
+	"TileDescriptionMenuItem"   : "Edit Name and &Description...",
+	
 	"StraightAwayMenuItem"		: "&Straight Aways",
 	"CornerMenuItem"			: "&Corners",
 	"DeadEndMenuItem"			: "&Dead-Ends",
@@ -17,26 +18,26 @@
 
 	"StartMenuItem"				: "&Start",
 	"FinishMenuItem"			: "&Finish",
-	"LockedDoorMenuItem"		: "&Locked Door",
-	"SouthBarrMenuItem"			: "S&outh Facing Barrier",
-	"NorthBarrMenuItem"			: "&North Facing Barrier",
-	"WestBarrMenuItem"			: "&West Facing Barrier",
-	"EastBarrMenuItem"			: "&East Facing Barrier",
 	"GateMenuItem"				: "&Gate",
+	"LockedDoorMenuItem"		: "&Locked Door",
+	"NorthBarrMenuItem"			: "&North Facing Barrier",
+	"SouthBarrMenuItem"			: "S&outh Facing Barrier",
+	"EastBarrMenuItem"			: "&East Facing Barrier",
+	"WestBarrMenuItem"			: "&West Facing Barrier",
 
 	"SwitchOnMenuItem"			: "Switch O&n",
 	"SwitchOffMenuItem"			: "Switch O&ff",
 
 	"JumppadMenuItem"			: "&Jump Pad",
+
+	"HazardMenuItem"			: "&Hazard",
+	"SafeHavenMenuItem"			: "&Safe Haven",
+
 	"JumppadConnectFirst"		: "&Start Jumppad Connection",
 	"JumppadConnectSecond"		: "&Finish Jumppad Connection",
 	"StartSwitchMenuItem"		: "S&tart Switch Connection",
 	"EndSwitchMenuItem"			: "&End Switch Connection",
-	"MakeTileDarkMenuItem"		: "Toggle Tile &Darkness",
-
-
-	"HazardMenuItem"			: "&Hazard",
-	"SafeHavenMenuItem"			: "&Safe Haven",
+	"ToggleDarknessMenuItem"	: "Toggle Tile &Darkness",
 
     "WorldMenu"					: "&World",
     "SummaryMenuItem"           : "&Summary and Story...",

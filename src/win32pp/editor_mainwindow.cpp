@@ -139,51 +139,83 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
     const WORD ID = LOWORD(wParam);
-    
-    if (ID >= MenuIDs::AddStart && ID <= MenuIDs::AddSafeHaven) {
-        gameWorldController->tryAddFeatureToSelectedTile((ID - MenuIDs::AddStart) + 1);
-        return TRUE;
-    }  
 
-    switch (ID) {
+    switch(ID) {
 
-        // TODO: On New and Open need to be interface functions
+        // File Menu
+
         case MenuIDs::NewFile: return OnFileNew();
         case MenuIDs::OpenFile: return OnFileOpen();
 
         case MenuIDs::SaveFile:
         case MenuIDs::SaveFileAs:
-
-            gameWorldController->saveWorld(ID == MenuIDs::SaveFileAs 
+            gameWorldController->saveWorld(ID == MenuIDs::SaveFileAs
                                            ? true : false);
             break;
 
+        // Tile Menu
         
-        //case MenuIDs::LongDescription: gameWorldController->tryEditTileDescription(); break;
+        case MenuIDs::EditDescription: gameWorldController->tryEditTileDescription(); break;
+
+        // Feature Menu
+
+        case MenuIDs::StartJumpConnection:
+        case MenuIDs::EndJumpConnection: 
+            gameWorldController->tryCreateJumpConnection(); 
+            break;
+
+        case MenuIDs::StartSwitchConnection:
+        case MenuIDs::EndSwitchConnection: 
+            gameWorldController->tryToggleTileDarkness(); 
+            break;
+
+        case MenuIDs::ToggleTileDarkness: gameWorldController->tryToggleTileDarkness(); break;
+
+        // Straight Aways Menu
+
+        case MenuIDs::AddStart: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::Start); break;
+        case MenuIDs::AddFinish: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::Finish); break;
+        case MenuIDs::AddGate: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::GateClosed); break;
+        case MenuIDs::AddLockedDoor: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::LockedDoor); break;
+        
+        case MenuIDs::AddBarrierNorth: 
+        case MenuIDs::AddBarrierWest: 
+            gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::BarrierNorth); 
+            break;
+
+        case MenuIDs::AddBarrierSouth:
+        case MenuIDs::AddBarrierEast: 
+
+            gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::BarrierSouth);
+            break;
+
+        // Corners Menu
+
+        case MenuIDs::AddOnSwitch: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::SwitchOn); break;
+        case MenuIDs::AddOffSwitch: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::SwitchOff); break;
+
+        // Dead-ends Menu
+
+        case MenuIDs::AddJumpPad: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::JumpPad); break;
+
+        // Crossroads Menu
+
+        case MenuIDs::AddHazard: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::Hazard); break;
+        case MenuIDs::AddSafeHaven: gameWorldController->tryAddFeatureToSelectedTile(TileModifiers::SafeHaven); break;
+
+        // World Menu
+
         case MenuIDs::SummaryAndStory: gameWorldController->tryEditSummaryAndStory(); break;
         case MenuIDs::WorldProperties: gameWorldController->tryEditWorldInfo(); break;
         case MenuIDs::ResizeWorld: gameWorldController->tryEditWorldSize(); break;
 
-
-        case MenuIDs::FirstJumpConnection:
-        case MenuIDs::SecondJumpConnection:
-            gameWorldController->tryCreateJumpConnection();
-            break;
-
-        case MenuIDs::startSwitchConnection:
-        case MenuIDs::endSwitchConnection:
-            gameWorldController->tryCreateSwitchConnection();
-            break;
-
-        case MenuIDs::MakeTileDark:
-            gameWorldController->tryToggleTileDarkness();
-            break;
-
-        default: return FALSE;
+        default:
+            return FALSE;
 
     }
-
+    
     return TRUE;
+
 }
 
 
@@ -302,74 +334,83 @@ void MainWindowFrame::updateStatusbar(const int& index) {
 
 void MainWindowFrame::updateFeatureMenu(const int& index) {
 
-    // Broken
-
-    /*
     const GameMap* gameMap = gameWorldController->getGameMap();
     const GameTile& gameTile = gameMap->getTile(index);
 
-    const uint8_t roadType = gameTile.getSpriteIndex();
+    for (int i = MenuIDs::StraightAwayMenu; i <= MenuIDs::CrossroadsMenu; ++i) {
+        featureMenu.EnableMenuItem(i, MF_GRAYED | MF_DISABLED);
+    }
 
-    const int numSubMenus = 4;
+    if(gameTile.isStraightaway()) {
+        featureMenu.EnableMenuItem(MenuIDs::StraightAwayMenu, MF_ENABLED);
 
-    UINT enableDarkness = MF_ENABLED;
-
-    for (int i = 0; i < numSubMenus; ++i) {
-
-        if(i != 2) {
-            featureMenu.EnableMenuItem(i, MF_GRAYED | MF_BYPOSITION);
+        if(gameTile.isHorizontalStraightaway()) {
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierNorth, MF_ENABLED);
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierSouth, MF_ENABLED);
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierEast, MF_GRAYED | MF_DISABLED);
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierWest, MF_GRAYED | MF_DISABLED);
         }
+        else {
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierNorth, MF_GRAYED | MF_DISABLED);
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierSouth, MF_GRAYED | MF_DISABLED);
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierEast, MF_ENABLED);
+            straightAwayMenu.EnableMenuItem(MenuIDs::AddBarrierWest, MF_ENABLED);
+        }
+
+    }
+    else if(gameTile.isCorner()) {
+        featureMenu.EnableMenuItem(MenuIDs::CornerMenu, MF_ENABLED);
+    }
+    else if(gameTile.isDeadend()) {
+        featureMenu.EnableMenuItem(MenuIDs::DeadEndMenu, MF_ENABLED);
+    }
+    else if(gameTile.isCrossroads()) {
+        featureMenu.EnableMenuItem(MenuIDs::CrossroadsMenu, MF_ENABLED);
     }
 
-    deadendMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
+    if(!gameWorldController->hasFirstJumpConnectionBeenSet()) {
 
-    switch (roadType) {
+        if(gameTile.hasJumpPad()) {
+            featureMenu.EnableMenuItem(MenuIDs::StartJumpConnection, MF_ENABLED);
+        }
+        else {
+            featureMenu.EnableMenuItem(MenuIDs::StartJumpConnection, MF_GRAYED | MF_DISABLED);
+        }
 
-        case RoadTypes::StraightawayHorizontal:
-        case RoadTypes::StraightawayVertical:
-            featureMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
+        featureMenu.EnableMenuItem(MenuIDs::EndJumpConnection, MF_GRAYED | MF_DISABLED);
 
-            if (roadType == RoadTypes::StraightawayHorizontal) {
-                straightAwayMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(3, MF_GRAYED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(4, MF_ENABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
-            }
-            else {
-                straightAwayMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(4, MF_GRAYED | MF_BYPOSITION);
-                straightAwayMenu.EnableMenuItem(5, MF_GRAYED | MF_BYPOSITION);
-            }
+    }
+    else {
 
-            if(gameTile.hasGate()) {
-                enableDarkness = MF_GRAYED;
-            }
+        featureMenu.EnableMenuItem(MenuIDs::StartJumpConnection, MF_GRAYED | MF_DISABLED);
+        featureMenu.EnableMenuItem(MenuIDs::EndJumpConnection, MF_ENABLED);
 
-            break;
-
-        case RoadTypes::CornerNE:
-        case RoadTypes::CornerNW:
-        case RoadTypes::CornerSE:
-        case RoadTypes::CornerSW:
-            featureMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
-            break;
-
-        case RoadTypes::DeadEndEast:
-        case RoadTypes::DeadEndNorth:
-        case RoadTypes::DeadEndSouth:
-        case RoadTypes::DeadEndWest:
-            //featureMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
-            deadendMenu.EnableMenuItem(0, MF_ENABLED | MF_BYPOSITION);
-            break;
-
-        case RoadTypes::Crossroads:
-            featureMenu.EnableMenuItem(3, MF_ENABLED | MF_BYPOSITION);
-            break;
     }
 
-    featureMenu.EnableMenuItem(7, enableDarkness | MF_BYPOSITION);
-    */
+    if(!gameWorldController->hasFirstSwitchConnectionBeenSet()) {
+
+        if(gameTile.hasSwitch()) {
+             featureMenu.EnableMenuItem(MenuIDs::StartSwitchConnection, MF_ENABLED);
+        }
+        else {
+            featureMenu.EnableMenuItem(MenuIDs::StartSwitchConnection, MF_GRAYED | MF_DISABLED);
+        }
+
+        featureMenu.EnableMenuItem(MenuIDs::EndSwitchConnection, MF_GRAYED | MF_DISABLED);
+
+    }
+    else {
+        
+        featureMenu.EnableMenuItem(MenuIDs::StartSwitchConnection, MF_GRAYED | MF_DISABLED);
+
+        if(gameTile.hasGate() || gameTile.isDark()) {
+            featureMenu.EnableMenuItem(MenuIDs::EndSwitchConnection, MF_ENABLED);
+        }
+        else {
+            featureMenu.EnableMenuItem(MenuIDs::EndSwitchConnection, MF_GRAYED | MF_DISABLED);
+        }
+        
+    }
 
 }
 

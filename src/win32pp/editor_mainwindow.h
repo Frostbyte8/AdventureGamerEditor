@@ -31,53 +31,57 @@ namespace MenuIDs {
     const WORD FileMenuDiv1             = 205;
     const WORD ExitItem                 = 206;
 
-    const WORD WorldPopupMenu           = 210;
-    const WORD SummaryAndStory          = 211;
-    const WORD WorldProperties          = 212;
-    const WORD ResizeWorld              = 213;
+    // Tile Menu
 
-    const WORD TilePopupMenu            = 220;
-    const WORD FeatureSubMenu           = 221;
-    const WORD EditDescription          = 222;
+    const WORD TilePopupMenu            = 210;
+    const WORD FeatureSubMenu           = 211;
+    const WORD EditDescription          = 212;
 
-    // For these IDs, we'll just obtain their MOD flag count.
+    // World Menu
 
-    // Straight Aways
+    const WORD WorldPopupMenu           = 220;
+    const WORD SummaryAndStory          = 221;
+    const WORD WorldProperties          = 222;
+    const WORD ResizeWorld              = 223;
 
-    const WORD AddStart                 = 308;      // MOD1
-    const WORD AddFinish                = 309;      // MOD2
-    const WORD AddGate                  = 310;      // MOD1+MOD2.
-    const WORD AddLockedDoor            = 311;      // MOD3.
+    // Straight Away Menu
 
-    const WORD AddBarrierSouth          = 312;      // MOD1+MOD3
-    const WORD AddBarrierNorth          = 313;      // MOD2+MOD3
-
-    const WORD AddBarrierEast           = 312;      // MOD1+MOD3
-    const WORD AddBarrierWest           = 313;      // MOD2+MOD3
+    const WORD AddStart                 = 231;
+    const WORD AddFinish                = 232;
+    const WORD AddGate                  = 233;
+    const WORD AddLockedDoor            = 234;
+    const WORD AddBarrierNorth          = 235;
+    const WORD AddBarrierSouth          = 236;
+    const WORD AddBarrierEast           = 237;
+    const WORD AddBarrierWest           = 238;
 
     // Corners
 
-    const WORD AddSwitchOn              = 308;      // MOD1
-    const WORD AddSwitchOff             = 309;      // MOD2
+    const WORD AddOnSwitch              = 241;
+    const WORD AddOffSwitch             = 242;
 
-    // Dead Ends
+    // Dead-Ends
 
-    const WORD AddJumpPad               = 310;      // MOD1+MOD2
+    const WORD AddJumpPad               = 251;
 
-    // Cross Roads
+    // Crossroads Menu
 
-    const WORD AddHazard                = 311;      // MOD3
-    const WORD AddSafeHaven             = 314;      // ALLMODS
+    const WORD AddHazard                = 261;
+    const WORD AddSafeHaven             = 262;
 
-    // Additional Menu Items
+    // Feature Sub Menu
 
-    const WORD FirstJumpConnection      = 315;
-    const WORD SecondJumpConnection     = 316;
-
-    const WORD startSwitchConnection    = 317;
-    const WORD endSwitchConnection      = 318;
-
-    const WORD MakeTileDark             = 319;
+    const WORD StraightAwayMenu         = 270;
+    const WORD CornerMenu               = 271;
+    const WORD DeadEndMenu              = 272;
+    const WORD CrossroadsMenu           = 273;
+    const WORD FeatureMenuDiv1          = 274;
+    const WORD StartJumpConnection      = 275;
+    const WORD EndJumpConnection        = 276;
+    const WORD StartSwitchConnection    = 277;
+    const WORD EndSwitchConnection      = 278;
+    const WORD FeatureMenuDiv2          = 279;
+    const WORD ToggleTileDarkness       = 280;
 
 }
 

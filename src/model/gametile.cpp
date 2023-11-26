@@ -41,6 +41,11 @@ void GameTile::Builder::readTile(std::ifstream& mapFile, const std::string& tile
 // Accessors
 //=============================================================================
 
+///----------------------------------------------------------------------------
+/// getDrawInfo - Gets information that is useful when drawing the tile.
+/// @return a reference to a draw info structure for the tile
+///----------------------------------------------------------------------------
+
 const GameTile::DrawInfo GameTile::getDrawInfo() const {
     DrawInfo drawInfo;
     drawInfo.spriteIndex    = base.drawInfo.spriteIndex;
@@ -110,6 +115,15 @@ const bool GameTile::isAnyRoadTile() const {
 }
 
 ///----------------------------------------------------------------------------
+/// isCrossroads - Checks if a tile is a Crossroad tile
+/// @return true if it is, false if it is not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isCrossroads() const {
+    return base.drawInfo.spriteIndex == RoadTypes::Crossroads ? true : false;
+}
+
+///----------------------------------------------------------------------------
 /// isCorner - Checks if a tile is a corner tile
 /// @return true if it is, false if it is not
 ///----------------------------------------------------------------------------
@@ -173,6 +187,25 @@ const bool GameTile::isStraightaway() const {
     return false;
 
 }
+
+///----------------------------------------------------------------------------
+/// isHorizontalStraightaway - Checks if a straightway tile is a horizontal
+/// @return true if it is, false if it is not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isHorizontalStraightaway() const {
+    return base.drawInfo.spriteIndex == RoadTypes::StraightawayHorizontal ? true : false;
+}
+
+///----------------------------------------------------------------------------
+/// isVerticalStraightaway - Checks if a straightway tile is a vertical
+/// @return true if it is, false if it is not
+///----------------------------------------------------------------------------
+
+const bool GameTile::isVerticalStraightaway() const {
+    return base.drawInfo.spriteIndex == RoadTypes::StraightawayVertical ? true : false;
+}
+
 ///----------------------------------------------------------------------------
 /// hasAnyFeature - Checks if a tile has any features applied to it.
 /// @return true if it does, false if it does not.

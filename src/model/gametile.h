@@ -312,11 +312,14 @@ class GameTile {
         const bool hasSwitch() const;
         
         const bool isCorner() const;
+        const bool isCrossroads() const;
         const bool isDark() const;
         const bool isDeadend() const;
         const bool isDirtRoad() const;
         const bool isAnyRoadTile() const;
         const bool isStraightaway() const;
+        const bool isHorizontalStraightaway() const;
+        const bool isVerticalStraightaway() const;
 
         // IO Functions
 

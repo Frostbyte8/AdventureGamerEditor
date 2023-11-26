@@ -153,6 +153,7 @@ void MainWindowFrame::CreateMenuBar() {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
+    // File Menu
     
     for (int i = MenuIDs::NewFile; i <= MenuIDs::ExitItem; ++i) {
 
@@ -162,68 +163,78 @@ void MainWindowFrame::CreateMenuBar() {
         }
         
         fileMenu.AppendMenu(MF_STRING, i);
+        fileMenu.EnableMenuItem(i, MF_ENABLED);
     }
+
+    // World Menu
 
     for(int k = MenuIDs::SummaryAndStory; k <= MenuIDs::ResizeWorld; ++k) {
         worldMenu.AppendMenu(MF_STRING, k);
+        worldMenu.EnableMenuItem(k, MF_ENABLED);
     }
 
-    featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(straightAwayMenu.GetHandle()), LM_toUTF8("StraightAwayMenuItem", langMap));
-    featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(cornerMenu.GetHandle()), LM_toUTF8("CornerMenuItem", langMap));
-    featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(deadendMenu.GetHandle()), LM_toUTF8("DeadEndMenuItem", langMap));
-    featureMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(crossroadMenu.GetHandle()), LM_toUTF8("CrossroadsMenuItem", langMap));
-    
+    // Tile Menu
+
     appendPopupMenuWithID(tileMenu, featureMenu, MenuIDs::FeatureSubMenu);
     tileMenu.AppendMenu(MF_STRING, MenuIDs::EditDescription);
+    tileMenu.EnableMenuItem(MenuIDs::EditDescription, MF_ENABLED);
 
-    updateControlCaptions();
+    // Feature Menu
+    
+    for(int j = MenuIDs::AddStart; j <= MenuIDs::AddBarrierWest; ++j) {
+        straightAwayMenu.AppendMenu(MF_STRING, j);
+        straightAwayMenu.EnableMenuItem(j, MF_ENABLED);
+    }
 
-    // Deal with all the Feature Sub-Menus
+    for(int l = MenuIDs::AddOnSwitch; l <= MenuIDs::AddOffSwitch; ++l) {
+        cornerMenu.AppendMenu(MF_STRING, l);
+        cornerMenu.EnableMenuItem(l, MF_ENABLED);
+    }
 
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddStart, LM_toUTF8("StartMenuItem", langMap));
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddFinish, LM_toUTF8("FinishMenuItem", langMap));
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierNorth, LM_toUTF8("NorthBarrMenuItem", langMap));
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierSouth, LM_toUTF8("SouthBarrMenuItem", langMap));
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierEast, LM_toUTF8("EastBarrMenuItem", langMap));
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddBarrierWest, LM_toUTF8("WestBarrMenuItem", langMap));
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddGate, LM_toUTF8("GateMenuItem", langMap));
-    straightAwayMenu.AppendMenu(MF_STRING, MenuIDs::AddLockedDoor, LM_toUTF8("LockedDoorMenuItem", langMap));
+    deadendMenu.AppendMenu(MF_STRING, MenuIDs::AddJumpPad);
+    deadendMenu.EnableMenuItem(MenuIDs::AddJumpPad, MF_ENABLED);
 
-    cornerMenu.AppendMenu(MF_STRING, MenuIDs::AddSwitchOn, LM_toUTF8("SwitchOnMenuItem", langMap));
-    cornerMenu.AppendMenu(MF_STRING, MenuIDs::AddSwitchOff, LM_toUTF8("SwitchOffMenuItem", langMap));
+    for(int i = MenuIDs::AddHazard; i <= MenuIDs::AddSafeHaven; ++i) {
+        crossroadMenu.AppendMenu(MF_STRING, i);
+        crossroadMenu.EnableMenuItem(i, MF_ENABLED);
+    }
 
-    deadendMenu.AppendMenu(MF_STRING, MenuIDs::AddJumpPad, LM_toUTF8("JumppadMenuItem", langMap));
+    appendPopupMenuWithID(featureMenu, straightAwayMenu, MenuIDs::StraightAwayMenu);
+    appendPopupMenuWithID(featureMenu, cornerMenu, MenuIDs::CornerMenu);
+    appendPopupMenuWithID(featureMenu, deadendMenu, MenuIDs::DeadEndMenu);
+    appendPopupMenuWithID(featureMenu, crossroadMenu, MenuIDs::CrossroadsMenu);
 
-    crossroadMenu.AppendMenu(MF_STRING, MenuIDs::AddHazard, LM_toUTF8("HazardMenuItem", langMap));
-    crossroadMenu.AppendMenu(MF_STRING, MenuIDs::AddSafeHaven, LM_toUTF8("SafeHavenMenuItem", langMap));
+    // The rest of the feature menu
 
+    for(int k = MenuIDs::FeatureMenuDiv1; k <= MenuIDs::ToggleTileDarkness; ++k) {
+
+        if (k == MenuIDs::FeatureMenuDiv1 || k == MenuIDs::FeatureMenuDiv2) {
+            featureMenu.AppendMenu(MF_SEPARATOR);
+            continue;
+        }
+
+        featureMenu.AppendMenu(MF_STRING, k);
+        featureMenu.EnableMenuItem(k, MF_ENABLED);
+    }
     // Append extra items where needed
-
-    deadendMenu.AppendMenu(MF_STRING, MenuIDs::FirstJumpConnection, LM_toUTF8("JumppadConnectFirst", langMap));
-    deadendMenu.AppendMenu(MF_STRING | MF_GRAYED, MenuIDs::SecondJumpConnection, LM_toUTF8("JumppadConnectSecond", langMap));
-
-    featureMenu.AppendMenu(MF_SEPARATOR);
-    featureMenu.AppendMenu(MF_STRING, MenuIDs::startSwitchConnection, LM_toUTF8("StartSwitchMenuItem", langMap));
-    featureMenu.AppendMenu(MF_STRING | MF_GRAYED, MenuIDs::endSwitchConnection, LM_toUTF8("EndSwitchMenuItem", langMap));
-    featureMenu.AppendMenu(MF_STRING, MenuIDs::MakeTileDark, LM_toUTF8("MakeTileDarkMenuItem", langMap));
 
 
     // Finally deal with the menu bar
 
-    CString caption = AtoW(langMap.get("FileMenu").c_str(), CP_UTF8);
+    appendPopupMenuWithID(mainMenu, fileMenu, MenuIDs::FilePopupMenu);
+    appendPopupMenuWithID(mainMenu, tileMenu, MenuIDs::TilePopupMenu);
+    appendPopupMenuWithID(mainMenu, worldMenu, MenuIDs::WorldPopupMenu);
 
-    mainMenu.AppendMenu(MF_STRING | MF_POPUP,
-                        reinterpret_cast<UINT_PTR>(fileMenu.GetHandle()), caption);
+    // TODO: Move the update to it's proper location when the rest of the code
+    // is restructured.
 
-    caption = AtoW(langMap.get("TileMenu").c_str(), CP_UTF8);
+    // Disable a few menu items (For some reason, changing their strings re-enables them)
 
-    mainMenu.AppendMenu(MF_STRING | MF_POPUP,
-                        reinterpret_cast<UINT_PTR>(tileMenu.GetHandle()), caption);
+    for (int j = MenuIDs::StraightAwayMenu; j < MenuIDs::FeatureMenuDiv2; ++j) {
+        featureMenu.EnableMenuItem(j, MF_GRAYED | MF_DISABLED);
+    }
 
-    caption = AtoW(langMap.get("WorldMenu").c_str(), CP_UTF8);
-    
-    mainMenu.AppendMenu(MF_STRING | MF_POPUP,
-                        reinterpret_cast<UINT_PTR>(worldMenu.GetHandle()), caption);
+    updateControlCaptions();
 
     SetFrameMenu(mainMenu);
 
@@ -233,11 +244,19 @@ void MainWindowFrame::CreateMenuBar() {
 /// updateControlCaptions - Updates the controls on the Window
 ///----------------------------------------------------------------------------
 
-#define CHANGE_MENU_STRING(MENU, ITEMID, LANGID) MENU.ModifyMenu(ITEMID, MF_BYCOMMAND | MF_STRING, 0, LM_toUTF8(LANGID, langMap))
+#define CHANGE_MENU_STRING(MENU, ITEMID, LANGID) MENU.ModifyMenu(ITEMID, MENU.GetMenuState(ITEMID, 0) & (MF_GRAYED | MF_DISABLED), ITEMID, LM_toUTF8(LANGID, langMap))
 
 void MainWindowFrame::updateControlCaptions() {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    // Main Menu Bar
+
+    CHANGE_MENU_STRING(mainMenu, MenuIDs::FilePopupMenu, "FileMenu");
+    CHANGE_MENU_STRING(mainMenu, MenuIDs::TilePopupMenu, "TileMenu");
+    CHANGE_MENU_STRING(mainMenu, MenuIDs::WorldPopupMenu, "WorldMenu");
+
+    // File Menu
 
     CHANGE_MENU_STRING(fileMenu, MenuIDs::NewFile, "NewMenuItem");
     CHANGE_MENU_STRING(fileMenu, MenuIDs::OpenFile, "OpenMenuItem");
@@ -245,15 +264,55 @@ void MainWindowFrame::updateControlCaptions() {
     CHANGE_MENU_STRING(fileMenu, MenuIDs::SaveFileAs, "SaveAsMenuItem");
     CHANGE_MENU_STRING(fileMenu, MenuIDs::ExitItem, "ExitMenuItem");
 
+    // World Menu
+
     CHANGE_MENU_STRING(worldMenu, MenuIDs::SummaryAndStory, "SummaryMenuItem");
     CHANGE_MENU_STRING(worldMenu, MenuIDs::WorldProperties, "WorldPropertiesMenuItem");
     CHANGE_MENU_STRING(worldMenu, MenuIDs::ResizeWorld, "ResizeWorldMenuItem");
 
+    // Tile Menu
+
     CHANGE_MENU_STRING(tileMenu, MenuIDs::FeatureSubMenu, "AddFeatureMenuItem");
     CHANGE_MENU_STRING(tileMenu, MenuIDs::EditDescription, "TileDescriptionMenuItem");
-    
 
-    //worldMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(featureMenu.GetHandle()));
+    // Add Feature Menu
+
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::StraightAwayMenu, "StraightAwayMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::CornerMenu, "CornerMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::DeadEndMenu, "DeadEndMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::CrossroadsMenu, "CrossroadsMenuItem");
+
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::StartJumpConnection, "JumppadConnectFirst");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::EndJumpConnection, "JumppadConnectSecond");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::StartSwitchConnection, "StartSwitchMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::EndSwitchConnection, "EndSwitchMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::ToggleTileDarkness, "ToggleDarknessMenuItem");
+
+    // Straight Away Menu
+
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddStart, "StartMenuItem");
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddFinish, "FinishMenuItem");
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddGate, "GateMenuItem");
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddLockedDoor, "LockedDoorMenuItem");
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddBarrierNorth, "NorthBarrMenuItem");
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddBarrierSouth, "SouthBarrMenuItem");
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddBarrierEast, "WestBarrMenuItem");
+    CHANGE_MENU_STRING(straightAwayMenu, MenuIDs::AddBarrierWest, "EastBarrMenuItem");
+
+    // Corner Menu
+
+    CHANGE_MENU_STRING(cornerMenu, MenuIDs::AddOnSwitch, "SwitchOnMenuItem");
+    CHANGE_MENU_STRING(cornerMenu, MenuIDs::AddOffSwitch, "SwitchOffMenuItem");
+
+    // Dead-end Menu
+
+    CHANGE_MENU_STRING(deadendMenu, MenuIDs::AddJumpPad, "JumppadMenuItem");
+
+    // Crossroads Menu
+
+    CHANGE_MENU_STRING(crossroadMenu, MenuIDs::AddHazard, "HazardMenuItem");
+    CHANGE_MENU_STRING(crossroadMenu, MenuIDs::AddSafeHaven, "SafeHavenMenuItem");
+    
 
 }
 
@@ -308,6 +367,6 @@ void MainWindowFrame::appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu,
     targetMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(popupMenu.GetHandle()));
     const int menuPos = targetMenu.GetMenuItemCount() - 1;
     targetMenu.SetMenuItemInfo(menuPos, mii, TRUE);
-
+    targetMenu.EnableMenuItem(id, MF_ENABLED); // Otherwise GetMenuState fails.
 
 }
