@@ -9,7 +9,7 @@ const LONG DIALOG_EX_STYLES = WS_EX_WINDOWEDGE | WS_EX_CONTROLPARENT;
 const LONG DIALOG_WS_STYLES = WS_POPUPWINDOW | WS_DLGFRAME;
 
 //-----------------------------------------------------------------------------
-// Interface Functions
+// Generic Interface Functions
 //-----------------------------------------------------------------------------
 
 ///----------------------------------------------------------------------------
@@ -430,9 +430,9 @@ void MainWindowFrame::finishedEditTileDescriptionDialog() {
 
 }
 
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 /// startEditStoryAndSummaryDialog
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 
 bool MainWindowFrame::startEditStoryAndSummaryDialog(const std::string& story, const std::string& summary) {
 
@@ -479,9 +479,9 @@ void MainWindowFrame::finishedEditStoryAndSummaryDialog() {
 
 }
 
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 /// startEditWorldInfoDialog
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 
 bool MainWindowFrame::startEditWorldInfoDialog(const GameInfo& gameInfo) {
 
@@ -528,9 +528,9 @@ void MainWindowFrame::finishedEditWorldInfoDialog() {
 
 }
 
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 /// startResizeWorldDialog
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 
 bool MainWindowFrame::startResizeWorldDialog(const int& numRows, const int& numCols) {
 
@@ -560,9 +560,9 @@ bool MainWindowFrame::startResizeWorldDialog(const int& numRows, const int& numC
 
 }
 
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 /// finishedResizeWorldDialog
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 
 void MainWindowFrame::finishedResizeWorldDialog() {
 
@@ -573,5 +573,24 @@ void MainWindowFrame::finishedResizeWorldDialog() {
     }
 
     onDialogEnd(EditorDialogTypes::ResizeWorld);
+
+}
+
+//-----------------------------------------------------------------------------
+// View Specific Interface Functions
+//-----------------------------------------------------------------------------
+
+void MainWindowFrame::onGameMapRightClick(const WORD& xPos, const WORD& yPos) {
+
+    POINT pt;
+    pt.x = xPos;
+    pt.y = yPos;
+
+    GameMapPanel& mapPanel = reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView());
+
+    mapPanel.MapWindowPoints(NULL, &pt, 1);
+
+    TrackPopupMenu(tileMenu.GetHandle(), TPM_LEFTALIGN, 
+                   pt.x, pt.y, 0, *this, NULL);
 
 }

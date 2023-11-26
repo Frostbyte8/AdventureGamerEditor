@@ -6,6 +6,7 @@
 #include <wxx_scrollview.h>
 #include "../controller/gameworld_controller.h"
 #include "../interface/mainwindow_interface.h"
+#include "editor_mainwindow_win32pp_interface.h"
 #include "../win32/window_metrics.h"
 #include <vector>
 
@@ -224,7 +225,7 @@ class GameMapPanel : public ScrollPanelBaseClass {
 	
 	public:
 
-        GameMapPanel(MainWindowInterface* inMainWindow, GameWorldController* gwc);
+        GameMapPanel(Win32ppMainWindowInterface* inMainWindow, GameWorldController* gwc);
         virtual ~GameMapPanel();
         
         //void onZoomChange();
@@ -248,6 +249,7 @@ class GameMapPanel : public ScrollPanelBaseClass {
 
         LRESULT onLButtonDown(const WORD& xPos, const WORD& yPos);
         LRESULT onLButtonDBLClick(const WORD& xPos, const WORD& yPos);
+        LRESULT onRButtonDown(const WORD& xPos, const WORD& yPos);
 
         void updateScrollSize();
 
@@ -255,12 +257,12 @@ class GameMapPanel : public ScrollPanelBaseClass {
         GameMapPanel(const GameMapPanel&);
         GameMapPanel& operator = (const GameMapPanel&);
 
-        CMemDC			    tilesetDC;
-        
+        CMemDC			           tilesetDC;
         CMemDC      backBufferDC;
         CBitmap     backBufferBMP;
-        MainWindowInterface*    mainWindow;
-        GameWorldController*    gameWorldController;
+        
+        Win32ppMainWindowInterface* const mainWindow;
+        GameWorldController* const  gameWorldController;
 
         int fakeZoomLevel;
         int tileWidth;
@@ -304,8 +306,8 @@ class EntitiesHereDocker : public CDocker {
 class GameMapDocker : public CDocker {
 
     public:
-        GameMapDocker(MainWindowInterface* inMainWindow, GameWorldController* gwc,
-                      const CBitmap* inTileSet) : view(inMainWindow, gwc) {
+        GameMapDocker(Win32ppMainWindowInterface* mainWindow, GameWorldController* gwc,
+                      const CBitmap* inTileSet) : view(mainWindow, gwc) {
 
             SetView(view);
             SetBarWidth(6);

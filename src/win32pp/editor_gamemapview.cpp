@@ -6,7 +6,7 @@
 // Constructors / Destructor
 //=============================================================================
 
-GameMapPanel::GameMapPanel(MainWindowInterface* inMainWindow, GameWorldController* gwc) :
+GameMapPanel::GameMapPanel(Win32ppMainWindowInterface* inMainWindow, GameWorldController* gwc) :
 backBufferDC(NULL), tilesetDC(NULL), mainWindow(inMainWindow), gameWorldController(gwc) {
     fakeZoomLevel = 1;
     tileWidth = 0;
@@ -83,25 +83,22 @@ void GameMapPanel::OnDraw(CDC& dc) {
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-LRESULT GameMapPanel::WndProc(UINT msg, WPARAM wparam, LPARAM lparam) {
+LRESULT GameMapPanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch (msg) {
         
         case WM_LBUTTONDOWN:    
-            return onLButtonDown(LOWORD(lparam), HIWORD(lparam));
+            return onLButtonDown(LOWORD(lParam), HIWORD(lParam));
 
         case WM_LBUTTONDBLCLK:
-            return onLButtonDBLClick(LOWORD(lparam), HIWORD(lparam));
+            return onLButtonDBLClick(LOWORD(lParam), HIWORD(lParam));
 
         case WM_RBUTTONDOWN:
-            // Eventually we will pop open a menu here to set features and 
-            // other things but we'll use this for debugging the drawing code
-            // in the mean time.
-            InvalidateRect();
+            return onRButtonDown(LOWORD(lParam), HIWORD(lParam));
             break;
     }
 
-    return WndProcDefault(msg, wparam, lparam);
+    return WndProcDefault(msg, wParam, lParam);
 }
 
 //=============================================================================
@@ -162,6 +159,31 @@ LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     // No need to verify the row and col, the function will do that for us.
 
     gameWorldController->trySelectNewTile(row, col);
+
+    return 0;
+}
+
+///----------------------------------------------------------------------------
+/// onRButtonDown - Processes the WM_RBUTTONDOWN message. Opens the Tile menu
+/// for easy access.
+/// @param xPos of the mouse
+/// @param yPos of the mouse
+/// @return Always 0
+///----------------------------------------------------------------------------
+
+LRESULT GameMapPanel::onRButtonDown(const WORD& xPos, const WORD& yPos) {
+
+    CPoint viewOffset = GetScrollPosition();
+
+    int row = static_cast<int>((yPos + viewOffset.y) / tileHeight);
+    int col = static_cast<int>((xPos + viewOffset.x) / tileWidth);
+
+    // We will try to change to the new tile first, and if that is successful,
+    // we will then open up the menu
+
+    if(gameWorldController->trySelectNewTile(row, col)) {
+        mainWindow->onGameMapRightClick(xPos, yPos);
+    }
 
     return 0;
 }

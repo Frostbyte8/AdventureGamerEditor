@@ -4,6 +4,7 @@
 #include <wxx_wincore.h>
 #include <wxx_dockframe.h>
 #include <wxx_stdcontrols.h>
+#include "editor_mainwindow_win32pp_interface.h"
 #include "../interface/mainwindow_interface.h"
 #include "../controller/gameworld_controller.h"
 #include "../win32/window_metrics.h"
@@ -90,7 +91,7 @@ namespace MenuIDs {
 // resides, along with it's child dockers.
 //=============================================================================
 
-class MainWindowFrame : public CDockFrame, public MainWindowInterface {
+class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Win32ppMainWindowInterface {
 
 	public:
 
@@ -100,7 +101,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         // Win32++ Definitions
         virtual HWND Create(HWND parent = 0);
 		
-        // Public Interface Functions
+        // Public Generic Interface Functions
 
         virtual int askYesNoQuestion(const std::string& question, const std::string& title,
                                      bool allowCancel = true);
@@ -139,6 +140,10 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
         virtual bool startResizeWorldDialog(const int& numRows, const int& numCols);
         virtual void finishedResizeWorldDialog();
         virtual void onWorldResized();
+
+        // Interface Functions For this View Type
+
+        virtual void onGameMapRightClick(const WORD& xPos, const WORD& yPos);
         
         // Functions that are being cleaned
 

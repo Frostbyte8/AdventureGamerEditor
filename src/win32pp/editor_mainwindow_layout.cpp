@@ -35,7 +35,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
 	const int retVal = CDockFrame::OnCreate(cs);
 
-    // Deal with the menubar and title bar next.
+    // Deal with the menu bar and title bar next.
 
     CreateMenuBar();
     updateTitleBar(false);
@@ -47,7 +47,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 	DWORD styleFlags = DS_NO_UNDOCK | DS_NO_CAPTION | DS_DEFAULT_CURSORS | DS_CLIENTEDGE;
 	SetDockStyle(styleFlags);
 
-    // Game map and road selector need to be aware of the tilest.
+    // Game map and road selector need to be aware of the tileset.
 
     gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(this, gameWorldController, &tilesetBMP), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
