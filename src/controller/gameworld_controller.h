@@ -79,15 +79,6 @@ class GameWorldController {
         bool tryCreateSwitchConnection();
 
         //
-               
-        
-                
-
-        bool tryAddFirstJumpConnection();
-        bool tryAddSecondJumpConnection();
-        
-        bool tryStartSwitchConnection();
-        bool tryEndSwitchConnection();
 
         bool newWorld();
         bool loadWorld(const std::string& filePath, const std::string& fileName);
