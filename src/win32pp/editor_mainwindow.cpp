@@ -172,7 +172,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         case MenuIDs::startSwitchConnection:
         case MenuIDs::endSwitchConnection:
-            addSwitchConnection(ID);
+            gameWorldController->tryCreateSwitchConnection();
             break;
 
         case MenuIDs::MakeTileDark:
@@ -393,56 +393,4 @@ int MainWindowFrame::onSaveFileDialog(std::string& filePath, std::string& fileNa
     }
 
     return GenericInterfaceResponses::Cancel;
-}
-
-
-void MainWindowFrame::addJumpConnection(const int& whichPoint) {
-    
-    /*
-
-    if (whichPoint == MenuIDs::FirstJumpConnection) {
-        if (gameWorldController->tryAddFirstJumpConnection()) {
-            deadendMenu.EnableMenuItem(1, MF_GRAYED | MF_BYPOSITION);
-            deadendMenu.EnableMenuItem(2, MF_ENABLED | MF_BYPOSITION);
-            return;
-        }
-    }
-    else if (whichPoint == MenuIDs::SecondJumpConnection) {
-        if (gameWorldController->tryAddSecondJumpConnection()) {
-            MessageBox(L"Jump connection added successfully.", L"Jump Added", MB_OK);
-        }
-        else {
-            MessageBox(L"Unable to add Jump Connection.", L"Error adding Jump", MB_ICONERROR);
-        }
-    }
-
-    // If any failures happens, start over.
-
-    deadendMenu.EnableMenuItem(2, MF_GRAYED | MF_BYPOSITION);
-    deadendMenu.EnableMenuItem(1, MF_ENABLED | MF_BYPOSITION);
-
-    */
-
-}
-
-void MainWindowFrame::addSwitchConnection(const int& whichPoint) {
-    
-    if (whichPoint == MenuIDs::startSwitchConnection) {
-        if (gameWorldController->tryStartSwitchConnection()) {
-            featureMenu.EnableMenuItem(5, MF_GRAYED | MF_BYPOSITION);
-            featureMenu.EnableMenuItem(6, MF_ENABLED | MF_BYPOSITION);
-            return;
-        }
-    }
-    else if (whichPoint == MenuIDs::endSwitchConnection) {
-        if (gameWorldController->tryEndSwitchConnection()) {
-            MessageBox(L"Switch connection added successfully.", L"Switch Added", MB_OK);
-        }
-        else {
-            MessageBox(L"Unable to add Switch Connection.", L"Error adding Switch", MB_ICONERROR);
-        }
-    }
-
-    featureMenu.EnableMenuItem(6, MF_GRAYED | MF_BYPOSITION);
-    featureMenu.EnableMenuItem(5, MF_ENABLED | MF_BYPOSITION);
 }

@@ -22,6 +22,12 @@ namespace EditorTileUpdateFlags {
     const int Both              = 0x03;
 }
 
+namespace EditorConnectionUpdateFlags {
+    const int Jumps             = 0x01;
+    const int Switches          = 0x02;
+    const int Both              = 0x03;
+}
+
 class MainWindowInterface {
 
     public:

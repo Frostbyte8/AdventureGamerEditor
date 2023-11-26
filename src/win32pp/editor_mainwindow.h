@@ -150,8 +150,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface {
 
         inline void makeDialogModal(EditDialogBase& dialog, const CString& caption);
 
-        void addJumpConnection(const int& whichPoint);
-        void addSwitchConnection(const int& whichPoint);
         void updateStatusbar(const int& index);
         void updateFeatureMenu(const int& index);
         void CreateMenuBar();

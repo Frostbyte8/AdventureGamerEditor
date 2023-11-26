@@ -249,7 +249,10 @@
 	"SecondJumppadTitle"			: "Jump to non Jump pad tile?",
 
 	"JumppadAddedText"				: "Jump pad added: (%d,%d)-(%d,%d).",
-	"JumppadAddedTitle"				: "Jump padd added",
+	"JumppadAddedTitle"				: "Jump pad added",
+
+	"SwitchAddedText"				: "Switch at (%d,%d) was connected to tile at (%d,%d).",
+	"SwitchAddedTitle"				: "Switch Added",
 
     // Error Messages
 
@@ -311,7 +314,16 @@
 	"ErrCannotJumpToSelfTitle"		: "Error connecting Jump",
 
 	"ErrJumpAlreadyExistsText"		: "Tile already contains a Jump connection.",
-	"ErrJumpAlreadyExistsTitle"		: "Error Jump exists",
+	"ErrJumpAlreadyExistsTitle"		: "Jump exists",
+
+	"ErrNoSwitchOnTileText"			: "Tile does not have a switch feature.",
+	"ErrNoSwitchOnTileTitle"		: "Switch Missing",
+
+	"ErrMustBeDarkOrGateText"		: "A Switch can only connect to a Gate feature, or a tile that is dark.",
+	"ErrMustBeDarkOrGateTitle"		: "Gate or Dark Tile only",
+
+	"ErrSwitchAlreadyExistsText"	: "Tile already contains a switch connection.",
+	"ErrSwitchAlreadyExistsTitle"	: "Switch connection exists",
     
     // Validators
 

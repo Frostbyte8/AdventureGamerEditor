@@ -19,6 +19,7 @@ class GameWorldController {
         bool canAddObject() const;
         bool canAddCharacter() const;
         bool hasFirstJumpConnectionBeenSet() const;
+        bool hasFirstSwitchConnectionBeenSet() const;
 
         const GameMap* getGameMap() const { return gameMap; }
         const int& getMapWidth() const { return gameMap->getWidth(); }
@@ -75,6 +76,7 @@ class GameWorldController {
         bool tryResizeWorld(const int& numRows, const int& numCols);
 
         bool tryCreateJumpConnection();
+        bool tryCreateSwitchConnection();
 
         //
                

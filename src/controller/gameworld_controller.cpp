@@ -45,17 +45,33 @@ bool GameWorldController::hasUnsavedChanges() const {
 }
 
 ///----------------------------------------------------------------------------
-/// hasUnsavedChanges
-/// @returns true if there are unsaved changes, and false if there is not.
+/// hasFirstJumpConnectionBeenSet
+/// @returns true if the first connection was set, false if it was not
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::hasFirstJumpConnectionBeenSet() const {
+    
     if(firstJumpConnection.getX() != -1) {
         return true;
     }
 
     false;
 }
+
+///----------------------------------------------------------------------------
+/// hasFirstSwitchConnectionBeenSet
+/// @returns true if the first connection was set, false if it was not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::hasFirstSwitchConnectionBeenSet() const {
+
+    if (firstSwitchConnection.getX() != -1) {
+        return true;
+    }
+
+    false;
+}
+
 
 //=============================================================================
 // Public Functions
@@ -754,6 +770,21 @@ bool GameWorldController::tryDrawOnSelectedTile() {
     if(!findAndRemoveConnection(gameMap->getTile(selectedTileIndex))) {
         return false;
     }
+    
+    if(firstJumpConnection.getColumn() == selectedCol && 
+            firstJumpConnection.getRow() == selectedRow) {
+
+        firstJumpConnection = SimplePoint(-1, -1);
+        // mainWindow->onConnectionUpdated(1);
+
+    }
+    else if(firstSwitchConnection.getColumn() == selectedCol &&
+            firstSwitchConnection.getRow() == selectedRow) {
+
+        firstSwitchConnection = SimplePoint(-1, -1);
+        // mainWindow->onConnectionUpdated(2);
+
+    }
    
     gameMap->updateTile(gmKey, selectedTileIndex, drawingTile.build());
 
@@ -1049,6 +1080,28 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
         trySelectNewTile(0);
     }
 
+    // Also reset the jump and switch connections if necessary
+
+    int whichConnections = 0;
+
+    if(firstJumpConnection.getColumn() >= numCols || 
+       firstJumpConnection.getRow() >= numRows) {
+
+        firstJumpConnection = SimplePoint(-1, -1);
+        whichConnections = 1;
+
+    }
+
+    if(firstSwitchConnection.getColumn() >= numCols || 
+       firstSwitchConnection.getRow() >= numRows) {
+
+        firstSwitchConnection = SimplePoint(-1, -1);
+        whichConnections += 2;
+
+    }
+
+    // mainWindow->onConnectionUpdated(whichConnections);
+
     changedSinceLastSave = true;
     mainWindow->onWorldResized();
 
@@ -1058,6 +1111,13 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
 //-----------------------------------------------------------------------------
 // Switch / Jump Pad connection
 //-----------------------------------------------------------------------------
+
+///----------------------------------------------------------------------------
+/// tryCreateJumpConnection - Attempts to connect two jump pads together. The
+/// second tile does not need to be a valid jump pad, only the first.
+/// @return true if the operation was valid and the first point was made, or
+/// true if a jump pad connection was added. False if any error occurs.
+///----------------------------------------------------------------------------
 
 bool GameWorldController::tryCreateJumpConnection() {
 
@@ -1120,22 +1180,91 @@ bool GameWorldController::tryCreateJumpConnection() {
         secondJumpConnection = SimplePoint(-1, -1);        
 
     }
+
+    // mainWindow->onConnectionUpdated(1);
    
     return true;
 }
 
+///----------------------------------------------------------------------------
+/// tryCreateSwitchConnection - Attempts to connect a Switch to a tile.
+/// 
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryCreateSwitchConnection() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    // Unlike Jumps, switches need to carefully added as they can crash the
+    // game if they are invalid.
+
+    const bool isSecondPoint = firstSwitchConnection.getX() != -1 ? true : false;
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if(!isSecondPoint) {
+
+        if(!currentTile.hasSwitch()) {
+            mainWindow->displayErrorMessage(langMap.get("ErrNoSwitchOnTileText"),
+                                            langMap.get("ErrNoSwitchOnTileTitle"));
+            return false;
+        }
+
+    }
+    else {
+
+        if(!currentTile.hasGate() && !currentTile.isDark()) {
+            mainWindow->displayErrorMessage(langMap.get("ErrMustBeDarkOrGateText"),
+                                            langMap.get("ErrMustBeDarkOrGateTitle"));
+            return false;
+        }
+
+    }
+
+    const SimplePoint* alreadyExists = gameMap->findSwitchPoint(selectedRow, selectedCol);
+
+    if (alreadyExists) {
+        mainWindow->displayErrorMessage(langMap.get("ErrSwitchAlreadyExistsText"),
+                                        langMap.get("ErrSwitchAlreadyExistsTitle"));
+        return false;
+    }
+
+    if (!isSecondPoint) {
+        firstSwitchConnection = SimplePoint(selectedCol, selectedRow);
+    }
+    else {
+
+        secondSwitchConnection = SimplePoint(selectedCol, selectedRow);
+
+        gameMap->addSwitch(gmKey, firstSwitchConnection, secondSwitchConnection);
+
+        std::string messageText = langMap.get("SwitchAddedText");
+        const std::string messageTitle = langMap.get("SwitchAddedTitle");
+        formatConnectionString(messageText, firstSwitchConnection, secondSwitchConnection);
+
+        mainWindow->displayMessage(messageText, messageTitle, GenericInterfaceMessageTypes::Information);
+
+        firstSwitchConnection = SimplePoint(-1, -1);
+        secondSwitchConnection = SimplePoint(-1, -1);
+
+    }
+
+
+    // mainWindow->onConnectionUpdated(2);
+
+    return true;
+}
 
 //-----------------------------------------------------------------------------
 // Code that is being rewritten or cleaned still
 //-----------------------------------------------------------------------------
 
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 /// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
 /// the file, it will avoid erasing the currently loaded world.
 /// @param path to the Adventure Gamer World File
 /// @param the name of the Adventure Gamer File
 /// @return true if the operation completed successfully, false if it could not
-///-----------------------------------------------------------------------------
+///----------------------------------------------------------------------------
 
 bool GameWorldController::loadWorld(const std::string& filePath,
                                     const std::string& fileName) {
