@@ -102,6 +102,7 @@ class GameMap {
 
         void updateTileDescription(GMKey, const size_t& index, const std::string& tileName, const std::string& tileDescription);
         void updateGameInfo(GMKey, const GameInfo& newInfo);
+        void setPlayerCoordinates(const int& playerRow, const int& playerCol);
 
         // Public Functions
         const size_t characterIndexFromID(const int& charID) const;

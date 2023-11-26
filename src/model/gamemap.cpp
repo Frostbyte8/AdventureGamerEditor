@@ -392,6 +392,17 @@ void GameMap::setSummary(GMKey, const std::string& inSummary) {
 }
 
 ///----------------------------------------------------------------------------
+/// setPlayerCoordinates - Sets the starting position of the player
+/// @param starting row of the player
+/// @param starting column of the player
+///----------------------------------------------------------------------------
+
+void GameMap::setPlayerCoordinates(const int& playerRow, const int& playerCol) {
+    gameInfo.setPlayerX(playerCol);
+    gameInfo.setPlayerY(playerRow);
+}
+
+///----------------------------------------------------------------------------
 /// updateTileDescription - Update the tile's name and description.
 /// @param GMKey used to restrict access of this function.
 /// @param index of the tile being updated.

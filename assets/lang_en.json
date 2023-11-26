@@ -254,6 +254,9 @@
 	"SwitchAddedText"				: "Switch at (%d,%d) was connected to tile at (%d,%d).",
 	"SwitchAddedTitle"				: "Switch Added",
 
+	"MovePlayerStartCoordText"		: "You are adding a start feature. Do you want to update the player's starting coordinates to this tile as well?",
+	"MovePlayerStartCoordTitle"		: "Move Player Coordinates?",
+
     // Error Messages
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",

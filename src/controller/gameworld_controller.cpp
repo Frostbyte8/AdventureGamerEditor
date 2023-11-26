@@ -55,7 +55,7 @@ bool GameWorldController::hasFirstJumpConnectionBeenSet() const {
         return true;
     }
 
-    false;
+    return false;
 }
 
 ///----------------------------------------------------------------------------
@@ -69,7 +69,7 @@ bool GameWorldController::hasFirstSwitchConnectionBeenSet() const {
         return true;
     }
 
-    false;
+    return false;
 }
 
 
@@ -632,6 +632,20 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 
     if (!findAndRemoveConnection(currentTile)) {
         return false;
+    }
+
+    // Check if this is a start feature, if so, ask the user if they want to move
+    // the player start here.
+
+    if(currentTile.isStraightaway() && featureType == TileModifiers::Start) {
+
+        const int response = mainWindow->askYesNoQuestion(langMap.get("MovePlayerStartCoordText"), 
+                                                          langMap.get("MovePlayerStartCoordTitle"), false);
+
+        if(response == GenericInterfaceResponses::Yes) {
+            gameMap->setPlayerCoordinates(selectedRow, selectedCol);
+        }
+
     }
 
     // Finally, we can update the tile.
