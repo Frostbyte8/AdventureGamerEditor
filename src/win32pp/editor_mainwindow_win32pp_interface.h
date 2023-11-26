@@ -7,6 +7,13 @@ class Win32ppMainWindowInterface {
     
     public:
 
+        ///--------------------------------------------------------------------
+        /// onGameMapRightClick - Inform the window that there was a right
+        /// click on the game map, and where it was
+        /// @param The x-coordinate of the mouse when it was clicked
+        /// @param the y-coordinate of the mouse when it was clicked.
+        ///--------------------------------------------------------------------
+
         virtual void onGameMapRightClick(const WORD& xPos, const WORD& yPos) = 0;
 
 };

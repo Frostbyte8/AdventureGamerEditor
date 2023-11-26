@@ -580,6 +580,10 @@ void MainWindowFrame::finishedResizeWorldDialog() {
 // View Specific Interface Functions
 //-----------------------------------------------------------------------------
 
+///----------------------------------------------------------------------------
+/// onGameMapRightClick
+///----------------------------------------------------------------------------
+
 void MainWindowFrame::onGameMapRightClick(const WORD& xPos, const WORD& yPos) {
 
     POINT pt;
