@@ -197,6 +197,10 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
                 Destroy();
                 return 0;
 
+            case WM_MENUCHAR:
+                FinalWindowProc(msg, wParam, lParam);
+                break;
+
             case WM_ACTIVATEAPP:
                 ::BringWindowToTop(activeWindowHandle);
                 return 0;
@@ -472,6 +476,7 @@ void MainWindowFrame::updateMenuState() {
     mainMenu.EnableMenuItem(MenuIDs::TilePopupMenu, worldLoaded);
     mainMenu.EnableMenuItem(MenuIDs::WorldPopupMenu, worldLoaded);
 
+    DrawMenuBar();
 }
 
 //-----------------------------------------------------------------------------

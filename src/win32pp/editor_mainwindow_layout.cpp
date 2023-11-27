@@ -24,6 +24,10 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
     // Prevent Win32++ from using themes.
     UseThemes(FALSE);
+    UseIndicatorStatus(FALSE);
+    UseMenuStatus(FALSE);
+    UseReBar(FALSE);
+    UseToolBar(FALSE);
 
     if(!loadTileSet()) {
         MessageBox(L"Could not find tileset.bmp. Please ensure this file is in the same directory as advedit.exe. The program will now close.", L"Missing file tileset.bmp", MB_OK | MB_ICONERROR);
