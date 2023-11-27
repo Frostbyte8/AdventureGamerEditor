@@ -191,15 +191,14 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         CMenu mainMenu;
         CMenu fileMenu;
         CMenu worldMenu;
-
         CMenu tileMenu;
-
-
         CMenu featureMenu;
         CMenu straightAwayMenu;
         CMenu cornerMenu;
         CMenu deadendMenu;
         CMenu crossroadMenu;
+
+        HACCEL keyboardAccelerators;
 
         bool isSizing;
 

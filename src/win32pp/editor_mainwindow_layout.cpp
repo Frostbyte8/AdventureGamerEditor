@@ -236,6 +236,22 @@ void MainWindowFrame::CreateMenuBar() {
         featureMenu.EnableMenuItem(j, MF_GRAYED | MF_DISABLED);
     }
 
+    // Accelerators
+    ACCEL testHotkeys[2];
+
+    testHotkeys[0].cmd = MenuIDs::NewFile;
+    testHotkeys[0].fVirt = FCONTROL | FVIRTKEY;
+    testHotkeys[0].key = 'N';
+
+    testHotkeys[1].cmd = MenuIDs::OpenFile;
+    testHotkeys[1].fVirt = FCONTROL | FVIRTKEY;
+    testHotkeys[1].key = 'O';
+
+    keyboardAccelerators = CreateAcceleratorTable((LPACCEL)testHotkeys, 2);
+
+    GetApp()->SetAccelerators(keyboardAccelerators, *this);
+    
+    // Update Strings based on language
     updateControlCaptions();
 
     SetFrameMenu(mainMenu);
@@ -247,6 +263,7 @@ void MainWindowFrame::CreateMenuBar() {
 ///----------------------------------------------------------------------------
 
 #define CHANGE_MENU_STRING(MENU, ITEMID, LANGID) MENU.ModifyMenu(ITEMID, MENU.GetMenuState(ITEMID, 0) & (MF_GRAYED | MF_DISABLED), ITEMID, LM_toUTF8(LANGID, langMap))
+#define CHANGE_MENU_STRING_ACCEL(MENU, ITEMID, LANGID, ACCELKEY) MENU.ModifyMenu(ITEMID, MENU.GetMenuState(ITEMID, 0) & (MF_GRAYED | MF_DISABLED), ITEMID, LM_toUTF8(LANGID, langMap) + "\t" + ACCELKEY)
 
 void MainWindowFrame::updateControlCaptions() {
 
@@ -260,11 +277,11 @@ void MainWindowFrame::updateControlCaptions() {
 
     // File Menu
 
-    CHANGE_MENU_STRING(fileMenu, MenuIDs::NewFile, "NewMenuItem");
-    CHANGE_MENU_STRING(fileMenu, MenuIDs::OpenFile, "OpenMenuItem");
+    CHANGE_MENU_STRING_ACCEL(fileMenu, MenuIDs::NewFile, "NewMenuItem", "Ctrl+N");
+    CHANGE_MENU_STRING_ACCEL(fileMenu, MenuIDs::OpenFile, "OpenMenuItem", "Ctrl+O");
     CHANGE_MENU_STRING(fileMenu, MenuIDs::SaveFile, "SaveMenuItem");
     CHANGE_MENU_STRING(fileMenu, MenuIDs::SaveFileAs, "SaveAsMenuItem");
-    CHANGE_MENU_STRING(fileMenu, MenuIDs::ExitItem, "ExitMenuItem");
+    CHANGE_MENU_STRING_ACCEL(fileMenu, MenuIDs::ExitItem, "ExitMenuItem", "Alt+F4");
 
     // World Menu
 
@@ -318,6 +335,7 @@ void MainWindowFrame::updateControlCaptions() {
 
 }
 
+#undef CHANGE_MENU_STRING_ACCEL
 #undef CHANGE_MENU_STRING
 
 ///----------------------------------------------------------------------------
