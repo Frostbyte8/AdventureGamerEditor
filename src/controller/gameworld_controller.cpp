@@ -722,7 +722,7 @@ bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
 
 bool GameWorldController::trySelectNewTile(const int& index) {
 
-    if (updateSelectionIfValid(-1, -1, index)) {
+    if (!updateSelectionIfValid(-1, -1, index)) {
         // Could be many reasons: Clicked out side the map bounds, some other
         // function screwed up, so if an error happens, that will be the
         // the caller's problem.
@@ -1333,6 +1333,9 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     worldFileName = fileName;
 
     drawingTileIndex = 0;
+    selectedTileIndex = 0;
+    selectedRow = 0;
+    selectedCol = 0;
     trySelectNewTile(0);
     changedSinceLastSave = false;
 
