@@ -78,9 +78,10 @@ class GameWorldController {
         bool tryCreateJumpConnection();
         bool tryCreateSwitchConnection();
 
+        bool tryNewGameWorld();
+
         //
 
-        bool newWorld();
         bool loadWorld(const std::string& filePath, const std::string& fileName);
         bool saveWorld(bool saveAs = false);
 
@@ -97,6 +98,8 @@ class GameWorldController {
         inline void formatConnectionString(std::string& str, const SimplePoint& coord1, const SimplePoint& coord2);
 
         inline bool findAndRemoveConnection(const GameTile& tile);
+
+        bool checkAndAskToSaveUnsavedChanges();
 
         template <typename T>
         bool vecIndexInRange(const T& vec, const size_t& index) const;

@@ -259,6 +259,9 @@
 	"MovePlayerStartCoordText"		: "You are adding a start feature. Do you want to update the player's starting coordinates to this tile as well?",
 	"MovePlayerStartCoordTitle"		: "Move Player Coordinates?",
 
+	"SaveChangesBeforeActionText"	: "You have unsaved changes to the current world. Do you want to save them?",
+	"SaveChangesBeforeActionTitle"	: "Unsaved Changes?",
+
     // Error Messages
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
@@ -329,6 +332,12 @@
 
 	"ErrSwitchAlreadyExistsText"	: "Tile already contains a switch connection.",
 	"ErrSwitchAlreadyExistsTitle"	: "Switch connection exists",
+
+	"ErrNewWorldOutOfMemoryText"	: "Unable to create a new Adventure Gamer World: Out of memory.",
+	"ErrNewWorldOutOfMemoryTitle"	: "Out of Memory",
+
+	"ErrCreateWorldFailedText"		: "Failed to create a new Adventure Gamer World.",
+	"ErrCreateWorldFailedTitle"		: "Error Creating World",
     
     // Validators
 

@@ -144,7 +144,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         // File Menu
 
-        case MenuIDs::NewFile: return OnFileNew();
+        case MenuIDs::NewFile: gameWorldController->tryNewGameWorld(); break;
         case MenuIDs::OpenFile: return OnFileOpen();
 
         case MenuIDs::SaveFile:
@@ -216,18 +216,6 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     
     return TRUE;
 
-}
-
-
-///----------------------------------------------------------------------------
-/// OnFileNew - Create a new file when File > New is selected.
-/// @return Always TRUE to indicate that the message was handled.
-///----------------------------------------------------------------------------
-
-BOOL MainWindowFrame::OnFileNew() {
-    gameWorldController->newWorld();
-    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
-    return TRUE;
 }
 
 ///----------------------------------------------------------------------------

@@ -1034,8 +1034,6 @@ bool GameWorldController::tryEditWorldSize() {
         return false;
     }
 
-    // TODO: Change this from getHeight to getRows.
-
     if (!mainWindow->startResizeWorldDialog(gameMap->getHeight(), gameMap->getWidth())) {
         mainWindow->onDialogEnd(EditorDialogTypes::ResizeWorld);
         mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
@@ -1201,7 +1199,6 @@ bool GameWorldController::tryCreateJumpConnection() {
 
 ///----------------------------------------------------------------------------
 /// tryCreateSwitchConnection - Attempts to connect a Switch to a tile.
-/// 
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryCreateSwitchConnection() {
@@ -1261,10 +1258,90 @@ bool GameWorldController::tryCreateSwitchConnection() {
 
     }
 
-
     // mainWindow->onConnectionUpdated(2);
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// File I/O
+//-----------------------------------------------------------------------------
+
+///----------------------------------------------------------------------------
+/// tryNewGameWorld - Attempt to create a new Adventure Gamer World. If it
+/// succeeds, there will be a new empty game world, if not, the previous one
+/// will stay loaded.
+/// @return true if a new world was created, false if it could not be created.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryNewGameWorld() {
+
+    if(!checkAndAskToSaveUnsavedChanges()) {
+        return false;
+    }
+
+    GameMap* newMap;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    bool wasWorldCreated = false;
+    
+    try {
+
+        newMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
+
+        if (gameMap) {
+            GameMap* tempMap = gameMap;
+            gameMap = newMap;
+            delete tempMap;
+
+        }
+        else {
+            gameMap = newMap;
+        }
+
+        newMap = NULL;
+        wasWorldCreated = true;
+
+    }
+    catch (const std::bad_alloc& e) {
+        mainWindow->displayErrorMessage(langMap.get("ErrNewWorldOutOfMemoryText"),
+                                        langMap.get("ErrNewWorldOutOfMemoryTitle"));
+        
+        return false;
+    }
+    catch (...) {
+        // TODO: Is there anything else can be caught other than bad_alloc?
+        mainWindow->displayErrorMessage("Unknown exception caught.", "Unknown exception caught");
+        assert(false);
+    }
+
+    if(!wasWorldCreated) {
+        
+        if(newMap) {
+            delete newMap;
+            newMap = NULL;
+        }
+
+        mainWindow->displayErrorMessage(langMap.get("ErrCreateWorldFailedText"),
+                                        langMap.get("ErrCreateWorldFailedTitle"));
+
+        return false;
+
+    }
+
+    worldFilePath = "";
+    worldFileName = "";
+    changedSinceLastSave = false;
+
+    // Reset editor defaults
+    trySelectNewTile(0);
+    trySetDrawingTile(0);
+    
+    mainWindow->onEntitiesChanged(true, true, true, true);
+    mainWindow->onWorldResized();
+    mainWindow->onWorldInfoUpdated();
+
+    return true;
+
 }
 
 //=============================================================================
@@ -1301,6 +1378,42 @@ inline bool GameWorldController::askAndUpdateSisterTile(const std::string& messa
 
     return true;
 
+}
+
+///----------------------------------------------------------------------------
+/// checkAndAskToSaveUnsavedChanges - Check if there are unsaved changes,
+/// and if there are, ask to save them.
+/// @return true if: 
+/// 1) There are no unsaved changes. 
+/// 2) The user says yes and the save is successful.
+/// 3) The user says no and the changes are discarded.
+///
+/// false if: 
+/// 1) The user presses Cancel 
+/// 2) The users says yes but the save is unsuccessful.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::checkAndAskToSaveUnsavedChanges() {
+
+    if (changedSinceLastSave) {
+        const int response = mainWindow->askYesNoQuestion("SaveChangesBeforeActionText",
+                                                          "SaveChangesBeforeActionTitle",
+                                                          true);
+
+        // On yes, we'll try and save the changes, and proceed only if they happen.
+        // On cancel, we'll bow out.
+
+        if (response == GenericInterfaceResponses::Yes) {
+            // TODO: Update this when save is re-written.
+            return false;
+        }
+        else if (response == GenericInterfaceResponses::Cancel) {
+            return false;
+        }
+
+    }
+
+    return true;
 }
 
 ///----------------------------------------------------------------------------
@@ -1709,59 +1822,6 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     mainWindow->onWorldInfoUpdated();
 
     return loadSuccessful;
-}
-
-///----------------------------------------------------------------------------
-/// newWorld - Attempt to create a new Adventure Gamer World. If it cannot, it
-/// will avoid erasing the currently loaded world.
-/// @return true if the operation completed successfully, false if it could not
-///----------------------------------------------------------------------------
-
-bool GameWorldController::newWorld() {
-
-    GameMap* newMap = NULL;
-
-    bool wasWorldCreated = false;
-
-    try {
-
-        newMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
-
-        if (gameMap) {
-            delete gameMap;
-            gameMap = NULL;
-        }
-
-        gameMap = newMap;
-        newMap = NULL;
-        wasWorldCreated = true;
-    }
-    catch (const std::runtime_error& e) {
-        std::string errMessage = "Unable to create a new Adventure Gamer world: ";
-        errMessage.append(e.what());
-        mainWindow->displayErrorMessage(errMessage, "Error creating new world.");
-    }
-    catch (const std::bad_alloc& e) {
-        mainWindow->displayErrorMessage(e.what(), "Out of Memory?");
-    }
-
-    if (!wasWorldCreated) {
-        delete newMap;
-        newMap = NULL;
-    }
-
-    worldFilePath = "";
-    worldFileName = "";
-
-    trySelectNewTile(0);
-    drawingTileIndex = 0;
-    changedSinceLastSave = false;
-
-    mainWindow->onEntitiesChanged(true, true, true, true);
-    mainWindow->onWorldResized();
-    mainWindow->onWorldInfoUpdated();
-
-    return wasWorldCreated;
 }
 
 ///----------------------------------------------------------------------------

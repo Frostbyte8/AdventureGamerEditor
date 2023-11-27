@@ -184,7 +184,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
 
         void updateControlCaptions();
 
-        BOOL OnFileNew();
         BOOL OnFileOpen();
 
         CString originalWindowTitle;
