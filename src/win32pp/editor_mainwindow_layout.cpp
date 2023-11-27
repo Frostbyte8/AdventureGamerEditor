@@ -92,6 +92,8 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
 
+    updateStatusbar(0);
+
     return retVal;
 }
 

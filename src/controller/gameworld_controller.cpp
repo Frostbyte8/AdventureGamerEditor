@@ -1267,184 +1267,6 @@ bool GameWorldController::tryCreateSwitchConnection() {
     return true;
 }
 
-//-----------------------------------------------------------------------------
-// Code that is being rewritten or cleaned still
-//-----------------------------------------------------------------------------
-
-///----------------------------------------------------------------------------
-/// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
-/// the file, it will avoid erasing the currently loaded world.
-/// @param path to the Adventure Gamer World File
-/// @param the name of the Adventure Gamer File
-/// @return true if the operation completed successfully, false if it could not
-///----------------------------------------------------------------------------
-
-bool GameWorldController::loadWorld(const std::string& filePath,
-                                    const std::string& fileName) {
-    
-    std::string fileNameTemp = filePath + fileName;
-	std::ifstream ifs;
-	ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
-    
-    GameMap* newMap = NULL;
-
-    bool loadSuccessful = false;
-
-    if(ifs) {
-
-        try {
-
-			GameMap* newMap = new GameMap();
-            newMap->readMap(ifs, filePath, fileName);
-			
-			if(gameMap) {
-				delete gameMap;
-				gameMap = NULL;
-			}
-
-            gameMap = newMap;
-            newMap = NULL;
-
-            loadSuccessful = true;
-
-        }
-        catch (const std::runtime_error& e) {
-
-            std::string fileReadError = LanguageMapper::getInstance().get("FileMenu") + " ";
-            fileReadError.append(e.what());
-
-            mainWindow->displayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get("FileMenu"));
-        }
-    }
-    else {
-
-        mainWindow->displayErrorMessage("Unable to open file.", "File not found");
-
-    }
-
-    if(!loadSuccessful) {
-        if(newMap) {
-            delete newMap;
-            newMap = NULL;
-        }
-    }
-
-    worldFilePath = filePath;
-    worldFileName = fileName;
-
-    drawingTileIndex = 0;
-    selectedTileIndex = 0;
-    selectedRow = 0;
-    selectedCol = 0;
-    trySelectNewTile(0);
-    changedSinceLastSave = false;
-
-    mainWindow->onEntitiesChanged(true, true, true, true);
-
-    mainWindow->onWorldResized();
-    mainWindow->onWorldInfoUpdated();
-
-    return loadSuccessful;
-}
-
-///----------------------------------------------------------------------------
-/// newWorld - Attempt to create a new Adventure Gamer World. If it cannot, it
-/// will avoid erasing the currently loaded world.
-/// @return true if the operation completed successfully, false if it could not
-///----------------------------------------------------------------------------
-
-bool GameWorldController::newWorld() {
-
-    GameMap* newMap = NULL;
-
-    bool wasWorldCreated = false;
-
-    try {
-		
-        newMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);		
-
-		if(gameMap) {
-			delete gameMap;
-			gameMap = NULL;
-		}
-
-        gameMap = newMap;
-        newMap = NULL;
-        wasWorldCreated = true;
-    }
-    catch (const std::runtime_error& e) {
-        std::string errMessage = "Unable to create a new Adventure Gamer world: ";
-        errMessage.append(e.what());
-        mainWindow->displayErrorMessage(errMessage, "Error creating new world.");
-    }
-    catch (const std::bad_alloc& e) {
-        mainWindow->displayErrorMessage(e.what(), "Out of Memory?");
-    }
-
-    if(!wasWorldCreated) {
-        delete newMap;
-        newMap = NULL;
-    }
-
-    worldFilePath = "";
-    worldFileName = "";
-
-    trySelectNewTile(0);
-    drawingTileIndex = 0;
-    changedSinceLastSave = false;
-    
-    mainWindow->onEntitiesChanged(true, true, true, true);
-    mainWindow->onWorldResized();
-    mainWindow->onWorldInfoUpdated();
-
-    return wasWorldCreated;
-}
-
-///----------------------------------------------------------------------------
-/// saveWorld - Attempt to save the game world. If not, prompt the main window
-/// for more information, or prompt it regardless if the user requested to
-/// save the file as something else.
-/// @param if true, save the file as something else, otherwise attempt to save
-/// the file.
-/// @return true if the operation completed successfully, false if it could not
-///----------------------------------------------------------------------------
-
-bool GameWorldController::saveWorld(bool saveAs) {
-
-    if (saveAs || (worldFilePath.empty() || worldFileName.empty())) {
-        
-        std::string filePath;
-        std::string fileName;
-
-        const int retVal = mainWindow->onSaveFileDialog(filePath, fileName);
-
-        if (retVal != GenericInterfaceResponses::Ok) {
-            // Abort saving.
-            return false;
-        }
-
-        worldFilePath = filePath;
-        worldFileName = fileName;
-        
-    }
-
-    std::ofstream ofs;
-    std::string fullPathName = worldFilePath + worldFileName;
-    ofs.open(fullPathName.c_str(), std::ofstream::out | std::ios::binary);
-
-    if (ofs) {
-        gameMap->writeMap(ofs, worldFilePath, worldFileName);
-    }
-    else {
-        mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");
-        return false;
-    }
-
-    changedSinceLastSave = true;
-
-    return true;
-}
-
 //=============================================================================
 // Private Functions
 //=============================================================================
@@ -1773,6 +1595,8 @@ bool GameWorldController::updateSelectionIfValid(const int& row, const int& col,
 
     if(index >= 0) {
 
+        // TODO: Finish language strings
+
         // Index was specified, so we'll use that.
 
         if(!gameMap->isIndexInMapBounds(index)) {
@@ -1803,6 +1627,184 @@ bool GameWorldController::updateSelectionIfValid(const int& row, const int& col,
                                         //langMap.get("ErrNewTileSelectionBoundsTitle"));
         return false;
     }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Code that is being rewritten or cleaned still
+//-----------------------------------------------------------------------------
+
+///----------------------------------------------------------------------------
+/// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
+/// the file, it will avoid erasing the currently loaded world.
+/// @param path to the Adventure Gamer World File
+/// @param the name of the Adventure Gamer File
+/// @return true if the operation completed successfully, false if it could not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::loadWorld(const std::string& filePath,
+                                    const std::string& fileName) {
+
+    std::string fileNameTemp = filePath + fileName;
+    std::ifstream ifs;
+    ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
+
+    GameMap* newMap = NULL;
+
+    bool loadSuccessful = false;
+
+    if (ifs) {
+
+        try {
+
+            GameMap* newMap = new GameMap();
+            newMap->readMap(ifs, filePath, fileName);
+
+            if (gameMap) {
+                delete gameMap;
+                gameMap = NULL;
+            }
+
+            gameMap = newMap;
+            newMap = NULL;
+
+            loadSuccessful = true;
+
+        }
+        catch (const std::runtime_error& e) {
+
+            std::string fileReadError = LanguageMapper::getInstance().get("FileMenu") + " ";
+            fileReadError.append(e.what());
+
+            mainWindow->displayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get("FileMenu"));
+        }
+    }
+    else {
+
+        mainWindow->displayErrorMessage("Unable to open file.", "File not found");
+
+    }
+
+    if (!loadSuccessful) {
+        if (newMap) {
+            delete newMap;
+            newMap = NULL;
+        }
+    }
+
+    worldFilePath = filePath;
+    worldFileName = fileName;
+
+    drawingTileIndex = 0;
+    selectedTileIndex = 0;
+    selectedRow = 0;
+    selectedCol = 0;
+    trySelectNewTile(0);
+    changedSinceLastSave = false;
+
+    mainWindow->onEntitiesChanged(true, true, true, true);
+
+    mainWindow->onWorldResized();
+    mainWindow->onWorldInfoUpdated();
+
+    return loadSuccessful;
+}
+
+///----------------------------------------------------------------------------
+/// newWorld - Attempt to create a new Adventure Gamer World. If it cannot, it
+/// will avoid erasing the currently loaded world.
+/// @return true if the operation completed successfully, false if it could not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::newWorld() {
+
+    GameMap* newMap = NULL;
+
+    bool wasWorldCreated = false;
+
+    try {
+
+        newMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
+
+        if (gameMap) {
+            delete gameMap;
+            gameMap = NULL;
+        }
+
+        gameMap = newMap;
+        newMap = NULL;
+        wasWorldCreated = true;
+    }
+    catch (const std::runtime_error& e) {
+        std::string errMessage = "Unable to create a new Adventure Gamer world: ";
+        errMessage.append(e.what());
+        mainWindow->displayErrorMessage(errMessage, "Error creating new world.");
+    }
+    catch (const std::bad_alloc& e) {
+        mainWindow->displayErrorMessage(e.what(), "Out of Memory?");
+    }
+
+    if (!wasWorldCreated) {
+        delete newMap;
+        newMap = NULL;
+    }
+
+    worldFilePath = "";
+    worldFileName = "";
+
+    trySelectNewTile(0);
+    drawingTileIndex = 0;
+    changedSinceLastSave = false;
+
+    mainWindow->onEntitiesChanged(true, true, true, true);
+    mainWindow->onWorldResized();
+    mainWindow->onWorldInfoUpdated();
+
+    return wasWorldCreated;
+}
+
+///----------------------------------------------------------------------------
+/// saveWorld - Attempt to save the game world. If not, prompt the main window
+/// for more information, or prompt it regardless if the user requested to
+/// save the file as something else.
+/// @param if true, save the file as something else, otherwise attempt to save
+/// the file.
+/// @return true if the operation completed successfully, false if it could not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::saveWorld(bool saveAs) {
+
+    if (saveAs || (worldFilePath.empty() || worldFileName.empty())) {
+
+        std::string filePath;
+        std::string fileName;
+
+        const int retVal = mainWindow->onSaveFileDialog(filePath, fileName);
+
+        if (retVal != GenericInterfaceResponses::Ok) {
+            // Abort saving.
+            return false;
+        }
+
+        worldFilePath = filePath;
+        worldFileName = fileName;
+
+    }
+
+    std::ofstream ofs;
+    std::string fullPathName = worldFilePath + worldFileName;
+    ofs.open(fullPathName.c_str(), std::ofstream::out | std::ios::binary);
+
+    if (ofs) {
+        gameMap->writeMap(ofs, worldFilePath, worldFileName);
+    }
+    else {
+        mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");
+        return false;
+    }
+
+    changedSinceLastSave = true;
 
     return true;
 }
