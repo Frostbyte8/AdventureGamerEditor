@@ -70,11 +70,11 @@ int GameEntitiesPanel::OnCreate(CREATESTRUCT& cs) {
 
     for (int i = 0; i < 4; ++i) {
 
-        alterObjectButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON);
+        alterObjectButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON | WS_DISABLED);
         alterObjectButton[i].SetWindowText(caption);
         alterObjectButton[i].SetDlgCtrlID(ControlIDs::AddObjectButton + i);
 
-        alterCharacterButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON);
+        alterCharacterButton[i].Create(*this, 0, WS_CLIPSIBLINGS | BS_PUSHBUTTON | WS_DISABLED);
         alterCharacterButton[i].SetWindowText(caption);
         alterCharacterButton[i].SetDlgCtrlID(ControlIDs::AddCharacterButton + i);
 
@@ -98,6 +98,10 @@ int GameEntitiesPanel::OnCreate(CREATESTRUCT& cs) {
 ///----------------------------------------------------------------------------
 
 BOOL GameEntitiesPanel::OnCommand(WPARAM wParam, LPARAM lParam) {
+
+    if(!mainWindowController->isWorldLoaded()) {
+        return FALSE;
+    }
 
     if (lParam) {
 
@@ -152,9 +156,9 @@ LRESULT GameEntitiesPanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
     switch (msg) {
 
-    case WM_SIZE:
-        return OnSize(wParam, lParam);
-        break;
+        case WM_SIZE:
+            return OnSize(wParam, lParam);
+            break;
 
     }
 
@@ -184,6 +188,13 @@ void GameEntitiesPanel::updateCharacterList(const std::vector<GameCharacter>& ch
 
     }
 
+    if(characterList.size() >= AdventureGamerConstants::MaxNumCharacters) {
+        alterCharacterButton[0].EnableWindow(FALSE);
+    }
+    else {
+        alterCharacterButton[0].EnableWindow(TRUE);
+    }
+
 }
 
 ///----------------------------------------------------------------------------
@@ -205,6 +216,29 @@ void GameEntitiesPanel::updateObjectList(const std::vector<GameObject>& objectLi
 
     }
 
+    if (objectList.size() >= AdventureGamerConstants::MaxNumObjects) {
+        alterObjectButton[0].EnableWindow(FALSE);
+    }
+    else {
+        alterObjectButton[0].EnableWindow(TRUE);
+    }
+
+}
+
+///----------------------------------------------------------------------------
+/// worldStateChanged - Received when a new world is created, one is opened, or
+/// the world is closed.
+///----------------------------------------------------------------------------
+
+void GameEntitiesPanel::worldStateChanged() {
+
+    BOOL buttonState = mainWindowController->isWorldLoaded() ? true : false;
+
+    for(int i = (buttonState == TRUE ? 1 : 0); i <= 3; ++i) {
+        alterObjectButton[i].EnableWindow(buttonState);
+        alterCharacterButton[i].EnableWindow(buttonState);
+    }
+    
 }
 
 //=============================================================================

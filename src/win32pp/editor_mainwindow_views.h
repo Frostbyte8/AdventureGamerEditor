@@ -98,6 +98,7 @@ class GameEntitiesPanel : public PanelBaseClass {
 
         void updateCharacterList(const std::vector<GameCharacter>& characterList);
         void updateObjectList(const std::vector<GameObject>& objectList);
+        void worldStateChanged();
 
     protected:
 

@@ -168,6 +168,7 @@ void MainWindowFrame::onWorldResized() {
 
 void MainWindowFrame::onWorldStateChanged() {
     updateMenuState();
+    entityView->worldStateChanged();
 }
 
 ///----------------------------------------------------------------------------
