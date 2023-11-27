@@ -11,7 +11,7 @@
 
 GameWorldController::GameWorldController(MainWindowInterface* inMainWindow) : mainWindow (inMainWindow),
 changedSinceLastSave(false) {
-    gameMap = new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
+    gameMap = NULL; // new GameMap(EditorConstants::DefaultRows, EditorConstants::DefaultCols);
     worldFilePath = "";
     worldFileName = "";
     drawingTileIndex = 0;
@@ -87,6 +87,10 @@ bool GameWorldController::hasFirstSwitchConnectionBeenSet() const {
 
 bool GameWorldController::canAddObject() const {
 
+    if(!gameMap) {
+        return false;
+    }
+
     if(gameMap->getGameObjects().size() < AdventureGamerConstants::MaxNumObjects) {
         return true;
     }
@@ -101,6 +105,10 @@ bool GameWorldController::canAddObject() const {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::canAddCharacter() const {
+
+    if (!gameMap) {
+        return false;
+    }
 
     if(gameMap->getGameCharacters().size() < AdventureGamerConstants::MaxNumCharacters) {
         return true;
@@ -122,6 +130,7 @@ bool GameWorldController::canAddCharacter() const {
 
 bool GameWorldController::tryAlterObject(const int& alterType, const int& index) {
 
+    assert(gameMap);
     assert(alterType >= AlterType::Add && alterType <= AlterType::Delete);
 
     const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
@@ -204,6 +213,8 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
 
 bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     sanitizeObjectStrings(objectBuilder);
@@ -241,6 +252,8 @@ bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, const bool shouldNotify) {
+
+    assert(gameMap);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -298,6 +311,8 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, c
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryDeleteObject(const int& objectID) {
+
+    assert(gameMap);
 
     const size_t objectIndex = gameMap->objectIndexFromID(objectID);
 
@@ -364,6 +379,8 @@ bool GameWorldController::tryDeleteObject(const int& objectID) {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryAlterCharacter(const int& alterType, const int& index) {
+
+    assert(gameMap);
 
     assert(alterType >= AlterType::Add && alterType <= AlterType::Delete);
 
@@ -447,6 +464,8 @@ bool GameWorldController::tryAlterCharacter(const int& alterType, const int& ind
 
 bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuilder) {
 
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     sanitizeCharacterStrings(characterBuilder);
@@ -483,6 +502,8 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterBuilder, const bool shouldNotify) {
+
+    assert(gameMap);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -529,6 +550,8 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryDeleteCharacter(const int& charID) {
+
+    assert(gameMap);
 
     const size_t charIndex = gameMap->characterIndexFromID(charID);
 
@@ -601,6 +624,8 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
 bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 
+    assert(gameMap);
+
     assert(featureType < TileModifiers::ALLMODS + 1);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -666,6 +691,8 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 
 bool GameWorldController::tryToggleTileDarkness() {
 
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
     const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
     
@@ -701,6 +728,8 @@ bool GameWorldController::tryToggleTileDarkness() {
 
 bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
 
+    assert(gameMap);
+
     if(!updateSelectionIfValid(row, col)) {
         // Could be many reasons: Clicked out side the map bounds, some other
         // function screwed up, so if an error happens, that will be the
@@ -721,6 +750,8 @@ bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::trySelectNewTile(const int& index) {
+
+    assert(gameMap);
 
     if (!updateSelectionIfValid(-1, -1, index)) {
         // Could be many reasons: Clicked out side the map bounds, some other
@@ -780,6 +811,8 @@ bool GameWorldController::trySetDrawingTile(const int& newDrawTileIndex) {
 
 bool GameWorldController::tryDrawOnSelectedTile() {
     
+    assert(gameMap);
+
     if(!findAndRemoveConnection(gameMap->getTile(selectedTileIndex))) {
         return false;
     }
@@ -824,6 +857,8 @@ bool GameWorldController::tryDrawOnSelectedTile() {
 
 bool GameWorldController::tryEditTileDescription(const int& row, const int& col) {
     
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
     int index = 0;
 
@@ -890,6 +925,8 @@ bool GameWorldController::tryEditTileDescription(const int& row, const int& col)
 bool GameWorldController::tryUpdateTileDescription(std::string tileName, 
 std::string tileDescription, const int& row, const int& col) {
     
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
     int index = 0;
 
@@ -934,6 +971,8 @@ std::string tileDescription, const int& row, const int& col) {
 
 bool GameWorldController::tryEditSummaryAndStory() {
 
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     if (!mainWindow->canCreateDialog(EditorDialogTypes::EditStoryAndSummary)) {
@@ -964,6 +1003,8 @@ bool GameWorldController::tryEditSummaryAndStory() {
 
 bool GameWorldController::tryUpdateStoryAndSummary(std::string inStory, std::string inSummary) {
 
+    assert(gameMap);
+
     inStory.erase(std::remove(inStory.begin(), inStory.end(), '\"'), inStory.end());
     inSummary.erase(std::remove(inSummary.begin(), inSummary.end(), '\"'), inSummary.end());
 
@@ -984,6 +1025,8 @@ bool GameWorldController::tryUpdateStoryAndSummary(std::string inStory, std::str
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryEditWorldInfo() {
+
+    assert(gameMap);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -1012,6 +1055,9 @@ bool GameWorldController::tryEditWorldInfo() {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryUpdateWorldInfo(const GameInfo& newInfo) {
+
+    assert(gameMap);
+
     gameMap->updateGameInfo(gmKey, newInfo);
     changedSinceLastSave = true;
     mainWindow->onWorldInfoUpdated();
@@ -1025,6 +1071,8 @@ bool GameWorldController::tryUpdateWorldInfo(const GameInfo& newInfo) {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryEditWorldSize() {
+
+    assert(gameMap);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -1055,6 +1103,8 @@ bool GameWorldController::tryEditWorldSize() {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols) {
+
+    assert(gameMap);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -1132,6 +1182,8 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
 
 bool GameWorldController::tryCreateJumpConnection() {
 
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     const bool isSecondPoint = firstJumpConnection.getX() != -1 ? true : false;
@@ -1202,6 +1254,8 @@ bool GameWorldController::tryCreateJumpConnection() {
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryCreateSwitchConnection() {
+
+    assert(gameMap);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -1302,7 +1356,7 @@ bool GameWorldController::tryNewGameWorld() {
         wasWorldCreated = true;
 
     }
-    catch (const std::bad_alloc& e) {
+    catch (const std::bad_alloc&) {
         mainWindow->displayErrorMessage(langMap.get("ErrNewWorldOutOfMemoryText"),
                                         langMap.get("ErrNewWorldOutOfMemoryTitle"));
         
@@ -1334,7 +1388,6 @@ bool GameWorldController::tryNewGameWorld() {
 
     // Reset editor defaults
     trySelectNewTile(0);
-    trySetDrawingTile(0);
     
     mainWindow->onEntitiesChanged(true, true, true, true);
     mainWindow->onWorldResized();
@@ -1704,11 +1757,13 @@ bool GameWorldController::wasRowColSpecified(const int& row, const int& col) con
 
 bool GameWorldController::updateSelectionIfValid(const int& row, const int& col, const int& index) {
 
+    assert(gameMap);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     if(index >= 0) {
 
-        // TODO: Finish language strings
+        // TODO: Finish language strings?
 
         // Index was specified, so we'll use that.
 

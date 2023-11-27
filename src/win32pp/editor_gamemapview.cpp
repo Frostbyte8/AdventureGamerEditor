@@ -151,6 +151,10 @@ void GameMapPanel::onTileUpdated() {
 
 LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
 
+    if (!gameWorldController->isWorldLoaded()) {
+        return 0;
+    }
+
     CPoint viewOffset = GetScrollPosition();
 
     int row = static_cast<int>((yPos + viewOffset.y) / tileHeight);
@@ -172,6 +176,10 @@ LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
 ///----------------------------------------------------------------------------
 
 LRESULT GameMapPanel::onRButtonDown(const WORD& xPos, const WORD& yPos) {
+
+    if(!gameWorldController->isWorldLoaded()) {
+        return 0;
+    }
 
     CPoint viewOffset = GetScrollPosition();
 
@@ -199,6 +207,10 @@ LRESULT GameMapPanel::onRButtonDown(const WORD& xPos, const WORD& yPos) {
 
 LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
 
+    if (!gameWorldController->isWorldLoaded()) {
+        return 0;
+    }
+
     CPoint viewOffset = GetScrollPosition();
 
     int row = static_cast<int>((yPos + viewOffset.y) / tileHeight);
@@ -221,13 +233,33 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
 
 void GameMapPanel::updateBackBuffer() {
 
-    const int mapWidth  = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
-    const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
+    // Since we need the game map, we'll skip the "isWorldLoaded" call.
+    const GameMap* gameMap = gameWorldController->getGameMap();
 
     CClientDC dc(*this);
+
+    
+    if (!gameMap) {
+
+        backBufferBMP = CreateCompatibleBitmap(dc, 1, 1);
+
+        if (backBufferBMP.GetHandle()) {
+            CBitmap oldBMP;
+            oldBMP = backBufferDC.SelectObject(backBufferBMP);
+            backBufferDC.SetPixel(0, 0, RGB(0, 0, 0));
+            backBufferDC.SelectObject(oldBMP);
+        }
+        
+
+        return;
+    }
+
+    const int mapWidth  = gameMap->getWidth() * tileWidth * fakeZoomLevel;
+    const int mapHeight = gameMap->getHeight() * tileHeight * fakeZoomLevel;
+
+    
     backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);
 
-    const GameMap* gameMap = gameWorldController->getGameMap();
     const std::vector<GameTile::DrawInfo> drawDataVec = gameMap->getTileDrawData();
 
     if (backBufferBMP.GetHandle() && drawDataVec.size() != 0) {
@@ -294,8 +326,10 @@ void GameMapPanel::updateBackBuffer() {
 
 void GameMapPanel::updateScrollSize() {
 
-    const int mapWidth  = gameWorldController->getMapWidth() * tileWidth * fakeZoomLevel;
-    const int mapHeight = gameWorldController->getMapHeight() * tileHeight * fakeZoomLevel;
+    const GameMap* gameMap = gameWorldController->getGameMap();
+
+    const int mapWidth  = gameMap ? gameMap->getWidth() * tileWidth * fakeZoomLevel : 1;
+    const int mapHeight = gameMap ? gameMap->getHeight() * tileHeight * fakeZoomLevel : 1;
     CSize newScrollSize(mapWidth, mapHeight);
 
     SetScrollSizes(newScrollSize);

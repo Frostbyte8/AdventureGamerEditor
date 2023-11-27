@@ -262,6 +262,8 @@
 	"SaveChangesBeforeActionText"	: "You have unsaved changes to the current world. Do you want to save them?",
 	"SaveChangesBeforeActionTitle"	: "Unsaved Changes?",
 
+	"NoWorldLoaded"					: "No world loaded",
+
     // Error Messages
 
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",

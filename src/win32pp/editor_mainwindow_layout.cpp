@@ -329,9 +329,17 @@ void MainWindowFrame::updateTitleBar(const bool changeMadeOnly) {
     if(!changeMadeOnly) {
 
         LanguageMapper& langMap = LanguageMapper::getInstance();
+        const GameMap* gameMap = gameWorldController->getGameMap();
 
-        std::string windowTitle = gameWorldController->getGameMap()->getGameInfo().getGameName();
-        windowTitle.append(" - ");
+        std::string windowTitle = "";
+
+        if(gameMap) {
+
+            windowTitle = gameMap->getGameInfo().getGameName();
+            windowTitle.append(" - ");
+
+        }
+
         windowTitle.append(langMap.get("MainWindowTitle"));
         windowTitle.append(" (");
         windowTitle.append(GIT_VERSION_INFO);

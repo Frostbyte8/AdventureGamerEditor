@@ -309,13 +309,23 @@ void MainWindowFrame::updateHereLists(const bool objectsHere, const bool charsHe
 
 void MainWindowFrame::updateStatusbar(const int& index) {
 
-    const int currentRow = gameWorldController->getSelectedRow();
-    const int currentCol = gameWorldController->getSelectedCol();
-    const GameTile& currentTile = gameWorldController->getGameMap()->getTile(index);
+    const GameMap* gameMap = gameWorldController->getGameMap();
 
-    CString newCaption;
-    newCaption.Format(L"(%d, %d) - ", currentCol, currentRow);
-    newCaption += currentTile.getName().c_str();
+    CString newCaption = "";
+
+    if(gameMap) {
+
+        const int currentRow = gameWorldController->getSelectedRow();
+        const int currentCol = gameWorldController->getSelectedCol();
+        const GameTile& currentTile = gameWorldController->getGameMap()->getTile(index);
+
+        newCaption.Format(L"(%d, %d) - ", currentCol, currentRow);
+        newCaption += currentTile.getName().c_str();
+    }
+    else {
+        newCaption = LM_toUTF8("NoWorldLoaded", LanguageMapper::getInstance());
+    }
+
     SetStatusText(newCaption);
 
 }

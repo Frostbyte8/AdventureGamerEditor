@@ -21,9 +21,11 @@ class GameWorldController {
         bool hasFirstJumpConnectionBeenSet() const;
         bool hasFirstSwitchConnectionBeenSet() const;
 
+        // TODO: Move to cpp file
+
+        const bool isWorldLoaded() const { return gameMap ? true : false; }
+
         const GameMap* getGameMap() const { return gameMap; }
-        const int& getMapWidth() const { return gameMap->getWidth(); }
-        const int& getMapHeight() const { return gameMap->getHeight(); }
         const int& getSelectedTileIndex() const { return selectedTileIndex; }
         const int& getSelectedRow() const { return selectedRow; }
         const int& getSelectedCol() const { return selectedCol; }
