@@ -1441,31 +1441,56 @@ bool GameWorldController::tryStartSave(const bool saveAs) {
 }
 
 ///----------------------------------------------------------------------------
-/// tryFinishSave - 
+/// tryFinishSave - Does the actual saving. Meant to be called after
+/// tryStartSave.
+/// @param a string with the new file path.
+/// @param a string with the new file name.
+/// @param if true, uses the previous two parameters, if false, it uses the
+/// paths already defined from the last save.
+/// @return true if the save was successful, false on any errors.
 ///----------------------------------------------------------------------------
 
 bool GameWorldController::tryFinishSave(const std::string& newPath, const std::string& newFileName, 
                                         const bool updateFilePath) {
 
+    assert(!updateFilePath ? (!worldFilePath.empty() && !worldFileName.empty()) : true);
+
+    std::string tempFilePath;
+    std::string tempFileName;
+
+    // We need to make the paths temporary. This is so if saving fails
+    // we don't update the paths to invalid files.
+
     if(updateFilePath) {
-        worldFilePath = newPath;
-        worldFileName = newFileName;
+        tempFilePath = newPath;
+        tempFileName = newFileName;
+    }
+    else {
+        tempFilePath = worldFilePath;
+        tempFileName = worldFileName;
     }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     std::ofstream ofs;
-    std::string fullPathName = worldFilePath + worldFileName;
+    std::string fullPathName = tempFilePath + tempFileName;
     
     ofs.open(fullPathName.c_str(), std::ofstream::out | std::ios::binary);
 
-    if (ofs) {
-        gameMap->writeMap(ofs, worldFilePath, worldFileName);
-        changedSinceLastSave = false;
-    }
-    else {
+    if(!ofs) {
         mainWindow->displayErrorMessage(langMap.get("ErrSavingWorldText"),
                                         langMap.get("ErrSavingWorldTitle"));
         return false;
+    }
+
+    // TODO: Try
+    gameMap->writeMap(ofs, tempFilePath, tempFileName);
+    changedSinceLastSave = false;
+
+    // Save was successful, now we can update the paths.
+
+    if(updateFilePath) {
+        worldFilePath = tempFilePath;
+        worldFileName = tempFileName;
     }
 
     std::string messageText = langMap.get("FileSaveSuccessfullyText");
@@ -1481,6 +1506,124 @@ bool GameWorldController::tryFinishSave(const std::string& newPath, const std::s
 
     mainWindow->onChangesSaved();
     return true;
+}
+
+///----------------------------------------------------------------------------
+/// tryStartLoad - Attempts to load a file.
+/// @return true if the load process was started, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryStartLoad() {
+
+    if(!checkAndAskToSaveUnsavedChanges()) {
+        return false;
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::LoadDialog)) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+    if (!mainWindow->startLoadDialog()) {
+        mainWindow->onDialogEnd(EditorDialogTypes::LoadDialog);
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+        return false;
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryFinishLoad - Does the actual loading. Meant to be called after
+/// tryStartLoad.
+/// @param a string with the new file path.
+/// @param a string with the new file name.
+/// @return true if the map was loaded, false if it was not. If it is false,
+/// the old map should still be valid.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryFinishLoad(const std::string& newPath, const std::string& newFileName) {
+
+    assert(!newPath.empty() && !newFileName.empty());
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    std::string fileNameTemp = newPath + newFileName;
+    std::ifstream ifs;
+    
+    ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
+
+    if(!ifs) {
+        mainWindow->displayErrorMessage(langMap.get("ErrLoadingWorldText"),
+                                        langMap.get("ErrLoadingWorldTitle"));
+        return false;
+    }
+
+    GameMap* newMap = new GameMap();
+
+    try {
+
+        newMap->readMap(ifs, newPath, newFileName);
+
+    }
+    catch (const std::runtime_error& e) {
+
+        // TODO: Advanced error handling should be done here.
+
+        std::string fileReadError = "Load Exception: ";
+        fileReadError.append(e.what());
+        mainWindow->displayErrorMessage(fileReadError.c_str(), "Load Exception");
+
+        if(newMap) {
+
+            delete newMap;
+            newMap = NULL;
+        }
+
+        return false;
+
+    }
+
+    // Load successful!
+    // TODO: can failed assignments trigger exceptions?
+
+    if (gameMap) {
+
+        GameMap* tempMap = gameMap;
+        gameMap = newMap;
+        delete tempMap;
+        tempMap = NULL;
+
+    }
+    else {
+        gameMap = newMap;
+    }
+
+    newMap = NULL;
+
+    worldFilePath = newPath;
+    worldFileName = newFileName;
+
+    drawingTileIndex = 0;
+    selectedTileIndex = 0;
+    selectedRow = 0;
+    selectedCol = 0;
+    trySelectNewTile(0);
+    changedSinceLastSave = false;
+
+    mainWindow->onEntitiesChanged(true, true, true, true);
+
+    mainWindow->onWorldResized();
+    mainWindow->onWorldInfoUpdated();
+    mainWindow->onWorldStateChanged();
+    
+
+    return true;
+
 }
 
 //=============================================================================
@@ -1885,85 +2028,4 @@ bool GameWorldController::updateSelectionIfValid(const int& row, const int& col,
     }
 
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Code that is being rewritten or cleaned still
-//-----------------------------------------------------------------------------
-
-///----------------------------------------------------------------------------
-/// loadWorld - Attempt to load a new Adventure Gamer World. If it cannot load
-/// the file, it will avoid erasing the currently loaded world.
-/// @param path to the Adventure Gamer World File
-/// @param the name of the Adventure Gamer File
-/// @return true if the operation completed successfully, false if it could not
-///----------------------------------------------------------------------------
-
-bool GameWorldController::loadWorld(const std::string& filePath,
-                                    const std::string& fileName) {
-
-    std::string fileNameTemp = filePath + fileName;
-    std::ifstream ifs;
-    ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
-
-    GameMap* newMap = NULL;
-
-    bool loadSuccessful = false;
-
-    if (ifs) {
-
-        try {
-
-            GameMap* newMap = new GameMap();
-            newMap->readMap(ifs, filePath, fileName);
-
-            if (gameMap) {
-                delete gameMap;
-                gameMap = NULL;
-            }
-
-            gameMap = newMap;
-            newMap = NULL;
-
-            loadSuccessful = true;
-
-        }
-        catch (const std::runtime_error& e) {
-
-            std::string fileReadError = LanguageMapper::getInstance().get("FileMenu") + " ";
-            fileReadError.append(e.what());
-
-            mainWindow->displayErrorMessage(fileReadError.c_str(), LanguageMapper::getInstance().get("FileMenu"));
-        }
-    }
-    else {
-
-        mainWindow->displayErrorMessage("Unable to open file.", "File not found");
-
-    }
-
-    if (!loadSuccessful) {
-        if (newMap) {
-            delete newMap;
-            newMap = NULL;
-        }
-    }
-
-    worldFilePath = filePath;
-    worldFileName = fileName;
-
-    drawingTileIndex = 0;
-    selectedTileIndex = 0;
-    selectedRow = 0;
-    selectedCol = 0;
-    trySelectNewTile(0);
-    changedSinceLastSave = false;
-
-    mainWindow->onEntitiesChanged(true, true, true, true);
-
-    mainWindow->onWorldResized();
-    mainWindow->onWorldInfoUpdated();
-    mainWindow->onWorldStateChanged();
-
-    return loadSuccessful;
 }

@@ -86,10 +86,8 @@ class GameWorldController {
         bool tryFinishSave(const std::string& newPath, const std::string& newFileName,
                            const bool updateFilePath = true);
 
-        //
-
-        bool loadWorld(const std::string& filePath, const std::string& fileName);
-
+        bool tryStartLoad();
+        bool tryFinishLoad(const std::string& newPath, const std::string& newFileName);
         
     private:
 

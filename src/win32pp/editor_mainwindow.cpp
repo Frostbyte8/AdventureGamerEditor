@@ -96,7 +96,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         // File Menu
 
         case MenuIDs::NewFile: gameWorldController->tryNewGameWorld(); break;
-        case MenuIDs::OpenFile: return OnFileOpen();
+        case MenuIDs::OpenFile: gameWorldController->tryStartLoad(); break;
 
         case MenuIDs::SaveFile:
         case MenuIDs::SaveFileAs:
@@ -275,37 +275,6 @@ bool MainWindowFrame::loadTileSet() {
 }
 
 ///----------------------------------------------------------------------------
-/// OnFileOpen - Opens a dialog box for the user to select a Adventure Gamer 
-/// SG0 file, then passes the file and it's path to the controller to try to
-/// open if one is selected.
-/// @return Always TRUE to indicate that the message was handled.
-///----------------------------------------------------------------------------
-
-BOOL MainWindowFrame::OnFileOpen() {
-
-    CFileDialog fileDialog(TRUE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
-                           L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
-
-    fileDialog.SetTitle(L"Open World File");
-
-    if (fileDialog.DoModal(*this) == IDOK) {
-
-        std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
-        std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
-
-        gameWorldController->loadWorld(filePath, fileName);
-        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
-
-
-        entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
-        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
-
-    }
-
-    return TRUE;
-}
-
-///----------------------------------------------------------------------------
 /// updateHereLists - Update what characters are on the selected tile.
 /// @param if true, updates the Objects Here List
 /// @param if true, updates the Characters Here List
@@ -479,30 +448,4 @@ void MainWindowFrame::updateMenuState() {
 
     DrawMenuBar();
 
-}
-
-//-----------------------------------------------------------------------------
-// onSaveFileDialog
-//-----------------------------------------------------------------------------
-
-int MainWindowFrame::onSaveFileDialog(std::string& filePath, std::string& fileName) {
-
-    assert(false);
-    return false;
-    /*
-    CFileDialog fileDialog(FALSE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
-                           L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
-
-    //fileDialog.SetTitle(L"Open World File");
-
-    if (fileDialog.DoModal(*this) == IDOK) {
-
-        filePath = WtoA(fileDialog.GetFolderPath().c_str());
-        fileName = WtoA(fileDialog.GetFileName().c_str());
-
-        return GenericInterfaceResponses::Ok;
-    }
-
-    return GenericInterfaceResponses::Cancel;
-    */
 }

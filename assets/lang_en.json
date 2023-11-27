@@ -220,7 +220,8 @@
     "CDBFindSoundTitle"         : "Find Sound File",
 
 	"CDBAdvGamerFilterText"		: "Adventure Gamer World Files",
-	"CDBAdvGamerSaveTitle"		: "Save World File",
+	"CDBAdvGamerSaveTitle"		: "Save World",
+	"CDBAdvGamerLoadTitle"		: "Open World",
 
     // Program Messages
 
@@ -289,6 +290,9 @@
 
 	"ErrSavingWorldText"			: "Error saving game world.",
 	"ErrSavingWorldTitle"			: "Save Error",
+
+	"ErrLoadingWorldText"			: "Error loading game world.",
+	"ErrLoadingWorldTitle"			: "Load Error",
 
     "ErrAllocatingDialogText"       : "The dialog could not be created because there is not enough memory to allocate it.",
     "ErrAllocatingDialogTitle"      : "Allocating Dialog Failed",

@@ -179,7 +179,7 @@ void MainWindowFrame::onChangesSaved() {
 }
 
 //-----------------------------------------------------------------------------
-// Shared Functions for Dialogs
+// Dialog Creation and Destruction Functions
 //-----------------------------------------------------------------------------
 
 ///----------------------------------------------------------------------------
@@ -267,6 +267,61 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
     }
 
     activeWindowHandle = GetHwnd();
+}
+
+//-----------------------------------------------------------------------------
+// Interface Helper Functions - Not part of the interface, but meant to help
+//-----------------------------------------------------------------------------
+
+///----------------------------------------------------------------------------
+/// doSaveOrOpenDialog - Open the Save or Open Common Dialog
+/// @param if TRUE, uses the Open dialog instead of the Save Dialog
+/// @return true if successful, false if it was not
+///----------------------------------------------------------------------------
+
+bool MainWindowFrame::doSaveOrOpenDialog(const BOOL& isOpen) {
+
+    CString filterText;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    filterText = LM_toUTF8("CDBAdvGamerFilterText", langMap);
+    filterText += L" (*.SG0)|*.SG0|";
+
+    CFileDialog fileDialog(isOpen, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
+                           filterText);
+
+
+    CString dialogTitle = LM_toUTF8( (isOpen ? "CDBAdvGamerLoadTitle" : "CDBAdvGamerSaveTitle"), langMap);
+
+    fileDialog.SetTitle(dialogTitle);
+
+    // The Common Dialog Boxes actually wait for a response, unlike the ones
+    // I made. So we will do that here.
+
+    const int response = fileDialog.DoModal(*this);
+
+    if (response == IDOK) {
+
+        std::string newPath = WtoA(fileDialog.GetFolderPath().c_str());
+        std::string newFileName = WtoA(fileDialog.GetFileName().c_str());
+
+        if(isOpen) {
+            gameWorldController->tryFinishLoad(newPath, newFileName);
+        }
+        else {
+            gameWorldController->tryFinishSave(newPath, newFileName);
+        }
+
+        return true;
+
+    }
+    else if (response == IDCANCEL) {
+        return true;
+    }
+
+    // Something went wrong otherwise.
+
+    return false;
 }
 
 ///----------------------------------------------------------------------------
@@ -609,42 +664,15 @@ void MainWindowFrame::finishedResizeWorldDialog() {
 ///----------------------------------------------------------------------------
 
 bool MainWindowFrame::startSaveDialog() {
+    return doSaveOrOpenDialog(FALSE);
+}
 
-    CString filterText;
-    LanguageMapper& langMap = LanguageMapper::getInstance();
+///----------------------------------------------------------------------------
+/// startLoadDialog
+///----------------------------------------------------------------------------
 
-    filterText = LM_toUTF8("CDBAdvGamerFilterText", langMap);
-    filterText += L" (*.SG0)|*.SG0|";
-
-    CFileDialog fileDialog(FALSE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
-                           filterText);
-
-    CString dialogTitle = LM_toUTF8("CDBAdvGamerSaveTitle", langMap);
-
-    fileDialog.SetTitle(dialogTitle);
-
-    // The Common Dialog Boxes actually wait for a response, unlike the ones
-    // I made. So we will do that here.
-
-    const int response = fileDialog.DoModal(*this);
-
-    if (response == IDOK) {
-
-        std::string newPath = WtoA(fileDialog.GetFolderPath().c_str());
-        std::string newFileName = WtoA(fileDialog.GetFileName().c_str());
-
-        gameWorldController->tryFinishSave(newPath, newFileName);
-
-        return true;
-
-    }
-    else if (response == IDCANCEL) {
-        return true;
-    }
-
-    // Something went wrong otherwise.
-
-    return false;
+bool MainWindowFrame::startLoadDialog() {
+    return doSaveOrOpenDialog(TRUE);
 }
 
 //-----------------------------------------------------------------------------

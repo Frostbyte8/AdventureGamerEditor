@@ -151,13 +151,12 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         virtual void finishedSaveDialog() {};
         virtual void onChangesSaved();
 
+        virtual bool startLoadDialog();
+        virtual void finishedLoadDialog() {};
+
         // Interface Functions For this View Type
 
         virtual void onGameMapRightClick(const WORD& xPos, const WORD& yPos);
-        
-        // Functions that are being cleaned
-
-        virtual int onSaveFileDialog(std::string& filePath, std::string& fileName);       
 
 	protected:
 
@@ -177,11 +176,14 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
 
 	private:
 
+        // Interface Helpers
         inline void makeDialogModal(EditDialogBase& dialog, const CString& caption);
-        inline void appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id, const bool& enabled);
+        inline bool doSaveOrOpenDialog(const BOOL& isOpen);
+        
+        // Window Creation Helpers
+        inline void appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id, const bool& enabled);      
 
         void addKeyboardAccelerators();
-
 
         void updateStatusbar(const int& index);
         void updateFeatureMenu(const int& index);
@@ -196,8 +198,6 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         void updateTitleBar(const bool changeMadeOnly);
 
         void updateControlCaptions();
-
-        BOOL OnFileOpen();
 
         CString originalWindowTitle;
 

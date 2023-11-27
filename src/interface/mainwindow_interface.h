@@ -219,10 +219,9 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void onWorldStateChanged() = 0;
 
-
         ///--------------------------------------------------------------------
-        /// Sent when window is being told that the user wants to save the user
-        /// wants to save the game, but it needs file path info.
+        /// Sent when window is being told that the user wants to save the
+        /// game, but it needs file path info.
         /// @return true if the dialog was created, false if it was not.
         ///--------------------------------------------------------------------
         virtual bool startSaveDialog() = 0;
@@ -232,7 +231,6 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void finishedSaveDialog() = 0;
 
-
         ///--------------------------------------------------------------------
         /// Sent when window when changes were saved, and you might want to
         /// indicate that.
@@ -240,13 +238,17 @@ class MainWindowInterface {
         virtual void onChangesSaved() = 0;
 
         ///--------------------------------------------------------------------
-        /// Sent when the window needs to spawn the Save Dialog
-        /// @param path to file
-        /// @param file name
-        /// @return an Integer indicating what the user selected. See GenericInterfaceResponses
-        /// for more information
+        /// Sent when window is being told that the user wants to load the
+        /// game, but it needs file path info.
+        /// @return true if the dialog was created, false if it was not.
         ///--------------------------------------------------------------------
-        virtual int onSaveFileDialog(std::string& filePath, std::string& fileName) = 0;
+        virtual bool startLoadDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the load dialog has finished.
+        ///--------------------------------------------------------------------
+        virtual void finishedLoadDialog() = 0;
+
 
 };
 
