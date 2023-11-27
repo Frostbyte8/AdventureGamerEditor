@@ -1359,12 +1359,13 @@ bool GameWorldController::tryNewGameWorld() {
     catch (const std::bad_alloc&) {
         mainWindow->displayErrorMessage(langMap.get("ErrNewWorldOutOfMemoryText"),
                                         langMap.get("ErrNewWorldOutOfMemoryTitle"));
-        
+        mainWindow->onWorldStateChanged();
         return false;
     }
     catch (...) {
         // TODO: Is there anything else can be caught other than bad_alloc?
         mainWindow->displayErrorMessage("Unknown exception caught.", "Unknown exception caught");
+        mainWindow->onWorldStateChanged();
         assert(false);
     }
 
@@ -1377,7 +1378,7 @@ bool GameWorldController::tryNewGameWorld() {
 
         mainWindow->displayErrorMessage(langMap.get("ErrCreateWorldFailedText"),
                                         langMap.get("ErrCreateWorldFailedTitle"));
-
+        mainWindow->onWorldStateChanged();
         return false;
 
     }
@@ -1392,7 +1393,7 @@ bool GameWorldController::tryNewGameWorld() {
     mainWindow->onEntitiesChanged(true, true, true, true);
     mainWindow->onWorldResized();
     mainWindow->onWorldInfoUpdated();
-
+    mainWindow->onWorldStateChanged();
     return true;
 
 }
@@ -1875,6 +1876,7 @@ bool GameWorldController::loadWorld(const std::string& filePath,
 
     mainWindow->onWorldResized();
     mainWindow->onWorldInfoUpdated();
+    mainWindow->onWorldStateChanged();
 
     return loadSuccessful;
 }

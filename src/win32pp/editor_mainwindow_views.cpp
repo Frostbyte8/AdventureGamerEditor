@@ -389,6 +389,15 @@ LRESULT EntitiesHerePanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// clearLists - Clears both lists.
+///----------------------------------------------------------------------------
+
+void EntitiesHerePanel::clearLists() {
+    objectsHereListBox.ClearStrings();
+    charactersHereListBox.ClearStrings();
+}
+
+///----------------------------------------------------------------------------
 /// updateCharacterList - Updates the character's here listbox.
 /// @param a pointer to a vector with the list of characters in the game world. 
 ///----------------------------------------------------------------------------

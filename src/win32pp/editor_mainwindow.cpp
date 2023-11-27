@@ -21,7 +21,8 @@
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
-editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0) {
+editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0),
+accelHandle(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesPanel(gameWorldController, &windowMetrics);
     LanguageMapper::getInstance();
@@ -72,63 +73,16 @@ MainWindowFrame::~MainWindowFrame() {
 }
 
 //=============================================================================
-// Public Functions
-//=============================================================================
-
-//=============================================================================
-// Protected / Private Functions
+// Protected Functions
 //=============================================================================
 
 ///----------------------------------------------------------------------------
-/// OnInitialUpdate - 
+/// OnInitialUpdate - Set a few things after the window is created successfully.
 /// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::OnInitialUpdate() {
     activeWindowHandle = GetHwnd(); 
-}
-
-///----------------------------------------------------------------------------
-/// WndProc - Window Procedure for the Frame.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
-
-	try {
-        switch (msg) {
-
-            case WM_ACTIVATEAPP:
-                ::BringWindowToTop(activeWindowHandle);
-                return 0;
-
-            case WM_ENTERSIZEMOVE:
-                isSizing = true;
-                break;
-
-            case WM_EXITSIZEMOVE:
-                isSizing = false;
-                break;
-
-            case WM_HELP:
-                // Disable the help dialog. TODO: See if there is a way
-                // to stop the exception from occurring if the dialog does not
-                // exist.
-                return 0;
-                break;
-
-        }
-
-	    return WndProcDefault(msg, wParam, lParam);
-
-    }
-    catch (const CException& e)
-    {
-        // Display the exception and continue.
-        ::MessageBox(0, e.GetText(), AtoT(e.what()), MB_ICONERROR);
-
-        return 0;
-    }
 }
 
 ///----------------------------------------------------------------------------
@@ -139,6 +93,12 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
     const WORD ID = LOWORD(wParam);
+
+    if(ID >= MenuIDs::FIRST_OF_MAP_ALTER_IDS && ID <= MenuIDs::LAST_OF_MAP_ALTER_IDS ) {
+        if(!gameWorldController->isWorldLoaded()) {
+            return false;
+        }
+    }
 
     switch(ID) {
 
@@ -219,35 +179,60 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 }
 
 ///----------------------------------------------------------------------------
-/// OnFileOpen - Opens a dialog box for the user to select a Adventure Gamer 
-/// SG0 file, then passes the file and it's path to the controller to try to
-/// open if one is selected.
-/// @return Always TRUE to indicate that the message was handled.
+/// WndProc - Window Procedure for the Frame.
+/// Refer to the Win32++ documentation for more information.
 ///----------------------------------------------------------------------------
 
-BOOL MainWindowFrame::OnFileOpen() {
+LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-	CFileDialog fileDialog(TRUE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
-                           L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
+    try {
+        switch (msg) {
 
-	fileDialog.SetTitle(L"Open World File");
+            case WM_CLOSE:
 
-	if(fileDialog.DoModal(*this) == IDOK) {
+                if (accelHandle) {
+                    DestroyAcceleratorTable(accelHandle);
+                }
 
-		std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
-		std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
+                Destroy();
+                return 0;
 
-		gameWorldController->loadWorld(filePath, fileName);
-        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
-        
-        
-        entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
-        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+            case WM_ACTIVATEAPP:
+                ::BringWindowToTop(activeWindowHandle);
+                return 0;
 
-	}
+            case WM_ENTERSIZEMOVE:
+                isSizing = true;
+                break;
 
-    return TRUE;
+            case WM_EXITSIZEMOVE:
+                isSizing = false;
+                break;
+
+            case WM_HELP:
+                // Disable the help dialog. TODO: See if there is a way
+                // to stop the exception from occurring if the dialog does not
+                // exist.
+                return 0;
+                break;
+
+        }
+
+        return WndProcDefault(msg, wParam, lParam);
+
+    }
+    catch (const CException& e)
+    {
+        // Display the exception and continue.
+        ::MessageBox(0, e.GetText(), AtoT(e.what()), MB_ICONERROR);
+
+        return 0;
+    }
 }
+
+//=============================================================================
+// Private Functions
+//=============================================================================
 
 ///----------------------------------------------------------------------------
 /// loadTileset - Load's the tileset BMP
@@ -284,10 +269,57 @@ bool MainWindowFrame::loadTileSet() {
 
 }
 
+///----------------------------------------------------------------------------
+/// OnFileOpen - Opens a dialog box for the user to select a Adventure Gamer 
+/// SG0 file, then passes the file and it's path to the controller to try to
+/// open if one is selected.
+/// @return Always TRUE to indicate that the message was handled.
+///----------------------------------------------------------------------------
+
+BOOL MainWindowFrame::OnFileOpen() {
+
+    CFileDialog fileDialog(TRUE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
+                           L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
+
+    fileDialog.SetTitle(L"Open World File");
+
+    if (fileDialog.DoModal(*this) == IDOK) {
+
+        std::string filePath(WtoA(fileDialog.GetFolderPath().c_str()));
+        std::string fileName(WtoA(fileDialog.GetFileName().c_str()));
+
+        gameWorldController->loadWorld(filePath, fileName);
+        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).updateBackBuffer();
+
+
+        entityView->updateObjectList(gameWorldController->getGameMap()->getGameObjects());
+        entityView->updateCharacterList(gameWorldController->getGameMap()->getGameCharacters());
+
+    }
+
+    return TRUE;
+}
+
+///----------------------------------------------------------------------------
+/// updateHereLists - Update what characters are on the selected tile.
+/// @param if true, updates the Objects Here List
+/// @param if true, updates the Characters Here List
+/// @param an optional pointer to the game map. Intended to reduce the calls to
+/// getGameMap.
+/// @param an optional pointer to the row to check for objects/characters
+/// @param an optional pointer to the column to check for objects/characters.
+///----------------------------------------------------------------------------
+
 void MainWindowFrame::updateHereLists(const bool objectsHere, const bool charsHere,
                                       const GameMap* inMap, const int* row, const int* col) {
 
     const GameMap* gameMap = inMap ? inMap : gameWorldController->getGameMap();
+
+    if(!gameMap) {
+        // Clear the lists instead, there is no game map.
+        return;
+    }
+
     const int& selectedRow = row ? *row : gameWorldController->getSelectedRow();
     const int& selectedCol = col ? *col : gameWorldController->getSelectedCol();
     
@@ -307,6 +339,13 @@ void MainWindowFrame::updateHereLists(const bool objectsHere, const bool charsHe
 
 }
 
+///----------------------------------------------------------------------------
+/// updateStatusBar - Update Status bar with information about the currently
+/// selected tile. If no map is loaded, it displays a message informing the
+/// user of that.
+/// @param a const reference to an integer specifying the index of the tile.
+///----------------------------------------------------------------------------
+
 void MainWindowFrame::updateStatusbar(const int& index) {
 
     const GameMap* gameMap = gameWorldController->getGameMap();
@@ -321,6 +360,7 @@ void MainWindowFrame::updateStatusbar(const int& index) {
 
         newCaption.Format(L"(%d, %d) - ", currentCol, currentRow);
         newCaption += currentTile.getName().c_str();
+
     }
     else {
         newCaption = LM_toUTF8("NoWorldLoaded", LanguageMapper::getInstance());
@@ -329,6 +369,12 @@ void MainWindowFrame::updateStatusbar(const int& index) {
     SetStatusText(newCaption);
 
 }
+
+///----------------------------------------------------------------------------
+/// updateFeatureMenu - Update what features are enabled in the features menu
+/// when a new tile is selected.
+/// @param the index of the selected tile.
+///----------------------------------------------------------------------------
 
 void MainWindowFrame::updateFeatureMenu(const int& index) {
 
@@ -412,10 +458,21 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
 }
 
-//=============================================================================
-// Public Interface Functions
-// Refer to the interface header file for more information.
-//=============================================================================
+///----------------------------------------------------------------------------
+/// updateMenuState - Enables/Disables certain menu items depending on the
+/// current state of the game world.
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::updateMenuState() {
+
+    UINT worldLoaded = gameWorldController->isWorldLoaded() ? MF_ENABLED : MF_GRAYED | MF_DISABLED;
+
+    fileMenu.EnableMenuItem(MenuIDs::SaveFile, worldLoaded);
+    fileMenu.EnableMenuItem(MenuIDs::SaveFileAs, worldLoaded);
+    mainMenu.EnableMenuItem(MenuIDs::TilePopupMenu, worldLoaded);
+    mainMenu.EnableMenuItem(MenuIDs::WorldPopupMenu, worldLoaded);
+
+}
 
 //-----------------------------------------------------------------------------
 // onSaveFileDialog

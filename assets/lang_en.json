@@ -266,6 +266,9 @@
 
     // Error Messages
 
+	"ErrCreatingAccelsText"			: "Error creating Keyboard Shortcuts.",
+	"ErrCreatingAccelsTitle"		: "Keyboard Shortcuts",
+
     "ErrTileInvalidRowColText"      : "Unable to get tile: Invalid row or column was given",
     "ErrTileInvalidRowColTitle"     : "Error getting tile",
 

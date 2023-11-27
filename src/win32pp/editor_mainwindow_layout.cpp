@@ -37,6 +37,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
     // Deal with the menu bar and title bar next.
 
+    addKeyboardAccelerators();
     CreateMenuBar();
     updateTitleBar(false);
 
@@ -135,6 +136,45 @@ void MainWindowFrame::RecalcDockLayout() {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// addKeyboardAccelerators - Creates Keyboard accelerators for the menu items
+/// and other useful functions
+///----------------------------------------------------------------------------
+
+#define ADD_KEYBOARD_ACCEL(MENU_CMD, MODIFIER_FLAGS, VIRT_CODE) \
+    hotKey.cmd = MENU_CMD; \
+    hotKey.fVirt = FVIRTKEY | MODIFIER_FLAGS; \
+    hotKey.key = VIRT_CODE; \
+    keyboardAccelerators.push_back(hotKey);
+
+void MainWindowFrame::addKeyboardAccelerators() {
+    
+    ACCEL hotKey;
+
+    ADD_KEYBOARD_ACCEL(MenuIDs::NewFile, FCONTROL, 'N');
+    ADD_KEYBOARD_ACCEL(MenuIDs::OpenFile, FCONTROL, 'O');
+    ADD_KEYBOARD_ACCEL(MenuIDs::EditDescription, FCONTROL, 'E');
+
+    // Now to try and add the accelerators
+
+    accelHandle = CreateAcceleratorTable(&keyboardAccelerators[0], keyboardAccelerators.size());
+
+    if(accelHandle) {
+        GetApp()->SetAccelerators(accelHandle, *this);
+    }
+    else {
+        
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+
+        displayErrorMessage(langMap.get("ErrCreatingAccelsText"),
+                            langMap.get("ErrCreatingAccelsTitle"));
+
+    }
+
+}
+
+#undef ADD_KEYBOARD_ACCEL
+
+///----------------------------------------------------------------------------
 /// CreateMenuBar - Creates the menu bar in its default state.
 ///----------------------------------------------------------------------------
 
@@ -177,7 +217,7 @@ void MainWindowFrame::CreateMenuBar() {
 
     // Tile Menu
 
-    appendPopupMenuWithID(tileMenu, featureMenu, MenuIDs::FeatureSubMenu);
+    appendPopupMenuWithID(tileMenu, featureMenu, MenuIDs::FeatureSubMenu, true);
     tileMenu.AppendMenu(MF_STRING, MenuIDs::EditDescription);
     tileMenu.EnableMenuItem(MenuIDs::EditDescription, MF_ENABLED);
 
@@ -201,10 +241,10 @@ void MainWindowFrame::CreateMenuBar() {
         crossroadMenu.EnableMenuItem(i, MF_ENABLED);
     }
 
-    appendPopupMenuWithID(featureMenu, straightAwayMenu, MenuIDs::StraightAwayMenu);
-    appendPopupMenuWithID(featureMenu, cornerMenu, MenuIDs::CornerMenu);
-    appendPopupMenuWithID(featureMenu, deadendMenu, MenuIDs::DeadEndMenu);
-    appendPopupMenuWithID(featureMenu, crossroadMenu, MenuIDs::CrossroadsMenu);
+    appendPopupMenuWithID(featureMenu, straightAwayMenu, MenuIDs::StraightAwayMenu, false);
+    appendPopupMenuWithID(featureMenu, cornerMenu, MenuIDs::CornerMenu, false);
+    appendPopupMenuWithID(featureMenu, deadendMenu, MenuIDs::DeadEndMenu, false);
+    appendPopupMenuWithID(featureMenu, crossroadMenu, MenuIDs::CrossroadsMenu, false);
 
     // The rest of the feature menu
 
@@ -220,41 +260,19 @@ void MainWindowFrame::CreateMenuBar() {
     }
     // Append extra items where needed
 
-
     // Finally deal with the menu bar
 
-    appendPopupMenuWithID(mainMenu, fileMenu, MenuIDs::FilePopupMenu);
-    appendPopupMenuWithID(mainMenu, tileMenu, MenuIDs::TilePopupMenu);
-    appendPopupMenuWithID(mainMenu, worldMenu, MenuIDs::WorldPopupMenu);
+    appendPopupMenuWithID(mainMenu, fileMenu, MenuIDs::FilePopupMenu, true);
+    appendPopupMenuWithID(mainMenu, tileMenu, MenuIDs::TilePopupMenu, false);
+    appendPopupMenuWithID(mainMenu, worldMenu, MenuIDs::WorldPopupMenu, false);
 
     // TODO: Move the update to it's proper location when the rest of the code
     // is restructured.
-
-    // Disable a few menu items (For some reason, changing their strings re-enables them)
-
-    for (int j = MenuIDs::StraightAwayMenu; j < MenuIDs::FeatureMenuDiv2; ++j) {
-        featureMenu.EnableMenuItem(j, MF_GRAYED | MF_DISABLED);
-    }
-
-    // Accelerators
-    ACCEL testHotkeys[2];
-
-    testHotkeys[0].cmd = MenuIDs::NewFile;
-    testHotkeys[0].fVirt = FCONTROL | FVIRTKEY;
-    testHotkeys[0].key = 'N';
-
-    testHotkeys[1].cmd = MenuIDs::OpenFile;
-    testHotkeys[1].fVirt = FCONTROL | FVIRTKEY;
-    testHotkeys[1].key = 'O';
-
-    keyboardAccelerators = CreateAcceleratorTable((LPACCEL)testHotkeys, 2);
-
-    GetApp()->SetAccelerators(keyboardAccelerators, *this);
-    
+  
     // Update Strings based on language
     updateControlCaptions();
 
-    SetFrameMenu(mainMenu);
+    SetMenu(mainMenu);
 
 }
 
@@ -268,6 +286,9 @@ void MainWindowFrame::CreateMenuBar() {
 void MainWindowFrame::updateControlCaptions() {
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    // TODO: Make the keyboard accelerator and option, and obtain which one
+    // it is.
 
     // Main Menu Bar
 
@@ -384,7 +405,7 @@ void MainWindowFrame::updateTitleBar(const bool changeMadeOnly) {
 /// @param a reference to the ID to apply to the menu item.
 ///----------------------------------------------------------------------------
 
-void MainWindowFrame::appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id) {
+void MainWindowFrame::appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id, const bool& enabled) {
 
     MENUITEMINFO mii;
     ZeroMemory(&mii, sizeof(MENUITEMINFO));
@@ -395,6 +416,6 @@ void MainWindowFrame::appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu,
     targetMenu.AppendMenu(MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(popupMenu.GetHandle()));
     const int menuPos = targetMenu.GetMenuItemCount() - 1;
     targetMenu.SetMenuItemInfo(menuPos, mii, TRUE);
-    targetMenu.EnableMenuItem(id, MF_ENABLED); // Otherwise GetMenuState fails.
+    targetMenu.EnableMenuItem(id, enabled ? MF_ENABLED : MF_GRAYED | MF_DISABLED); // Otherwise GetMenuState fails.
 
 }

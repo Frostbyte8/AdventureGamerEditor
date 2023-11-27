@@ -211,7 +211,11 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void onWorldResized() = 0;
 
-
+        ///--------------------------------------------------------------------
+        /// Sent when the State of game World (New/Close/Open) has changed
+        /// and certain operations may need to be enabled/disabled
+        ///--------------------------------------------------------------------
+        virtual void onWorldStateChanged() = 0;
 
 
 

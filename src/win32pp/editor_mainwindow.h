@@ -34,6 +34,8 @@ namespace MenuIDs {
 
     // Tile Menu
 
+    const WORD FIRST_OF_MAP_ALTER_IDS   = 210;
+
     const WORD TilePopupMenu            = 210;
     const WORD FeatureSubMenu           = 211;
     const WORD EditDescription          = 212;
@@ -83,6 +85,8 @@ namespace MenuIDs {
     const WORD EndSwitchConnection      = 278;
     const WORD FeatureMenuDiv2          = 279;
     const WORD ToggleTileDarkness       = 280;
+
+    const WORD LAST_OF_MAP_ALTER_IDS    = 281;
 
 }
 
@@ -141,6 +145,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         virtual void finishedResizeWorldDialog();
         virtual void onWorldResized();
 
+        virtual void onWorldStateChanged();
+
         // Interface Functions For this View Type
 
         virtual void onGameMapRightClick(const WORD& xPos, const WORD& yPos);
@@ -168,14 +174,17 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
 	private:
 
         inline void makeDialogModal(EditDialogBase& dialog, const CString& caption);
+        inline void appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id, const bool& enabled);
 
-        inline void appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id);
+        void addKeyboardAccelerators();
+
 
         void updateStatusbar(const int& index);
         void updateFeatureMenu(const int& index);
         void CreateMenuBar();
         bool loadTileSet();
 
+        void updateMenuState();
         void updateHereLists(const bool objectsHere, const bool charsHere, 
                              const GameMap* inMap = NULL, const int* row = NULL, 
                              const int* col = NULL);
@@ -198,7 +207,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         CMenu deadendMenu;
         CMenu crossroadMenu;
 
-        HACCEL keyboardAccelerators;
+        HACCEL accelHandle;
+        std::vector<ACCEL> keyboardAccelerators;
 
         bool isSizing;
 
