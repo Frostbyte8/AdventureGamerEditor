@@ -1398,6 +1398,91 @@ bool GameWorldController::tryNewGameWorld() {
 
 }
 
+///----------------------------------------------------------------------------
+/// tryStartSave - Saves the current game world. Depending on whether the file
+/// was saved before, it may or may not send a request for more information.
+/// @param if true, it will always request a save dialog
+/// @return true if either a dialog is started, or the program successfully
+/// saved, false if there was nothing to save, or saving failed.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryStartSave(const bool saveAs) {
+
+    if(!worldFileName.empty() && !changedSinceLastSave && !saveAs) {
+        return false; // Nothing to do.
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(worldFilePath.empty() || worldFileName.empty() || saveAs) {
+
+        if (!mainWindow->canCreateDialog(EditorDialogTypes::SaveDialog)) {
+            mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                            langMap.get("ErrCreatingDialogTItle"));
+            return false;
+        }
+
+        if (!mainWindow->startSaveDialog()) {
+            mainWindow->onDialogEnd(EditorDialogTypes::SaveDialog);
+            mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                            langMap.get("ErrCreatingDialogTitle"));
+            return false;
+        }
+
+    }
+    else {
+        // We already have a file we are writing to, so use that, no need
+        // for a dialog.
+        return tryFinishSave("", "", false);
+    }
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryFinishSave - 
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryFinishSave(const std::string& newPath, const std::string& newFileName, 
+                                        const bool updateFilePath) {
+
+    if(updateFilePath) {
+        worldFilePath = newPath;
+        worldFileName = newFileName;
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    std::ofstream ofs;
+    std::string fullPathName = worldFilePath + worldFileName;
+    
+    ofs.open(fullPathName.c_str(), std::ofstream::out | std::ios::binary);
+
+    if (ofs) {
+        gameMap->writeMap(ofs, worldFilePath, worldFileName);
+        changedSinceLastSave = false;
+    }
+    else {
+        mainWindow->displayErrorMessage(langMap.get("ErrSavingWorldText"),
+                                        langMap.get("ErrSavingWorldTitle"));
+        return false;
+    }
+
+    std::string messageText = langMap.get("FileSaveSuccessfullyText");
+    size_t pos = messageText.find_first_of("%s", 0);
+
+    if(pos != std::string::npos) {
+        messageText.replace(pos, 2, gameMap->getGameInfo().getGameName());
+    }
+
+    mainWindow->displayMessage(messageText, langMap.get("FileSaveSuccessfullyTitle"),
+                               GenericInterfaceMessageTypes::Information);
+    
+
+    mainWindow->onChangesSaved();
+    return true;
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================
@@ -1450,16 +1535,18 @@ inline bool GameWorldController::askAndUpdateSisterTile(const std::string& messa
 bool GameWorldController::checkAndAskToSaveUnsavedChanges() {
 
     if (changedSinceLastSave) {
-        const int response = mainWindow->askYesNoQuestion("SaveChangesBeforeActionText",
-                                                          "SaveChangesBeforeActionTitle",
+
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+
+        const int response = mainWindow->askYesNoQuestion(langMap.get("SaveChangesBeforeActionText"),
+                                                          langMap.get("SaveChangesBeforeActionTitle"),
                                                           true);
 
         // On yes, we'll try and save the changes, and proceed only if they happen.
         // On cancel, we'll bow out.
 
         if (response == GenericInterfaceResponses::Yes) {
-            // TODO: Update this when save is re-written.
-            return false;
+            return tryStartSave();
         }
         else if (response == GenericInterfaceResponses::Cancel) {
             return false;
@@ -1879,49 +1966,4 @@ bool GameWorldController::loadWorld(const std::string& filePath,
     mainWindow->onWorldStateChanged();
 
     return loadSuccessful;
-}
-
-///----------------------------------------------------------------------------
-/// saveWorld - Attempt to save the game world. If not, prompt the main window
-/// for more information, or prompt it regardless if the user requested to
-/// save the file as something else.
-/// @param if true, save the file as something else, otherwise attempt to save
-/// the file.
-/// @return true if the operation completed successfully, false if it could not
-///----------------------------------------------------------------------------
-
-bool GameWorldController::saveWorld(bool saveAs) {
-
-    if (saveAs || (worldFilePath.empty() || worldFileName.empty())) {
-
-        std::string filePath;
-        std::string fileName;
-
-        const int retVal = mainWindow->onSaveFileDialog(filePath, fileName);
-
-        if (retVal != GenericInterfaceResponses::Ok) {
-            // Abort saving.
-            return false;
-        }
-
-        worldFilePath = filePath;
-        worldFileName = fileName;
-
-    }
-
-    std::ofstream ofs;
-    std::string fullPathName = worldFilePath + worldFileName;
-    ofs.open(fullPathName.c_str(), std::ofstream::out | std::ios::binary);
-
-    if (ofs) {
-        gameMap->writeMap(ofs, worldFilePath, worldFileName);
-    }
-    else {
-        mainWindow->displayErrorMessage("Unable to write file.", "File Write Error");
-        return false;
-    }
-
-    changedSinceLastSave = true;
-
-    return true;
 }

@@ -213,11 +213,14 @@
     
     // Common Dialog Boxes
     
-    "CBDFindImageFilterText"    : "Image Files",
+    "CDBFindImageFilterText"    : "Image Files",
     "CDBFindImageTitle"         : "Find Image File",
     
-    "CBDFindSoundFilterText"    : "Sound Files",
-    "CBDFindSoundTitle"         : "Find Sound File",
+    "CDBFindSoundFilterText"    : "Sound Files",
+    "CDBFindSoundTitle"         : "Find Sound File",
+
+	"CDBAdvGamerFilterText"		: "Adventure Gamer World Files",
+	"CDBAdvGamerSaveTitle"		: "Save World File",
 
     // Program Messages
 
@@ -262,6 +265,9 @@
 	"SaveChangesBeforeActionText"	: "You have unsaved changes to the current world. Do you want to save them?",
 	"SaveChangesBeforeActionTitle"	: "Unsaved Changes?",
 
+	"FileSaveSuccessfullyText"		: "%s was saved successfully.",
+	"FileSaveSuccessfullyTitle"		: "Save Successful",
+
 	"NoWorldLoaded"					: "No world loaded",
 
     // Error Messages
@@ -280,6 +286,9 @@
 
     "ErrGamerFileReadText"          : "Unable to read Adventure Gamer File: %s",
     "ErrGamerFileReadTitle"         : "Error reading file",
+
+	"ErrSavingWorldText"			: "Error saving game world.",
+	"ErrSavingWorldTitle"			: "Save Error",
 
     "ErrAllocatingDialogText"       : "The dialog could not be created because there is not enough memory to allocate it.",
     "ErrAllocatingDialogTitle"      : "Allocating Dialog Failed",

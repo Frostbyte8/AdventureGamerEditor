@@ -147,6 +147,10 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
 
         virtual void onWorldStateChanged();
 
+        virtual bool startSaveDialog();
+        virtual void finishedSaveDialog() {};
+        virtual void onChangesSaved();
+
         // Interface Functions For this View Type
 
         virtual void onGameMapRightClick(const WORD& xPos, const WORD& yPos);

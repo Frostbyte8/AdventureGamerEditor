@@ -78,7 +78,7 @@ bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool fin
     if (findIcon) {
 
         CString dialogTitle = AtoW(langMap.get("CDBFindImageTitle").c_str(), CP_UTF8);
-        CString filterCaption = AtoW(langMap.get("CBDFindImageFilterText").c_str(), CP_UTF8);
+        CString filterCaption = AtoW(langMap.get("CDBFindImageFilterText").c_str(), CP_UTF8);
         filterCaption += L" (*.BMP;*.ICO)|*.BMP;*.ICO|";
 
         fileDialog.SetFilter(filterCaption);
@@ -86,8 +86,8 @@ bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool fin
 
     } else {
 
-        CString dialogTitle = AtoW(langMap.get("CBDFindSoundTitle").c_str(), CP_UTF8);
-        CString filterCaption = AtoW(langMap.get("CBDFindSoundFilterText").c_str(), CP_UTF8);
+        CString dialogTitle = AtoW(langMap.get("CDBFindSoundTitle").c_str(), CP_UTF8);
+        CString filterCaption = AtoW(langMap.get("CDBFindSoundFilterText").c_str(), CP_UTF8);
         filterCaption += L" (*.WAV)|*.WAV|";
 
         fileDialog.SetFilter(filterCaption);

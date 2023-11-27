@@ -22,7 +22,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
-    // Prevent Win32++ from using themes.
+    // Prevent Win32++ from using themes, and other stuff we don't need.
     UseThemes(FALSE);
     UseIndicatorStatus(FALSE);
     UseMenuStatus(FALSE);
@@ -33,9 +33,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
         MessageBox(L"Could not find tileset.bmp. Please ensure this file is in the same directory as advedit.exe. The program will now close.", L"Missing file tileset.bmp", MB_OK | MB_ICONERROR);
         Close();
         return 1;
-    }
-
-    
+    }   
 
 	const int retVal = CDockFrame::OnCreate(cs);
 
@@ -96,6 +94,10 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
 
+    // TODO: Move the update to it's proper location when the rest of the code
+    // is restructured.
+    // Update Strings based on language
+    updateControlCaptions();
 
     updateStatusbar(0);
 
@@ -103,7 +105,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 }
 
 //-----------------------------------------------------------------------------
-// Function Overrides
+// Win32++ Function Overrides
 //-----------------------------------------------------------------------------
 
 ///----------------------------------------------------------------------------
@@ -269,12 +271,6 @@ void MainWindowFrame::CreateMenuBar() {
     appendPopupMenuWithID(mainMenu, fileMenu, MenuIDs::FilePopupMenu, true);
     appendPopupMenuWithID(mainMenu, tileMenu, MenuIDs::TilePopupMenu, false);
     appendPopupMenuWithID(mainMenu, worldMenu, MenuIDs::WorldPopupMenu, false);
-
-    // TODO: Move the update to it's proper location when the rest of the code
-    // is restructured.
-  
-    // Update Strings based on language
-    updateControlCaptions();
 
     SetMenu(mainMenu);
 

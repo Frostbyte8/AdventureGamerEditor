@@ -1,6 +1,8 @@
 #include "editor_mainwindow.h"
 #include "shared_functions.h"
 
+#include <wxx_commondlg.h>
+
 //-----------------------------------------------------------------------------
 // Constants
 //-----------------------------------------------------------------------------
@@ -168,6 +170,14 @@ void MainWindowFrame::onWorldStateChanged() {
     updateMenuState();
 }
 
+///----------------------------------------------------------------------------
+/// onChangesSaved
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onChangesSaved() {
+    updateTitleBar(true);
+}
+
 //-----------------------------------------------------------------------------
 // Shared Functions for Dialogs
 //-----------------------------------------------------------------------------
@@ -189,6 +199,10 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
         case EditorDialogTypes::EditStoryAndSummary: return editStoryDialog ? false : true;
         case EditorDialogTypes::EditWorldInfo: return editWorldInfoDialog ? false : true;
         case EditorDialogTypes::ResizeWorld: return resizeWorldDialog ? false : true;
+        
+        case EditorDialogTypes::SaveDialog:
+        case EditorDialogTypes::LoadDialog:
+            return true; // We don't handle these, the OS does.
     }
 
     return false;
@@ -236,6 +250,12 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
             assert(resizeWorldDialog != NULL);
             delete resizeWorldDialog;
             resizeWorldDialog = NULL;
+            break;
+
+        case EditorDialogTypes::SaveDialog:
+        case EditorDialogTypes::LoadDialog:
+            // The OS handles these for us.
+            return;
             break;
 
     }
@@ -582,6 +602,49 @@ void MainWindowFrame::finishedResizeWorldDialog() {
 
     onDialogEnd(EditorDialogTypes::ResizeWorld);
 
+}
+
+///----------------------------------------------------------------------------
+/// startSaveDialog
+///----------------------------------------------------------------------------
+
+bool MainWindowFrame::startSaveDialog() {
+
+    CString filterText;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    filterText = LM_toUTF8("CDBAdvGamerFilterText", langMap);
+    filterText += L" (*.SG0)|*.SG0|";
+
+    CFileDialog fileDialog(FALSE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
+                           filterText);
+
+    CString dialogTitle = LM_toUTF8("CDBAdvGamerSaveTitle", langMap);
+
+    fileDialog.SetTitle(dialogTitle);
+
+    // The Common Dialog Boxes actually wait for a response, unlike the ones
+    // I made. So we will do that here.
+
+    const int response = fileDialog.DoModal(*this);
+
+    if (response == IDOK) {
+
+        std::string newPath = WtoA(fileDialog.GetFolderPath().c_str());
+        std::string newFileName = WtoA(fileDialog.GetFileName().c_str());
+
+        gameWorldController->tryFinishSave(newPath, newFileName);
+
+        return true;
+
+    }
+    else if (response == IDCANCEL) {
+        return true;
+    }
+
+    // Something went wrong otherwise.
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

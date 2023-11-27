@@ -4,10 +4,7 @@
 #include <vector>
 #include "../util/languagemapper.h"
 #include <wxx_commondlg.h>
-
 #include "shared_functions.h"
-
-
 
 //=============================================================================
 // Constructors / Destructor
@@ -73,17 +70,8 @@ MainWindowFrame::~MainWindowFrame() {
 }
 
 //=============================================================================
-// Protected Functions
+// Win32++ Functions
 //=============================================================================
-
-///----------------------------------------------------------------------------
-/// OnInitialUpdate - Set a few things after the window is created successfully.
-/// Refer to the Win32++ documentation for more information.
-///----------------------------------------------------------------------------
-
-void MainWindowFrame::OnInitialUpdate() {
-    activeWindowHandle = GetHwnd(); 
-}
 
 ///----------------------------------------------------------------------------
 /// OnCommand - Processes WM_COMMAND events
@@ -94,10 +82,13 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
     const WORD ID = LOWORD(wParam);
 
-    if(ID >= MenuIDs::FIRST_OF_MAP_ALTER_IDS && ID <= MenuIDs::LAST_OF_MAP_ALTER_IDS ) {
+    if((ID >= MenuIDs::FIRST_OF_MAP_ALTER_IDS && ID <= MenuIDs::LAST_OF_MAP_ALTER_IDS) ||
+        ID == MenuIDs::SaveFile || ID == MenuIDs::SaveFileAs) {
+
         if(!gameWorldController->isWorldLoaded()) {
             return false;
         }
+
     }
 
     switch(ID) {
@@ -109,8 +100,8 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         case MenuIDs::SaveFile:
         case MenuIDs::SaveFileAs:
-            gameWorldController->saveWorld(ID == MenuIDs::SaveFileAs
-                                           ? true : false);
+            gameWorldController->tryStartSave(ID == MenuIDs::SaveFileAs
+                                              ? true : false);
             break;
 
         // Tile Menu
@@ -177,6 +168,16 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
     return TRUE;
 
 }
+
+///----------------------------------------------------------------------------
+/// OnInitialUpdate - Set a few things after the window is created successfully.
+/// Refer to the Win32++ documentation for more information.
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::OnInitialUpdate() {
+    activeWindowHandle = GetHwnd();
+}
+
 
 ///----------------------------------------------------------------------------
 /// WndProc - Window Procedure for the Frame.
@@ -469,7 +470,7 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
 void MainWindowFrame::updateMenuState() {
 
-    UINT worldLoaded = gameWorldController->isWorldLoaded() ? MF_ENABLED : MF_GRAYED | MF_DISABLED;
+    const UINT worldLoaded = gameWorldController->isWorldLoaded() ? MF_ENABLED : MF_GRAYED | MF_DISABLED;
 
     fileMenu.EnableMenuItem(MenuIDs::SaveFile, worldLoaded);
     fileMenu.EnableMenuItem(MenuIDs::SaveFileAs, worldLoaded);
@@ -477,6 +478,7 @@ void MainWindowFrame::updateMenuState() {
     mainMenu.EnableMenuItem(MenuIDs::WorldPopupMenu, worldLoaded);
 
     DrawMenuBar();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -484,6 +486,10 @@ void MainWindowFrame::updateMenuState() {
 //-----------------------------------------------------------------------------
 
 int MainWindowFrame::onSaveFileDialog(std::string& filePath, std::string& fileName) {
+
+    assert(false);
+    return false;
+    /*
     CFileDialog fileDialog(FALSE, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
                            L"Adventure Gamer World Files (*.SG0)\0*.SG0\0\0");
 
@@ -498,4 +504,5 @@ int MainWindowFrame::onSaveFileDialog(std::string& filePath, std::string& fileNa
     }
 
     return GenericInterfaceResponses::Cancel;
+    */
 }

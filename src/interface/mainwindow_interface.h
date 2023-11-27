@@ -14,6 +14,8 @@ namespace EditorDialogTypes {
     const int EditTileDescription   = 3;
     const int EditWorldInfo         = 4;
     const int ResizeWorld           = 5;
+    const int SaveDialog            = 6; // Win32++ doesn't need this, but another view might.
+    const int LoadDialog            = 7; // Win32++ doesn't need this, but another view might.
 }
 
 namespace EditorTileUpdateFlags {
@@ -218,6 +220,24 @@ class MainWindowInterface {
         virtual void onWorldStateChanged() = 0;
 
 
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the user wants to save the user
+        /// wants to save the game, but it needs file path info.
+        /// @return true if the dialog was created, false if it was not.
+        ///--------------------------------------------------------------------
+        virtual bool startSaveDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that the save dialog has finished.
+        ///--------------------------------------------------------------------
+        virtual void finishedSaveDialog() = 0;
+
+
+        ///--------------------------------------------------------------------
+        /// Sent when window when changes were saved, and you might want to
+        /// indicate that.
+        ///--------------------------------------------------------------------
+        virtual void onChangesSaved() = 0;
 
         ///--------------------------------------------------------------------
         /// Sent when the window needs to spawn the Save Dialog
