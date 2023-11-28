@@ -186,6 +186,21 @@ LRESULT GameMapPanel::onRButtonDown(const WORD& xPos, const WORD& yPos) {
     int row = static_cast<int>((yPos + viewOffset.y) / tileHeight);
     int col = static_cast<int>((xPos + viewOffset.x) / tileWidth);
 
+    if(HIWORD(GetKeyState(VK_LSHIFT)) != 0) {
+        
+        if(gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
+
+            GameTile::DrawInfo di = gameWorldController->getGameMap()->getTile(gameWorldController->getGameMap()->indexFromRowCol(row, col)).getDrawInfo();
+
+            wchar_t debug[256];
+            wsprintf(debug, L"Indx: %d\n Modi: %d\n Dark: %d\n", di.spriteIndex, di.spriteModifier, di.dark);
+            OutputDebugString(debug);
+            return 0;
+        }
+
+    }
+
+
     // We will try to change to the new tile first, and if that is successful,
     // we will then open up the menu
 
