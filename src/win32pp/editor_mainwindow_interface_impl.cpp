@@ -692,6 +692,9 @@ void MainWindowFrame::onGameMapRightClick(const WORD& xPos, const WORD& yPos) {
 
     GameMapPanel& mapPanel = reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView());
 
+    // TODO: The Win32++ documentation says to handle this differently, refer to that
+    // at some point.
+
     mapPanel.MapWindowPoints(NULL, &pt, 1);
 
     TrackPopupMenu(tileMenu.GetHandle(), TPM_LEFTALIGN, 

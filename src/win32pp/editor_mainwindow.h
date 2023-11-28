@@ -91,6 +91,15 @@ namespace MenuIDs {
 
     const WORD LAST_OF_MAP_ALTER_IDS    = 283;
 
+    // Zoom Menu
+
+    const WORD ZoomMenu                 = 290;
+    const WORD Zoom1xItem               = 291;
+    const WORD Zoom2xItem               = 292;
+    const WORD Zoom3xItem               = 293;
+    const WORD Zoom4xItem               = 294;
+    // If people need more than this, they should just make a bigger tileset.
+
 }
 
 //=============================================================================
@@ -202,17 +211,22 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
 
         void updateControlCaptions();
 
+        void changeZoomFactor(const int& newZoomFactor);
+
         CString originalWindowTitle;
 
         CMenu mainMenu;
         CMenu fileMenu;
-        CMenu worldMenu;
+        
         CMenu tileMenu;
         CMenu featureMenu;
         CMenu straightAwayMenu;
         CMenu cornerMenu;
         CMenu deadendMenu;
         CMenu crossroadMenu;
+        
+        CMenu worldMenu;
+        CMenu zoomMenu;
 
         HACCEL accelHandle;
         std::vector<ACCEL> keyboardAccelerators;
@@ -224,6 +238,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
 
         int     tileWidth;
         int     tileHeight;
+        int     zoomFactor;
 
 		GameEntitiesPanel*              entityView;
 		GameMapDocker*                  gameMapDocker;

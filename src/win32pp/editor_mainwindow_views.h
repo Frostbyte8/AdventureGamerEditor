@@ -238,6 +238,8 @@ class GameMapPanel : public ScrollPanelBaseClass {
         void setTileset(CBitmap& inTileSet);
         void updateBackBuffer();
 
+        void setZoomFactor(const int& newFactor);
+
     protected:
 
         const virtual std::wstring getClassName() const { return L"GameMapPanel"; }
@@ -266,7 +268,7 @@ class GameMapPanel : public ScrollPanelBaseClass {
         Win32ppMainWindowInterface* const mainWindow;
         GameWorldController* const  gameWorldController;
 
-        int fakeZoomLevel;
+        int zoomFactor;
         int tileWidth;
         int tileHeight;
 

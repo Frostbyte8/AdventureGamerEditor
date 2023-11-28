@@ -17,7 +17,7 @@
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
-editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0),
+editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0), zoomFactor(1),
 accelHandle(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesPanel(gameWorldController, &windowMetrics);
@@ -162,6 +162,15 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
         case MenuIDs::WorldProperties: gameWorldController->tryEditWorldInfo(); break;
         case MenuIDs::ResizeWorld: gameWorldController->tryEditWorldSize(); break;
 
+        // Zoom Menu
+
+        case MenuIDs::Zoom1xItem:
+        case MenuIDs::Zoom2xItem:
+        case MenuIDs::Zoom3xItem:
+        case MenuIDs::Zoom4xItem:
+            changeZoomFactor((ID + 1) - MenuIDs::Zoom1xItem);
+            break;
+
         default:
             return FALSE;
 
@@ -240,6 +249,18 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 //=============================================================================
 // Private Functions
 //=============================================================================
+
+///----------------------------------------------------------------------------
+/// changeZoomFactor - Changes how zoomed in the level editor is. Minimum of
+/// 1, maximum of 4.
+/// @param the level to use. An invalid value sets it back to 1.
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::changeZoomFactor(const int& newZoomFactor) {
+    zoomFactor = (newZoomFactor > 0 && newZoomFactor < 5) ? newZoomFactor : 1;
+    GameMapPanel& mapPanel = reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView());
+    mapPanel.setZoomFactor(zoomFactor);
+}
 
 ///----------------------------------------------------------------------------
 /// loadTileset - Load's the tileset BMP

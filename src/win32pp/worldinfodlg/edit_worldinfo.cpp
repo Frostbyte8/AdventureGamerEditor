@@ -4,7 +4,6 @@
 #include "../../util/win32pp_extras.h"
 #include "../../adventuregamer_constants.h"
 
-
 namespace ControlIDs {
     const WORD WorldName            = 101;
     const WORD CurrencyName         = 102;

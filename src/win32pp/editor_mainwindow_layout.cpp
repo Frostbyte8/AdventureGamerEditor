@@ -188,16 +188,16 @@ void MainWindowFrame::CreateMenuBar() {
 
     mainMenu.CreateMenu();
     fileMenu.CreatePopupMenu();
-    worldMenu.CreatePopupMenu();
 
-    tileMenu.CreatePopupMenu();
-    
+    tileMenu.CreatePopupMenu();    
     featureMenu.CreatePopupMenu();
-
     straightAwayMenu.CreatePopupMenu();
     cornerMenu.CreatePopupMenu();
     deadendMenu.CreatePopupMenu();
     crossroadMenu.CreatePopupMenu();
+
+    worldMenu.CreatePopupMenu();
+    zoomMenu.CreatePopupMenu();
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -264,13 +264,21 @@ void MainWindowFrame::CreateMenuBar() {
         featureMenu.AppendMenu(MF_STRING, k);
         featureMenu.EnableMenuItem(k, MF_ENABLED);
     }
-    // Append extra items where needed
+
+
+    // Zoom Menu
+
+    for(int j = MenuIDs::Zoom1xItem; j <= MenuIDs::Zoom4xItem; ++j) {
+        zoomMenu.AppendMenu(MF_STRING, j);
+        zoomMenu.EnableMenuItem(j, MF_ENABLED);
+    }
 
     // Finally deal with the menu bar
 
     appendPopupMenuWithID(mainMenu, fileMenu, MenuIDs::FilePopupMenu, true);
     appendPopupMenuWithID(mainMenu, tileMenu, MenuIDs::TilePopupMenu, false);
     appendPopupMenuWithID(mainMenu, worldMenu, MenuIDs::WorldPopupMenu, false);
+    appendPopupMenuWithID(mainMenu, zoomMenu, MenuIDs::ZoomMenu, true);
 
     SetMenu(mainMenu);
 
@@ -295,6 +303,7 @@ void MainWindowFrame::updateControlCaptions() {
     CHANGE_MENU_STRING(mainMenu, MenuIDs::FilePopupMenu, "FileMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::TilePopupMenu, "TileMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::WorldPopupMenu, "WorldMenu");
+    CHANGE_MENU_STRING(mainMenu, MenuIDs::ZoomMenu, "ZoomMenu");
 
     // File Menu
 
@@ -356,6 +365,13 @@ void MainWindowFrame::updateControlCaptions() {
 
     CHANGE_MENU_STRING(crossroadMenu, MenuIDs::AddHazard, "HazardMenuItem");
     CHANGE_MENU_STRING(crossroadMenu, MenuIDs::AddSafeHaven, "SafeHavenMenuItem");
+
+    // Zoom Menu
+
+    CHANGE_MENU_STRING(zoomMenu, MenuIDs::Zoom1xItem, "1xMenuItem");
+    CHANGE_MENU_STRING(zoomMenu, MenuIDs::Zoom2xItem, "2xMenuItem");
+    CHANGE_MENU_STRING(zoomMenu, MenuIDs::Zoom3xItem, "3xMenuItem");
+    CHANGE_MENU_STRING(zoomMenu, MenuIDs::Zoom4xItem, "4xMenuItem");
     
 
 }

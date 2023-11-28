@@ -1,6 +1,7 @@
 {
 
 	// Menus
+	// File Menu
 
     "FileMenu"                  : "&File",
     "NewMenuItem"               : "&New...",
@@ -8,6 +9,8 @@
     "SaveMenuItem"              : "&Save",
     "SaveAsMenuItem"            : "Save &As...",
     "ExitMenuItem"              : "E&xit",
+
+	// Tile Menu + Submenus
 
 	"TileMenu"					: "&Tile",
 	"AddFeatureMenuItem"		: "&Add Feature",
@@ -35,9 +38,6 @@
 	"HazardMenuItem"			: "&Hazard",
 	"SafeHavenMenuItem"			: "&Safe Haven",
 
-	// At some point, remove the &'s and just make some of these keyboard
-	// accelerators.
-
 	"JumppadConnectFirst"		: "Start &Jumppad Connection",
 	"JumppadConnectSecond"		: "Finish Jump&pad Connection",
 	"StartSwitchMenuItem"		: "Start Swi&tch Connection",
@@ -47,10 +47,20 @@
 	"ToggleDarknessMenuItem"	: "Toggle Tile Dar&kness",
 	"ToggleSwitchStateMenuItem"	: "Toggle Switch P&osition",	
 
+	// World Menu
+
     "WorldMenu"					: "&World",
     "SummaryMenuItem"           : "&Summary and Story...",
     "WorldPropertiesMenuItem"   : "&World Properties...",
 	"ResizeWorldMenuItem"		: "&Resize World...",
+
+	// Zoom Menu
+	
+	"ZoomMenu"					: "&Zoom",
+	"1xMenuItem"				: "1x",
+	"2xMenuItem"				: "2x",
+	"3xMenuItem"				: "3x",
+	"4xMenuItem"				: "4x",
 
 	// Main Window Controls
 
