@@ -74,7 +74,7 @@ class GameInfo {
         }
         
         const void setRandomAttribute(const int& which, const int& amount) {
-            baseAttributes[which] = amount;
+            randomAttributes[which] = amount;
         }
         
         const void setGameName(const std::string& newName) {
