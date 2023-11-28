@@ -51,6 +51,7 @@ const GameTile::DrawInfo GameTile::getDrawInfo() const {
     drawInfo.spriteIndex    = base.drawInfo.spriteIndex;
     drawInfo.spriteModifier = base.drawInfo.spriteModifier;
     drawInfo.dark           = base.drawInfo.dark;
+    drawInfo.hasGate        = base.drawInfo.hasGate;
     return drawInfo;
 }
 
@@ -254,6 +255,16 @@ const bool GameTile::hasGate() const {
 
 const bool GameTile::hasJumpPad() const {
     return (isDeadend() && base.drawInfo.spriteModifier & TileModifiers::JumpPad);    
+}
+
+///----------------------------------------------------------------------------
+/// hasOnSwitch - Checks if the tile is a corner and has an on switch
+/// @return true if it is a corner and has an on switch, false otherwise.
+///----------------------------------------------------------------------------
+
+const bool GameTile::hasOnSwitch() const {
+    const bool isSwitch = (base.drawInfo.spriteModifier & TileModifiers::SwitchOn) ? true : false;
+    return (isCorner() && isSwitch);
 }
 
 ///----------------------------------------------------------------------------

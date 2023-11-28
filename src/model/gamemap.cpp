@@ -259,7 +259,7 @@ const int GameMap::getNumTiles() const {
 
 ///----------------------------------------------------------------------------
 /// getWidth - Returns the width of the map
-/// @return an interger indicating the width of the map
+/// @return an integer indicating the width of the map
 ///----------------------------------------------------------------------------
 
 const int& GameMap::getWidth() const {
@@ -440,6 +440,26 @@ void GameMap::updateTileDescription(GMKey, const size_t& index,
 
 void GameMap::updateGameInfo(GMKey, const GameInfo& newInfo) {    
     gameInfo = newInfo;
+}
+
+//=============================================================================
+// Information Functions
+//=============================================================================
+
+const bool GameMap::isConnectedToOnSwitch(const int& row, const int& col) const {
+
+    const SimplePoint* switchPoint = findMatchingPoint(row, col, switchConnections);
+
+    if(!switchPoint) {
+        return false;
+    }
+
+    assert(isRowColInMapBounds(switchPoint->getRow(), switchPoint->getColumn()));
+
+    const GameTile& switchTile = tiles[indexFromRowCol(switchPoint->getRow(), switchPoint->getColumn())];
+
+    return switchTile.hasOnSwitch();
+
 }
 
 //=============================================================================

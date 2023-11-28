@@ -291,6 +291,10 @@ void GameMapPanel::updateBackBuffer() {
         alphaDC.CreateCompatibleBitmap(dc, 1, 1);
         alphaDC.SolidFill(RGB(0, 0, 192), CRect(0, 0, 1, 1));
 
+        CMemDC lightOnDC(dc);
+        lightOnDC.CreateCompatibleBitmap(dc, 1, 1);
+        lightOnDC.SolidFill(RGB(255, 255, 0), CRect(0, 0, 1, 1));
+
         // TODO: it might be better to return a reference to the entire gamemap
         // object as well   
 
@@ -305,7 +309,11 @@ void GameMapPanel::updateBackBuffer() {
                 const GameTile::DrawInfo drawInfo = drawDataVec[(k * mapCols) + i];
 
                 const int srcX = drawInfo.spriteIndex * tileWidth;
-                const int srcY = drawInfo.spriteModifier * tileHeight;
+                const int srcY = (drawInfo.hasGate && gameMap->isConnectedToOnSwitch(k, i)) 
+                                 ? TileModifiers::GateOpen * tileHeight 
+                                 : drawInfo.spriteModifier * tileHeight;
+
+
                 const int destX = i * width;
                 const int destY = k * height;
 
@@ -314,8 +322,15 @@ void GameMapPanel::updateBackBuffer() {
                                         tileHeight, SRCCOPY);
 
                 if (drawInfo.dark) {
-                    AlphaBlend(backBufferDC.GetHDC(), destX, destY,
-                               width, height, alphaDC, 0, 0, 1, 1, fn);
+
+                    if(gameMap->isConnectedToOnSwitch(k, i)) {
+                        AlphaBlend(backBufferDC.GetHDC(), destX, destY,
+                                   width, height, lightOnDC, 0, 0, 1, 1, fn);
+                    }
+                    else {
+                        AlphaBlend(backBufferDC.GetHDC(), destX, destY,
+                                   width, height, alphaDC, 0, 0, 1, 1, fn);
+                    }
                 }
 
             }

@@ -72,6 +72,10 @@ class GameMap {
         const std::vector<GameTile::DrawInfo> getTileDrawData() const;
         const std::vector<GameTile>& getTiles() const;
 
+        // Information Functions
+
+        const bool isConnectedToOnSwitch(const int& row, const int& col) const;
+
         // Mutators
         void addCharacter(GMKey, GameCharacter& gameCharacter);
         void addObject(GMKey, GameObject& gameObject);
@@ -117,13 +121,9 @@ class GameMap {
         void readMap(std::ifstream& mapFile, const std::string& filePath, const std::string& fileName);
         void writeMap(std::ofstream& mapFile, const std::string& filePath, const std::string& fileName);
 
-        const bool findSwitchPoint(const int& row, const int& col, SimplePoint& outPoint) const;
-        const bool findJumpPoint(const int& row, const int& col, SimplePoint& outPoint) const;
-
+        // TODO: inline these?
         const SimplePoint* findSwitchPoint(const int& row, const int& col) const;
         const SimplePoint* findJumpPoint(const int& row, const int& col) const;
-
-        const SimplePoint* findConnectionPointOfType(const int& row, const int& col, bool findSwitchInsteadOfJump);
 
         bool removeJumpPoint(const SimplePoint& point1, const SimplePoint& point2);
         bool removeSwitch(const SimplePoint& point1, const SimplePoint& point2);

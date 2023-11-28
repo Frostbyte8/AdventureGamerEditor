@@ -60,8 +60,9 @@ namespace TileModifiers {
     // Nice names for each MOD.
     
     // Corner Effects
-    const uint8_t SwitchOn      = MOD1;
-    const uint8_t SwitchOff     = MOD2;
+    const uint8_t SwitchOff     = MOD1;
+    const uint8_t SwitchOn      = MOD2;
+    
 
     // Straightaway Effects
     const uint8_t Start         = 0x01;
@@ -98,6 +99,7 @@ class GameTile {
             uint8_t spriteIndex;
             uint8_t spriteModifier;
             uint8_t dark;
+            bool hasGate;
         };
 
     private:
@@ -138,6 +140,7 @@ class GameTile {
                     base.drawInfo.spriteIndex    = 0;
                     base.drawInfo.spriteModifier = 0;
                     base.drawInfo.dark = 0;
+                    base.drawInfo.hasGate = false;
                 }
 
                 Builder(const GameTile& gameTile) {
@@ -149,6 +152,7 @@ class GameTile {
                     base.drawInfo.spriteIndex    = gameTile.base.drawInfo.spriteIndex;
                     base.drawInfo.spriteModifier = gameTile.base.drawInfo.spriteModifier;
                     base.drawInfo.dark           = gameTile.base.drawInfo.dark;
+                    base.drawInfo.hasGate        = gameTile.base.drawInfo.hasGate;
 
                 }
 
@@ -159,6 +163,17 @@ class GameTile {
                     // Update Cache Info too
                     base.drawInfo.spriteIndex    = sprite & 15;
                     base.drawInfo.spriteModifier = (sprite & 240) >> 4;
+
+                    if((base.drawInfo.spriteModifier == TileModifiers::GateClosed) && 
+                      (base.drawInfo.spriteIndex == RoadTypes::StraightawayHorizontal || 
+                       base.drawInfo.spriteIndex == RoadTypes::StraightawayVertical)) {
+
+                        base.drawInfo.hasGate = true;
+
+                    }
+                    else {
+                        base.drawInfo.hasGate = false;
+                    }
 
                     // And if the tile is empty, make sure to clear it's
                     // description
@@ -309,6 +324,7 @@ class GameTile {
         const bool hasAnyFeature() const;
         const bool hasJumpPad() const;
         const bool hasGate() const;
+        const bool hasOnSwitch() const;
         const bool hasSwitch() const;
         
         const bool isCorner() const;
@@ -335,6 +351,7 @@ class GameTile {
             base.drawInfo.spriteIndex    = builder.base.drawInfo.spriteIndex;
             base.drawInfo.spriteModifier = builder.base.drawInfo.spriteModifier;
             base.drawInfo.dark           = builder.base.drawInfo.dark;
+            base.drawInfo.hasGate        = builder.base.drawInfo.hasGate;
         }
 
         Base base;
