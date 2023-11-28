@@ -1,5 +1,7 @@
 {
 
+	// Menus
+
     "FileMenu"                  : "&File",
     "NewMenuItem"               : "&New...",
     "OpenMenuItem"              : "&Open...",
@@ -33,16 +35,24 @@
 	"HazardMenuItem"			: "&Hazard",
 	"SafeHavenMenuItem"			: "&Safe Haven",
 
-	"JumppadConnectFirst"		: "&Start Jumppad Connection",
-	"JumppadConnectSecond"		: "&Finish Jumppad Connection",
-	"StartSwitchMenuItem"		: "S&tart Switch Connection",
-	"EndSwitchMenuItem"			: "&End Switch Connection",
-	"ToggleDarknessMenuItem"	: "Toggle Tile &Darkness",
+	// At some point, remove the &'s and just make some of these keyboard
+	// accelerators.
+
+	"JumppadConnectFirst"		: "Start &Jumppad Connection",
+	"JumppadConnectSecond"		: "Finish Jump&pad Connection",
+	"StartSwitchMenuItem"		: "Start Swi&tch Connection",
+	"EndSwitchMenuItem"			: "Finish Switc&h Connection",
+	"StopMakingJumpMenuItem"	: "Stop J&umppad Connection",
+	"StopMakingSwitchMenuItem"	: "Stop S&witch Connection",	
+	"ToggleDarknessMenuItem"	: "Toggle Tile Dar&kness",
+	"ToggleSwitchStateMenuItem"	: "Toggle Switch P&osition",	
 
     "WorldMenu"					: "&World",
     "SummaryMenuItem"           : "&Summary and Story...",
     "WorldPropertiesMenuItem"   : "&World Properties...",
 	"ResizeWorldMenuItem"		: "&Resize World...",
+
+	// Main Window Controls
 
     "AddButton"                 : "Add",
     "EditButton"                : "Edit",
@@ -104,7 +114,6 @@
     "RandomAttribLabel"         : "Random (0 - 12)",
     "PositiveSignLabel"         : "+",
     "NegativeSignLabel"         : "-",
-
 
     "MakesPlayerSightLabel"     : "Makes Player's Sight",
     "SightNoEffectOption"       : "No Effect",
@@ -332,6 +341,9 @@
 
 	"ErrGateCantBeDarkText"			: "Tiles with Gate features cannot be made dark.",
 	"ErrGateCantBeDarkTitle"		: "Cannot add Darkness",
+
+	"ErrNoSwitchToToggleText"		: "The selected tile does not have a switch feature.",
+	"ErrNoSwitchToToggleTitle"		: "Switch Missing",
 
 	"ErrNoJumppadOnTileText"		: "Tile does not have a Jump pad feature.",
 	"ErrNoJumppadOnTileTitle"		: "Jump pad Missing",

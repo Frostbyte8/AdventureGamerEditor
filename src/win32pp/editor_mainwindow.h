@@ -83,10 +83,13 @@ namespace MenuIDs {
     const WORD EndJumpConnection        = 276;
     const WORD StartSwitchConnection    = 277;
     const WORD EndSwitchConnection      = 278;
-    const WORD FeatureMenuDiv2          = 279;
-    const WORD ToggleTileDarkness       = 280;
+    const WORD StopJumpConnection       = 279;
+    const WORD StopSwitchConnection     = 280;
+    const WORD FeatureMenuDiv2          = 281;
+    const WORD ToggleTileDarkness       = 282;
+    const WORD ToggleSwitchState        = 283;
 
-    const WORD LAST_OF_MAP_ALTER_IDS    = 281;
+    const WORD LAST_OF_MAP_ALTER_IDS    = 283;
 
 }
 

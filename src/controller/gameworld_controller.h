@@ -58,6 +58,7 @@ class GameWorldController {
         bool tryDrawOnSelectedTile();
 
         bool tryToggleTileDarkness();
+        bool tryToggleSwitchState();
 
         bool tryEditTileDescription(const int& row = EditorConstants::IGNORE_ROW,
                                     const int& col = EditorConstants::IGNORE_COL);
@@ -78,6 +79,8 @@ class GameWorldController {
 
         bool tryCreateJumpConnection();
         bool tryCreateSwitchConnection();
+
+        bool tryStopConnection(const bool jumpConnection, const bool switchConnection);
 
         bool tryNewGameWorld();
 

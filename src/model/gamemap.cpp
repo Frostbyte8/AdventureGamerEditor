@@ -166,7 +166,6 @@ const std::vector<GameCharacter> GameMap::getGameCharactersAtRowCol(const int& r
 
 }
 
-
 ///----------------------------------------------------------------------------
 /// getHeight - Returns the height of the map
 /// @return an integer indicating the height of the map

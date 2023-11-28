@@ -119,7 +119,10 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
             gameWorldController->tryCreateSwitchConnection(); 
             break;
 
+        case MenuIDs::StopJumpConnection: gameWorldController->tryStopConnection(true, false); break;
+        case MenuIDs::StopSwitchConnection: gameWorldController->tryStopConnection(false, true); break;
         case MenuIDs::ToggleTileDarkness: gameWorldController->tryToggleTileDarkness(); break;
+        case MenuIDs::ToggleSwitchState: gameWorldController->tryToggleSwitchState(); break;
 
         // Straight Aways Menu
 
@@ -394,6 +397,7 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
             featureMenu.EnableMenuItem(MenuIDs::StartJumpConnection, MF_GRAYED | MF_DISABLED);
         }
 
+        featureMenu.EnableMenuItem(MenuIDs::StopJumpConnection, MF_GRAYED | MF_DISABLED);
         featureMenu.EnableMenuItem(MenuIDs::EndJumpConnection, MF_GRAYED | MF_DISABLED);
 
     }
@@ -401,6 +405,7 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
         featureMenu.EnableMenuItem(MenuIDs::StartJumpConnection, MF_GRAYED | MF_DISABLED);
         featureMenu.EnableMenuItem(MenuIDs::EndJumpConnection, MF_ENABLED);
+        featureMenu.EnableMenuItem(MenuIDs::StopJumpConnection, MF_ENABLED);
 
     }
 
@@ -414,6 +419,7 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
         }
 
         featureMenu.EnableMenuItem(MenuIDs::EndSwitchConnection, MF_GRAYED | MF_DISABLED);
+        featureMenu.EnableMenuItem(MenuIDs::StopSwitchConnection, MF_GRAYED | MF_DISABLED);
 
     }
     else {
@@ -422,12 +428,16 @@ void MainWindowFrame::updateFeatureMenu(const int& index) {
 
         if(gameTile.hasGate() || gameTile.isDark()) {
             featureMenu.EnableMenuItem(MenuIDs::EndSwitchConnection, MF_ENABLED);
+            featureMenu.EnableMenuItem(MenuIDs::StopSwitchConnection, MF_ENABLED);
         }
         else {
             featureMenu.EnableMenuItem(MenuIDs::EndSwitchConnection, MF_GRAYED | MF_DISABLED);
         }
         
     }
+
+    featureMenu.EnableMenuItem(MenuIDs::ToggleSwitchState, gameTile.hasSwitch() ? MF_ENABLED : MF_GRAYED | MF_DISABLED);
+    featureMenu.EnableMenuItem(MenuIDs::ToggleTileDarkness, gameTile.hasGate() ? MF_GRAYED | MF_DISABLED : MF_ENABLED);
 
 }
 

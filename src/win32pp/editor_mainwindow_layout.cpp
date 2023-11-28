@@ -254,7 +254,7 @@ void MainWindowFrame::CreateMenuBar() {
 
     // The rest of the feature menu
 
-    for(int k = MenuIDs::FeatureMenuDiv1; k <= MenuIDs::ToggleTileDarkness; ++k) {
+    for(int k = MenuIDs::FeatureMenuDiv1; k <= MenuIDs::LAST_OF_MAP_ALTER_IDS; ++k) {
 
         if (k == MenuIDs::FeatureMenuDiv1 || k == MenuIDs::FeatureMenuDiv2) {
             featureMenu.AppendMenu(MF_SEPARATOR);
@@ -326,7 +326,11 @@ void MainWindowFrame::updateControlCaptions() {
     CHANGE_MENU_STRING(featureMenu, MenuIDs::EndJumpConnection, "JumppadConnectSecond");
     CHANGE_MENU_STRING(featureMenu, MenuIDs::StartSwitchConnection, "StartSwitchMenuItem");
     CHANGE_MENU_STRING(featureMenu, MenuIDs::EndSwitchConnection, "EndSwitchMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::StopJumpConnection, "StopMakingJumpMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::StopSwitchConnection, "StopMakingSwitchMenuItem");
+
     CHANGE_MENU_STRING(featureMenu, MenuIDs::ToggleTileDarkness, "ToggleDarknessMenuItem");
+    CHANGE_MENU_STRING(featureMenu, MenuIDs::ToggleSwitchState, "ToggleSwitchStateMenuItem");
 
     // Straight Away Menu
 

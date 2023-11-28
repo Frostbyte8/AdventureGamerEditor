@@ -775,12 +775,54 @@ bool GameWorldController::tryToggleTileDarkness() {
         return false;
     }
 
-
+    // TODO: This should be done in the model, not here.
     GameTile::Builder updatedTile(currentTile);
     updatedTile.flags(currentTile.getFlags() ^ TileFlags::Dark);
 
-    changedSinceLastSave = true;
     gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
+    
+    changedSinceLastSave = true;
+    mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// tryToggleSwitchState - Attempts to toggle the Switch's position on a tile,
+/// if it has one.
+/// @return true if the switch was toggled successfully, false if it was not
+/// or the user tried to toggle a tile without a switch
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryToggleSwitchState() {
+
+    assert(gameMap);
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
+
+    if(!currentTile.hasSwitch()) {
+        mainWindow->displayErrorMessage(langMap.get("ErrNoSwitchOnTileText"),
+                                        langMap.get("ErrNoSwitchOnTileTitle"));
+        return false;
+    }
+
+    // TODO: This also should be done in the model and not here.
+    GameTile::Builder updatedTile(currentTile);
+
+    uint8_t newSprite = 0;
+
+    if(currentTile.hasOnSwitch()) {
+        newSprite = updatedTile.calculateSprite(currentTile.getSpriteIndex(), TileModifiers::SwitchOff);
+    }
+    else {
+        newSprite = updatedTile.calculateSprite(currentTile.getSpriteIndex(), TileModifiers::SwitchOn);
+    }
+
+    updatedTile.sprite(newSprite);
+    gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
+
+    changedSinceLastSave = true;
     mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
 
     return true;
@@ -1315,11 +1357,16 @@ bool GameWorldController::tryCreateJumpConnection() {
         mainWindow->displayMessage(messageText, messageTitle, GenericInterfaceMessageTypes::Information);
 
         firstJumpConnection = SimplePoint(-1, -1);
-        secondJumpConnection = SimplePoint(-1, -1);        
+        secondJumpConnection = SimplePoint(-1, -1);
 
+        mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
+
+        return true;
     }
 
+    // Until the below is down
     // mainWindow->onConnectionUpdated(1);
+    mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
    
     return true;
 }
@@ -1386,10 +1433,36 @@ bool GameWorldController::tryCreateSwitchConnection() {
         secondSwitchConnection = SimplePoint(-1, -1);
 
         mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
-
+        return true;
     }
 
+
+    // Until the below is down
     // mainWindow->onConnectionUpdated(2);
+    mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// tryStopConnection - Stop trying to create a connection if one is being
+/// made.
+/// @param if true, stops creating a jump connection
+/// @param if true, stops creating a switch connection
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryStopConnection(const bool jumpConnection, const bool switchConnection) {
+
+    if(jumpConnection) {
+        firstJumpConnection = SimplePoint(-1, -1);
+        //mainWindow->onConnectionUpdated(1);
+    }
+
+    if(switchConnection) {
+        firstSwitchConnection = SimplePoint(-1, -1);
+        //mainWindow->onConnectionUpdated(1);
+    }
 
     return true;
 }
