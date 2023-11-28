@@ -718,5 +718,5 @@ void RoadPalettePanel::updateScrollSize() {
     const int totalHeight = tileHeight * (EditorConstants::TilesPerRow * 2);
     CSize scrollSize(tileWidth, totalHeight);
     SetScrollSizes(scrollSize);
-
+    
 }

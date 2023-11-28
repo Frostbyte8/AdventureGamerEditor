@@ -1161,7 +1161,12 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
 
     }
 
+    // TODO: If connections are reset, send that info to the main window
+    // so the menu items can be toggled
     // mainWindow->onConnectionUpdated(whichConnections);
+
+    // Tile index will now be invalid, so update it.
+    selectedTileIndex = gameMap->indexFromRowCol(selectedRow, selectedCol);
 
     changedSinceLastSave = true;
     mainWindow->onWorldResized();

@@ -1454,6 +1454,8 @@ bool GameMap::resizeMap(const int& newRows, const int& newCols) {
     }
 
     if (onlyClearTiles) {
+        numRows = newRows;
+        numCols = newCols;
         return true;
     }
 
