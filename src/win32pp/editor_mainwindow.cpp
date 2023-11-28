@@ -116,7 +116,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         case MenuIDs::StartSwitchConnection:
         case MenuIDs::EndSwitchConnection: 
-            gameWorldController->tryToggleTileDarkness(); 
+            gameWorldController->tryCreateSwitchConnection(); 
             break;
 
         case MenuIDs::ToggleTileDarkness: gameWorldController->tryToggleTileDarkness(); break;

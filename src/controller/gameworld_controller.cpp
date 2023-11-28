@@ -1385,6 +1385,8 @@ bool GameWorldController::tryCreateSwitchConnection() {
         firstSwitchConnection = SimplePoint(-1, -1);
         secondSwitchConnection = SimplePoint(-1, -1);
 
+        mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
+
     }
 
     // mainWindow->onConnectionUpdated(2);
