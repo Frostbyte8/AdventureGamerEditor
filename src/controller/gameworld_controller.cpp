@@ -1394,7 +1394,9 @@ bool GameWorldController::tryNewGameWorld() {
 
     // Reset editor defaults
     trySelectNewTile(0);
-    
+    firstJumpConnection = SimplePoint(-1, -1);
+    firstSwitchConnection = SimplePoint(-1, -1);
+
     mainWindow->onEntitiesChanged(true, true, true, true);
     mainWindow->onWorldResized();
     mainWindow->onWorldInfoUpdated();
@@ -1613,10 +1615,14 @@ bool GameWorldController::tryFinishLoad(const std::string& newPath, const std::s
     worldFilePath = newPath;
     worldFileName = newFileName;
 
+    // TODO: defaults should go into their own function
+
     drawingTileIndex = 0;
     selectedTileIndex = 0;
     selectedRow = 0;
     selectedCol = 0;
+    firstJumpConnection = SimplePoint(-1, -1);
+    firstSwitchConnection = SimplePoint(-1, -1);
     trySelectNewTile(0);
     changedSinceLastSave = false;
 
@@ -1693,8 +1699,16 @@ bool GameWorldController::checkAndAskToSaveUnsavedChanges() {
         // On yes, we'll try and save the changes, and proceed only if they happen.
         // On cancel, we'll bow out.
 
-        if (response == GenericInterfaceResponses::Yes) {
-            return tryStartSave();
+        if (response == GenericInterfaceResponses::Yes) {           
+            tryStartSave();
+            
+            // If changes don't save, we return false since this failed.
+
+            if(changedSinceLastSave) {
+                return false;
+            }
+
+            return true;
         }
         else if (response == GenericInterfaceResponses::Cancel) {
             return false;
