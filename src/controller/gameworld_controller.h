@@ -21,16 +21,15 @@ class GameWorldController {
         bool hasFirstJumpConnectionBeenSet() const;
         bool hasFirstSwitchConnectionBeenSet() const;
 
-        // TODO: Move to cpp file
+        bool isWorldLoaded() const;
 
-        const bool isWorldLoaded() const { return gameMap ? true : false; }
-
-        const GameMap* getGameMap() const { return gameMap; }
-        const int& getSelectedTileIndex() const { return selectedTileIndex; }
-        const int& getSelectedRow() const { return selectedRow; }
-        const int& getSelectedCol() const { return selectedCol; }
-        const int& getDrawingTileIndex() const { return drawingTileIndex; }
-        const GameTile& getSelectedTile() const { return gameMap->getTile(selectedTileIndex); }
+        const GameMap* getGameMap() const;
+        const int& getSelectedTileIndex() const;
+        const int& getSelectedCol() const;
+        const int& getSelectedRow() const;
+        
+        const int& getDrawingTileIndex() const;
+        const GameTile& getSelectedTile() const;
 
         bool hasUnsavedChanges() const;
         
@@ -92,58 +91,51 @@ class GameWorldController {
     private:
 
         GameWorldController() {};
-
-        // void resetDefaults
-
-        inline bool validRequestedTileRowCol(const int& row, const int& col) const;
-        inline bool wasRowColSpecified(const int& row, const int& col) const;
-        inline void formatCoordinateString(std::string& str, const int& coord1, const int& coord2);
-        inline void formatConnectionString(std::string& str, const SimplePoint& coord1, const SimplePoint& coord2);
-
-        inline bool findAndRemoveConnection(const GameTile& tile);
-
+        
+        inline bool askAndUpdateSisterTile(const std::string& messageID, const std::string& titleID, const int& x, const int& y);
         bool checkAndAskToSaveUnsavedChanges();
 
-        template <typename T>
-        bool vecIndexInRange(const T& vec, const size_t& index) const;
-
-        bool updateSelectionIfValid(const int& row = -1, const int& col = -1, const int& index = -1);
-
+        inline bool findAndRemoveConnection(const GameTile& tile);
+        inline void formatCoordinateString(std::string& str, const int& coord1, const int& coord2);
+        inline void formatConnectionString(std::string& str, const SimplePoint& coord1, const SimplePoint& coord2);
+        void resetEditingDefaults(const bool resetFilePaths);
         void sanitizeObjectStrings(GameObject::Builder& objectBuilder);
         void sanitizeCharacterStrings(GameCharacter::Builder& characterBuilder);
-
         bool tryRemoveSisterJumppad();
         bool tryRemoveSwitch();
         bool tryRemoveSwitchSisterTile();
+        bool updateSelectionIfValid(const int& row = -1, const int& col = -1, const int& index = -1);       
+        inline bool validRequestedTileRowCol(const int& row, const int& col) const;
+        
+        template <typename T>
+        bool vecIndexInRange(const T& vec, const size_t& index) const;
 
-        inline bool askAndUpdateSisterTile(const std::string& messageID, const std::string& titleID, const int& x, const int& y);
+        inline bool wasRowColSpecified(const int& row, const int& col) const;
         
-        inline const SimplePoint* findConnectionPoint(const GameTile& tile) const;
-        
+
+        // Variables
+
         bool                            changedSinceLastSave;
-
-        MainWindowInterface*            mainWindow;
 
         std::string                     worldFilePath;
         std::string                     worldFileName;
 
         GameTile::Builder               drawingTile;
+        int                             drawingTileIndex;
+
         int                             selectedTileIndex;
         int                             selectedRow;
         int                             selectedCol;
-        int                             drawingTileIndex;
 
         SimplePoint                     firstJumpConnection;
         SimplePoint                     secondJumpConnection;
         SimplePoint                     firstSwitchConnection;
         SimplePoint                     secondSwitchConnection;
 
-
-        // Game World is composed of several other objects which I have
-        // split up here to make doing undo/redo operations easier.
-
-        GameInfo                        gameInfo;
+        MainWindowInterface*            mainWindow;
         GameMap*                        gameMap;
+
+        // [!] DEPERCATED [!]
 
         GameMap::GMKey                  gmKey;
 

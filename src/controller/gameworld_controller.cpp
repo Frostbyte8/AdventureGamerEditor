@@ -36,6 +36,66 @@ GameWorldController::~GameWorldController() {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// getGameMap
+/// @returns NULL if no GameMap is being edited, otherwise a constant pointer
+/// to the current game map
+///----------------------------------------------------------------------------
+
+const GameMap* GameWorldController::getGameMap() const {
+    return gameMap;
+}
+
+///----------------------------------------------------------------------------
+/// getSelectedTileIndex
+/// @returns a constant reference to an integer specifying the index of the
+/// currently selected tile on the map
+///----------------------------------------------------------------------------
+
+const int& GameWorldController::getSelectedTileIndex() const {
+    return selectedTileIndex;
+}
+
+///----------------------------------------------------------------------------
+/// getSelectedCol
+/// @returns a constant reference to an integer specifying the column of the
+/// currently selected tile on the map
+///----------------------------------------------------------------------------
+
+const int& GameWorldController::getSelectedCol() const {
+    return selectedCol;
+}
+
+///----------------------------------------------------------------------------
+/// getSelectedRow
+/// @returns a constant reference to an integer specifying the row of the
+/// currently selected tile on the map
+///----------------------------------------------------------------------------
+
+const int& GameWorldController::getSelectedRow() const {
+    return selectedRow;
+}
+
+///----------------------------------------------------------------------------
+/// getDrawingTileIndex
+/// @returns the index of the tile type being used to draw on the game map.
+/// The tile selected in the road palette
+///----------------------------------------------------------------------------
+
+const int& GameWorldController::getDrawingTileIndex() const {
+    return drawingTileIndex;
+}
+
+///----------------------------------------------------------------------------
+/// getSelectedTile
+/// @returns a constant reference of the tile being used to draw on the game
+/// map.
+///----------------------------------------------------------------------------
+
+const GameTile& GameWorldController::getSelectedTile() const {
+    return gameMap->getTile(selectedTileIndex);
+}
+
+///----------------------------------------------------------------------------
 /// hasUnsavedChanges
 /// @returns true if there are unsaved changes, and false if there is not.
 ///----------------------------------------------------------------------------
@@ -70,6 +130,15 @@ bool GameWorldController::hasFirstSwitchConnectionBeenSet() const {
     }
 
     return false;
+}
+
+///----------------------------------------------------------------------------
+/// isWorldLoaded
+/// @returns true if there is a game map being edited, false if not
+///----------------------------------------------------------------------------
+
+bool GameWorldController::isWorldLoaded() const {
+    return gameMap ? true : false;
 }
 
 //=============================================================================
@@ -1137,8 +1206,12 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
 
     // Move the cursor if it's out of bounds
 
-    if(!gameMap->isIndexInMapBounds(selectedTileIndex)) {
+    if(!gameMap->isRowColInMapBounds(selectedRow, selectedCol)) {
         trySelectNewTile(0);
+    }
+    else {
+        // Update the index so it's valid.
+        selectedTileIndex = gameMap->indexFromRowCol(selectedRow, selectedCol);
     }
 
     // Also reset the jump and switch connections if necessary
@@ -1164,9 +1237,6 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
     // TODO: If connections are reset, send that info to the main window
     // so the menu items can be toggled
     // mainWindow->onConnectionUpdated(whichConnections);
-
-    // Tile index will now be invalid, so update it.
-    selectedTileIndex = gameMap->indexFromRowCol(selectedRow, selectedCol);
 
     changedSinceLastSave = true;
     mainWindow->onWorldResized();
@@ -1388,14 +1458,8 @@ bool GameWorldController::tryNewGameWorld() {
 
     }
 
-    worldFilePath = "";
-    worldFileName = "";
+    resetEditingDefaults(true);
     changedSinceLastSave = false;
-
-    // Reset editor defaults
-    trySelectNewTile(0);
-    firstJumpConnection = SimplePoint(-1, -1);
-    firstSwitchConnection = SimplePoint(-1, -1);
 
     mainWindow->onEntitiesChanged(true, true, true, true);
     mainWindow->onWorldResized();
@@ -1615,23 +1679,14 @@ bool GameWorldController::tryFinishLoad(const std::string& newPath, const std::s
     worldFilePath = newPath;
     worldFileName = newFileName;
 
-    // TODO: defaults should go into their own function
+    resetEditingDefaults(false);
 
-    drawingTileIndex = 0;
-    selectedTileIndex = 0;
-    selectedRow = 0;
-    selectedCol = 0;
-    firstJumpConnection = SimplePoint(-1, -1);
-    firstSwitchConnection = SimplePoint(-1, -1);
-    trySelectNewTile(0);
     changedSinceLastSave = false;
 
     mainWindow->onEntitiesChanged(true, true, true, true);
-
     mainWindow->onWorldResized();
     mainWindow->onWorldInfoUpdated();
-    mainWindow->onWorldStateChanged();
-    
+    mainWindow->onWorldStateChanged();    
 
     return true;
 
@@ -1805,6 +1860,26 @@ inline void GameWorldController::formatConnectionString(std::string& str, const 
             return;
         }
     }
+
+}
+
+///----------------------------------------------------------------------------
+/// resetEditingDefaults - Reset the editor to it's default settings for things
+/// like which tile is selected, if a jump/switch has been started, and
+/// optionally file paths
+/// @param if true it will also reset the path to the current file.
+///----------------------------------------------------------------------------
+
+void GameWorldController::resetEditingDefaults(const bool resetFilePaths) {
+    
+    if(resetFilePaths) {
+        worldFilePath.clear();
+        worldFileName.clear();
+    }
+
+    firstJumpConnection = SimplePoint(-1, -1);
+    firstSwitchConnection = SimplePoint(-1, -1);
+    trySelectNewTile(0);
 
 }
 

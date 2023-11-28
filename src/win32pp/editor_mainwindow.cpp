@@ -3,7 +3,6 @@
 #include "../model/gametile.h"
 #include <vector>
 #include "../util/languagemapper.h"
-#include <wxx_commondlg.h>
 #include "shared_functions.h"
 
 //=============================================================================
