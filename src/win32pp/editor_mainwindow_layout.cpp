@@ -55,17 +55,22 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     gameMapDocker = static_cast<GameMapDocker*>(AddDockedChild(new GameMapDocker(this, gameWorldController, &tilesetBMP), 
                                                 styleFlags | DS_DOCKED_LEFT, 128));
 
-	reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).setTileset(tilesetBMP);
+    gameMapPanel = &(reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()));
+    gameMapPanel->setTileset(tilesetBMP);
 
 
 	roadSelectorDocker = static_cast<RoadSelectorDocker*>(gameMapDocker->AddDockedChild(
                                                           new RoadSelectorDocker(this, gameWorldController),
                                                           styleFlags | DS_DOCKED_LEFT | DS_NO_RESIZE, 0));
+    
                                                           
-	reinterpret_cast<RoadPalettePanel&>(roadSelectorDocker->GetView()).setTileset(tilesetBMP);
+    roadPalettePanel = &(reinterpret_cast<RoadPalettePanel&>(roadSelectorDocker->GetView()));
+    roadPalettePanel->setTileset(tilesetBMP);
 
 	entitiesHereDocker = static_cast<EntitiesHereDocker*>(gameMapDocker->AddDockedChild(
                                                           new EntitiesHereDocker(&windowMetrics), styleFlags | DS_DOCKED_BOTTOM, 128));
+
+    entitiesHerePanel = &(reinterpret_cast<EntitiesHerePanel&>(entitiesHereDocker->GetView()));
 
     // The Road Selector is the Width of one tile plus the scroll bar.
     // TODO: Zoom Factor

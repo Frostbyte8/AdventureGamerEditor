@@ -103,7 +103,7 @@ void MainWindowFrame::onSelectedTileChanged() {
 
     // Finally, we need to tell the map that it too needs to update.
 
-    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onNewTileSelected();
+    gameMapPanel->onNewTileSelected();
 
 }
 
@@ -122,7 +122,7 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
 
     if(tileUpdateFlags & EditorTileUpdateFlags::Type) {
         updateFeatureMenu(index);
-        reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onTileUpdated();
+        gameMapPanel->onTileUpdated();
     }
 
     updateTitleBar(true);
@@ -134,7 +134,7 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::onDrawingTileChanged() {
-    reinterpret_cast<RoadPalettePanel&>(roadSelectorDocker->GetView()).onDrawingTileChanged();
+    roadPalettePanel->onDrawingTileChanged();
 }
 
 ///----------------------------------------------------------------------------
@@ -158,7 +158,7 @@ void MainWindowFrame::onWorldInfoUpdated() {
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::onWorldResized() {
-    reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView()).onMapSizeChanged();
+    gameMapPanel->onMapSizeChanged();
     updateTitleBar(true);
 }
 
@@ -690,12 +690,10 @@ void MainWindowFrame::onGameMapRightClick(const WORD& xPos, const WORD& yPos) {
     pt.x = xPos;
     pt.y = yPos;
 
-    GameMapPanel& mapPanel = reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView());
-
     // TODO: The Win32++ documentation says to handle this differently, refer to that
     // at some point.
 
-    mapPanel.MapWindowPoints(NULL, &pt, 1);
+    gameMapPanel->MapWindowPoints(NULL, &pt, 1);
 
     TrackPopupMenu(tileMenu.GetHandle(), TPM_LEFTALIGN, 
                    pt.x, pt.y, 0, *this, NULL);

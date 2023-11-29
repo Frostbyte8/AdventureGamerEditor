@@ -241,9 +241,14 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         int     zoomFactor;
 
 		GameEntitiesPanel*              entityView;
+
 		GameMapDocker*                  gameMapDocker;
 		RoadSelectorDocker*             roadSelectorDocker;
 		EntitiesHereDocker*             entitiesHereDocker;
+
+        RoadPalettePanel*               roadPalettePanel;
+        EntitiesHerePanel*              entitiesHerePanel;
+        GameMapPanel*                   gameMapPanel;
 
         GameWorldController*            gameWorldController;
 		WindowMetrics                   windowMetrics;

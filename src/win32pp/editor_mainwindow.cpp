@@ -18,7 +18,7 @@ MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHe
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
 editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
 editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0), zoomFactor(1),
-accelHandle(0) {
+accelHandle(0), gameMapPanel(0), entitiesHerePanel(0), roadPalettePanel(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesPanel(gameWorldController, &windowMetrics);
     LanguageMapper::getInstance();
@@ -64,6 +64,18 @@ MainWindowFrame::~MainWindowFrame() {
     if(editTileDescriptionDialog) {
         delete editTileDescriptionDialog;
         editTileDescriptionDialog = NULL;
+    }
+
+    if(roadPalettePanel) {
+        roadPalettePanel = NULL;
+    }
+
+    if(entitiesHerePanel) {
+        entitiesHerePanel = NULL;
+    }
+
+    if(gameMapPanel) {
+        gameMapPanel = NULL;
     }
 
 }
@@ -258,8 +270,7 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 void MainWindowFrame::changeZoomFactor(const int& newZoomFactor) {
     zoomFactor = (newZoomFactor > 0 && newZoomFactor < 5) ? newZoomFactor : 1;
-    GameMapPanel& mapPanel = reinterpret_cast<GameMapPanel&>(gameMapDocker->GetView());
-    mapPanel.setZoomFactor(zoomFactor);
+    gameMapPanel->setZoomFactor(zoomFactor);
 }
 
 ///----------------------------------------------------------------------------
@@ -284,6 +295,7 @@ bool MainWindowFrame::loadTileSet() {
     tileWidth   = static_cast<int>(tempWidth);
     tileHeight  = static_cast<int>(tempHeight);
 
+    // TODO: Error messages
     if(tempWidth - tileWidth != 0) {
         MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
     }
@@ -322,16 +334,14 @@ void MainWindowFrame::updateHereLists(const bool objectsHere, const bool charsHe
     
     // Update the character's on the new tile.
 
-    EntitiesHerePanel& herePanel = reinterpret_cast<EntitiesHerePanel&>(entitiesHereDocker->GetView());
-
     if(objectsHere) {
         const std::vector<GameObject>& objectVec = gameMap->getGameObjectsAtRowCol(selectedRow, selectedCol);
-        herePanel.updateObjectList(objectVec);
+        entitiesHerePanel->updateObjectList(objectVec);
     }
 
     if(charsHere) {
         const std::vector<GameCharacter>& charVec = gameMap->getGameCharactersAtRowCol(selectedRow, selectedCol);
-        herePanel.updateCharacterList(charVec);
+        entitiesHerePanel->updateCharacterList(charVec);
     }
 
 }
