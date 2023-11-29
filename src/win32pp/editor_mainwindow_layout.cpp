@@ -2,6 +2,7 @@
 #include "shared_functions.h"
 #include "../util/languagemapper.h"
 #include "../gitinfo.h"
+#include "../resources/resource.h"
 
 //=============================================================================
 // Win32++ Definitions
@@ -98,6 +99,11 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
 
     HFONT dialogFont = windowMetrics.GetCurrentFont();
     EnumChildWindows(*this, reinterpret_cast<WNDENUMPROC>(SetProperFont), (LPARAM)dialogFont);
+
+    // TODO: The icon will need to change based on the DPI. Windows 9x/2000/XP 
+    // got it right and will use the nearest size, but Vista+ just scales it.
+    SetIcon(GetApp()->LoadIcon(IDI_APPICON), false);
+    SetIcon(GetApp()->LoadIcon(IDI_APPICON), true);
 
     // TODO: Move the update to it's proper location when the rest of the code
     // is restructured.

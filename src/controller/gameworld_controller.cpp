@@ -1588,13 +1588,21 @@ bool GameWorldController::tryStartSave(const bool saveAs) {
         return false; // Nothing to do.
     }
 
+    const int errorTile = gameMap->validateTileDirections();
     LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if(errorTile != -1) {
+        trySelectNewTile(errorTile);
+        mainWindow->displayErrorMessage(langMap.get("ErrTilesCannotLeaveMapText"),
+                                        langMap.get("ErrTilesCannotLeaveMapTitle"));
+        return false;
+    }    
 
     if(worldFilePath.empty() || worldFileName.empty() || saveAs) {
 
         if (!mainWindow->canCreateDialog(EditorDialogTypes::SaveDialog)) {
             mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
-                                            langMap.get("ErrCreatingDialogTItle"));
+                                            langMap.get("ErrCreatingDialogTitle"));
             return false;
         }
 

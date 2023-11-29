@@ -337,6 +337,12 @@ class GameTile {
         const bool isHorizontalStraightaway() const;
         const bool isVerticalStraightaway() const;
 
+        const bool canEntitiesMoveNorth() const;
+        const bool canEntitiesMoveEast() const;
+        const bool canEntitiesMoveSouth() const;
+        const bool canEntitiesMoveWest() const;
+
+
         // IO Functions
 
         const void write(std::ofstream& mapFile) const;

@@ -863,6 +863,46 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
 
 }
 
+///----------------------------------------------------------------------------
+/// validateTileDirections - Checks to make sure the tiles are not pointing in
+/// a way that the player can move off the game board
+/// @return -1 if no errors were found, otherwise it's a valid tile index
+///----------------------------------------------------------------------------
+
+const int GameMap::validateTileDirections() const {
+
+    // Check for tiles that go North
+    for(int i = 0; i < numCols; ++i) {
+        if(tiles[i].canEntitiesMoveNorth()) {
+            return i;
+        }
+    }
+
+    // Check for tiles that go West
+    for(int k = 0; k <= numCols * (numRows -1); (k+=numCols)) {
+        if(tiles[k].canEntitiesMoveWest()) {
+            return k;
+        }
+    }
+
+    // Check for tiles that go East
+    for(int j = numCols - 1; j < static_cast<int>(tiles.size()); (j+=numCols)) {
+        if(tiles[j].canEntitiesMoveEast()) {
+            return j;
+        }
+    }
+
+    // Check for tiles that go South
+    for(int l = (numCols * (numRows - 2)) + 1; l < static_cast<int>(tiles.size()); ++l) {
+        if(tiles[l].canEntitiesMoveSouth()) {
+            return l;
+        }
+    }
+
+    return -1;
+
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================

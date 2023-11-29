@@ -390,6 +390,9 @@
 
 	"ErrCreateWorldFailedText"		: "Failed to create a new Adventure Gamer World.",
 	"ErrCreateWorldFailedTitle"		: "Error Creating World",
+
+	"ErrTilesCannotLeaveMapText"	: "The selected tile allows the player and characters to move off the board, which is not allowed.",
+	"ErrTilesCannotLeaveMapTitle"	: "Tile Error",
     
     // Validators
 

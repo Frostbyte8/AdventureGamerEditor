@@ -107,6 +107,87 @@ const uint8_t& GameTile::getSpriteIndex() const {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// canEntitiesMoveNorth - Checks if the tile allows entities to move north.
+///----------------------------------------------------------------------------
+
+const bool GameTile::canEntitiesMoveNorth() const {
+    
+    if(base.drawInfo.spriteIndex == RoadTypes::Crossroads ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerNE ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerNW ||
+       base.drawInfo.spriteIndex == RoadTypes::DeadEndSouth ||
+       base.drawInfo.spriteIndex == RoadTypes::StraightawayVertical ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNSE ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNWE ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNSW) {
+        return true;
+    }
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// canEntitiesMoveSouth - Checks if the tile allows entities to move South.
+///----------------------------------------------------------------------------
+
+const bool GameTile::canEntitiesMoveSouth() const {
+    
+    if(base.drawInfo.spriteIndex == RoadTypes::Crossroads ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerSE ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerSW ||
+       base.drawInfo.spriteIndex == RoadTypes::DeadEndNorth ||
+       base.drawInfo.spriteIndex == RoadTypes::StraightawayVertical ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNSE ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewaySWE ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNSW) {
+        return true;
+    }
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// canEntitiesMoveEast - Checks if the tile allows entities to move East.
+///----------------------------------------------------------------------------
+
+const bool GameTile::canEntitiesMoveEast() const {
+    
+    if(base.drawInfo.spriteIndex == RoadTypes::Crossroads ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerNE ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerSE ||
+       base.drawInfo.spriteIndex == RoadTypes::DeadEndWest ||
+       base.drawInfo.spriteIndex == RoadTypes::StraightawayHorizontal ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNSE ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewaySWE ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNWE) {
+        return true;
+    }
+
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// canEntitiesMoveWest - Checks if the tile allows entities to move West.
+///----------------------------------------------------------------------------
+
+const bool GameTile::canEntitiesMoveWest() const {
+    
+    if(base.drawInfo.spriteIndex == RoadTypes::Crossroads ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerNW ||
+       base.drawInfo.spriteIndex == RoadTypes::CornerSW ||
+       base.drawInfo.spriteIndex == RoadTypes::DeadEndEast ||
+       base.drawInfo.spriteIndex == RoadTypes::StraightawayHorizontal ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNSW ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewayNWE ||
+       base.drawInfo.spriteIndex == RoadTypes::ThreewaySWE) {
+        return true;
+    }
+
+    return false;
+}
+
+
+///----------------------------------------------------------------------------
 /// isAnyRoadTile - Checks to see if a tile is a road tile and not grass/dirt
 /// @return true if it does, false if it does not
 ///----------------------------------------------------------------------------
@@ -241,7 +322,6 @@ const bool GameTile::hasConnectionFeature() const {
 ///----------------------------------------------------------------------------
 
 const bool GameTile::hasGate() const {
-
     return (isStraightaway() && base.drawInfo.hasGate);
 }
 

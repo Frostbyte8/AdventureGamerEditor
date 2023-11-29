@@ -108,6 +108,8 @@ class GameMap {
         void updateGameInfo(GMKey, const GameInfo& newInfo);
         void setPlayerCoordinates(const int& playerRow, const int& playerCol);
 
+        const int validateTileDirections() const;
+
         // Public Functions
         const size_t characterIndexFromID(const int& charID) const;
         const size_t objectIndexFromID(const int& objectID) const;
