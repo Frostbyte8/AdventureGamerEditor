@@ -237,6 +237,11 @@
     "ApplyButton"               : "Apply",
     "BrowseButton"              : "Browse...",
     
+    
+    // About Dialog
+    
+    "VersionLabel"              : "Version:",
+    
     // Common Dialog Boxes
     
     "CDBFindImageFilterText"    : "Image Files",
