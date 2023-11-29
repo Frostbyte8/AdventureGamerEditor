@@ -203,6 +203,7 @@ void MainWindowFrame::CreateMenuBar() {
 
     worldMenu.CreatePopupMenu();
     zoomMenu.CreatePopupMenu();
+    helpMenu.CreatePopupMenu();
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -278,12 +279,27 @@ void MainWindowFrame::CreateMenuBar() {
         zoomMenu.EnableMenuItem(j, MF_ENABLED);
     }
 
+    // Help Menu
+
+    for(int l = MenuIDs::HelpMenuItem; l <= MenuIDs::AboutMenuItem; ++l) {
+
+        if (l == MenuIDs::HelpMenuDiv1) {
+            helpMenu.AppendMenu(MF_SEPARATOR);
+            continue;
+        }
+
+        helpMenu.AppendMenu(MF_STRING, l);
+        helpMenu.EnableMenuItem(l, MF_ENABLED);
+
+    }
+
     // Finally deal with the menu bar
 
     appendPopupMenuWithID(mainMenu, fileMenu, MenuIDs::FilePopupMenu, true);
     appendPopupMenuWithID(mainMenu, tileMenu, MenuIDs::TilePopupMenu, false);
     appendPopupMenuWithID(mainMenu, worldMenu, MenuIDs::WorldPopupMenu, false);
     appendPopupMenuWithID(mainMenu, zoomMenu, MenuIDs::ZoomMenu, true);
+    appendPopupMenuWithID(mainMenu, helpMenu, MenuIDs::HelpMenu, true);
 
     SetMenu(mainMenu);
 
@@ -309,6 +325,7 @@ void MainWindowFrame::updateControlCaptions() {
     CHANGE_MENU_STRING(mainMenu, MenuIDs::TilePopupMenu, "TileMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::WorldPopupMenu, "WorldMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::ZoomMenu, "ZoomMenu");
+    CHANGE_MENU_STRING(mainMenu, MenuIDs::HelpMenu, "HelpMenu");
 
     // File Menu
 
@@ -377,6 +394,11 @@ void MainWindowFrame::updateControlCaptions() {
     CHANGE_MENU_STRING(zoomMenu, MenuIDs::Zoom2xItem, "2xMenuItem");
     CHANGE_MENU_STRING(zoomMenu, MenuIDs::Zoom3xItem, "3xMenuItem");
     CHANGE_MENU_STRING(zoomMenu, MenuIDs::Zoom4xItem, "4xMenuItem");
+
+    // Help Menu
+
+    CHANGE_MENU_STRING(helpMenu, MenuIDs::HelpMenuItem, "HelpMenuItem");
+    CHANGE_MENU_STRING(helpMenu, MenuIDs::AboutMenuItem, "AboutMenuItem");
     
 
 }

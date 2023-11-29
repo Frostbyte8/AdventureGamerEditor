@@ -1284,6 +1284,36 @@ bool GameWorldController::tryResizeWorld(const int& numRows, const int& numCols)
     mainWindow->onWorldResized();
 
     return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// tryAboutDialog - Attempts to open the about dialog. There is no sister
+/// function for this dialog as it does not return anything of value (or it
+/// shouldn't).
+/// @return true if the operation was successful, false if it was not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryAboutDialog() {
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    if (!mainWindow->canCreateDialog(EditorDialogTypes::AboutDialog)) {
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTItle"));
+        return false;
+    }
+
+    if (!mainWindow->startAboutDialog()) {
+        mainWindow->onDialogEnd(EditorDialogTypes::AboutDialog);
+        mainWindow->displayErrorMessage(langMap.get("ErrCreatingDialogText"),
+                                        langMap.get("ErrCreatingDialogTitle"));
+
+        return false;
+    }
+
+    return true;
+
 }
 
 //-----------------------------------------------------------------------------

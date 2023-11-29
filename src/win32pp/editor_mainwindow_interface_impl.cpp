@@ -200,6 +200,7 @@ bool MainWindowFrame::canCreateDialog(const int& whichDialogType) const {
         case EditorDialogTypes::EditStoryAndSummary: return editStoryDialog ? false : true;
         case EditorDialogTypes::EditWorldInfo: return editWorldInfoDialog ? false : true;
         case EditorDialogTypes::ResizeWorld: return resizeWorldDialog ? false : true;
+        case EditorDialogTypes::AboutDialog: return aboutDialog ? false : true;
         
         case EditorDialogTypes::SaveDialog:
         case EditorDialogTypes::LoadDialog:
@@ -251,6 +252,12 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
             assert(resizeWorldDialog != NULL);
             delete resizeWorldDialog;
             resizeWorldDialog = NULL;
+            break;
+
+        case EditorDialogTypes::AboutDialog:
+            assert(aboutDialog != NULL);
+            delete aboutDialog;
+            aboutDialog = NULL;
             break;
 
         case EditorDialogTypes::SaveDialog:
@@ -675,6 +682,46 @@ bool MainWindowFrame::startSaveDialog() {
 bool MainWindowFrame::startLoadDialog() {
     return doSaveOrOpenDialog(TRUE);
 }
+
+///----------------------------------------------------------------------------
+/// startAboutDialog
+///----------------------------------------------------------------------------
+
+bool MainWindowFrame::startAboutDialog() {
+
+    aboutDialog = new (std::nothrow) AboutDialog(this, GetHwnd());
+
+    if (!aboutDialog) {
+        return false;
+    }
+
+    aboutDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
+                        DIALOG_WS_STYLES);
+
+    if (!aboutDialog->IsWindow()) {
+        return false;
+    }
+
+    CString caption;
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    caption = LM_toUTF8("AboutDialogTitle", langMap);
+
+    makeDialogModal(*aboutDialog, caption);
+
+    return true;
+
+}
+
+///----------------------------------------------------------------------------
+/// finishedAboutDialog
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::finishedAboutDialog() {
+    assert(aboutDialog != NULL);
+    onDialogEnd(EditorDialogTypes::AboutDialog);
+}
+
 
 //-----------------------------------------------------------------------------
 // View Specific Interface Functions

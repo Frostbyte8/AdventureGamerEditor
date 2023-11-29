@@ -16,7 +16,7 @@
 
 MainWindowFrame::MainWindowFrame() : entityView(0), gameMapDocker(0), entitiesHereDocker(0), 
 roadSelectorDocker(0), gameWorldController(0), activeWindowHandle(0), editObjectDialog(0),
-editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0),
+editCharacterDialog(0), editWorldInfoDialog(0), editStoryDialog(0), aboutDialog(0),
 editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0), zoomFactor(1),
 accelHandle(0), gameMapPanel(0), entitiesHerePanel(0), roadPalettePanel(0) {
     gameWorldController = new GameWorldController(this);
@@ -64,6 +64,11 @@ MainWindowFrame::~MainWindowFrame() {
     if(editTileDescriptionDialog) {
         delete editTileDescriptionDialog;
         editTileDescriptionDialog = NULL;
+    }
+
+    if(aboutDialog) {
+        delete aboutDialog;
+        aboutDialog = NULL;
     }
 
     if(roadPalettePanel) {
@@ -183,6 +188,11 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
             changeZoomFactor((ID + 1) - MenuIDs::Zoom1xItem);
             break;
 
+        // Help Menu:
+
+        case MenuIDs::HelpMenuItem: break;
+        case MenuIDs::AboutMenuItem: gameWorldController->tryAboutDialog(); break;
+
         default:
             return FALSE;
 
@@ -238,9 +248,11 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
                 break;
 
             case WM_HELP:
+                
                 // Disable the help dialog. TODO: See if there is a way
                 // to stop the exception from occurring if the dialog does not
                 // exist.
+
                 return 0;
                 break;
 

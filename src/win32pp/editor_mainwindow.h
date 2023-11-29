@@ -19,6 +19,7 @@
 #include "storydlg/editstory_dialog.h"
 #include "tiledescdlg/edit_tiledescription_dialog.h"
 #include "resizedlg/resizeworld_dialog.h"
+#include "about_dialog/about_dialog.h"
 
 namespace MenuIDs {
 
@@ -100,6 +101,13 @@ namespace MenuIDs {
     const WORD Zoom4xItem               = 294;
     // If people need more than this, they should just make a bigger tileset.
 
+    // Help Menu
+
+    const WORD HelpMenu                 = 300;
+    const WORD HelpMenuItem             = 301;
+    const WORD HelpMenuDiv1             = 302;
+    const WORD AboutMenuItem            = 303;
+
 }
 
 //=============================================================================
@@ -166,6 +174,9 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         virtual bool startLoadDialog();
         virtual void finishedLoadDialog() {};
 
+        virtual bool startAboutDialog();
+        virtual void finishedAboutDialog();
+
         // Interface Functions For this View Type
 
         virtual void onGameMapRightClick(const WORD& xPos, const WORD& yPos);
@@ -227,6 +238,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         
         CMenu worldMenu;
         CMenu zoomMenu;
+        CMenu helpMenu;
 
         HACCEL accelHandle;
         std::vector<ACCEL> keyboardAccelerators;
@@ -259,6 +271,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         EditStoryDialog*                editStoryDialog;
         EditTileDescriptionDialog*      editTileDescriptionDialog;
         ResizeWorldDialog*              resizeWorldDialog;
+        AboutDialog*                    aboutDialog;
 
         HWND                            activeWindowHandle;
 

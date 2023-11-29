@@ -16,6 +16,7 @@ namespace EditorDialogTypes {
     const int ResizeWorld           = 5;
     const int SaveDialog            = 6; // Win32++ doesn't need this, but another view might.
     const int LoadDialog            = 7; // Win32++ doesn't need this, but another view might.
+    const int AboutDialog           = 8;
 }
 
 namespace EditorTileUpdateFlags {
@@ -248,6 +249,16 @@ class MainWindowInterface {
         /// Sent when window is being told that the load dialog has finished.
         ///--------------------------------------------------------------------
         virtual void finishedLoadDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being asked to start the about dialog
+        ///--------------------------------------------------------------------
+        virtual bool startAboutDialog() = 0;
+
+        ///--------------------------------------------------------------------
+        /// Sent when window is being told that about dialog was closed.
+        ///--------------------------------------------------------------------
+        virtual void finishedAboutDialog() = 0;
 
 
 };

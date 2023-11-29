@@ -77,6 +77,8 @@ class GameWorldController {
         bool tryEditWorldSize();
         bool tryResizeWorld(const int& numRows, const int& numCols);
 
+        bool tryAboutDialog();
+
         bool tryCreateJumpConnection();
         bool tryCreateSwitchConnection();
 

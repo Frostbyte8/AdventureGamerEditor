@@ -62,6 +62,12 @@
 	"3xMenuItem"				: "3x",
 	"4xMenuItem"				: "4x",
 
+	// Help Menu
+
+	"HelpMenu"					: "&Help",
+	"HelpMenuItem"				: "&Help",
+	"AboutMenuItem"				: "About Adventure Gamer Editor++...",
+
 	// Main Window Controls
 
     "AddButton"                 : "Add",
@@ -84,6 +90,7 @@
     "EditWorldStoryTitle"       : "Editing Story and Summary",
 	"ResizeWorldTitle"			: "Resize Game World",
     "ShowPlayerInventoryTitle"  : "Player Inventory",
+    "AboutDialogTitle"          : "About Adventure Gamer Editor++",
     
     // Edit Object Dialog 
     
