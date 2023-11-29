@@ -92,6 +92,8 @@ class GameWorldController {
 
         bool tryStartLoad();
         bool tryFinishLoad(const std::string& newPath, const std::string& newFileName);
+
+        bool tryExitProgram();
         
     private:
 

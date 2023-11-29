@@ -177,6 +177,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         virtual bool startAboutDialog();
         virtual void finishedAboutDialog();
 
+        virtual bool exitProgram();
+
         // Interface Functions For this View Type
 
         virtual void onGameMapRightClick(const WORD& xPos, const WORD& yPos);

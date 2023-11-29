@@ -30,6 +30,9 @@ int MainWindowFrame::askYesNoQuestion(const std::string& inQuestion, const std::
     if (retVal == IDYES) {
         return GenericInterfaceResponses::Yes;
     }
+    else if(retVal == IDCANCEL) {
+        return GenericInterfaceResponses::Cancel;
+    }
 
     return GenericInterfaceResponses::No;
 }
@@ -722,6 +725,19 @@ void MainWindowFrame::finishedAboutDialog() {
     onDialogEnd(EditorDialogTypes::AboutDialog);
 }
 
+///----------------------------------------------------------------------------
+/// exitProgram
+///----------------------------------------------------------------------------
+
+bool MainWindowFrame::exitProgram() {
+
+    if (accelHandle) {
+        DestroyAcceleratorTable(accelHandle);
+    }
+
+    Destroy();
+    return true;
+}
 
 //-----------------------------------------------------------------------------
 // View Specific Interface Functions

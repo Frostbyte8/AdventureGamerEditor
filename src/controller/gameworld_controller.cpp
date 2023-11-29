@@ -1797,6 +1797,24 @@ bool GameWorldController::tryFinishLoad(const std::string& newPath, const std::s
 
 }
 
+//-----------------------------------------------------------------------------
+// Misc Window Functions
+//-----------------------------------------------------------------------------
+
+///----------------------------------------------------------------------------
+/// tryExitProgram - Attempts to quit the program
+///----------------------------------------------------------------------------
+
+bool GameWorldController::tryExitProgram() {
+
+    if(!checkAndAskToSaveUnsavedChanges()) {
+        return false;
+    }
+
+    return mainWindow->exitProgram();
+
+}
+
 //=============================================================================
 // Private Functions
 //=============================================================================

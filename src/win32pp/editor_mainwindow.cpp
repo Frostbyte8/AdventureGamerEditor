@@ -120,6 +120,8 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
                                               ? true : false);
             break;
 
+        case MenuIDs::ExitItem: gameWorldController->tryExitProgram(); break;
+
         // Tile Menu
         
         case MenuIDs::EditDescription: gameWorldController->tryEditTileDescription(); break;
@@ -223,12 +225,7 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
         switch (msg) {
 
             case WM_CLOSE:
-
-                if (accelHandle) {
-                    DestroyAcceleratorTable(accelHandle);
-                }
-
-                Destroy();
+                gameWorldController->tryExitProgram();
                 return 0;
 
             case WM_MENUCHAR:

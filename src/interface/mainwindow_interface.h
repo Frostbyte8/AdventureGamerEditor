@@ -260,6 +260,13 @@ class MainWindowInterface {
         ///--------------------------------------------------------------------
         virtual void finishedAboutDialog() = 0;
 
+        ///--------------------------------------------------------------------
+        /// Sent when window is being the user wants to quit
+        /// @return true if the exit routine was succesful, false if something
+        /// stopped the progarm from closing
+        ///--------------------------------------------------------------------
+        virtual bool exitProgram() = 0;
+
 
 };
 
