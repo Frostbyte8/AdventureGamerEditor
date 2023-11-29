@@ -34,6 +34,8 @@ class AboutDialog : public EditDialogBase {
         CEdit           txtCredits;
         CButton         btnOkay;
 
+        HICON           programIcon;
+
         CString         dialogCaption;
 };
 

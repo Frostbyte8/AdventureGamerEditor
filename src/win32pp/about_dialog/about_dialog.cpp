@@ -3,6 +3,7 @@
 #include "../shared_functions.h"
 #include "../../gitinfo.h"
 #include "../../credits_and_thanks.h"
+#include "../../resources/resource.h"
 
 namespace ControlIDs {
 
@@ -53,11 +54,15 @@ int AboutDialog::OnCreate(CREATESTRUCT& cs) {
     lblProgramName.Create(*this, 0, SS_CENTER);
     lblProgramVersion.Create(*this, 0, SS_CENTER);
     lblProgramCopyright.Create(*this, 0, SS_CENTER);
-    lblProgramIcon.Create(*this, 0, SS_BLACKFRAME);
-    btnOkay.Create(*this, 0, 0);
+    lblProgramIcon.Create(*this, 0, SS_ICON);
 
     txtCredits.Create(*this, 0, ES_MULTILINE | ES_READONLY | WS_VSCROLL);
     txtCredits.SetExStyle(WS_EX_CLIENTEDGE);
+
+    btnOkay.Create(*this, 0, 0);
+
+    programIcon = GetApp()->LoadIcon(IDI_APPICON);
+    lblProgramIcon.SetIcon(programIcon);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
@@ -65,7 +70,9 @@ int AboutDialog::OnCreate(CREATESTRUCT& cs) {
     caption = LM_toUTF8("ProgramName", langMap);
     lblProgramName.SetWindowText(caption);
 
-    caption = AtoW(GIT_VERSION_INFO.c_str(), CP_UTF8);
+    caption = AtoW(langMap.get("VersionLabel").c_str(), CP_UTF8);
+    caption += " ";
+    caption += AtoW(GIT_VERSION_INFO.c_str(), CP_UTF8);
     lblProgramVersion.SetWindowText(caption);
 
     caption = AtoW(CreditsAndThanks::copyright.c_str(), CP_UTF8);
