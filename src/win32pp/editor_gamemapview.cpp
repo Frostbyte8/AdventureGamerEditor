@@ -11,6 +11,8 @@ backBufferDC(NULL), tilesetDC(NULL), mainWindow(inMainWindow), gameWorldControll
     zoomFactor = 1;
     tileWidth = 0;
     tileHeight = 0;
+    scaledTileWidth = 0;
+    scaledTileHeight = 0;
 }
 
 GameMapPanel::~GameMapPanel() {
@@ -38,6 +40,8 @@ void GameMapPanel::setTileset(CBitmap& bmp) {
 
     tileWidth = bm.bmWidth / EditorConstants::TilesPerRow;
     tileHeight = bm.bmHeight / EditorConstants::TilesPerCol;
+    scaledTileWidth = tileWidth * zoomFactor;
+    scaledTileHeight = tileHeight * zoomFactor;
 
     updateBackBuffer();
     updateScrollSize();
@@ -57,6 +61,9 @@ void GameMapPanel::setZoomFactor(const int& newZoomFactor) {
     assert(newZoomFactor > 0 && newZoomFactor < 5);
     
     zoomFactor = newZoomFactor;
+    scaledTileWidth = tileWidth * zoomFactor;
+    scaledTileHeight = tileHeight * zoomFactor;
+
     updateBackBuffer();
     updateScrollSize();
     InvalidateRect();
@@ -175,8 +182,8 @@ LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
 
     CPoint viewOffset = GetScrollPosition();
 
-    int row = static_cast<int>((yPos + viewOffset.y) / (tileHeight * zoomFactor));
-    int col = static_cast<int>((xPos + viewOffset.x) / (tileWidth * zoomFactor));
+    int row = static_cast<int>((yPos + viewOffset.y) / scaledTileHeight);
+    int col = static_cast<int>((xPos + viewOffset.x) / scaledTileWidth);
 
     // No need to verify the row and col, the function will do that for us.
 
@@ -201,8 +208,8 @@ LRESULT GameMapPanel::onRButtonDown(const WORD& xPos, const WORD& yPos) {
 
     CPoint viewOffset = GetScrollPosition();
 
-    int row = static_cast<int>((yPos + viewOffset.y) / (tileHeight * zoomFactor));
-    int col = static_cast<int>((xPos + viewOffset.x) / (tileWidth * zoomFactor));
+    int row = static_cast<int>((yPos + viewOffset.y) / scaledTileHeight);
+    int col = static_cast<int>((xPos + viewOffset.x) / scaledTileWidth);
 
     if(HIWORD(GetKeyState(VK_LSHIFT)) != 0) {
         
@@ -246,8 +253,8 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
 
     CPoint viewOffset = GetScrollPosition();
 
-    int row = static_cast<int>((yPos + viewOffset.y) / (tileHeight * zoomFactor));
-    int col = static_cast<int>((xPos + viewOffset.x) / (tileWidth * zoomFactor));
+    int row = static_cast<int>((yPos + viewOffset.y) / scaledTileHeight);
+    int col = static_cast<int>((xPos + viewOffset.x) / scaledTileWidth);
 
     // Make sure the user is clicking the map when trying to alter a tile.
     
@@ -287,9 +294,8 @@ void GameMapPanel::updateBackBuffer() {
         return;
     }
 
-    const int mapWidth  = gameMap->getWidth() * tileWidth * zoomFactor;
-    const int mapHeight = gameMap->getHeight() * tileHeight * zoomFactor;
-
+    const int mapWidth  = gameMap->getWidth() * scaledTileWidth;
+    const int mapHeight = gameMap->getHeight() * scaledTileHeight;
     
     backBufferBMP = CreateCompatibleBitmap(dc, mapWidth, mapHeight);
 
@@ -318,8 +324,6 @@ void GameMapPanel::updateBackBuffer() {
 
         const int mapCols = gameMap->getWidth();
         const int mapRows = gameMap->getHeight();
-        const int width = tileWidth * zoomFactor;
-        const int height = tileHeight * zoomFactor;
 
         for (int k = 0; k < mapRows; ++k) {
             for (int i = 0; i < mapCols; ++i) {
@@ -332,22 +336,21 @@ void GameMapPanel::updateBackBuffer() {
                                  : drawInfo.spriteModifier * tileHeight;
 
 
-                const int destX = i * width;
-                const int destY = k * height;
+                const int destX = i * scaledTileWidth;
+                const int destY = k * scaledTileHeight;
 
-                backBufferDC.StretchBlt(destX, destY, width, height, tilesetDC,
-                                        srcX, srcY, tileWidth,
-                                        tileHeight, SRCCOPY);
+                backBufferDC.StretchBlt(destX, destY, scaledTileWidth, scaledTileHeight, tilesetDC,
+                                        srcX, srcY, tileWidth, tileHeight, SRCCOPY);
 
                 if (drawInfo.dark) {
 
                     if(gameMap->isConnectedToOnSwitch(k, i)) {
                         AlphaBlend(backBufferDC.GetHDC(), destX, destY,
-                                   width, height, lightOnDC, 0, 0, 1, 1, fn);
+                                   scaledTileWidth, scaledTileHeight, lightOnDC, 0, 0, 1, 1, fn);
                     }
                     else {
                         AlphaBlend(backBufferDC.GetHDC(), destX, destY,
-                                   width, height, alphaDC, 0, 0, 1, 1, fn);
+                                   scaledTileWidth, scaledTileHeight, alphaDC, 0, 0, 1, 1, fn);
                     }
                 }
 
@@ -357,9 +360,9 @@ void GameMapPanel::updateBackBuffer() {
         const int selectedRow = gameWorldController->getSelectedRow();
         const int selectedCol = gameWorldController->getSelectedCol();
 
-        DrawTileSelectionBox(backBufferDC, selectedCol * width,
-                             selectedRow * height, width,
-                             height, 2);
+        DrawTileSelectionBox(backBufferDC, selectedCol * scaledTileWidth,
+                             selectedRow * scaledTileHeight, scaledTileWidth,
+                             scaledTileHeight, 2);
 
         backBufferDC.SelectObject(oldBMP);
 
@@ -376,8 +379,8 @@ void GameMapPanel::updateScrollSize() {
 
     const GameMap* gameMap = gameWorldController->getGameMap();
 
-    const int mapWidth  = gameMap ? gameMap->getWidth() * tileWidth * zoomFactor : 1;
-    const int mapHeight = gameMap ? gameMap->getHeight() * tileHeight * zoomFactor : 1;
+    const int mapWidth  = gameMap ? gameMap->getWidth() * scaledTileWidth : 1;
+    const int mapHeight = gameMap ? gameMap->getHeight() * scaledTileHeight : 1;
     CSize newScrollSize(mapWidth, mapHeight);
 
     SetScrollSizes(newScrollSize);

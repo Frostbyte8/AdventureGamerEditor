@@ -271,6 +271,8 @@ class GameMapPanel : public ScrollPanelBaseClass {
         int zoomFactor;
         int tileWidth;
         int tileHeight;
+        int scaledTileWidth;
+        int scaledTileHeight;
 
 };
 
