@@ -1,10 +1,11 @@
 #include "about_dialog.h"
 #include "../../util/languagemapper.h"
-//#include "../shared_functions.h"
+#include "../shared_functions.h"
+#include "../../gitinfo.h"
+#include "../../credits_and_thanks.h"
 
 namespace ControlIDs {
-    const WORD SummaryText  = 101;
-    const WORD StoryText    = 102;
+
 }
 
 //=============================================================================
@@ -30,7 +31,7 @@ BOOL AboutDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
     const WORD notifyCode = HIWORD(wParam);
 
     if(lParam) {
-        if(ctrlID == IDOK || ctrlID == IDCANCEL || ctrlID == DefControlIDs::IDAPPLY) {
+        if(ctrlID == IDOK) {
             if(notifyCode == BN_CLICKED) {
                 dialogButtonPressed(ctrlID);
                 return TRUE;
@@ -49,28 +50,33 @@ BOOL AboutDialog::OnCommand(WPARAM wParam, LPARAM lParam) {
 
 int AboutDialog::OnCreate(CREATESTRUCT& cs) {
 
+    lblProgramName.Create(*this, 0, SS_CENTER);
+    lblProgramVersion.Create(*this, 0, SS_CENTER);
+    lblProgramCopyright.Create(*this, 0, SS_CENTER);
+    lblProgramIcon.Create(*this, 0, SS_BLACKFRAME);
+    btnOkay.Create(*this, 0, 0);
+
+    txtCredits.Create(*this, 0, ES_MULTILINE | ES_READONLY | WS_VSCROLL);
+    txtCredits.SetExStyle(WS_EX_CLIENTEDGE);
+
     LanguageMapper& langMap = LanguageMapper::getInstance();
     CString caption;
 
+    caption = LM_toUTF8("ProgramName", langMap);
+    lblProgramName.SetWindowText(caption);
 
-    /*
-    lblSummary.Create(*this, 0, SS_SIMPLE);
+    caption = AtoW(GIT_VERSION_INFO.c_str(), CP_UTF8);
+    lblProgramVersion.SetWindowText(caption);
+
+    caption = AtoW(CreditsAndThanks::copyright.c_str(), CP_UTF8);
+    lblProgramCopyright.SetWindowText(caption);
+
+    caption = AtoW(CreditsAndThanks::programCredits.c_str(), CP_UTF8);
+    txtCredits.SetWindowText(caption);
     
-    SetWindowTextFromLangMapString("SummaryLabel", lblSummary, caption, langMap);
-
-    txtSummary.Create(*this, 0, ES_MULTILINE | ES_WANTRETURN | WS_TABSTOP | WS_VSCROLL);
-    txtSummary.SetExStyle(WS_EX_CLIENTEDGE);
-    txtSummary.LimitText(GameMapConstants::MaxSummaryText);
-    txtSummary.SetDlgCtrlID(ControlIDs::SummaryText);
-
-    lblStory.Create(*this, 0, SS_SIMPLE);
-    SetWindowTextFromLangMapString("StoryLabel", lblStory, caption, langMap);
-
-    txtStory.Create(*this, 0, ES_MULTILINE | ES_WANTRETURN | WS_TABSTOP | WS_VSCROLL);
-    txtStory.SetExStyle(WS_EX_CLIENTEDGE);
-    txtStory.LimitText(GameMapConstants::MaxStoryText);
-    txtStory.SetDlgCtrlID(ControlIDs::SummaryText);
-    */
+    caption = LM_toUTF8("OKButton", langMap);
+    btnOkay.SetWindowTextW(caption);
+    btnOkay.SetDlgCtrlID(IDOK);
 
     createDefaultDialogButtons(true);
 
@@ -106,39 +112,37 @@ void AboutDialog::moveControls() {
     const WindowMetrics::ControlDimensions  CD = windowMetrics.GetControlDimensions();
     const WindowMetrics::ControlSpacing     CS = windowMetrics.GetControlSpacing();
 
-    const int minWidth = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
+    // TODO: Find the actual minimum width, specifically, we need to make sure the longest link is
+    // visible in the edit box.
 
-    /*
+    const int minWidth = (CD.XBUTTON * 4) + (CS.XBUTTON_MARGIN * 3) + (CS.XWINDOW_MARGIN * 2);
     const int boundryWidth = minWidth - CS.XWINDOW_MARGIN * 2;
 
     CPoint cPos(CS.XWINDOW_MARGIN, CS.YWINDOW_MARGIN);
 
-    lblSummary.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YLABEL);
-
+    lblProgramName.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YLABEL);
     cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
 
-    txtSummary.MoveWindow(cPos.x, cPos.y,
-                          boundryWidth, CD.YTEXTBOX_ONE_LINE_ALONE + (CD.YTEXTBOX_ADDITIONAL_LINES * 5));
+    // TODO: How do we handle a icon when it needs to be scaled? :)
+    lblProgramIcon.MoveWindow((minWidth / 2) - 16, cPos.y, 32, 32);
+    cPos.Offset(0, lblProgramIcon.GetClientRect().Height() + CS.YRELATED_MARGIN);
 
-    cPos.Offset(0, txtSummary.GetClientRect().Height() + CS.YRELATED_MARGIN);
-
-    lblStory.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YLABEL);
-
+    lblProgramVersion.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YLABEL);
     cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);
 
-    txtStory.MoveWindow(cPos.x, cPos.y,
-                        boundryWidth, CD.YTEXTBOX_ONE_LINE_ALONE + (CD.YTEXTBOX_ADDITIONAL_LINES * 5));
+    lblProgramCopyright.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YLABEL);
+    cPos.Offset(0, CD.YLABEL + CS.YRELATED_MARGIN);;
 
-    cPos.Offset(boundryWidth - (CD.XBUTTON), txtSummary.GetClientRect().Height() + CS.YUNRELATED_MARGIN);
+    txtCredits.MoveWindow(cPos.x, cPos.y, boundryWidth, CD.YTEXTBOX_ONE_LINE_ALONE + (CD.YTEXTBOX_ADDITIONAL_LINES * 5));
+    cPos.Offset(boundryWidth - (CD.XBUTTON), txtCredits.GetClientRect().Height() + CS.YUNRELATED_MARGIN);
 
-    for(int i = 2; i >= 0; --i) {
-        btnDialog[i].MoveWindow(cPos.x, cPos.y, CD.XBUTTON, CD.YBUTTON);
-        cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
-    }
-    */
+    btnOkay.MoveWindow((minWidth / 2) - (CD.XBUTTON / 2), cPos.y, CD.XBUTTON, CD.YBUTTON);
+
+
+    cPos.Offset(-(CD.XBUTTON + CS.XBUTTON_MARGIN), 0);
     
     // TODO: Finish calculating dimensions
-    RECT rc = {0, 0, minWidth, 123 + CS.YWINDOW_MARGIN + CD.YBUTTON};
+    RECT rc = {0, 0, minWidth, cPos.y + CS.YWINDOW_MARGIN + CD.YBUTTON};
 
     AdjustWindowRectEx(&rc, GetStyle(), FALSE, GetExStyle());
 

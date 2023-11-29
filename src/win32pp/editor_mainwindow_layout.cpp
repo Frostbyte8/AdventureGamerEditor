@@ -426,7 +426,7 @@ void MainWindowFrame::updateTitleBar(const bool changeMadeOnly) {
 
         }
 
-        windowTitle.append(langMap.get("MainWindowTitle"));
+        windowTitle.append(langMap.get("ProgramName"));
         windowTitle.append(" (");
         windowTitle.append(GIT_VERSION_INFO);
         windowTitle.append(")");

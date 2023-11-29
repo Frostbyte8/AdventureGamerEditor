@@ -26,6 +26,14 @@ class AboutDialog : public EditDialogBase {
 
         void moveControls();
 
+        CStatic         lblProgramName;
+        CStatic         lblProgramVersion;
+        CStatic         lblProgramCopyright;
+        CStatic         lblProgramIcon;
+
+        CEdit           txtCredits;
+        CButton         btnOkay;
+
         CString         dialogCaption;
 };
 

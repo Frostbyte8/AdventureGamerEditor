@@ -80,7 +80,7 @@
 
     // Window Titles
 
-    "MainWindowTitle"           : "Adventure Gamer Editor++",
+    "ProgramName"               : "Adventure Gamer Editor++",
     "CreateObjectTitle"         : "Create a Game Object",
     "EditObjectTitle"           : "Editing Game Object: %s",
     "CreateCharacterTitle"      : "Create a Game Character",
