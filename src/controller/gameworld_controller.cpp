@@ -207,6 +207,8 @@ bool GameWorldController::canAddCharacter() const {
 bool GameWorldController::tryAlterObject(const int& alterType, const int& index) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
+
     assert(alterType >= AlterType::Add && alterType <= AlterType::Delete);
 
     const std::vector<GameObject>& gameObjects = gameMap->getGameObjects();
@@ -290,6 +292,7 @@ bool GameWorldController::tryAlterObject(const int& alterType, const int& index)
 bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -330,6 +333,7 @@ bool GameWorldController::tryAddObject(GameObject::Builder& objectBuilder) {
 bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, const bool shouldNotify) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -389,6 +393,7 @@ bool GameWorldController::tryReplaceObject(GameObject::Builder& objectBuilder, c
 bool GameWorldController::tryDeleteObject(const int& objectID) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     const size_t objectIndex = gameMap->objectIndexFromID(objectID);
 
@@ -457,6 +462,7 @@ bool GameWorldController::tryDeleteObject(const int& objectID) {
 bool GameWorldController::tryAlterCharacter(const int& alterType, const int& index) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     assert(alterType >= AlterType::Add && alterType <= AlterType::Delete);
 
@@ -541,6 +547,7 @@ bool GameWorldController::tryAlterCharacter(const int& alterType, const int& ind
 bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuilder) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -580,6 +587,7 @@ bool GameWorldController::tryAddCharacter(GameCharacter::Builder& characterBuild
 bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterBuilder, const bool shouldNotify) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -628,6 +636,7 @@ bool GameWorldController::tryReplaceCharacter(GameCharacter::Builder& characterB
 bool GameWorldController::tryDeleteCharacter(const int& charID) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     const size_t charIndex = gameMap->characterIndexFromID(charID);
 
@@ -701,6 +710,7 @@ bool GameWorldController::tryDeleteCharacter(const int& charID) {
 bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     assert(featureType < TileModifiers::ALLMODS + 1);
 
@@ -768,6 +778,7 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 bool GameWorldController::tryToggleTileDarkness() {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
@@ -804,6 +815,7 @@ bool GameWorldController::tryToggleTileDarkness() {
 bool GameWorldController::tryToggleSwitchState() {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     const GameTile& currentTile = gameMap->getTile(selectedTileIndex);
@@ -847,6 +859,7 @@ bool GameWorldController::tryToggleSwitchState() {
 bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     if(!updateSelectionIfValid(row, col)) {
         // Could be many reasons: Clicked out side the map bounds, some other
@@ -893,6 +906,7 @@ bool GameWorldController::trySelectNewTileDirection(const int& direction) {
 bool GameWorldController::trySelectNewTile(const int& index) {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     if (!updateSelectionIfValid(-1, -1, index)) {
         // Could be many reasons: Clicked out side the map bounds, some other
@@ -953,6 +967,7 @@ bool GameWorldController::trySetDrawingTile(const int& newDrawTileIndex) {
 bool GameWorldController::tryDrawOnSelectedTile() {
     
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     if(!findAndRemoveConnection(gameMap->getTile(selectedTileIndex))) {
         return false;
@@ -999,6 +1014,7 @@ bool GameWorldController::tryDrawOnSelectedTile() {
 bool GameWorldController::tryEditTileDescription(const int& row, const int& col) {
     
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
     int index = 0;
@@ -1113,6 +1129,7 @@ std::string tileDescription, const int& row, const int& col) {
 bool GameWorldController::tryEditSummaryAndStory() {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -1214,6 +1231,7 @@ bool GameWorldController::tryUpdateWorldInfo(const GameInfo& newInfo) {
 bool GameWorldController::tryEditWorldSize() {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -1360,6 +1378,7 @@ bool GameWorldController::tryAboutDialog() {
 bool GameWorldController::tryCreateJumpConnection() {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -1438,6 +1457,7 @@ bool GameWorldController::tryCreateJumpConnection() {
 bool GameWorldController::tryCreateSwitchConnection() {
 
     assert(gameMap);
+    if (!verifyMapLoaded()) { return false; }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -2175,45 +2195,6 @@ void GameWorldController::sanitizeObjectStrings(GameObject::Builder& objectBuild
 }
 
 ///----------------------------------------------------------------------------
-/// validRequestedTileRowCol - Checks if the Row/Col given is valid, if not,
-/// displays an error message about it.
-/// @param const reference to the row to check
-/// @param const reference to the column to check
-/// @return true if the Row and Col are valid, false if not.
-///----------------------------------------------------------------------------
-
-bool GameWorldController::validRequestedTileRowCol(const int& row, const int& col) const {
-
-    if (gameMap->isRowColInMapBounds(row, col)) {
-        return true;
-    }
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
-    mainWindow->displayErrorMessage(langMap.get("ErrRowColNotInBoundsText"),
-                                    langMap.get("ErrRowColNotInBoundsTitle"));
-
-    return false;
-
-}
-
-///----------------------------------------------------------------------------
-/// vecIndexInRange - Tests if the index given is in range in the vector given.
-/// @param Vector to test the range on
-/// @param index to be checked
-/// @return true if the index is in range, false if it is not.
-///----------------------------------------------------------------------------
-
-template <typename T>
-bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) const {
-    if (!vec.empty()) {
-        if (index >= 0 && index < vec.size()) {
-            return true;
-        }
-    }
-    return false;
-}
-
-///----------------------------------------------------------------------------
 /// wasRowColSpecified - Given a Row and Col, check if those arguments were
 /// specified and not -1.
 /// @param const reference to the row to check
@@ -2279,6 +2260,64 @@ bool GameWorldController::updateSelectionIfValid(const int& row, const int& col,
     else {
         //mainWindow->displayErrorMessage(langMap.get("ErrNewTileSelectionBoundsText"),
                                         //langMap.get("ErrNewTileSelectionBoundsTitle"));
+        return false;
+    }
+
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// validRequestedTileRowCol - Checks if the Row/Col given is valid, if not,
+/// displays an error message about it.
+/// @param const reference to the row to check
+/// @param const reference to the column to check
+/// @return true if the Row and Col are valid, false if not.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::validRequestedTileRowCol(const int& row, const int& col) const {
+
+    if (gameMap->isRowColInMapBounds(row, col)) {
+        return true;
+    }
+
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    mainWindow->displayErrorMessage(langMap.get("ErrRowColNotInBoundsText"),
+                                    langMap.get("ErrRowColNotInBoundsTitle"));
+
+    return false;
+
+}
+
+///----------------------------------------------------------------------------
+/// vecIndexInRange - Tests if the index given is in range in the vector given.
+/// @param Vector to test the range on
+/// @param index to be checked
+/// @return true if the index is in range, false if it is not.
+///----------------------------------------------------------------------------
+
+template <typename T>
+bool GameWorldController::vecIndexInRange(const T& vec, const size_t& index) const {
+    if (!vec.empty()) {
+        if (index >= 0 && index < vec.size()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+///----------------------------------------------------------------------------
+/// verifyMapLoaded - Checks if the map is loaded, displays an error if it is
+/// not.
+/// @return true if the map was loaded, false if it was not.
+///----------------------------------------------------------------------------
+
+const inline bool GameWorldController::verifyMapLoaded() const {
+    
+    if(!gameMap) {
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+        mainWindow->displayErrorMessage(langMap.get("ErrNoGameWorldLoadedText"),
+                                        langMap.get("ErrNoGameWorldLoadedTitle"));
+
         return false;
     }
 

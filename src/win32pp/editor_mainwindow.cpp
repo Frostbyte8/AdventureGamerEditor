@@ -192,7 +192,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
         // Help Menu
 
-        case MenuIDs::HelpMenuItem: onHelpRequested(); break;
+        case MenuIDs::HelpMenuItem: onHelpRequested(); break; // This should technically go through the controller. . . 
         case MenuIDs::AboutMenuItem: gameWorldController->tryAboutDialog(); break;
 
         default:
@@ -520,17 +520,20 @@ void MainWindowFrame::adjustRoadPaletteDimensions() {
 ///----------------------------------------------------------------------------
 
 void MainWindowFrame::onHelpRequested() {
-       
+    
     // Obtain the current file path
 
     const DWORD bufferLength = GetCurrentDirectory(0, NULL);
     wchar_t* filePath = new wchar_t[bufferLength+2];
     const DWORD retVal = GetCurrentDirectory(bufferLength, &filePath[0]);
 
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
     if(!retVal) {
         delete[] filePath;
         filePath = NULL;
-        MessageBox(L"Couldn't get file path!", L"", MB_OK);
+        displayErrorMessage(langMap.get("ErrCouldNotGetFilePathText"),
+                            langMap.get("ErrCouldNotGetFilePathTitle"));
     }
 
     std::wstring fileName(filePath);
@@ -542,10 +545,29 @@ void MainWindowFrame::onHelpRequested() {
     fileName.append(L"\\en_help.html");    
 
     if(!Frost::doesFileExist(fileName)) {
-        MessageBox(L"file doesn't exist!", L"", MB_OK);
+
+        std::string messageText = langMap.get("ErrCouldNotFindHelpFileText");
+        messageText += " ";
+        const std::string messageTitle = langMap.get("ErrCouldNotFindHelpFileTitle");
+
+        // This appears to work, but if I'm wrong, you should contact me!
+
+        messageText.append(WtoA(fileName.c_str(), CP_UTF8).c_str());
+
+        displayErrorMessage(messageText, messageTitle);
+
         return;
     }
 
-    ShellExecute(NULL, L"open", fileName.c_str(), NULL, NULL, SW_SHOW);    
+    // If you are wondering, it returns a HINSTANCE because Win16 needed it
+    // for compatibility reasons. It also just says greater than 32 means
+    // success.
+    
+    const HINSTANCE hInst = ShellExecute(NULL, L"open", fileName.c_str(), NULL, NULL, SW_SHOW);
+
+    if(reinterpret_cast<INT_PTR>(hInst) < 32) {
+        displayErrorMessage(langMap.get("ErrUnableToOpenHelpText"),
+                            langMap.get("ErrUnableToOpenHelpTitle"));
+    }
 
 }

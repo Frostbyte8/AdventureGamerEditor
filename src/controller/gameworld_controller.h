@@ -100,6 +100,7 @@ class GameWorldController {
 
         GameWorldController() {};
         
+        
         inline bool askAndUpdateSisterTile(const std::string& messageID, const std::string& titleID, const int& x, const int& y);
         bool checkAndAskToSaveUnsavedChanges();
 
@@ -114,6 +115,7 @@ class GameWorldController {
         bool tryRemoveSwitchSisterTile();
         bool updateSelectionIfValid(const int& row = -1, const int& col = -1, const int& index = -1);       
         inline bool validRequestedTileRowCol(const int& row, const int& col) const;
+        const inline bool verifyMapLoaded() const;
         
         template <typename T>
         bool vecIndexInRange(const T& vec, const size_t& index) const;

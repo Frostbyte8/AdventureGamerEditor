@@ -393,6 +393,18 @@
 
 	"ErrTilesCannotLeaveMapText"	: "The selected tile allows the player and characters to move off the board, which is not allowed.",
 	"ErrTilesCannotLeaveMapTitle"	: "Tile Error",
+
+	"ErrNoGameWorldLoadedText"		: "Cannot complete the operation requested because there is no Game World loaded.",
+	"ErrNoGameWorldLoadedTitle"		: "No Game World Loaded",
+
+	"ErrCouldNotGetFilePathText"	: "The program was unable to the path to the current directory.",
+	"ErrCouldNotGetFilePathTitle"   : "Unable to get path",
+
+	"ErrCouldNotFindHelpFileText"	: "Could not find the help file located at:",
+	"ErrCouldNotFindHelpFileTitle"  : "Help not Found",
+
+	"ErrUnableToOpenHelpText"		: "The program was unable to open the help file.",
+	"ErrUnableToOpenHelpTitle"		: "Unable to open Help",
     
     // Validators
 
