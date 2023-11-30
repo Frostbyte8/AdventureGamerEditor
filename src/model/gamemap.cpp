@@ -840,7 +840,7 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
         }
         #ifdef _WIN32
             std::wstring wFullPathName = AtoW(rowFilePath.c_str(), CP_UTF8);
-            std::ofstream rowDescFile(wFullPathName, std::ofstream::out | std::ios::binary);
+            std::ofstream rowDescFile(wFullPathName.c_str(), std::ofstream::out | std::ios::binary);
         #else 
             std::ofstream rowDescFile(rowFilePath.c_str(), std::ofstream::out | std::ios::binary);
         #endif
@@ -1104,7 +1104,7 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
 
 #ifdef _WIN32
     std::wstring wFullPathName = AtoW(rowFileName.c_str(), CP_UTF8);
-    ifs.open(wFullPathName, std::ifstream::in | std::ios::binary);
+    ifs.open(wFullPathName.c_str(), std::ifstream::in | std::ios::binary);
 #else
     ifs.open(rowFileName.c_str(), std::ifstream::in | std::ios::binary);
 #endif // _WIN32
@@ -1195,7 +1195,7 @@ void GameMap::readStory(const std::string& storyFilePath) {
     std::ifstream ifs;
 #ifdef _WIN32
     std::wstring wFullPathName = AtoW(storyFilePath.c_str(), CP_UTF8);
-    ifs.open(wFullPathName, std::ifstream::in | std::ios::binary);
+    ifs.open(wFullPathName.c_str(), std::ifstream::in | std::ios::binary);
 #else
 	ifs.open(storyFilePath.c_str(), std::ifstream::in | std::ios::binary);
 #endif // _WIN32
