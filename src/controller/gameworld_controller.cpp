@@ -5,6 +5,13 @@
 #include "../compat/std_extras_compat.h"
 #include "../util/languagemapper.h"
 
+namespace KeyboardDirections {
+    const int LEFT  = 0;
+    const int UP    = 1;
+    const int RIGHT = 2;
+    const int DOWN  = 3;
+}
+
 //=============================================================================
 // Constructors / Destructor
 //=============================================================================
@@ -850,6 +857,29 @@ bool GameWorldController::trySelectNewTile(const int& row, const int& col) {
 
     mainWindow->onSelectedTileChanged();
 
+    return true;
+}
+
+///----------------------------------------------------------------------------
+/// trySelectNewTileDirection - Tries to change the tile that is selected on 
+/// the game map to the one indicated via keyboard arrow keys.
+/// @param direction to move.
+/// @return true if a new tile was selected, false if it does not.
+/// False may indicate an error, that is up for the caller to decide.
+///----------------------------------------------------------------------------
+
+bool GameWorldController::trySelectNewTileDirection(const int& direction) {
+    
+    assert(direction >= KeyboardDirections::LEFT && direction <= KeyboardDirections::DOWN);
+
+    switch (direction) {
+        case KeyboardDirections::LEFT: trySelectNewTile(selectedRow, selectedCol - 1); break;
+        case KeyboardDirections::RIGHT: trySelectNewTile(selectedRow, selectedCol + 1); break;
+        case KeyboardDirections::UP: trySelectNewTile(selectedRow - 1, selectedCol); break;
+        case KeyboardDirections::DOWN: trySelectNewTile(selectedRow + 1, selectedCol); break;
+        default: return false;
+    }
+    
     return true;
 }
 

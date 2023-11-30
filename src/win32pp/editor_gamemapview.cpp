@@ -121,6 +121,10 @@ LRESULT GameMapPanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
         case WM_RBUTTONDOWN:
             return onRButtonDown(LOWORD(lParam), HIWORD(lParam));
             break;
+
+        case WM_KEYDOWN:
+            return onKeyDown(wParam, lParam);
+            break;
     }
 
     return WndProcDefault(msg, wParam, lParam);
@@ -166,6 +170,52 @@ void GameMapPanel::onTileUpdated() {
 //=============================================================================
 
 ///----------------------------------------------------------------------------
+/// onKeyDown - Processes the WM_KWYDOWN message. 
+/// @param virtual key of the key pressed
+/// @param various data pertaining to the key press
+/// @return Always 0
+///----------------------------------------------------------------------------
+
+LRESULT GameMapPanel::onKeyDown(const WORD& vKey, const WORD& keyData) {
+
+    switch(vKey) {
+
+        case 'T':
+            gameWorldController->tryToggleTileDarkness();
+            break;
+
+        case 'L':
+            gameWorldController->tryToggleSwitchState();
+            break;
+
+        case 'J':
+            gameWorldController->tryCreateJumpConnection();
+            break;
+
+        case 'S':
+            gameWorldController->tryCreateSwitchConnection();
+            break;
+
+        case VK_SPACE:
+            gameWorldController->tryDrawOnSelectedTile();
+            break;
+
+        case VK_RETURN:
+            gameWorldController->tryEditTileDescription();
+            break;
+
+        case VK_UP:
+        case VK_DOWN:
+        case VK_LEFT:
+        case VK_RIGHT:
+            gameWorldController->trySelectNewTileDirection(vKey - VK_LEFT);
+            break;
+    }
+
+    return 0;
+}
+
+///----------------------------------------------------------------------------
 /// onLButtonDown - Processes the WM_LBUTTONDOWN message. It will request
 /// that the controller change the selected tile to the one under the mouse.
 /// If that change happens, it will update the map.
@@ -188,6 +238,8 @@ LRESULT GameMapPanel::onLButtonDown(const WORD& xPos, const WORD& yPos) {
     // No need to verify the row and col, the function will do that for us.
 
     gameWorldController->trySelectNewTile(row, col);
+
+    SetFocus();
 
     return 0;
 }
@@ -233,6 +285,8 @@ LRESULT GameMapPanel::onRButtonDown(const WORD& xPos, const WORD& yPos) {
         mainWindow->onGameMapRightClick(xPos, yPos);
     }
 
+    SetFocus();
+
     return 0;
 }
 
@@ -262,6 +316,8 @@ LRESULT GameMapPanel::onLButtonDBLClick(const WORD& xPos, const WORD& yPos) {
     // WM_LBUTTONDOWN
 
     gameWorldController->tryDrawOnSelectedTile();
+
+    SetFocus();
 
     return 0;
 }

@@ -259,6 +259,7 @@ class GameMapPanel : public ScrollPanelBaseClass {
         LRESULT onLButtonDown(const WORD& xPos, const WORD& yPos);
         LRESULT onLButtonDBLClick(const WORD& xPos, const WORD& yPos);
         LRESULT onRButtonDown(const WORD& xPos, const WORD& yPos);
+        LRESULT onKeyDown(const WORD& vKey, const WORD& keyData);
 
         void updateScrollSize();
 
@@ -324,7 +325,6 @@ class GameMapDocker : public CDocker {
             SetBarWidth(6);
 
         }
-
         virtual ~GameMapDocker() {}
 
     private:

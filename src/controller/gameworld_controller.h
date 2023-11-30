@@ -51,6 +51,7 @@ class GameWorldController {
        
         bool tryAddFeatureToSelectedTile(const int& featureType);
 
+        bool trySelectNewTileDirection(const int& direction);
         bool trySelectNewTile(const int& row, const int& col);
         bool trySelectNewTile(const int& index);
 
