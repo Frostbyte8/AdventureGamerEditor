@@ -110,6 +110,7 @@ namespace MenuIDs {
 
 }
 
+
 //=============================================================================
 // MainWindowFrame - The Primary view of the program where the map editor
 // resides, along with it's child dockers.
@@ -227,6 +228,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         void changeZoomFactor(const int& newZoomFactor);
 
         void adjustRoadPaletteDimensions();
+
+        void onHelpRequested();
 
         CString originalWindowTitle;
 

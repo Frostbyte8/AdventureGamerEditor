@@ -190,9 +190,9 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
             changeZoomFactor((ID + 1) - MenuIDs::Zoom1xItem);
             break;
 
-        // Help Menu:
+        // Help Menu
 
-        case MenuIDs::HelpMenuItem: break;
+        case MenuIDs::HelpMenuItem: onHelpRequested(); break;
         case MenuIDs::AboutMenuItem: gameWorldController->tryAboutDialog(); break;
 
         default:
@@ -507,19 +507,45 @@ void MainWindowFrame::updateMenuState() {
 
 void MainWindowFrame::adjustRoadPaletteDimensions() {
     
-    /*
-    const int tempTileWidth = tileWidth; // * zoomFactor
-	rc.right = tempTileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
-	AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
-	const int newWidth = abs(rc.right - rc.left);
-	roadSelectorDocker->SetDockSize(newWidth);   
-    */
-
     CRect rc;
     const int& scaledTileWidth = roadPalettePanel->getScaledTileWidth();
     rc.right = scaledTileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
-    
     AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
     roadSelectorDocker->SetDockSize(abs(rc.right - rc.left));
+
+}
+
+///----------------------------------------------------------------------------
+/// onHelpRequested - Open the Help page
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::onHelpRequested() {
+       
+    // Obtain the current file path
+
+    const DWORD bufferLength = GetCurrentDirectory(0, NULL);
+    wchar_t* filePath = new wchar_t[bufferLength+2];
+    const DWORD retVal = GetCurrentDirectory(bufferLength, &filePath[0]);
+
+    if(!retVal) {
+        delete[] filePath;
+        filePath = NULL;
+        MessageBox(L"Couldn't get file path!", L"", MB_OK);
+    }
+
+    std::wstring fileName(filePath);
+    delete[] filePath;
+    filePath = NULL;
+
+    // Set our file name, verify it exists, then open it.
+
+    fileName.append(L"\\en_help.html");    
+
+    if(!Frost::doesFileExist(fileName)) {
+        MessageBox(L"file doesn't exist!", L"", MB_OK);
+        return;
+    }
+
+    ShellExecute(NULL, L"open", fileName.c_str(), NULL, NULL, SW_SHOW);    
 
 }

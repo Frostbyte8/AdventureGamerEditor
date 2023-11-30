@@ -367,6 +367,10 @@ namespace Frost {
     bool doesFileExist(const std::string& fullPath) {
         return _access_s(fullPath.c_str(), 0) ? false : true;
     }
+
+    bool doesFileExist(const std::wstring& fullPath) {
+        return _waccess_s(fullPath.c_str(), 0) ? false : true;
+    }
     
 #elif __linux__
 

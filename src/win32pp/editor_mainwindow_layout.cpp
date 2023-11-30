@@ -169,7 +169,9 @@ void MainWindowFrame::addKeyboardAccelerators() {
 
     ADD_KEYBOARD_ACCEL(MenuIDs::NewFile, FCONTROL, 'N');
     ADD_KEYBOARD_ACCEL(MenuIDs::OpenFile, FCONTROL, 'O');
-    ADD_KEYBOARD_ACCEL(MenuIDs::EditDescription, FCONTROL, 'E');
+    ADD_KEYBOARD_ACCEL(MenuIDs::SaveFile, FCONTROL, 'S');
+
+    ADD_KEYBOARD_ACCEL(MenuIDs::HelpMenuItem, 0, VK_F1);
 
     // Now to try and add the accelerators
 

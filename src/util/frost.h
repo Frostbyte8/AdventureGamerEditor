@@ -31,6 +31,9 @@ namespace Frost {
     void writeVBString(std::ostream& os, const std::string& str);
 
     bool doesFileExist(const std::string& fullPath);
+#ifdef _WIN32
+    bool doesFileExist(const std::wstring& fullPath);
+#endif // _WIN32
 
 }
 
