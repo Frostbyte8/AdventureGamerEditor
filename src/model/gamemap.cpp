@@ -1103,7 +1103,12 @@ std::map<unsigned int, std::string> GameMap::readRowDescriptions(const std::stri
     std::string errorMsg = "Error reading row descriptions: ";
     std::map<unsigned int, std::string> descriptionMap;
 
+#ifdef _WIN32
+    std::wstring wFullPathName = AtoW(rowFileName.c_str(), CP_UTF8);
+    ifs.open(wFullPathName, std::ifstream::in | std::ios::binary);
+#else
     ifs.open(rowFileName.c_str(), std::ifstream::in | std::ios::binary);
+#endif // _WIN32
     
     if(ifs) {
 
@@ -1189,7 +1194,12 @@ void GameMap::readObjects(std::ifstream& mapFile) {
 void GameMap::readStory(const std::string& storyFilePath) {
 	
     std::ifstream ifs;
+#ifdef _WIN32
+    std::wstring wFullPathName = AtoW(storyFilePath.c_str(), CP_UTF8);
+    ifs.open(wFullPathName, std::ifstream::in | std::ios::binary);
+#else
 	ifs.open(storyFilePath.c_str(), std::ifstream::in | std::ios::binary);
+#endif // _WIN32
 
 	if(ifs) {
 		ifs.seekg(0, std::ios::end);
