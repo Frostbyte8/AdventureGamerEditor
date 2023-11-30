@@ -839,9 +839,13 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
             tiles[currentTile].write(mapFile);
 
         }
-
-        std::ofstream rowDescFile(rowFilePath.c_str(), std::ofstream::out |
-                                                        std::ios::binary);
+        #ifdef _WIN32
+            std::wstring wFullPathName = AtoW(rowFilePath.c_str(), CP_UTF8);
+            std::ofstream rowDescFile(wFullPathName, std::ofstream::out | std::ios::binary);
+        #else 
+            std::ofstream rowDescFile(rowFilePath.c_str(), std::ofstream::out | std::ios::binary);
+        #endif
+                                                        
 
         Frost::writeVBInteger(rowDescFile, rowDescriptions.size());
 
@@ -1311,7 +1315,13 @@ void GameMap::readSwitches(std::ifstream& mapFile) {
 void GameMap::writeStory(const std::string& storyFilePath) {
     
     std::ofstream ofs;
+
+#ifdef _WIN32
+    std::wstring wFullPathName = AtoW(storyFilePath.c_str(), CP_UTF8);
+    ofs.open(wFullPathName.c_str(), std::ofstream::out | std::ios::binary);
+#else 
     ofs.open(storyFilePath.c_str(), std::ofstream::out | std::ios::binary);
+#endif // _WIN32_
 
     if (ofs) {
         ofs.put('\"');

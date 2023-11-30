@@ -1705,10 +1705,15 @@ bool GameWorldController::tryFinishSave(const std::string& newPath, const std::s
     }
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
-    std::ofstream ofs;
     std::string fullPathName = tempFilePath + tempFileName;
-    
+    std::ofstream ofs;
+
+#ifdef _WIN32
+    std::wstring wFullPathName = AtoW(fullPathName.c_str(), CP_UTF8);
+    ofs.open(wFullPathName, std::ofstream::out | std::ios::binary);
+#else 
     ofs.open(fullPathName.c_str(), std::ofstream::out | std::ios::binary);
+#endif // _Win32
 
     if(!ofs) {
         mainWindow->displayErrorMessage(langMap.get("ErrSavingWorldText"),
@@ -1789,7 +1794,14 @@ bool GameWorldController::tryFinishLoad(const std::string& newPath, const std::s
     std::string fileNameTemp = newPath + newFileName;
     std::ifstream ifs;
     
+#ifdef _WIN32
+    std::wstring wFullPathName = AtoW(fileNameTemp.c_str(), CP_UTF8);
+    ifs.open(wFullPathName, std::ifstream::in | std::ios::binary);
+#else 
     ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
+#endif
+
+    
 
     if(!ifs) {
         mainWindow->displayErrorMessage(langMap.get("ErrLoadingWorldText"),

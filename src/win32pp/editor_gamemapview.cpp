@@ -123,7 +123,7 @@ LRESULT GameMapPanel::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
             break;
 
         case WM_KEYDOWN:
-            return onKeyDown(wParam, lParam);
+            return onKeyDown(wParam, static_cast<WORD>(lParam));
             break;
     }
 

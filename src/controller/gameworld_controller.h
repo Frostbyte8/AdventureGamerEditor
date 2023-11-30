@@ -7,6 +7,11 @@
 #include "../model/gamecharacter.h"
 #include "../interface/mainwindow_interface.h"
 
+#ifdef _WIN32
+    #define _WINSOCK2API_ // Otherwise it won't include cstring
+    #include <wxx_cstring.h>
+#endif // _WIN32
+
 // TODO: This really should be named MainWindowController
 
 class GameWorldController {

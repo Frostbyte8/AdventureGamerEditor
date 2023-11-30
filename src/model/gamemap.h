@@ -11,6 +11,11 @@
 #include "connection_point.h"
 #include "../compat/stdint_compat.h"
 
+#ifdef _WIN32
+    #define _WINSOCK2API_ // Otherwise it won't include cstring
+    #include <wxx_cstring.h>
+#endif // _WIN32
+
 //-----------------------------------------------------------------------------
 // GameMapConstants
 //-----------------------------------------------------------------------------

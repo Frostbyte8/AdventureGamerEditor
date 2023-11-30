@@ -313,8 +313,8 @@ bool MainWindowFrame::doSaveOrOpenDialog(const BOOL& isOpen) {
 
     if (response == IDOK) {
 
-        std::string newPath = WtoA(fileDialog.GetFolderPath().c_str());
-        std::string newFileName = WtoA(fileDialog.GetFileName().c_str());
+        std::string newPath = WtoA(fileDialog.GetFolderPath().c_str(), CP_UTF8);
+        std::string newFileName = WtoA(fileDialog.GetFileName().c_str(), CP_UTF8);
 
         if(isOpen) {
             gameWorldController->tryFinishLoad(newPath, newFileName);
