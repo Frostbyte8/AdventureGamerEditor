@@ -550,7 +550,7 @@ bool MainWindowFrame::startEditStoryAndSummaryDialog(const std::string& story, c
     CString caption;
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
-    caption = LM_toUTF8("EditTileDescTitle", langMap);
+    caption = LM_toUTF8("EditWorldStoryTitle", langMap);
 
     editStoryDialog->setStoryAndSummary(story, summary);
 
