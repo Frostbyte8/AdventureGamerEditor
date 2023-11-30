@@ -507,10 +507,19 @@ void MainWindowFrame::updateMenuState() {
 
 void MainWindowFrame::adjustRoadPaletteDimensions() {
     
+    /*
+    const int tempTileWidth = tileWidth; // * zoomFactor
+	rc.right = tempTileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
+	AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
+	const int newWidth = abs(rc.right - rc.left);
+	roadSelectorDocker->SetDockSize(newWidth);   
+    */
+
     CRect rc;
-    const int& scaledTileWidth = roadPalettePanel->getScaledTileWidth();;    
+    const int& scaledTileWidth = roadPalettePanel->getScaledTileWidth();
     rc.right = scaledTileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
-    AdjustWindowRectEx(&rc, 0, FALSE, roadPalettePanel->GetExStyle());
+    
+    AdjustWindowRectEx(&rc, 0, FALSE, roadSelectorDocker->GetDockClient().GetExStyle());
     roadSelectorDocker->SetDockSize(abs(rc.right - rc.left));
 
 }
