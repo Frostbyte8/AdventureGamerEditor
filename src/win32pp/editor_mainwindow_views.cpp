@@ -619,7 +619,7 @@ int RoadPalettePanel::OnCreate(CREATESTRUCT& cs) {
 
     CBrush outOfBoundsColor(RGB(0, 0, 0));
     SetScrollBkgnd(outOfBoundsColor);
-
+    SetScrollAlwaysOn(false, true);
     return CScrollView::OnCreate(cs);
 }
 
