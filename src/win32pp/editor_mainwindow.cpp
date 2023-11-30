@@ -21,7 +21,6 @@ editTileDescriptionDialog(0), resizeWorldDialog(0), tileWidth(0), tileHeight(0),
 accelHandle(0), gameMapPanel(0), entitiesHerePanel(0), roadPalettePanel(0) {
     gameWorldController = new GameWorldController(this);
 	entityView = new GameEntitiesPanel(gameWorldController, &windowMetrics);
-    LanguageMapper::getInstance();
     isSizing = false;
 }
 

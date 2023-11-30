@@ -17,11 +17,29 @@
 	}
 
 	int APIENTRY WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-		int retval = DebugRun();
+		
+        try {
+            LanguageMapper::getInstance().tryLoadLangauge("", "");
+        }
+        catch(json::parsing_error) {
+            MessageBox(NULL, L"Could not parse lang_en.json.", L"Parsing error", MB_ICONERROR);
+        }
+
+        if(!LanguageMapper::getInstance().isLoaded()) {
+            const int retVal = MessageBox(NULL,
+                                         L"The language mapper was unable to load lang_en.json. Continue without Language support?",
+                                         L"Could not load language",
+                                         MB_ICONERROR | MB_YESNO);
+            if(retVal == IDNO) {
+                return 0;
+            }
+        }
+        
+        int debugRetVal = DebugRun();
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 		_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG); 
 		//_CrtDumpMemoryLeaks();
-		return retval;
+		return debugRetVal;
 	}
 #else
 	int APIENTRY WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {

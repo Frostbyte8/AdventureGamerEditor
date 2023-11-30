@@ -37,6 +37,21 @@ class LanguageMapper {
 			return outString;
 		}
 
+        bool tryLoadLangauge(const std::string& filePath, const std::string& fileName) {
+            
+            if(!LoadLanguageFile("", "")) {
+                mapperLoaded = false;
+                return false;
+            }
+
+            mapperLoaded = true;
+            return true;
+        }
+
+        const bool isLoaded() const {
+            return mapperLoaded;
+        }
+
 	private:
 
         bool add(const std::string& key, const std::string& value) {
@@ -103,13 +118,13 @@ class LanguageMapper {
             return hashValue;
         }
 
-        LanguageMapper() {
-            LoadLanguageFile("","");
+        LanguageMapper() : mapperLoaded(false) {
         }
 
         LanguageMapper(const LanguageMapper&) {};
         void operator=(const LanguageMapper&) {};
 		std::map<uint32_t, std::string> languageMap;
+        bool mapperLoaded;
 };
 
 #endif // __LANGUAGEMAPPER_H__
