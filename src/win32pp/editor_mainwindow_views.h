@@ -184,11 +184,15 @@ class EntitiesHerePanel : public PanelBaseClass {
 class RoadPalettePanel : public ScrollPanelBaseClass {
 
 	public:
-        RoadPalettePanel(MainWindowInterface* inMainWindow, GameWorldController* gwc);// : gameWorldController(gwc), backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow) {}
+
+        RoadPalettePanel(MainWindowInterface* inMainWindow, GameWorldController* gwc);
         virtual ~RoadPalettePanel();
         
         void onDrawingTileChanged();
         void setTileset(CBitmap& inTileSet);
+        void setZoomFactor(const int& newFactor);
+
+        const int& getScaledTileWidth() const { return scaledTileWidth; }
 
     protected:
 
@@ -209,10 +213,12 @@ class RoadPalettePanel : public ScrollPanelBaseClass {
         CMemDC			        tilesetDC;
         CMemDC                  backBufferDC;
         CBitmap                 backBufferBMP;
-
-
+        
+        int zoomFactor;
         int tileWidth;
         int tileHeight;
+        int scaledTileWidth;
+        int scaledTileHeight;
 
 		// Disable copy construction and assignment operator
         RoadPalettePanel(const RoadPalettePanel&);
@@ -230,7 +236,6 @@ class GameMapPanel : public ScrollPanelBaseClass {
         GameMapPanel(Win32ppMainWindowInterface* inMainWindow, GameWorldController* gwc);
         virtual ~GameMapPanel();
         
-        //void onZoomChange();
         void onMapSizeChanged();
         void onNewTileSelected();
         void onTileUpdated();

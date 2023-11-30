@@ -280,6 +280,8 @@ LRESULT MainWindowFrame::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 void MainWindowFrame::changeZoomFactor(const int& newZoomFactor) {
     zoomFactor = (newZoomFactor > 0 && newZoomFactor < 5) ? newZoomFactor : 1;
     gameMapPanel->setZoomFactor(zoomFactor);
+    roadPalettePanel->setZoomFactor(zoomFactor);
+    adjustRoadPaletteDimensions();
 }
 
 ///----------------------------------------------------------------------------
@@ -496,5 +498,19 @@ void MainWindowFrame::updateMenuState() {
     mainMenu.EnableMenuItem(MenuIDs::WorldPopupMenu, worldLoaded);
 
     DrawMenuBar();
+
+}
+
+///----------------------------------------------------------------------------
+/// adjustRoadPaletteDimensions - Adjusts the size of the road palette
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::adjustRoadPaletteDimensions() {
+    
+    CRect rc;
+    const int& scaledTileWidth = roadPalettePanel->getScaledTileWidth();;    
+    rc.right = scaledTileWidth + windowMetrics.GetControlDimensions().X_SCROLLBAR;
+    AdjustWindowRectEx(&rc, 0, FALSE, roadPalettePanel->GetExStyle());
+    roadSelectorDocker->SetDockSize(abs(rc.right - rc.left));
 
 }

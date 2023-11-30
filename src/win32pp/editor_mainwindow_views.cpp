@@ -537,7 +537,8 @@ int EntitiesHerePanel::OnSize(const WPARAM& wParam, const LPARAM& lParam) {
 //=============================================================================
 
 RoadPalettePanel::RoadPalettePanel(MainWindowInterface* inMainWindow, GameWorldController* gwc) :
-gameWorldController(gwc), backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow) {
+gameWorldController(gwc), backBufferDC(0), tilesetDC(0), mainWindow(inMainWindow),
+zoomFactor(1), tileWidth(0), tileHeight(0), scaledTileWidth(0), scaledTileHeight(0) {
 }
 
 RoadPalettePanel::~RoadPalettePanel() {
@@ -563,6 +564,8 @@ void RoadPalettePanel::setTileset(CBitmap& bmp) {
 
     tileWidth = bm.bmWidth / EditorConstants::TilesPerCol;
     tileHeight = bm.bmHeight / EditorConstants::TilesPerRow;
+    scaledTileWidth = tileWidth * zoomFactor;
+    scaledTileHeight = tileHeight * zoomFactor;
 
     memDC.SelectObject(oldBMP);
 
@@ -571,6 +574,28 @@ void RoadPalettePanel::setTileset(CBitmap& bmp) {
     InvalidateRect();
 
 }
+
+///----------------------------------------------------------------------------
+/// setZoomFactor - Changes the how zoomed in the road palette is and redraws
+/// the palette to reflect this.
+/// @param new zoom factor. Minimum of 1, max of 4. Invalid values here result
+/// in an assertion warning.
+///----------------------------------------------------------------------------
+
+void RoadPalettePanel::setZoomFactor(const int& newZoomFactor) {
+    
+    assert(newZoomFactor > 0 && newZoomFactor < 5);
+    
+    zoomFactor = newZoomFactor;
+    scaledTileWidth = tileWidth * zoomFactor;
+    scaledTileHeight = tileHeight * zoomFactor;
+   
+    updateBackBuffer();
+    updateScrollSize();
+    InvalidateRect();
+
+}
+
 
 //=============================================================================
 // Win32++ Functions
@@ -648,7 +673,7 @@ LRESULT RoadPalettePanel::onLButtonDown(const WORD &x, const WORD &y) {
     si.fMask = SIF_POS;
     GetScrollInfo(SB_VERT, si);
 
-    const int newTileSelected =  (y + si.nPos) / tileHeight;
+    const int newTileSelected =  (y + si.nPos) / scaledTileHeight;
     
     gameWorldController->trySetDrawingTile(newTileSelected);
 
@@ -661,13 +686,13 @@ LRESULT RoadPalettePanel::onLButtonDown(const WORD &x, const WORD &y) {
 
 void RoadPalettePanel::updateBackBuffer() {
 
-    const int totalHeight = tileHeight * (EditorConstants::TilesPerRow * 2);
+    const int totalHeight = scaledTileHeight * (EditorConstants::TilesPerRow * 2);
 
     // TODO: Verify that the previous BMP is destroyed as per what the docs
     // state?
 
     CClientDC dc(*this);
-    backBufferBMP = CreateCompatibleBitmap(dc, tileWidth, totalHeight);
+    backBufferBMP = CreateCompatibleBitmap(dc, scaledTileWidth, totalHeight);
 
     CBitmap oldBMP;
     oldBMP = backBufferDC.SelectObject(backBufferBMP);
@@ -678,20 +703,20 @@ void RoadPalettePanel::updateBackBuffer() {
         // For each iteration, we draw two tiles: One for the normal tile,
         // and one for it's dirt road version
 
-        const int yDest = i * tileHeight;
+        const int yDest = i * scaledTileHeight;
         
-        const int yDirtDest = (i * tileHeight) + 
-                              (EditorConstants::TilesPerRow * tileHeight);
+        const int yDirtDest = (i * scaledTileHeight) + 
+                              (EditorConstants::TilesPerRow * scaledTileHeight);
 
         const int xSrc = i * tileWidth;
 
         const int yDirtSrc = EditorConstants::DirtroadStartRow * tileHeight;
 
-        backBufferDC.BitBlt(0, yDest, tileWidth, tileHeight, 
-                            tilesetDC, xSrc, 0, SRCCOPY);
+        backBufferDC.StretchBlt(0, yDest, scaledTileWidth, scaledTileHeight, tilesetDC,
+                                xSrc, 0, tileWidth, tileHeight, SRCCOPY);
 
-        backBufferDC.BitBlt(0, yDirtDest, tileWidth, tileHeight,
-                            tilesetDC, xSrc, yDirtSrc, SRCCOPY);
+        backBufferDC.StretchBlt(0, yDirtDest, scaledTileWidth, scaledTileHeight, tilesetDC,
+                                xSrc, yDirtSrc, tileWidth, tileHeight, SRCCOPY);
 
     }
 
@@ -700,8 +725,8 @@ void RoadPalettePanel::updateBackBuffer() {
 
     const int selectedTile = gameWorldController->getDrawingTileIndex();
 
-    DrawTileSelectionBox(backBufferDC, 0, selectedTile * tileHeight,
-                         tileWidth, tileHeight, 2);
+    DrawTileSelectionBox(backBufferDC, 0, selectedTile * scaledTileHeight,
+                         scaledTileWidth, scaledTileHeight, 2);
 
     backBufferDC.SelectObject(oldBMP);
 
@@ -715,8 +740,8 @@ void RoadPalettePanel::updateBackBuffer() {
 void RoadPalettePanel::updateScrollSize() {
 
     // There are 16 tile types, plus an additional 16 for dirt roads.
-    const int totalHeight = tileHeight * (EditorConstants::TilesPerRow * 2);
-    CSize scrollSize(tileWidth, totalHeight);
+    const int totalHeight = scaledTileHeight * (EditorConstants::TilesPerRow * 2);
+    CSize scrollSize(scaledTileWidth, totalHeight);
     SetScrollSizes(scrollSize);
     
 }

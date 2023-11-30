@@ -226,6 +226,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
 
         void changeZoomFactor(const int& newZoomFactor);
 
+        void adjustRoadPaletteDimensions();
+
         CString originalWindowTitle;
 
         CMenu mainMenu;
