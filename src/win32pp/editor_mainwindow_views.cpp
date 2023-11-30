@@ -436,9 +436,17 @@ void EntitiesHerePanel::clearLists() {
 /// @param a pointer to a vector with the list of characters in the game world. 
 ///----------------------------------------------------------------------------
 
-void EntitiesHerePanel::updateCharacterList(const std::vector<GameCharacter>& characterList) {
+void EntitiesHerePanel::updateCharacterList(const std::vector<GameCharacter>& characterList, const bool& playerHere) {
 
     charactersHereListBox.ClearStrings();
+
+    if(playerHere) {
+
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+        std::string playerTitle = langMap.get("PlayerStartName");
+        charactersHereListBox.AddString(AtoW(playerTitle.c_str(), CP_UTF8));
+
+    }
 
     if (!characterList.empty()) {
         const size_t charSize = characterList.size();

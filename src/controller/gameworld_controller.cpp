@@ -747,6 +747,8 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
     // Check if this is a start feature, if so, ask the user if they want to move
     // the player start here.
 
+    bool playerStartMoved = false;
+
     if(currentTile.isStraightaway() && featureType == TileModifiers::Start) {
 
         const int response = mainWindow->askYesNoQuestion(langMap.get("MovePlayerStartCoordText"), 
@@ -754,6 +756,7 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
 
         if(response == GenericInterfaceResponses::Yes) {
             gameMap->setPlayerCoordinates(selectedRow, selectedCol);
+            playerStartMoved = true;
         }
 
     }
@@ -763,7 +766,11 @@ bool GameWorldController::tryAddFeatureToSelectedTile(const int& featureType) {
     changedSinceLastSave = true;
 
     gameMap->updateTile(gmKey, selectedTileIndex, updatedTile.build());
-    mainWindow->onTileUpdated(selectedTileIndex, EditorTileUpdateFlags::Type);
+
+    const int updateFlags = EditorTileUpdateFlags::Type |
+                            (playerStartMoved ? EditorTileUpdateFlags::PlayerStartMoved : 0);
+    
+    mainWindow->onTileUpdated(selectedTileIndex, updateFlags);
 
     return true;
 

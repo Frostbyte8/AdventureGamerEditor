@@ -22,7 +22,7 @@ namespace EditorDialogTypes {
 namespace EditorTileUpdateFlags {
     const int Description       = 0x01;
     const int Type              = 0x02;
-    const int Both              = 0x03;
+    const int PlayerStartMoved  = 0x04;
 }
 
 namespace EditorConnectionUpdateFlags {

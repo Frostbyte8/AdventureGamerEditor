@@ -128,6 +128,10 @@ void MainWindowFrame::onTileUpdated(const int& index, const int& tileUpdateFlags
         gameMapPanel->onTileUpdated();
     }
 
+    if(tileUpdateFlags & EditorTileUpdateFlags::PlayerStartMoved) {
+        updateHereLists(false, true, NULL, NULL, NULL);
+    }
+
     updateTitleBar(true);
 
 }

@@ -151,7 +151,7 @@ class EntitiesHerePanel : public PanelBaseClass {
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
         void clearLists();
-        void updateCharacterList(const std::vector<GameCharacter>& characterList);
+        void updateCharacterList(const std::vector<GameCharacter>& characterList, const bool& playerHere);
         void updateObjectList(const std::vector<GameObject>& objectList);
 
     protected:

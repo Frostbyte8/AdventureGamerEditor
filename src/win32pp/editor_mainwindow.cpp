@@ -350,8 +350,14 @@ void MainWindowFrame::updateHereLists(const bool objectsHere, const bool charsHe
     }
 
     if(charsHere) {
-        const std::vector<GameCharacter>& charVec = gameMap->getGameCharactersAtRowCol(selectedRow, selectedCol);
-        entitiesHerePanel->updateCharacterList(charVec);
+        const std::vector<GameCharacter>& charVec = gameMap->getGameCharactersAtRowCol(selectedRow, selectedCol);   
+
+        const GameInfo& gameInfo = gameMap->getGameInfo();
+
+
+        entitiesHerePanel->updateCharacterList(charVec, 
+                                              (gameInfo.getPlayerStartX() == selectedCol && 
+                                               gameInfo.getPlayerStartY() == selectedRow) ? true : false);
     }
 
 }

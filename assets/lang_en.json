@@ -302,6 +302,8 @@
 
 	"NoWorldLoaded"					: "No world loaded",
 
+	"PlayerStartName"				: "[Player Start]",
+
     // Error Messages
 
 	"ErrCreatingAccelsText"			: "Error creating Keyboard Shortcuts.",

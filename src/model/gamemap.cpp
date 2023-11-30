@@ -151,7 +151,6 @@ const std::vector<GameCharacter> GameMap::getGameCharactersAtRowCol(const int& r
     if (!isRowColInMapBounds(row, col)) {
         return chars;
     }
-
     const size_t numChars = gameCharacters.size();
 
     for (size_t i = 0; i < numChars; ++i) {
