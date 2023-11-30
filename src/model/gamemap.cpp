@@ -840,19 +840,17 @@ void GameMap::writeMap(std::ofstream& mapFile, const std::string& filePath,
 
         }
 
-        if (!rowDescriptions.empty()) {
-            std::ofstream rowDescFile(rowFilePath.c_str(), std::ofstream::out |
-                                                           std::ios::binary);
+        std::ofstream rowDescFile(rowFilePath.c_str(), std::ofstream::out |
+                                                        std::ios::binary);
 
-            Frost::writeVBInteger(rowDescFile, rowDescriptions.size());
+        Frost::writeVBInteger(rowDescFile, rowDescriptions.size());
 
-            for (std::map<int, std::string>::iterator it = rowDescriptions.begin();
-                 it != rowDescriptions.end(); ++it) {
-                Frost::writeVBInteger(rowDescFile, it->first);
-                Frost::writeVBString(rowDescFile, it->second);
-            }
-
+        for (std::map<int, std::string>::iterator it = rowDescriptions.begin();
+                it != rowDescriptions.end(); ++it) {
+            Frost::writeVBInteger(rowDescFile, it->first);
+            Frost::writeVBString(rowDescFile, it->second);
         }
+
     }
 
     writeJumps(mapFile);
@@ -879,7 +877,7 @@ const int GameMap::validateTileDirections() const {
     }
 
     // Check for tiles that go West
-    for(int k = 0; k <= numCols * (numRows -1); (k+=numCols)) {
+    for(int k = 0; k <= numCols * (numRows - 1); (k+=numCols)) {
         if(tiles[k].canEntitiesMoveWest()) {
             return k;
         }
@@ -893,7 +891,7 @@ const int GameMap::validateTileDirections() const {
     }
 
     // Check for tiles that go South
-    for(int l = (numCols * (numRows - 2)) + 1; l < static_cast<int>(tiles.size()); ++l) {
+    for(int l = (numCols * (numRows - 1)) + 1; l < static_cast<int>(tiles.size()); ++l) {
         if(tiles[l].canEntitiesMoveSouth()) {
             return l;
         }

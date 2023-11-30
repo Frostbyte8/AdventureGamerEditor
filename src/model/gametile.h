@@ -291,7 +291,11 @@ class GameTile {
                     }
 
                     if(base.flags & TileFlags::MoreInfo && base.description.empty()) {
-                        throw std::invalid_argument("Attempted to build a tile that indicates it has a description, but no description was set.");
+                        
+                        // TODO: This is only warning worthy in most cases, so for now we will just
+                        // clear the flag.
+                        base.flags = base.flags & ~(TileFlags::MoreInfo);
+
                     }
 
                     return GameTile(*this);
