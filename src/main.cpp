@@ -43,6 +43,24 @@
 	}
 #else
 	int APIENTRY WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+
+        try {
+            LanguageMapper::getInstance().tryLoadLangauge("", "");
+        }
+        catch(json::parsing_error) {
+            MessageBox(NULL, L"Could not parse lang_en.json.", L"Parsing error", MB_ICONERROR);
+        }
+
+        if(!LanguageMapper::getInstance().isLoaded()) {
+            const int retVal = MessageBox(NULL,
+                                         L"The language mapper was unable to load lang_en.json. Continue without Language support?",
+                                         L"Could not load language",
+                                         MB_ICONERROR | MB_YESNO);
+            if(retVal == IDNO) {
+                return 0;
+            }
+        }
+
 		AdvEditApp advEditApp;
         return advEditApp.Run();
 	}
