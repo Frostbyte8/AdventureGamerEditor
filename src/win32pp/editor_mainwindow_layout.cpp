@@ -29,6 +29,7 @@ int MainWindowFrame::OnCreate(CREATESTRUCT& cs) {
     UseMenuStatus(FALSE);
     UseReBar(FALSE);
     UseToolBar(FALSE);
+    UseOwnerDrawnMenu(FALSE);
 
     if(!loadTileSet()) {
         MessageBox(_T("Could not find tileset.bmp. Please ensure this file is in the same directory as advedit.exe. The program will now close."), _T("Missing file tileset.bmp"), MB_OK | MB_ICONERROR);
