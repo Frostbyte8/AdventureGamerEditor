@@ -838,11 +838,13 @@ bool GameWorldController::tryToggleSwitchState() {
 
     uint8_t newSprite = 0;
 
+    const uint8_t dirtRoad = currentTile.isDirtRoad() ? TileModifiers::DirtRoad : 0;
+
     if(currentTile.hasOnSwitch()) {
-        newSprite = updatedTile.calculateSprite(currentTile.getSpriteIndex(), TileModifiers::SwitchOff);
+        newSprite = updatedTile.calculateSprite(currentTile.getSpriteIndex(), TileModifiers::SwitchOff | dirtRoad);
     }
     else {
-        newSprite = updatedTile.calculateSprite(currentTile.getSpriteIndex(), TileModifiers::SwitchOn);
+        newSprite = updatedTile.calculateSprite(currentTile.getSpriteIndex(), TileModifiers::SwitchOn | dirtRoad);
     }
 
     updatedTile.sprite(newSprite);

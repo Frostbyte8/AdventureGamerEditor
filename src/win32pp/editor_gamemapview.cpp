@@ -84,7 +84,7 @@ int GameMapPanel::OnCreate(CREATESTRUCT& cs) {
     
     CBrush outOfBoundsColor(RGB(0, 0, 0));
     SetScrollBkgnd(outOfBoundsColor);
-
+    
     return CScrollView::OnCreate(cs);
 
 }

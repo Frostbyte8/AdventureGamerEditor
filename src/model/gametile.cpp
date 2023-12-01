@@ -351,8 +351,8 @@ const bool GameTile::hasOnSwitch() const {
 
 const bool GameTile::hasSwitch() const {
 
-    const bool isSwitch = (base.drawInfo.spriteModifier == TileModifiers::SwitchOn) ||
-                          (base.drawInfo.spriteModifier == TileModifiers::SwitchOff);
+    const bool isSwitch = (base.drawInfo.spriteModifier & TileModifiers::SwitchOn) ||
+                          (base.drawInfo.spriteModifier & TileModifiers::SwitchOff);
 
     return (isCorner() && isSwitch);
 }

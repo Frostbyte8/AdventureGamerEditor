@@ -164,7 +164,7 @@ class GameTile {
                     base.drawInfo.spriteIndex    = sprite & 15;
                     base.drawInfo.spriteModifier = (sprite & 240) >> 4;
 
-                    if((base.drawInfo.spriteModifier == TileModifiers::GateClosed) && 
+                    if((base.drawInfo.spriteModifier & TileModifiers::GateClosed) && 
                       (base.drawInfo.spriteIndex == RoadTypes::StraightawayHorizontal || 
                        base.drawInfo.spriteIndex == RoadTypes::StraightawayVertical)) {
 
