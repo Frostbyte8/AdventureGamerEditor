@@ -36,7 +36,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     caption = LM_toUTF8("QualitiesTabLabel", langMap);
     qualitiesTab = reinterpret_cast<EditObjectQualitiesTab*>(
-        tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap, parentWindow), caption));
+        tabControl.AddTabPage(new EditObjectQualitiesTab(gameMap, parentWindow, this), caption));
 
     caption = LM_toUTF8("EffectsTabLabel", langMap);
     effectsTab = reinterpret_cast<EditObjectEffectsTab*>(
@@ -44,7 +44,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
     caption = LM_toUTF8("LocationsTabLabel", langMap);
     locationsTab = reinterpret_cast<EditObjectLocationsTab*>(
-        tabControl.AddTabPage(new EditObjectLocationsTab(gameMap, parentWindow), caption));
+        tabControl.AddTabPage(new EditObjectLocationsTab(gameMap, parentWindow, this), caption));
 
     // We also need to create the Ok, Cancel and Apply buttons too.
 

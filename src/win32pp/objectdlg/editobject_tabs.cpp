@@ -296,6 +296,7 @@ void EditObjectQualitiesTab::flagsChanged(const WORD& ctrlID, const WORD& ctrlAc
         }
 
         txtProperties[0].EnableWindow(!isChecked);
+        dialogInterface->fixedLocationToggled(isChecked);
 
     } 
     else if (ctrlID == QualitiesTab::ControlIDs::Money) {
@@ -769,6 +770,8 @@ void EditObjectLocationsTab::canBeHeldByEntities(const BOOL canHold) {
 
     btnLocatedAt[1].EnableWindow(canHold);
     btnLocatedAt[2].EnableWindow(canHold);
+
+    
 
     if (!canHold) {
         locatedAtChanged(LocationsTab::ControlIDs::OnGround, BN_CLICKED);

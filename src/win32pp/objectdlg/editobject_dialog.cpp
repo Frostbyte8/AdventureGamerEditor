@@ -165,8 +165,6 @@ LRESULT EditObjectDialog::onSize(WPARAM& wParam, LPARAM& lParam) {
 
 }
 
-
-
 ///----------------------------------------------------------------------------
 /// WndProc - Window Procedure for the Frame.
 /// Refer to the Win32++ documentation for more information.
@@ -179,6 +177,10 @@ LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
     }
 
     return WndProcDefault(msg, wParam, lParam);
+}
+
+void EditObjectDialog::fixedLocationToggled(const bool& enabled) {
+    locationsTab->canBeHeldByEntities(!enabled);
 }
 
 //=============================================================================

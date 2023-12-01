@@ -14,6 +14,7 @@
 #include "../../model/gamemap.h"
 
 #include "../editdialog_base.h"
+#include "editobject_interface.h"
 
 namespace EditObjectDialogConstants {
 
@@ -128,7 +129,7 @@ class EOTabViewBase : public CWnd {
         
         LONG pageWidth;
         LONG pageHeight;
-        EditDialogBase*     parentWindow;
+        EditDialogBase*         parentWindow;
 
 };
 
@@ -179,7 +180,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
     public:
 
         // Constructor
-        EditObjectQualitiesTab(const GameMap* inGameMap, EditDialogBase* inParent) : EOTabViewBase(inParent), gameMap(inGameMap) { }
+        EditObjectQualitiesTab(const GameMap* inGameMap, EditDialogBase* inParent, EditObjectInterface* inInterface) : EOTabViewBase(inParent), gameMap(inGameMap), dialogInterface(inInterface) { }
 
         const BOOL isFixedFlagChecked() const {
             return btnFlags[6].GetCheck() == BST_CHECKED;
@@ -203,6 +204,7 @@ class EditObjectQualitiesTab : public EOTabViewBase {
         void flagsChanged(const WORD& ctrlID, const WORD& ctrlAction);
         void updatePropertyValue(const WORD& ctrlID);
 
+        EditObjectInterface*    dialogInterface;
         const GameMap*          gameMap;
 
         CButton                 grpFlags;
@@ -271,7 +273,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
     public:
 
         // Constructor
-        EditObjectLocationsTab(const GameMap* inGameMap, EditDialogBase* inParent) : EOTabViewBase(inParent), gameMap(inGameMap) {}
+        EditObjectLocationsTab(const GameMap* inGameMap, EditDialogBase* inParent, EditObjectInterface* inInterface) : EOTabViewBase(inParent), gameMap(inGameMap), dialogInterface(inInterface) {}
 
         // Pure Virtual Functions (implemented)
         virtual void calculatePageWidth(const WindowMetrics& windowMetrics);
@@ -293,6 +295,7 @@ class EditObjectLocationsTab : public EOTabViewBase {
         inline void locatedAtChanged(const WORD& ctrlID, const WORD& ctrlAction);
         inline void toggleUnlocksDoor(const BOOL& doesUnlock);
 
+        EditObjectInterface*    dialogInterface;
         const GameMap*          gameMap;
 
         CButton                 grpLocations;

@@ -305,8 +305,8 @@ class GameObject {
 
                     // Update cached location information
 
-                    base.x = -1;
-                    base.y = -1;
+                    base.x = 0;
+                    base.y = 0;
                     base.flags2 |= GameObjectFlags2::NotOnGround; // Set this if it isn't set already
                     base.isLocated = GameObjectConstants::LocatedOnPlayer;
                     base.creatureID = GameObjectConstants::NotOnCreature;

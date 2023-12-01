@@ -13,10 +13,11 @@
 #include "../../interface/mainwindow_interface.h"
 #include "editobject_tabviews.h"
 #include "../editdialog_base.h"
+#include "editobject_interface.h"
 
 // TODO: Minimum Size and Maximum Size
 
-class EditObjectDialog : public EditDialogBase {
+class EditObjectDialog : public EditDialogBase, public EditObjectInterface {
 
     public:
 
@@ -30,6 +31,8 @@ class EditObjectDialog : public EditDialogBase {
 
         // Mutators
         void setObjectToEdit(const GameObject& gameObject);
+
+        void fixedLocationToggled(const bool& enabled);
 
     protected:
 
