@@ -51,8 +51,8 @@ const std::string EditStoryDialog::getSummary() {
 
 void EditStoryDialog::setStoryAndSummary(const std::string& inStoryText, const std::string& inSummaryText) {
     if(txtStory.IsWindow()) {
-        txtStory.SetWindowText(AtoW(inStoryText.c_str()));
-        txtSummary.SetWindowText(AtoW(inSummaryText.c_str()));
+        txtStory.SetWindowText(AtoT(inStoryText.c_str()));
+        txtSummary.SetWindowText(AtoT(inSummaryText.c_str()));
     }
 }
 
@@ -134,7 +134,7 @@ int EditStoryDialog::OnCreate(CREATESTRUCT& cs) {
 
 void EditStoryDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditStoryDialog";
+    wc.lpszClassName = _T("EditStoryDialog");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -149,8 +149,8 @@ void EditStoryDialog::PreRegisterClass(WNDCLASS& wc) {
 ///----------------------------------------------------------------------------
 
 bool EditStoryDialog::trySaveData() {
-    storyText = WtoA(txtStory.GetWindowText().Left(GameMapConstants::MaxStoryText));
-    summaryText = WtoA(txtSummary.GetWindowText().Left(GameMapConstants::MaxSummaryText));
+    storyText = TtoA(txtStory.GetWindowText().Left(GameMapConstants::MaxStoryText));
+    summaryText = TtoA(txtSummary.GetWindowText().Left(GameMapConstants::MaxSummaryText));
     return true;
 }
 

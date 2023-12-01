@@ -48,13 +48,13 @@
             LanguageMapper::getInstance().tryLoadLangauge("", "");
         }
         catch(json::parsing_error) {
-            MessageBox(NULL, L"Could not parse lang_en.json.", L"Parsing error", MB_ICONERROR);
+            MessageBox(NULL, _T("Could not parse lang_en.json."), _T("Parsing error"), MB_ICONERROR);
         }
 
         if(!LanguageMapper::getInstance().isLoaded()) {
             const int retVal = MessageBox(NULL,
-                                         L"The language mapper was unable to load lang_en.json. Continue without Language support?",
-                                         L"Could not load language",
+                                         _T("The language mapper was unable to load lang_en.json. Continue without Language support?"),
+                                         _T("Could not load language"),
                                          MB_ICONERROR | MB_YESNO);
             if(retVal == IDNO) {
                 return 0;

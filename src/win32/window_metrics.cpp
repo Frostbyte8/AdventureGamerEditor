@@ -26,7 +26,9 @@ WindowMetrics::WindowMetrics() : fontHDC(NULL), currentFont(NULL),
 	GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&osVer));
 
 #pragma warning( pop )
-	
+#ifdef __WIN9X_COMPAT__
+    SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0);
+#else
 	if(osVer.dwMajorVersion < 6) {
 		ncm.cbSize -= sizeof(int);
 		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm) - sizeof(int),
@@ -36,6 +38,7 @@ WindowMetrics::WindowMetrics() : fontHDC(NULL), currentFont(NULL),
 		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm),
 							 &ncm, 0);
 	}
+#endif
 
     // Get Necessary Metrics to determine Dialog Metrics
     TEXTMETRIC tm;
@@ -208,7 +211,11 @@ HFONT WindowMetrics::GetCurrentFont() const {
 /// @return int number of pixels
 ///----------------------------------------------------------------------------
 
+#ifdef __WIN9X_COMPAT__
+LONG WindowMetrics::CalculateStringWidth(const std::string& str) const {
+#else
 LONG WindowMetrics::CalculateStringWidth(const std::wstring& str) const {
+#endif
     SIZE size;
     GetTextExtentPoint32(fontHDC, str.c_str(), str.length(), &size);
     return size.cx;

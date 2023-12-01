@@ -76,6 +76,65 @@ bool CAnsiEdit::OnChar(const wchar_t& ch, const LONG& keyData) {
 /// strips out characters that are not part of the ANSI range.
 ///-----------------------------------------------------------------------------
 
+#ifdef __WIN9X_COMPAT__
+
+void CAnsiEdit::OnPaste() {
+
+    if(IsClipboardFormatAvailable(CF_UNICODETEXT)) {
+        
+        OpenClipboard(GetHwnd());
+
+        char* data = NULL;
+        HGLOBAL hGlobal;
+
+        std::string pastedString;
+
+        // Attempt to get the data held in the clipboard.
+        if((hGlobal = reinterpret_cast<char*>(GetClipboardData(CF_UNICODETEXT)))) {
+
+            // Get the data, and convert it to a wstring.
+            data = reinterpret_cast<char*>(GlobalLock(hGlobal));
+            pastedString = std::string(data);
+
+            // Strip out non-ANSI characters
+            for(size_t i = 0; i < pastedString.length(); ) {
+                
+                /*
+                if(!Frost::isCharANSI(pastedString.at(i))) {
+                    pastedString.erase(i, 1);
+                    continue;
+                }
+                else {
+                    bool strChanged = false;
+                    for (std::string::iterator it = disallowedChars.begin(); it != disallowedChars.end(); ++it) {
+                        if (pastedString.at(i) == *it) {
+                            pastedString.erase(i, 1);
+                            strChanged = true;
+                            break;
+                        }
+                    }
+
+                    if(strChanged) {
+                        continue;
+                    }
+
+                }
+                i++;
+                */
+
+            }
+            
+            // add results.
+            this->ReplaceSel(pastedString.c_str(), TRUE);
+        }
+
+        CloseClipboard();
+
+    }
+}
+
+#else 
+
 void CAnsiEdit::OnPaste() {
 
     if(IsClipboardFormatAvailable(CF_UNICODETEXT)) {
@@ -84,6 +143,7 @@ void CAnsiEdit::OnPaste() {
 
         wchar_t* data = NULL;
         HGLOBAL hGlobal;
+
         std::wstring pastedString;
 
         // Attempt to get the data held in the clipboard.
@@ -127,3 +187,4 @@ void CAnsiEdit::OnPaste() {
 
     }
 }
+#endif

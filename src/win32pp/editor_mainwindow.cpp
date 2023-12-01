@@ -293,7 +293,7 @@ bool MainWindowFrame::loadTileSet() {
     // TODO: tileset should be loaded to a temp BMP that is transfered over once it loads
     // successfully.
 
-    tilesetBMP.LoadImage(L"tileset.bmp", LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+    tilesetBMP.LoadImage(_T("tileset.bmp"), LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
     if(!tilesetBMP.GetHandle()) {
         return false;
@@ -307,11 +307,11 @@ bool MainWindowFrame::loadTileSet() {
 
     // TODO: Error messages
     if(tempWidth - tileWidth != 0) {
-        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+        MessageBox(_T("Bitmap is not perfectly divisible by 16."), _T(""), MB_ICONWARNING | MB_OK);
     }
 
     if(tempHeight - tileHeight != 0) {
-        MessageBox(L"Bitmap is not perfectly divisible by 16.", L"", MB_ICONWARNING | MB_OK);
+        MessageBox(_T("Bitmap is not perfectly divisible by 16."), _T(""), MB_ICONWARNING | MB_OK);
     }
 
 
@@ -381,7 +381,7 @@ void MainWindowFrame::updateStatusbar(const int& index) {
         const int currentCol = gameWorldController->getSelectedCol();
         const GameTile& currentTile = gameWorldController->getGameMap()->getTile(index);
 
-        newCaption.Format(L"(%d, %d) - ", currentCol, currentRow);
+        newCaption.Format(_T("(%d, %d) - "), currentCol, currentRow);
         newCaption += currentTile.getName().c_str();
 
     }
@@ -529,7 +529,13 @@ void MainWindowFrame::onHelpRequested() {
     // Obtain the current file path
 
     const DWORD bufferLength = GetCurrentDirectory(0, NULL);
+
+#ifdef __WIN9X_COMPAT__
+    char* filePath = new char[bufferLength+2];
+#else 
     wchar_t* filePath = new wchar_t[bufferLength+2];
+#endif 
+
     const DWORD retVal = GetCurrentDirectory(bufferLength, &filePath[0]);
 
     LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -541,13 +547,19 @@ void MainWindowFrame::onHelpRequested() {
                             langMap.get("ErrCouldNotGetFilePathTitle"));
     }
 
+#ifdef __WIN9X_COMPAT__
+    std::string fileName(filePath);
+#else 
     std::wstring fileName(filePath);
+#endif 
+
+    
     delete[] filePath;
     filePath = NULL;
 
     // Set our file name, verify it exists, then open it.
 
-    fileName.append(L"\\en_help.html");    
+    fileName.append(_T("\\en_help.html"));
 
     if(!Frost::doesFileExist(fileName)) {
 
@@ -557,7 +569,7 @@ void MainWindowFrame::onHelpRequested() {
 
         // This appears to work, but if I'm wrong, you should contact me!
 
-        messageText.append(WtoA(fileName.c_str(), CP_UTF8).c_str());
+        messageText.append(TtoA(fileName.c_str(), CP_UTF8).c_str());
 
         displayErrorMessage(messageText, messageTitle);
 
@@ -568,7 +580,7 @@ void MainWindowFrame::onHelpRequested() {
     // for compatibility reasons. It also just says greater than 32 means
     // success.
     
-    const HINSTANCE hInst = ShellExecute(NULL, L"open", fileName.c_str(), NULL, NULL, SW_SHOW);
+    const HINSTANCE hInst = ShellExecute(NULL, _T("open"), fileName.c_str(), NULL, NULL, SW_SHOW);
 
     if(reinterpret_cast<INT_PTR>(hInst) < 32) {
         displayErrorMessage(langMap.get("ErrUnableToOpenHelpText"),

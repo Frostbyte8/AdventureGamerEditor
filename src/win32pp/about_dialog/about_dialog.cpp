@@ -82,7 +82,7 @@ int AboutDialog::OnCreate(CREATESTRUCT& cs) {
     txtCredits.SetWindowText(caption);
     
     caption = LM_toUTF8("OKButton", langMap);
-    btnOkay.SetWindowTextW(caption);
+    btnOkay.SetWindowText(caption);
     btnOkay.SetDlgCtrlID(IDOK);
 
     createDefaultDialogButtons(true);
@@ -102,7 +102,7 @@ int AboutDialog::OnCreate(CREATESTRUCT& cs) {
 
 void AboutDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"About Dialog";
+    wc.lpszClassName = _T("About Dialog");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 

@@ -266,12 +266,13 @@ LRESULT GameMapPanel::onRButtonDown(const WORD& xPos, const WORD& yPos) {
     if(HIWORD(GetKeyState(VK_LSHIFT)) != 0) {
         
         if(gameWorldController->getGameMap()->isRowColInMapBounds(row, col)) {
-
+            
+            /*
             GameTile::DrawInfo di = gameWorldController->getGameMap()->getTile(gameWorldController->getGameMap()->indexFromRowCol(row, col)).getDrawInfo();
-
             wchar_t debug[256];
             wsprintf(debug, L"Indx: %d\n Modi: %d\n Dark: %d\n", di.spriteIndex, di.spriteModifier, di.dark);
             OutputDebugString(debug);
+            */
             return 0;
         }
 

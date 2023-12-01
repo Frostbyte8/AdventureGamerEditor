@@ -73,7 +73,7 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
 void EditCharacterDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditCharacterDialog";
+    wc.lpszClassName = _T("EditCharacterDialog");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -276,7 +276,7 @@ int EditCharacterDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditCharacterDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditCharacterDescriptionsTab";
+    wc.lpszClassName = _T("EditCharacterDescriptionsTab");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -293,7 +293,7 @@ void EditCharacterDescriptionsTab::calculatePageWidth(const WindowMetrics& windo
 
     for (int i = 0; i < GameCharacterDescriptions::NumAllDescriptions; ++i) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
-            lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
+            lblDescriptions[i].GetWindowText().c_str()), pageWidth);
     }
 
     // And we need to makes sure that we indicate that there is a margin for the group box
@@ -458,7 +458,7 @@ int EditCharacterQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditCharacterQualitiesTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditCharacterQualitiesTab";
+    wc.lpszClassName = _T("EditCharacterQualitiesTab");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -478,15 +478,15 @@ void EditCharacterQualitiesTab::calculatePageWidth(const WindowMetrics& windowMe
 
     for (int i = 0; i < GameCharacterFlags::NumFlags; ++i) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
-            btnFlags[i].GetWindowTextW().c_str()) + checkboxWidth,
+            btnFlags[i].GetWindowText().c_str()) + checkboxWidth,
             pageWidth);
     }
 
     pageWidth = std::max(windowMetrics.CalculateStringWidth(
-        lblMoney.GetWindowTextW().c_str()), pageWidth);
+        lblMoney.GetWindowText().c_str()), pageWidth);
 
     pageWidth = std::max(windowMetrics.CalculateStringWidth(
-        lblType.GetWindowTextW().c_str()), pageWidth);
+        lblType.GetWindowText().c_str()), pageWidth);
 
 }
 
@@ -629,7 +629,7 @@ int EditCharacterAttributesTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditCharacterAttributesTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditCharacterAttributesTab";
+    wc.lpszClassName = _T("EditCharacterAttributesTab");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -647,7 +647,7 @@ void EditCharacterAttributesTab::calculatePageWidth(const WindowMetrics& windowM
 
     for (int i = 0; i < AttributeTypes::NumTypesForCharacters; ++i) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
-            lblAttribType[i].GetWindowTextW().c_str()), pageWidth);
+            lblAttribType[i].GetWindowText().c_str()), pageWidth);
     }
 
     pageWidth += CS.XGROUPBOX_MARGIN * 2;
@@ -763,7 +763,7 @@ int EditCharacterMiscTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditCharacterMiscTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditCharacterMiscTab";
+    wc.lpszClassName = _T("EditCharacterMiscTab");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -799,8 +799,8 @@ void EditCharacterMiscTab::moveControls(const WindowMetrics& windowMetrics) {
     // Numbers tend to be fixed-width in size, so 4 digits is how much we'll
     // calculate for
 
-    const int coordWidth = windowMetrics.CalculateStringWidth(L"MM");
-    const int txtWidth = windowMetrics.CalculateStringWidth(L"0000");
+    const int coordWidth = windowMetrics.CalculateStringWidth(_T("MM"));
+    const int txtWidth = windowMetrics.CalculateStringWidth(_T("0000"));
 
     for (int i = 0; i < 2; ++i) {
         lblCoords[i].MoveWindow(cPos.x, cPos.y, coordWidth, CD.YTEXTBOX_ONE_LINE_ALONE);

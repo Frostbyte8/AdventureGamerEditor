@@ -34,8 +34,8 @@ void ResizeWorldDialog::setWorldDimensions(const int& currentWidth, const int& c
 
     if (txtDimensions[0].IsWindow()) {
 
-        txtDimensions[0].SetWindowText(AtoW(std::to_string(currentWidth).c_str()));
-        txtDimensions[1].SetWindowText(AtoW(std::to_string(currentHeight).c_str()));
+        txtDimensions[0].SetWindowText(AtoT(std::to_string(currentWidth).c_str()));
+        txtDimensions[1].SetWindowText(AtoT(std::to_string(currentHeight).c_str()));
 
     }
 
@@ -135,7 +135,7 @@ int ResizeWorldDialog::OnCreate(CREATESTRUCT& cs) {
 
 void ResizeWorldDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"ResizeWorldDialog";
+    wc.lpszClassName = _T("ResizeWorldDialog");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -224,8 +224,8 @@ bool ResizeWorldDialog::trySaveData() {
         return false;
     }
 
-    const int newWorldWidth     = std::stoi(WtoA(txtDimensions[0].GetWindowText()).c_str());
-    const int newWorldHeight    = std::stoi(WtoA(txtDimensions[1].GetWindowText()).c_str());
+    const int newWorldWidth     = std::stoi(TtoA(txtDimensions[0].GetWindowText()).c_str());
+    const int newWorldHeight    = std::stoi(TtoA(txtDimensions[1].GetWindowText()).c_str());
 
     if(newWorldWidth < worldWidth || newWorldHeight < worldHeight) {
         LanguageMapper& langMap = LanguageMapper::getInstance();
@@ -268,7 +268,7 @@ LONG ResizeWorldDialog::calculateWindowWidth() {
 
     for (int i = 0; i < 2; ++i) {
         contentWidth = std::max(windowMetrics.CalculateStringWidth(
-            lblDimenions[i].GetWindowTextW().c_str()), contentWidth);
+            lblDimenions[i].GetWindowText().c_str()), contentWidth);
     }
 
     // Include margins

@@ -50,8 +50,8 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 # Options
 #------------------------------------------------------------------------------
 
-option(WINDOWS9X_COMPAT "Extra Windows 98/ME compatibility checks? (Currently Unused)" NO)
-option(WINDOWS2K_COMPAT "Extra Windows 2000 compatibility checks? (Currently Unused)" NO)
+option(__WIN9X_COMPAT__ "Extra Windows 98/ME compatibility checks? (Requires Visual C++ 2005" NO)
+option(__WIN2K_COMPAT__ "Extra Windows 2000 compatibility checks? (Currently Unused)" NO)
 
 if(MSVC)
     option(NO_ALLBUILD "Remove 'All Build' from project file" NO)

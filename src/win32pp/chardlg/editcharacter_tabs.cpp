@@ -57,22 +57,22 @@ BOOL EditCharacterDescriptionsTab::OnCommand(WPARAM wParam, LPARAM lParam) {
 void EditCharacterDescriptionsTab::insertData(GameCharacter::Builder& builder) {
 
     CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameCharacterConstants::MaxCharacterName);
-    builder.description(WtoA(wideDesc).c_str(), 0);
+    builder.description(TtoA(wideDesc).c_str(), 0);
 
     wideDesc = txtDescriptions[1].GetWindowText().Left(GameCharacterConstants::MaxDescriptionLength);
-    builder.description(WtoA(wideDesc).c_str(), 1);
+    builder.description(TtoA(wideDesc).c_str(), 1);
 
     wideDesc = txtDescriptions[2].GetWindowText().Left(GameCharacterConstants::MaxFightText);
-    builder.description(WtoA(wideDesc).c_str(), 2);
+    builder.description(TtoA(wideDesc).c_str(), 2);
 
     wideDesc = txtDescriptions[3].GetWindowText().Left(GameCharacterConstants::MaxDeathText);
-    builder.description(WtoA(wideDesc).c_str(), 3);
+    builder.description(TtoA(wideDesc).c_str(), 3);
 
     wideDesc = txtDescriptions[4].GetWindowText();
-    builder.description(WtoA(wideDesc).c_str(), 4);
+    builder.description(TtoA(wideDesc).c_str(), 4);
 
     wideDesc = txtDescriptions[5].GetWindowText();
-    builder.description(WtoA(wideDesc).c_str(), 5);
+    builder.description(TtoA(wideDesc).c_str(), 5);
 
 }
 
@@ -148,7 +148,7 @@ BOOL EditCharacterQualitiesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
             int newValue = AdventureGamerConstants::MinAmountOfMoney;
 
             try {
-                newValue = std::stoi(WtoA(txtMoney.GetWindowText()).c_str());
+                newValue = std::stoi(TtoA(txtMoney.GetWindowText()).c_str());
             } catch (const std::invalid_argument&) {
                 int newValue = AdventureGamerConstants::MinAmountOfMoney;
             } catch (const std::out_of_range&) {
@@ -279,7 +279,7 @@ BOOL EditCharacterAttributesTab::OnCommand(WPARAM wParam, LPARAM lParam) {
                 int newValue = AdventureGamerConstants::MinAttributeValue;
 
                 try {
-                    newValue = std::stoi(WtoA(txtAttribType[index].GetWindowText()).c_str());
+                    newValue = std::stoi(TtoA(txtAttribType[index].GetWindowText()).c_str());
                 } catch (const std::invalid_argument&) {
                     newValue = AdventureGamerConstants::MinAttributeValue;
                 } catch (const std::out_of_range&) {
@@ -321,7 +321,7 @@ void EditCharacterAttributesTab::insertData(GameCharacter::Builder& builder) {
         // this should not fail.
         try {
 #endif // _DEBUG
-            amount = std::stoi(WtoA(txtAttribType[i].GetWindowText()).c_str());
+            amount = std::stoi(TtoA(txtAttribType[i].GetWindowText()).c_str());
 #ifdef _DEBUG
         } catch (const std::invalid_argument&) {
             assert(0);
@@ -416,8 +416,8 @@ void EditCharacterMiscTab::insertData(GameCharacter::Builder& builder) {
     // this should not fail.
     try {
 #endif // _DEBUG
-        groundX = std::stoi(WtoA(txtCoords[0].GetWindowText()).c_str());
-        groundY = std::stoi(WtoA(txtCoords[1].GetWindowText()).c_str());
+        groundX = std::stoi(TtoA(txtCoords[0].GetWindowText()).c_str());
+        groundY = std::stoi(TtoA(txtCoords[1].GetWindowText()).c_str());
 #ifdef _DEBUG
     } catch (const std::invalid_argument&) {
         assert(0);
@@ -446,7 +446,7 @@ void EditCharacterMiscTab::populateFields(const GameCharacter& gameCharacter) {
     const size_t oiSize = objectIndices.size();
 
     for (size_t i = 0; i < oiSize; ++i) {
-        lsbInventory.AddString(AtoW(gameObjects[objectIndices[i]].getName().c_str()));
+        lsbInventory.AddString(AtoT(gameObjects[objectIndices[i]].getName().c_str()));
     }
 
 }

@@ -57,11 +57,11 @@ void EditObjectDescriptionsTab::insertData(GameObject::Builder& builder) {
     // do the string capping.
 
     CString wideDesc = txtDescriptions[0].GetWindowText().Left(GameObjectConstants::MaxNameLength);
-    builder.description(WtoA(wideDesc).c_str(), 0);
+    builder.description(TtoA(wideDesc).c_str(), 0);
 
     for (int i = 1; i < 6; ++i) {
         wideDesc = txtDescriptions[i].GetWindowText().Left(GameObjectConstants::MaxDescriptionLength);
-        builder.description(WtoA(wideDesc).c_str(), i);
+        builder.description(TtoA(wideDesc).c_str(), i);
     }
 
 }
@@ -358,7 +358,7 @@ void EditObjectQualitiesTab::updatePropertyValue(const WORD& ctrlID) {
     int newValue = 0;
 
     try {
-        newValue = std::stoi(WtoA(txtProperties[ctrlIndex].GetWindowText()).c_str());
+        newValue = std::stoi(TtoA(txtProperties[ctrlIndex].GetWindowText()).c_str());
     } catch (const std::invalid_argument&) {} catch (const std::out_of_range&) {}
 
     spnProperties[ctrlIndex].SetPos(newValue);
@@ -433,8 +433,8 @@ void EditObjectEffectsTab::insertData(GameObject::Builder& builder) {
         try {
 #endif // _DEBUG
 
-            baseAmount = std::stoi(WtoA(txtAttribAmount[i * 2].GetWindowText()).c_str());
-            randAmount = std::stoi(WtoA(txtAttribAmount[(i * 2) + 1].GetWindowText()).c_str());
+            baseAmount = std::stoi(TtoA(txtAttribAmount[i * 2].GetWindowText()).c_str());
+            randAmount = std::stoi(TtoA(txtAttribAmount[(i * 2) + 1].GetWindowText()).c_str());
 
 #ifdef _DEBUG
         } catch (const std::invalid_argument&) {
@@ -514,7 +514,7 @@ void EditObjectEffectsTab::updateAttributeValue(const WORD& ctrlID) {
     int newValue = AdventureGamerConstants::MinAttributeValue;
 
     try {
-        newValue = std::stoi(WtoA(txtAttribAmount[ctrlIndex].GetWindowText()).c_str());
+        newValue = std::stoi(TtoA(txtAttribAmount[ctrlIndex].GetWindowText()).c_str());
     } catch (const std::invalid_argument&) {} catch (const std::out_of_range&) {}
 
     spnAttribAmount[ctrlIndex].SetPos(newValue);
@@ -578,8 +578,8 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
         try {
 #endif // _DEBUG
 
-            int groundX = std::stoi(WtoA(txtGroundCoord[0].GetWindowText()).c_str());
-            int groundY = std::stoi(WtoA(txtGroundCoord[1].GetWindowText()).c_str());
+            int groundX = std::stoi(TtoA(txtGroundCoord[0].GetWindowText()).c_str());
+            int groundY = std::stoi(TtoA(txtGroundCoord[1].GetWindowText()).c_str());
             builder.location(groundX, groundY);
 
 #ifdef _DEBUG
@@ -617,8 +617,8 @@ void EditObjectLocationsTab::insertData(GameObject::Builder& builder) {
         try {
 #endif // _DEBUG
 
-            doorX = std::stoi(WtoA(txtDoorCoord[0].GetWindowText()).c_str());
-            doorY = std::stoi(WtoA(txtDoorCoord[1].GetWindowText()).c_str());
+            doorX = std::stoi(TtoA(txtDoorCoord[0].GetWindowText()).c_str());
+            doorY = std::stoi(TtoA(txtDoorCoord[1].GetWindowText()).c_str());
 
 #ifdef _DEBUG
         } catch (const std::invalid_argument&) {
@@ -655,16 +655,16 @@ void EditObjectLocationsTab::populateFields(const GameObject& gameObject, const 
     btnLocatedAt[isLocated].SetCheck(BST_CHECKED);
     locatedAtChanged(isLocated + LocationsTab::ControlIDs::OnGround, BN_CLICKED);
 
-    txtGroundCoord[0].SetWindowText(AtoW(std::to_string(
+    txtGroundCoord[0].SetWindowText(AtoT(std::to_string(
         gameObject.getX()).c_str()));
 
-    txtGroundCoord[1].SetWindowText(AtoW(std::to_string(
+    txtGroundCoord[1].SetWindowText(AtoT(std::to_string(
         gameObject.getY()).c_str()));
 
-    txtDoorCoord[0].SetWindowText(AtoW(std::to_string(
+    txtDoorCoord[0].SetWindowText(AtoT(std::to_string(
         gameObject.getDoorColumn()).c_str()));
 
-    txtDoorCoord[1].SetWindowText(AtoW(std::to_string(
+    txtDoorCoord[1].SetWindowText(AtoT(std::to_string(
         gameObject.getDoorRow()).c_str()));
 
     const BOOL unlocksDoor = gameObject.getFlags2() & GameObjectFlags2::Key ? TRUE : FALSE;

@@ -29,7 +29,7 @@ bool IntegerValidator::validate() {
         int value = 0;
 
         try {
-            value = std::stol(WtoA(window->GetWindowText()).c_str());
+            value = std::stol(TtoA(window->GetWindowText()).c_str());
         }
         catch (const std::invalid_argument) {
             lastError = errorCodes::InvalidData;
@@ -91,7 +91,7 @@ bool StringValidator::validate() {
 
                 field.MakeUpper();
 
-                if(!field.Compare(AtoW(startsWith[i].c_str(), CP_UTF8)) ) {
+                if(!field.Compare(AtoT(startsWith[i].c_str(), CP_UTF8)) ) {
                     return true;
                 }
             }
@@ -113,7 +113,7 @@ bool StringValidator::validate() {
 
                 field.MakeUpper();
 
-                if(!field.Compare(AtoW(endsWith[i].c_str(), CP_UTF8)) ) {
+                if(!field.Compare(AtoT(endsWith[i].c_str(), CP_UTF8)) ) {
                     return true;
                 }
             }

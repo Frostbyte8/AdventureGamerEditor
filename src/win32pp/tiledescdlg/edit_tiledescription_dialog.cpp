@@ -48,8 +48,8 @@ const std::string EditTileDescriptionDialog::getTileDescription() const {
 
 void EditTileDescriptionDialog::setTileDescription(const std::string& inName, const std::string& inDescription) {
     if(txtTileName.IsWindow()) {
-        txtTileName.SetWindowText(AtoW(inName.c_str()));
-        txtTileDescription.SetWindowText(AtoW(inDescription.c_str()));
+        txtTileName.SetWindowText(AtoT(inName.c_str()));
+        txtTileDescription.SetWindowText(AtoT(inDescription.c_str()));
     }
 }
 
@@ -132,7 +132,7 @@ int EditTileDescriptionDialog::OnCreate(CREATESTRUCT& cs) {
 
 void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditTileDescriptionDialog";
+    wc.lpszClassName = _T("EditTileDescriptionDialog");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -148,8 +148,8 @@ void EditTileDescriptionDialog::PreRegisterClass(WNDCLASS& wc) {
 
 bool EditTileDescriptionDialog::trySaveData() {
 
-    tileName = WtoA(txtTileName.GetWindowText().Left(GameMapConstants::MaxTileName));
-    tileDescription = WtoA(txtTileDescription.GetWindowText().Left(GameMapConstants::MaxTileDescription));
+    tileName = TtoA(txtTileName.GetWindowText().Left(GameMapConstants::MaxTileName));
+    tileDescription = TtoA(txtTileDescription.GetWindowText().Left(GameMapConstants::MaxTileDescription));
     
     return true;
 }

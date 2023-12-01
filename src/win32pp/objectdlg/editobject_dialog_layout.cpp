@@ -75,7 +75,7 @@ int EditObjectDialog::OnCreate(CREATESTRUCT& createStruct) {
 
 void EditObjectDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditObjectDialog";
+    wc.lpszClassName = _T("EditObjectDialog");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -288,7 +288,7 @@ int EditObjectDescriptionsTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditObjectDescriptionsTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditObjectDescriptionsTabPage";
+    wc.lpszClassName = _T("EditObjectDescriptionsTabPage");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -308,7 +308,7 @@ void EditObjectDescriptionsTab::calculatePageWidth(const WindowMetrics& windowMe
 
     for (int i = 0; i < GameObjectDescriptions::NumAllDescriptions; ++i) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
-            lblDescriptions[i].GetWindowTextW().c_str()), pageWidth);
+            lblDescriptions[i].GetWindowText().c_str()), pageWidth);
     }
 
     const WindowMetrics::ControlSpacing cs = windowMetrics.GetControlSpacing();
@@ -471,7 +471,7 @@ int EditObjectQualitiesTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditObjectQualitiesTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditObjectQualitiesTabPage";
+    wc.lpszClassName = _T("EditObjectQualitiesTabPage");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -491,7 +491,7 @@ void EditObjectQualitiesTab::calculatePageWidth(const WindowMetrics& windowMetri
 
     for (int i = 0; i < GameObjectFlags1::NumFlags; ++i) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
-            btnFlags[i].GetWindowTextW().c_str()) + checkboxWidth,
+            btnFlags[i].GetWindowText().c_str()) + checkboxWidth,
             pageWidth);
     }
 
@@ -506,7 +506,7 @@ void EditObjectQualitiesTab::calculatePageWidth(const WindowMetrics& windowMetri
 
     for (size_t j = 0; j < clSize; ++j) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
-            controlList[j]->GetWindowTextW().c_str()), pageWidth);
+            controlList[j]->GetWindowText().c_str()), pageWidth);
     }
 
     pageWidth += CS.XGROUPBOX_MARGIN * 2;
@@ -689,7 +689,7 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditObjectEffectsTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditObjectEffectsTabPage";
+    wc.lpszClassName = _T("EditObjectEffectsTabPage");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -711,7 +711,7 @@ void EditObjectEffectsTab::calculatePageWidth(const WindowMetrics& windowMetrics
     int typeWidth = 0;
 
     for (int i = 0; i < 5; ++i) {
-        const int textSize = windowMetrics.CalculateStringWidth(lblAttribType[i].GetWindowTextW().c_str());
+        const int textSize = windowMetrics.CalculateStringWidth(lblAttribType[i].GetWindowText().c_str());
         typeWidth = std::max(textSize, typeWidth);
     }
 
@@ -951,7 +951,7 @@ int EditObjectLocationsTab::OnCreate(CREATESTRUCT& cs) {
 
 void EditObjectLocationsTab::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditObjectLocationsTabPage";
+    wc.lpszClassName = _T("EditObjectLocationsTabPage");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -974,12 +974,12 @@ void EditObjectLocationsTab::calculatePageWidth(const WindowMetrics& windowMetri
 
     for (size_t j = 0; j < clSize; ++j) {
         pageWidth = std::max(windowMetrics.CalculateStringWidth(
-            controlList[j]->GetWindowTextW().c_str()),
+            controlList[j]->GetWindowText().c_str()),
             pageWidth);
     }
 
     const WindowMetrics::ControlDimensions CD = windowMetrics.GetControlDimensions();
-    LONG btnWidth = windowMetrics.CalculateStringWidth(btnUnlocksDoor.GetWindowTextW().c_str());
+    LONG btnWidth = windowMetrics.CalculateStringWidth(btnUnlocksDoor.GetWindowText().c_str());
     btnWidth += CD.XCHECKBOX + CD.XCHECKBOX_GAP;
 
     pageWidth = std::max(btnWidth, pageWidth);
@@ -1023,7 +1023,7 @@ void EditObjectLocationsTab::moveControls(const WindowMetrics& windowMetrics) {
     const WORD marginOffset = LOWORD(bothMargins) + HIWORD(bothMargins);
 
     // Even though we can only show 2 numbers, we'll make enough space for 3.
-    const LONG coordWidth = windowMetrics.CalculateStringWidth(L"000");
+    const LONG coordWidth = windowMetrics.CalculateStringWidth(_T("000"));
     RECT coordRC ={ 0, 0, coordWidth + marginOffset, 0 };
     AdjustWindowRectEx(&coordRC, 0, FALSE, WS_EX_CLIENTEDGE);
 

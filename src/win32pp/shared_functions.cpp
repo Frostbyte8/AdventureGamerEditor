@@ -77,18 +77,18 @@ bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool fin
 
     if (findIcon) {
 
-        CString dialogTitle = AtoW(langMap.get("CDBFindImageTitle").c_str(), CP_UTF8);
-        CString filterCaption = AtoW(langMap.get("CDBFindImageFilterText").c_str(), CP_UTF8);
-        filterCaption += L" (*.BMP;*.ICO)|*.BMP;*.ICO|";
+        CString dialogTitle = AtoT(langMap.get("CDBFindImageTitle").c_str(), CP_UTF8);
+        CString filterCaption = AtoT(langMap.get("CDBFindImageFilterText").c_str(), CP_UTF8);
+        filterCaption += _T(" (*.BMP;*.ICO)|*.BMP;*.ICO|");
 
         fileDialog.SetFilter(filterCaption);
         fileDialog.SetTitle(dialogTitle);
 
     } else {
 
-        CString dialogTitle = AtoW(langMap.get("CDBFindSoundTitle").c_str(), CP_UTF8);
-        CString filterCaption = AtoW(langMap.get("CDBFindSoundFilterText").c_str(), CP_UTF8);
-        filterCaption += L" (*.WAV)|*.WAV|";
+        CString dialogTitle = AtoT(langMap.get("CDBFindSoundTitle").c_str(), CP_UTF8);
+        CString filterCaption = AtoT(langMap.get("CDBFindSoundFilterText").c_str(), CP_UTF8);
+        filterCaption += _T(" (*.WAV)|*.WAV|");
 
         fileDialog.SetFilter(filterCaption);
         fileDialog.SetTitle(dialogTitle);
@@ -105,11 +105,11 @@ bool dlgOnBrowseForMedia(const CWnd& parentDialog, CEdit& txtOut, const bool fin
         GetShortPathName(fileDialog.GetPathName(), fileName.GetBuffer(strLength), strLength + 1);
         fileName.ReleaseBuffer();
 
-        const int lastSlash = fileName.ReverseFind(L"\\") + 1;
+        const int lastSlash = fileName.ReverseFind(_T("\\")) + 1;
         if (lastSlash < 0) {
 
-            CString errText = AtoW(langMap.get("ErrPathConversionText").c_str(), CP_UTF8);
-            CString errTitle = AtoW(langMap.get("ErrPathConversionTitle").c_str(), CP_UTF8);
+            CString errText = AtoT(langMap.get("ErrPathConversionText").c_str(), CP_UTF8);
+            CString errTitle = AtoT(langMap.get("ErrPathConversionTitle").c_str(), CP_UTF8);
 
             parentDialog.MessageBox(errText, errTitle, MB_OK | MB_ICONERROR);
             return false;

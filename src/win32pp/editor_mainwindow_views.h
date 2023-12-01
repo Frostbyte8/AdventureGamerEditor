@@ -34,7 +34,11 @@ class PanelBaseClass : public CWnd {
 
     protected:
 
+#ifdef __WIN9X_COMPAT__
+        const virtual std::string getClassName() const = 0;
+#else 
         const virtual std::wstring getClassName() const = 0;
+#endif
 
         virtual void PreRegisterClass(WNDCLASS& wc) {
             wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
@@ -44,7 +48,11 @@ class PanelBaseClass : public CWnd {
         }
 
     private:
+#ifdef __WIN9X_COMPAT__
+        std::string className;
+#else 
         std::wstring className;
+#endif
 
 };
 
@@ -52,7 +60,11 @@ class ScrollPanelBaseClass : public CScrollView {
 
     protected:
 
+#ifdef __WIN9X_COMPAT__
+        const virtual std::string getClassName() const = 0;
+#else 
         const virtual std::wstring getClassName() const = 0;
+#endif
         
         const virtual LONG getClassStyles() const { 
             return 0; 
@@ -75,7 +87,12 @@ class ScrollPanelBaseClass : public CScrollView {
         }
 
     private:
+
+#ifdef __WIN9X_COMPAT__
+        std::string className;
+#else 
         std::wstring className;
+#endif
 };
 
 //=============================================================================
@@ -108,7 +125,11 @@ class GameEntitiesPanel : public PanelBaseClass {
 
         virtual LRESULT WndProc(UINT msg, WPARAM wParam, LPARAM lParam);
 
+#ifdef __WIN9X_COMPAT__
+        const virtual std::string getClassName() const { return "GameEntitiesPanel"; }
+#else 
         const virtual std::wstring getClassName() const { return L"GameEntitiesPanel"; }
+#endif
 
 	private:
 
@@ -159,7 +180,11 @@ class EntitiesHerePanel : public PanelBaseClass {
         virtual int OnCreate(CREATESTRUCT& cs);
         virtual void PreCreate(CREATESTRUCT& cs);
         
+#ifdef __WIN9X_COMPAT__
+        const virtual std::string getClassName() const { return "EntitiesHerePanel"; }
+#else 
         const virtual std::wstring getClassName() const { return L"EntitiesHerePanel"; }
+#endif
 
     private:
 
@@ -196,7 +221,11 @@ class RoadPalettePanel : public ScrollPanelBaseClass {
 
     protected:
 
+#ifdef __WIN9X_COMPAT__
+        const virtual std::string getClassName() const { return "RoadPalettePanel"; }
+#else 
         const virtual std::wstring getClassName() const { return L"RoadPalettePanel"; }
+#endif
         
         virtual int     OnCreate(CREATESTRUCT& cs);
         virtual void    OnDraw(CDC& dc);
@@ -247,7 +276,12 @@ class GameMapPanel : public ScrollPanelBaseClass {
 
     protected:
 
+#ifdef __WIN9X_COMPAT__
+        const virtual std::string getClassName() const { return "GameMapPanel"; }
+#else 
         const virtual std::wstring getClassName() const { return L"GameMapPanel"; }
+#endif
+
         const LONG getClassStyles() const { return CS_DBLCLKS; }
 
         virtual int     OnCreate(CREATESTRUCT& cs);

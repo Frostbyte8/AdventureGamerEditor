@@ -64,8 +64,8 @@ class CTabClassic : public CTab {
 ///----------------------------------------------------------------------------
 
 inline void SetWindowTextFromStr(const std::string& str, CWnd& widget, CString& caption) {
-    caption = AtoW(str.c_str(), CP_UTF8);
-    widget.SetWindowTextW(caption);
+    caption = AtoT(str.c_str(), CP_UTF8);
+    widget.SetWindowText(caption);
 }
 
 #endif // __WIN32PP_EXTRAS_H__

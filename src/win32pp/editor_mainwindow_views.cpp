@@ -384,10 +384,10 @@ int EntitiesHerePanel::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     objectsHereGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
-    objectsHereGroup.SetWindowText(L"Objects Here");
+    objectsHereGroup.SetWindowText(_T("Objects Here"));
 
     charactersHereGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
-    charactersHereGroup.SetWindowText(L"Chars here");
+    charactersHereGroup.SetWindowText(_T("Chars here"));
 
     objectsHereListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
     charactersHereListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
@@ -444,7 +444,7 @@ void EntitiesHerePanel::updateCharacterList(const std::vector<GameCharacter>& ch
 
         LanguageMapper& langMap = LanguageMapper::getInstance();
         std::string playerTitle = langMap.get("PlayerStartName");
-        charactersHereListBox.AddString(AtoW(playerTitle.c_str(), CP_UTF8));
+        charactersHereListBox.AddString(AtoT(playerTitle.c_str(), CP_UTF8));
 
     }
 
@@ -453,7 +453,7 @@ void EntitiesHerePanel::updateCharacterList(const std::vector<GameCharacter>& ch
 
         for (size_t i = 0; i < charSize; ++i) {
 
-            charactersHereListBox.AddString(AtoW(characterList[i].getName().c_str(), CP_UTF8));
+            charactersHereListBox.AddString(AtoT(characterList[i].getName().c_str(), CP_UTF8));
         }
     }
 
@@ -473,7 +473,7 @@ void EntitiesHerePanel::updateObjectList(const std::vector<GameObject>& objectLi
 
         for (size_t i = 0; i < objSize; ++i) {
 
-            objectsHereListBox.AddString(AtoW(objectList[i].getName().c_str(), CP_UTF8));
+            objectsHereListBox.AddString(AtoT(objectList[i].getName().c_str(), CP_UTF8));
 
         }
     }

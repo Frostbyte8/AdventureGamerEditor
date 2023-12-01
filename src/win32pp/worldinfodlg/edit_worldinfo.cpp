@@ -201,7 +201,7 @@ int EditWorldInfoDialog::OnCreate(CREATESTRUCT& cs) {
 
 void EditWorldInfoDialog::PreRegisterClass(WNDCLASS& wc) {
     wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.lpszClassName = L"EditWorldInfoDialog";
+    wc.lpszClassName = _T("EditWorldInfoDialog");
     wc.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
 }
 
@@ -316,12 +316,12 @@ bool EditWorldInfoDialog::trySaveData() {
         return false;
     }
     
-    newGameInfo.setGameName(WtoA(txtProperties[0].GetWindowText()).c_str());
-    newGameInfo.setCurrencyName(WtoA(txtProperties[1].GetWindowText()).c_str());
+    newGameInfo.setGameName(TtoA(txtProperties[0].GetWindowText()).c_str());
+    newGameInfo.setCurrencyName(TtoA(txtProperties[1].GetWindowText()).c_str());
     
     for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
-        newGameInfo.setBaseAttribute(i, std::stoi(WtoA(txtAttributes[i].GetWindowText()).c_str()));
-        newGameInfo.setRandomAttribute(i, std::stoi(WtoA(txtRandomAttributes[i].GetWindowText()).c_str()));
+        newGameInfo.setBaseAttribute(i, std::stoi(TtoA(txtAttributes[i].GetWindowText()).c_str()));
+        newGameInfo.setRandomAttribute(i, std::stoi(TtoA(txtRandomAttributes[i].GetWindowText()).c_str()));
     }
        
     return true;
@@ -349,12 +349,12 @@ LONG EditWorldInfoDialog::calculateWindowWidth() {
 
     for(int i = 0; i < 2; ++i) {
         contentWidth = std::max(windowMetrics.CalculateStringWidth(
-                                lblProperties[i].GetWindowTextW().c_str()), contentWidth);
+                                lblProperties[i].GetWindowText().c_str()), contentWidth);
     }
 
     for(int i = 0; i < AttributeTypes::NumTypes; ++i) {
         contentWidth = std::max(windowMetrics.CalculateStringWidth(
-                                lblAttributes[i].GetWindowTextW().c_str()), contentWidth);
+                                lblAttributes[i].GetWindowText().c_str()), contentWidth);
     }
 
     contentWidth += CS.XGROUPBOX_MARGIN * 2;

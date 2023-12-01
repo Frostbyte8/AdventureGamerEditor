@@ -276,7 +276,7 @@ void MainWindowFrame::onDialogEnd(const int& whichDialogType) {
     }
 
     if(!IsWindowEnabled()) {
-        MessageBox(L"Debug: Had to force the window to re-enable itself. Was this intended?", L"Debug Message", MB_OK);
+        MessageBox(_T("Debug: Had to force the window to re-enable itself. Was this intended?"), _T("Debug Message"), MB_OK);
         EnableWindow();
         SetFocus();
     }
@@ -300,9 +300,9 @@ bool MainWindowFrame::doSaveOrOpenDialog(const BOOL& isOpen) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     filterText = LM_toUTF8("CDBAdvGamerFilterText", langMap);
-    filterText += L" (*.SG0)|*.SG0|";
+    filterText += _T(" (*.SG0)|*.SG0|");
 
-    CFileDialog fileDialog(isOpen, L"SG0", NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
+    CFileDialog fileDialog(isOpen, _T("SG0"), NULL, OFN_NOLONGNAMES | OFN_FILEMUSTEXIST,
                            filterText);
 
 
@@ -317,8 +317,8 @@ bool MainWindowFrame::doSaveOrOpenDialog(const BOOL& isOpen) {
 
     if (response == IDOK) {
 
-        std::string newPath = WtoA(fileDialog.GetFolderPath().c_str(), CP_UTF8);
-        std::string newFileName = WtoA(fileDialog.GetFileName().c_str(), CP_UTF8);
+        std::string newPath = TtoA(fileDialog.GetFolderPath().c_str(), CP_UTF8);
+        std::string newFileName = TtoA(fileDialog.GetFileName().c_str(), CP_UTF8);
 
         if(isOpen) {
             gameWorldController->tryFinishLoad(newPath, newFileName);
