@@ -376,6 +376,8 @@ bool MainWindowFrame::startEditObjectDialog(GameObject::Builder& objectBuilder, 
     editObjectDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
                              DIALOG_WS_STYLES);
 
+    editObjectDialog->SetStyle(editObjectDialog->GetStyle() & ~(WS_CHILD));
+
     if (!editObjectDialog->IsWindow()) {
         return false;
     }
@@ -434,6 +436,8 @@ bool MainWindowFrame::startEditCharacterDialog(GameCharacter::Builder& character
 
     editCharacterDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
                                 DIALOG_WS_STYLES);
+
+    editCharacterDialog->SetStyle(editCharacterDialog->GetStyle() & ~(WS_CHILD));
 
     if (!editCharacterDialog->IsWindow()) {
         return false;
@@ -495,6 +499,8 @@ bool MainWindowFrame::startEditTileDescriptionDialog(const std::string& name, co
     editTileDescriptionDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
                                       DIALOG_WS_STYLES);
 
+    editTileDescriptionDialog->SetStyle(editTileDescriptionDialog->GetStyle() & ~(WS_CHILD));
+
     if (!editTileDescriptionDialog->IsWindow()) {
         return false;
     }
@@ -542,6 +548,8 @@ bool MainWindowFrame::startEditStoryAndSummaryDialog(const std::string& story, c
 
     editStoryDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
                             DIALOG_WS_STYLES);
+
+    editStoryDialog->SetStyle(editStoryDialog->GetStyle() & ~(WS_CHILD));
 
     if (!editStoryDialog->IsWindow()) {
         return false;
@@ -592,6 +600,8 @@ bool MainWindowFrame::startEditWorldInfoDialog(const GameInfo& gameInfo) {
     editWorldInfoDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
                                 DIALOG_WS_STYLES);
 
+    editWorldInfoDialog->SetStyle(editWorldInfoDialog->GetStyle() & ~(WS_CHILD));
+
     if (!editWorldInfoDialog->IsWindow()) {
         return false;
     }
@@ -640,6 +650,8 @@ bool MainWindowFrame::startResizeWorldDialog(const int& numRows, const int& numC
 
     resizeWorldDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
                                 DIALOG_WS_STYLES);
+
+    resizeWorldDialog->SetStyle(resizeWorldDialog->GetStyle() & ~(WS_CHILD));
 
     if (!resizeWorldDialog->IsWindow()) {
         return false;
@@ -704,6 +716,8 @@ bool MainWindowFrame::startAboutDialog() {
 
     aboutDialog->Create(GetHwnd(), DIALOG_EX_STYLES,
                         DIALOG_WS_STYLES);
+
+    aboutDialog->SetStyle(aboutDialog->GetStyle() & ~(WS_CHILD));
 
     if (!aboutDialog->IsWindow()) {
         return false;
