@@ -13,10 +13,29 @@ WindowMetrics::WindowMetrics() : fontHDC(NULL), currentFont(NULL),
     // Obtain LOGFONT
     NONCLIENTMETRICS ncm;
     ZeroMemory(&ncm, sizeof(ncm));
+	ncm.cbSize = sizeof(ncm);
 
-    ncm.cbSize = sizeof(ncm);
-    SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS),
-                         &ncm, 0);
+	OSVERSIONINFOEX osVer;
+	ZeroMemory(&osVer, sizeof(osVer));
+	osVer.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+
+#pragma warning( push )
+#pragma warning( disable: 4996)
+
+    // TODO: Only use GetVersionEx for older compilers.
+	GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&osVer));
+
+#pragma warning( pop )
+	
+	if(osVer.dwMajorVersion < 6) {
+		ncm.cbSize -= sizeof(int);
+		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm) - sizeof(int),
+							 &ncm, 0);
+	}
+	else {
+		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm),
+							 &ncm, 0);
+	}
 
     // Get Necessary Metrics to determine Dialog Metrics
     TEXTMETRIC tm;
