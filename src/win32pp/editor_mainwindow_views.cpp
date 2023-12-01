@@ -677,7 +677,7 @@ void RoadPalettePanel::onDrawingTileChanged() {
 LRESULT RoadPalettePanel::onLButtonDown(const WORD &x, const WORD &y) {
 
     SCROLLINFO si ={ 0 };
-    si.cbSize = sizeof(SCROLLBARINFO);
+    si.cbSize = sizeof(SCROLLINFO);
     si.fMask = SIF_POS;
     GetScrollInfo(SB_VERT, si);
 
