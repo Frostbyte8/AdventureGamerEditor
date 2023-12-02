@@ -30,7 +30,7 @@ function attemptFix()
         end
 
     end--]]
-
+    
     if file_exists(fileName) == false then
         return
     end
@@ -50,7 +50,7 @@ function attemptFix()
     end
 
     slnFile:close()
-
+    
 end
 
 --if file_exists(".cmake_config_fix.lock") then

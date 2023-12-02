@@ -40,5 +40,6 @@ else
 
 end
 
-slnFile = "out/" .. projectName .. ".sln"
+slnFile = arg[1] .. "/" .. projectName .. ".sln"
+print(slnFile)
 io.popen("lua strip_sub.lua " .. slnFile)
