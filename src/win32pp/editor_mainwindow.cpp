@@ -210,6 +210,7 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
 void MainWindowFrame::OnInitialUpdate() {
     activeWindowHandle = GetHwnd();
+    DrawMenuBar();
 }
 
 
