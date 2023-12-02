@@ -1,3 +1,9 @@
+#if _MSC_VER >= 1500
+#ifdef __WIN9X_COMPAT__
+	#error Windows 98 compatiblity is only avaliable when compiling with Visual Studio 2005 or earlier.
+#endif //__WIN9X_COMPAT__
+#endif // _MSC_VER
+
 #ifndef __EDITOR_MAINWINDOW_H__
 #define __EDITOR_MAINWINDOW_H__
 

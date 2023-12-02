@@ -19,16 +19,27 @@ WindowMetrics::WindowMetrics() : fontHDC(NULL), currentFont(NULL),
 	ZeroMemory(&osVer, sizeof(osVer));
 	osVer.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
-#pragma warning( push )
-#pragma warning( disable: 4996)
+	// Starting with Visual Studio 2008, NONCLIENTMETRICS got an extra integer.
+	// So we need to shave that off. However, this check isn't necessary
+	// if we are compiling with an older MSVC like 2005, which contains
+	// the old size.
 
-    // TODO: Only use GetVersionEx for older compilers.
-	GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&osVer));
+	// The shaving of the extra integer is only necessary if the user is running
+	// a version of Windows earlier than Vista.
 
-#pragma warning( pop )
-#ifdef __WIN9X_COMPAT__
+#if _MSC_VER < 1500
     SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm), &ncm, 0);
 #else
+
+	// We're going to use this anyways because were not brain dead. :)
+
+	#pragma warning( push )
+	#pragma warning( disable: 4996)
+	GetVersionEx(reinterpret_cast<OSVERSIONINFO *>(&osVer));
+	#pragma warning( pop )
+
+	// TODO: There is a DPI compatible version of this in newer VCs. 
+
 	if(osVer.dwMajorVersion < 6) {
 		ncm.cbSize -= sizeof(int);
 		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm) - sizeof(int),
@@ -38,7 +49,9 @@ WindowMetrics::WindowMetrics() : fontHDC(NULL), currentFont(NULL),
 		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(ncm),
 							 &ncm, 0);
 	}
-#endif
+
+#endif // _MSC_VER
+
 
     // Get Necessary Metrics to determine Dialog Metrics
     TEXTMETRIC tm;

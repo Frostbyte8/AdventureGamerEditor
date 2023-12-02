@@ -7,8 +7,13 @@
 #define __WIN32_PP__ // Until another UI is made, we'll use this.
 #ifdef __WIN32_PP__
 
-#include "win32pp/advedit_app.h"
+#if _MSC_VER >= 1500
+#ifdef __WIN9X_COMPAT__
+	#error Windows 98 compatiblity is only avaliable when compiling with Visual Studio 2005 or earlier.
+#endif //__WIN9X_COMPAT__
+#endif // _MSC_VER
 
+#include "win32pp/advedit_app.h"
 
 #ifdef _DEBUG
 	int DebugRun() {
