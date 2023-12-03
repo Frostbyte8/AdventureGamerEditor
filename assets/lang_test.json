@@ -103,7 +103,7 @@
     "DescriptionTabLabel"               : "Descriptions",
     "QualitiesTabLabel"                 : "Qualities",
     "EffectsTabLabel"                   : "Effects",
-    "LocationsTabLabel"                 : "Locations",
+    "LocationsTabLabel"                 : "日本語 test string",
         
     "DescriptionsGroupLabel"            : "Descriptions",
     "ObjectNameLabel"                   : "Name",
@@ -114,7 +114,7 @@
     "ObjectSoundLabel"                  : "Sound File (Unused)",
         
     "FlagsGroupLabel"                   : "Flags",
-    "IsMasterKeyLabel"                  : "Is Master Key",
+    "IsMasterKeyLabel"                  : "Järnarmen",
     "IsInvisibleLabel"                  : "Is Invisible, and can only been seen with infrared vision",
     "IsLadderLabel"                     : "Can be used to climb obstacles",            
     "ProtectsPlayerLabel"               : "Protects player from invisible hazards",
@@ -123,7 +123,7 @@
     "IsFixedPosLabel"                   : "Cannot be moved from its location",
     "IsMoneyLabel"                      : "Is Money, and can only be used to buy other objects",
         
-    "PropertiesGroupLabel"              : "Properties",
+    "PropertiesGroupLabel"              : "Norrköping",
     "ObjectWorthLabel"                  : "Monetary Value",
     "ObjectNumUsesLabel"                : "Number of Uses",
     "ObjectHeldLabel"                   : "Can only be used when this object is held",
@@ -151,7 +151,7 @@
     "HearingUltrasonicOption"           : "Ultra-Sonic",
             
     "LocationsGroupLabel"               : "Locations",
-    "OnGroundAtLabel"                   : "On Ground At:",
+    "OnGroundAtLabel"                   : "España:",
     "PlayerStartsWithLabel"             : "Player starts with it",
     "CharacterHasItLabel"               : "Character has it",
     "UnlocksDoorAtLabel"                : "Object unlocks door at:",
@@ -184,8 +184,8 @@
     "CharacterWanders"                  : "Wanders when the player is not near",
     "CharacterStalksPlayer"             : "Follows player after seeing them",
         
-    "CharPropertiesGroup"               : "Properties",
-    "MoneyCharHas"                      : "Money",
+    "CharPropertiesGroup"               : "Dzień",
+    "MoneyCharHas"                      : "ハニー",
     "TypeOfCharacter"                   : "Character Behavior",
     "TypeMissionary"                    : "Missionary",
     "TypeTrader"                        : "Trader",
@@ -299,10 +299,7 @@
     
 	"MovePlayerStartCoordText"		    : "You are adding a start feature. Do you want to update the player's starting coordinates to this tile as well?",
 	"MovePlayerStartCoordTitle"		    : "Move Player Coordinates?",
-    
-	"SaveChangesBeforeActionText"	    : "You have unsaved changes to the current world. Do you want to save them?",
-	"SaveChangesBeforeActionTitle"	    : "Unsaved Changes?",
-    
+      
 	"FileSaveSuccessfullyText"		    : "%s was saved successfully.",
 	"FileSaveSuccessfullyTitle"		    : "Save Successful",
     
