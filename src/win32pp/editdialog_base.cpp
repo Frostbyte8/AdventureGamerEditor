@@ -151,7 +151,7 @@ void EditDialogBase::dialogButtonPressed(const int& which) {
 
         #ifdef _DEBUG
         default:
-            MessageBox(L"Warning: Invalid dialog button value was supplied.", L"Invalid Button", MB_OK | MB_ICONWARNING);
+            MessageBox(_T("Warning: Invalid dialog button value was supplied. This is a bug and you should report it."), _T("Invalid Button"), MB_OK | MB_ICONWARNING);
             break;
         #endif // _DEBUG
 
@@ -224,7 +224,7 @@ void EditDialogBase::notifyChangesSaved() {
 void EditDialogBase::madeChange() {
     if(dialogReady && !changeMade) {
         changeMade = true;
-        SetWindowText(originalWindowTitle + L"*");
+        SetWindowText(originalWindowTitle + _T("*"));
         notifyChangeMade();
     }
 }
