@@ -1802,6 +1802,8 @@ bool GameWorldController::tryFinishLoad(const std::string& newPath, const std::s
     LanguageMapper& langMap = LanguageMapper::getInstance();
     std::string fileNameTemp = newPath + newFileName;
     std::ifstream ifs;
+
+// TODO: 98 Compat testing
     
 #ifdef _WIN32
     std::wstring wFullPathName = AtoW(fileNameTemp.c_str(), CP_UTF8);
@@ -1809,8 +1811,7 @@ bool GameWorldController::tryFinishLoad(const std::string& newPath, const std::s
 #else 
     ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
 #endif
-
-    
+   
 
     if(!ifs) {
         mainWindow->displayErrorMessage(langMap.get("ErrLoadingWorldText"),

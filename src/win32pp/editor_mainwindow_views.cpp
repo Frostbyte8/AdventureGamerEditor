@@ -384,10 +384,12 @@ int EntitiesHerePanel::OnCreate(CREATESTRUCT& cs) {
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
     objectsHereGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
-    objectsHereGroup.SetWindowText(_T("Objects Here"));
+    std::string groupCatpion = langMap.get("ObjectsHereGroup");
+    objectsHereGroup.SetWindowText(AtoT(groupCatpion.c_str(), CP_UTF8));
 
     charactersHereGroup.Create(*this, 0, WS_CLIPSIBLINGS | BS_GROUPBOX);
-    charactersHereGroup.SetWindowText(_T("Chars here"));
+    groupCatpion = langMap.get("CharactersHereGroup");
+    charactersHereGroup.SetWindowText(AtoT(groupCatpion.c_str(), CP_UTF8));
 
     objectsHereListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
     charactersHereListBox.Create(*this, 0, WS_CLIPSIBLINGS | WS_VSCROLL | WS_BORDER | LBS_NOINTEGRALHEIGHT);
