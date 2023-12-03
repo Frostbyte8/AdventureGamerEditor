@@ -3,7 +3,7 @@
 	// Menus
 	// File Menu
 
-    "FileMenu"                          : "&File",
+    "FileMenu"                          : "(&F) こんにちは",
     "NewMenuItem"                       : "&New...",
     "OpenMenuItem"                      : "&Open...",
     "SaveMenuItem"                      : "&Save",
@@ -12,7 +12,7 @@
         
 	// Tile Menu + Submenus     
         
-	"TileMenu"					        : "&Tile",
+	"TileMenu"					        : "&Cześć",
 	"AddFeatureMenuItem"		        : "&Add Feature",
 	"TileDescriptionMenuItem"           : "Edit Name and &Description...",
             
@@ -49,18 +49,18 @@
         
 	// World Menu       
         
-    "WorldMenu"					        : "&World",
+    "WorldMenu"					        : "&Adiós",
     "SummaryMenuItem"                   : "&Summary and Story...",
     "WorldPropertiesMenuItem"           : "&World Properties...",
 	"ResizeWorldMenuItem"		        : "&Resize World...",
     
     // Langauge Menu
     
-    "LanguageMenu"                      : "&Language",
+    "LanguageMenu"                      : "&Frío",
         
 	// Zoom Menu        
             
-	"ZoomMenu"					        : "&Zoom",
+	"ZoomMenu"					        : "&être",
 	"1xMenuItem"				        : "1x",
 	"2xMenuItem"				        : "2x",
 	"3xMenuItem"				        : "3x",
@@ -68,8 +68,8 @@
         
 	// Help Menu        
         
-	"HelpMenu"					        : "&Help",
-	"HelpMenuItem"				        : "&Help",
+	"HelpMenu"					        : "&heiß",
+	"HelpMenuItem"				        : "&cliché",
 	"AboutMenuItem"				        : "About Adventure Gamer Editor++...",
         
 	// Main Window Controls     
@@ -81,8 +81,8 @@
         
     "ObjectsGroup"                      : "Objects",
     "CharactersGroup"                   : "Characters",
-    "ObjectsHereGroup"					: "Objects Here",
-    "CharactersHereGroup"				: "Characters Here",
+    "ObjectsHereGroup"					: "klyscha på klyscha",
+    "CharactersHereGroup"				: "klisjé paå klisjé",
         
     // Window Titles        
         
@@ -262,8 +262,8 @@
 
     // Program Messages
 
-    "UnsavedChangesText"			    : "You have unsaved changes. Do you want to save them now?",
-    "UnsavedChangesTitle"			    : "Save Changes?",
+    "UnsavedChangesText"			    : "clichê após clichê? klisje paa klisje is a song.",
+    "UnsavedChangesTitle"			    : "It's 10 minutes long!",
     
 	"ReliantObjectsTextStart"		    : "Deleting this object will affect the following objects:",
 	"ReliantObjectsTextEnd"			    : "Do you still want to delete this object?",
@@ -299,7 +299,10 @@
     
 	"MovePlayerStartCoordText"		    : "You are adding a start feature. Do you want to update the player's starting coordinates to this tile as well?",
 	"MovePlayerStartCoordTitle"		    : "Move Player Coordinates?",
-       
+    
+	"SaveChangesBeforeActionText"	    : "You have unsaved changes to the current world. Do you want to save them?",
+	"SaveChangesBeforeActionTitle"	    : "Unsaved Changes?",
+    
 	"FileSaveSuccessfullyText"		    : "%s was saved successfully.",
 	"FileSaveSuccessfullyTitle"		    : "Save Successful",
     

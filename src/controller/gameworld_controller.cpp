@@ -1950,8 +1950,8 @@ bool GameWorldController::checkAndAskToSaveUnsavedChanges() {
 
         LanguageMapper& langMap = LanguageMapper::getInstance();
 
-        const int response = mainWindow->askYesNoQuestion(langMap.get("SaveChangesBeforeActionText"),
-                                                          langMap.get("SaveChangesBeforeActionTitle"),
+        const int response = mainWindow->askYesNoQuestion(langMap.get("UnsavedChangesText"),
+                                                          langMap.get("UnsavedChangesTitle"),
                                                           true);
 
         // On yes, we'll try and save the changes, and proceed only if they happen.
