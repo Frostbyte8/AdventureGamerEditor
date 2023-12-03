@@ -14,6 +14,7 @@
 #endif // _MSC_VER
 
 #include "win32pp/advedit_app.h"
+#include "thirdparty/simpleson/json.h"
 
 #ifdef _DEBUG
 	int DebugRun() {
@@ -24,7 +25,7 @@
 	int APIENTRY WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		
         try {
-            LanguageMapper::getInstance().tryLoadLangauge("", "");
+            LanguageMapper::getInstance().tryLoadDefaultLanguage();
         }
         catch(json::parsing_error) {
             MessageBox(NULL, _T("Could not parse lang_en.json."), _T("Parsing error"), MB_ICONERROR);
@@ -50,7 +51,7 @@
 	int APIENTRY WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         try {
-            LanguageMapper::getInstance().tryLoadLangauge("", "");
+            LanguageMapper::getInstance().tryLoadDefaultLanguage();
         }
         catch(json::parsing_error) {
             MessageBox(NULL, _T("Could not parse lang_en.json."), _T("Parsing error"), MB_ICONERROR);
