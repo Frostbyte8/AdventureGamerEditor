@@ -212,9 +212,8 @@ void MainWindowFrame::CreateMenuBar() {
 
     worldMenu.CreatePopupMenu();
     zoomMenu.CreatePopupMenu();
+    languageMenu.CreatePopupMenu();
     helpMenu.CreatePopupMenu();
-
-    LanguageMapper& langMap = LanguageMapper::getInstance();
 
     // File Menu
     
@@ -288,6 +287,33 @@ void MainWindowFrame::CreateMenuBar() {
         zoomMenu.EnableMenuItem(j, MF_ENABLED);
     }
 
+    // Language Menu (Though at some point this might be merged into a settings dialog
+
+    languageMenu.AppendMenu(MF_STRING, 0);
+    languageMenu.EnableMenuItem(0, MF_ENABLED);
+    
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+
+    const std::vector<LanguagePack>& langPacks = langMap.getLanguagePacks();
+
+    const size_t numLangs = langPacks.size() > 20 ? 20 : langPacks.size();
+
+    if(numLangs != (size_t)-1) {
+        languageMenu.AppendMenu(MF_SEPARATOR, 1);
+
+        for(size_t p = 0; p < numLangs; ++p) {
+            languageMenu.AppendMenu(MF_STRING, p + 2);
+            languageMenu.EnableMenuItem(p + 2, MF_ENABLED);
+
+            languageMenu.ModifyMenu(p + 2, MF_ENABLED, p + 2, AtoT(langPacks[p].displayName.c_str(), CP_UTF8));
+
+        }
+    }
+
+
+    
+
+    
     // Help Menu
 
     for(int l = MenuIDs::HelpMenuItem; l <= MenuIDs::AboutMenuItem; ++l) {
@@ -308,6 +334,7 @@ void MainWindowFrame::CreateMenuBar() {
     appendPopupMenuWithID(mainMenu, tileMenu, MenuIDs::TilePopupMenu, false);
     appendPopupMenuWithID(mainMenu, worldMenu, MenuIDs::WorldPopupMenu, false);
     appendPopupMenuWithID(mainMenu, zoomMenu, MenuIDs::ZoomMenu, true);
+    appendPopupMenuWithID(mainMenu, languageMenu, MenuIDs::LanguageMenu, true);
     appendPopupMenuWithID(mainMenu, helpMenu, MenuIDs::HelpMenu, true);
 
     SetMenu(mainMenu);
@@ -333,6 +360,7 @@ void MainWindowFrame::updateControlCaptions() {
     CHANGE_MENU_STRING(mainMenu, MenuIDs::FilePopupMenu, "FileMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::TilePopupMenu, "TileMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::WorldPopupMenu, "WorldMenu");
+    CHANGE_MENU_STRING(mainMenu, MenuIDs::LanguageMenu, "LanguageMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::ZoomMenu, "ZoomMenu");
     CHANGE_MENU_STRING(mainMenu, MenuIDs::HelpMenu, "HelpMenu");
 
@@ -396,6 +424,11 @@ void MainWindowFrame::updateControlCaptions() {
 
     CHANGE_MENU_STRING(crossroadMenu, MenuIDs::AddHazard, "HazardMenuItem");
     CHANGE_MENU_STRING(crossroadMenu, MenuIDs::AddSafeHaven, "SafeHavenMenuItem");
+
+    // Language Menu
+
+    // TODO: Fix this later
+    CHANGE_MENU_STRING(languageMenu, 0, "HazardMenuItem");
 
     // Zoom Menu
 

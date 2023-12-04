@@ -30,6 +30,8 @@ int EditCharacterDialog::OnCreate(CREATESTRUCT& cs) {
 
     EditDialogBase* parentWindow = reinterpret_cast<EditDialogBase*>(this);
 
+    // TODO: LM_toUTF8 like in the object dialog
+
     caption = AtoW(langMap.get("CharDescriptionsTabLabel").c_str(), CP_UTF8);
     descriptionsTab = reinterpret_cast<EditCharacterDescriptionsTab*>(
         tabControl.AddTabPage(new EditCharacterDescriptionsTab(parentWindow), caption));

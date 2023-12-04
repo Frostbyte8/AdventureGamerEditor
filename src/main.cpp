@@ -40,6 +40,10 @@
                 return 0;
             }
         }
+
+        std::vector<LanguagePack> packs;
+        findLanguagePacks(packs);
+        LanguageMapper::getInstance().updatePackList(packs);
         
         int debugRetVal = DebugRun();
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -66,6 +70,10 @@
                 return 0;
             }
         }
+
+        std::vector<LanguagePack> packs;
+        findLanguagePacks(packs);
+        LanguageMapper::getInstance().updatePackList(packs);
 
 		AdvEditApp advEditApp;
         return advEditApp.Run();

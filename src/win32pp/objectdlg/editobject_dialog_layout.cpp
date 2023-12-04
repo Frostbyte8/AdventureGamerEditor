@@ -155,6 +155,7 @@ void EditObjectDialog::moveControls() {
 
     SetWindowPos(0, 0, 0, rc.right + abs(rc.left), rc.bottom + abs(rc.top),
                  SWP_NOACTIVATE | SWP_NOREDRAW | SWP_NOMOVE | SWP_NOZORDER | SWP_NOREPOSITION);
+    
 }
 
 ///----------------------------------------------------------------------------
@@ -661,7 +662,8 @@ int EditObjectEffectsTab::OnCreate(CREATESTRUCT& cs) {
 
     for (int m = 0; m < 2; ++m) {
         lblSenses[m].Create(*this, 0, SS_SIMPLE);
-        cbxSenses[m].Create(*this, 0, CBS_DROPDOWNLIST | WS_TABSTOP);
+        cbxSenses[m].Create(*this, 0, CBS_DROPDOWNLIST | CBS_DISABLENOSCROLL |
+                    WS_VSCROLL | WS_TABSTOP);
         cbxSenses[m].SetDlgCtrlID(EffectsTab::ControlIDs::MakesSight + m);
     }
 

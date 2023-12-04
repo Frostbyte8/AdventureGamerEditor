@@ -114,6 +114,12 @@ namespace MenuIDs {
     const WORD HelpMenuDiv1             = 302;
     const WORD AboutMenuItem            = 303;
 
+    // Language Menu
+
+    const WORD LanguageMenu             = 1000;
+    const WORD EnglishItem              = 1001;
+    const WORD LanguageDiv1             = 1002;
+
 }
 
 
@@ -251,6 +257,7 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         
         CMenu worldMenu;
         CMenu zoomMenu;
+        CMenu languageMenu;
         CMenu helpMenu;
 
         HACCEL accelHandle;

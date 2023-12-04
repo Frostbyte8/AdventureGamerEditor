@@ -1,11 +1,12 @@
 #include <fstream>
 #include "languagemapper.h"
+#include "../util/frost.h"
 #include "../compat/stdint_compat.h"
 #include "../compat/std_extras_compat.h"
 #include "../thirdparty/simpleson/json.h"
 #include "../default_language.h"
 
-LanguageMapper::LanguageMapper() : mapperLoaded(false) {
+LanguageMapper::LanguageMapper() : mapperLoaded(false), loadedPackID(LanguagePackConstants::UseDefaultLanguage) {
 }
 
 std::string LanguageMapper::get(const std::string& key) const {
@@ -20,7 +21,7 @@ std::string LanguageMapper::get(const std::string& key) const {
     else {
         outString = "Error: String not found.";
     }
-
+    
 	return outString;
 }
 	
@@ -48,6 +49,7 @@ bool LanguageMapper::tryLoadDefaultLanguage() {
     
     delete data;
     data = NULL;
+
     mapperLoaded = true;
     return true;
 }
@@ -105,3 +107,76 @@ bool LanguageMapper::LoadLanguageFile(const std::string& data) {
 
 }
 
+void LanguageMapper::updatePackList(const std::vector<LanguagePack>& packs) {
+
+    languagePacks.clear();
+
+    const size_t numPacks = packs.size();
+
+    for (size_t i = 0; i < numPacks; ++i) {
+        languagePacks.push_back(packs[i]);
+    }
+
+}
+
+#ifdef _WIN32
+
+#include <wxx_filefind.h>
+
+void findLanguagePacks(std::vector<LanguagePack>& outPacks) {
+
+    const DWORD bufferLength = GetCurrentDirectory(0, NULL);
+
+#ifdef __WIN9X_COMPAT__
+    char* filePath = new char[bufferLength+2];
+#else 
+    wchar_t* filePath = new wchar_t[bufferLength+2];
+#endif 
+
+    const DWORD retVal = GetCurrentDirectory(bufferLength, &filePath[0]);
+    LanguageMapper& langMap = LanguageMapper::getInstance();
+    CString newPath;
+
+    if(!retVal) {
+        delete[] filePath;
+        filePath = NULL;
+        return;
+    }
+    else {
+        newPath = CString(filePath);
+        delete[] filePath;
+        filePath = NULL;
+    }
+    
+    // We have to do all this because \\?\ disables the use of "." and "..".
+    // But of course MSDN doesn't directly tell you this. While it does say it
+    // on the page they link to, it's not under the heading they tell you to
+    // read.
+
+    newPath = "\\\\?\\" + newPath + "\\lang_*.json";
+
+    CFileFind fileList;
+
+    if (fileList.FindFirstFile(newPath)) {
+
+        do {
+            const CString& fileName = fileList.GetFileName();
+            const int firstChar = fileName.Find(_T("_"));
+            const int lastChar = fileName.Find(_T(".json"));
+
+            if(firstChar != 0 && lastChar != 0) {
+                std::string name = TtoA(fileName.Mid(firstChar + 1, (lastChar - (firstChar + 1))), CP_UTF8);
+
+                LanguagePack lp;
+                lp.displayName = name;
+                lp.fileName = TtoA(fileName, CP_UTF8);
+                outPacks.push_back(lp);
+
+            }
+        } while (fileList.FindNextFile());
+        
+    }
+
+}
+
+#endif

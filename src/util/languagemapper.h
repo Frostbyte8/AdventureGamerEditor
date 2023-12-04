@@ -2,12 +2,22 @@
 #define __LANGUAGEMAPPER_H__
 
 #include <map>
+#include <vector>
 #include <string>
 #include "../compat/stdint_compat.h"
 
 ///----------------------------------------------------------------------------
 /// LanguageMapper 
 ///----------------------------------------------------------------------------
+
+struct LanguagePack {
+    std::string fileName;
+    std::string displayName;
+};
+
+namespace LanguagePackConstants {
+    const int UseDefaultLanguage = -1;
+}
 
 class LanguageMapper {
 
@@ -19,12 +29,16 @@ class LanguageMapper {
         }
 
         std::string get(const std::string& key) const;
+
+        const std::vector<LanguagePack>& getLanguagePacks() const { return languagePacks; }
 		
 		bool tryLoadDefaultLanguage();
 
         bool tryLoadLangauge(const std::string& filePath, const std::string& fileName);
 
         const bool isLoaded() const;
+
+        void updatePackList(const std::vector<LanguagePack>& packs);
 
 	private:
 
@@ -65,7 +79,12 @@ class LanguageMapper {
         void operator=(const LanguageMapper&) {};
         
 		std::map<uint32_t, std::string> languageMap;
+        std::vector<LanguagePack> languagePacks;
         bool mapperLoaded;
+        int defaultLangNumStrings;
+        int loadedPackID;
 };
+
+void findLanguagePacks(std::vector<LanguagePack>& outPacks);
 
 #endif // __LANGUAGEMAPPER_H__

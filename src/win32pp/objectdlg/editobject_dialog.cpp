@@ -172,9 +172,9 @@ LRESULT EditObjectDialog::onSize(WPARAM& wParam, LPARAM& lParam) {
 
 LRESULT EditObjectDialog::WndProc(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    if(msg == WM_SIZE) {
+    //if(msg == WM_SIZE) {
         //return OnSize(wParam, lParam);
-    }
+    //}
 
     return WndProcDefault(msg, wParam, lParam);
 }
