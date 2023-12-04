@@ -56,9 +56,8 @@ bool LanguageMapper::tryLoadDefaultLanguage() {
 
 bool LanguageMapper::tryLoadLangauge(const std::string& filePath, const std::string& fileName) {
     
-    std::string fileNameTemp = "lang_en.json";
     std::ifstream ifs;
-    ifs.open(fileNameTemp.c_str(), std::ifstream::in | std::ios::binary);
+    ifs.open(fileName.c_str(), std::ifstream::in | std::ios::binary);
     	        
     if(!ifs) {
         return false;

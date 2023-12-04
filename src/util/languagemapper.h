@@ -31,6 +31,8 @@ class LanguageMapper {
         std::string get(const std::string& key) const;
 
         const std::vector<LanguagePack>& getLanguagePacks() const { return languagePacks; }
+
+        const std::string& getPackName(const size_t ID) const {return languagePacks[ID].fileName; }
 		
 		bool tryLoadDefaultLanguage();
 

@@ -117,7 +117,7 @@ namespace MenuIDs {
     // Language Menu
 
     const WORD LanguageMenu             = 1000;
-    const WORD EnglishItem              = 1001;
+    const WORD DefaultLangMenuItem      = 1001;
     const WORD LanguageDiv1             = 1002;
 
 }
@@ -222,6 +222,8 @@ class MainWindowFrame : public CDockFrame, public MainWindowInterface, public Wi
         inline void appendPopupMenuWithID(CMenu& targetMenu, CMenu& popupMenu, const UINT& id, const bool& enabled);      
 
         void addKeyboardAccelerators();
+
+        void updateProgramLanguage(const int& langID);
 
         void updateStatusbar(const int& index);
         void updateFeatureMenu(const int& index);

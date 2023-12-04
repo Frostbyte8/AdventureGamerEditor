@@ -289,8 +289,8 @@ void MainWindowFrame::CreateMenuBar() {
 
     // Language Menu (Though at some point this might be merged into a settings dialog
 
-    languageMenu.AppendMenu(MF_STRING, 0);
-    languageMenu.EnableMenuItem(0, MF_ENABLED);
+    languageMenu.AppendMenu(MF_STRING, MenuIDs::DefaultLangMenuItem);
+    languageMenu.EnableMenuItem(MenuIDs::DefaultLangMenuItem, MF_ENABLED);
     
     LanguageMapper& langMap = LanguageMapper::getInstance();
 
@@ -302,17 +302,13 @@ void MainWindowFrame::CreateMenuBar() {
         languageMenu.AppendMenu(MF_SEPARATOR, 1);
 
         for(size_t p = 0; p < numLangs; ++p) {
-            languageMenu.AppendMenu(MF_STRING, p + 2);
-            languageMenu.EnableMenuItem(p + 2, MF_ENABLED);
+            languageMenu.AppendMenu(MF_STRING, MenuIDs::LanguageDiv1 + p + 1);
+            languageMenu.EnableMenuItem(MenuIDs::LanguageDiv1 + p + 1, MF_ENABLED);
 
-            languageMenu.ModifyMenu(p + 2, MF_ENABLED, p + 2, AtoT(langPacks[p].displayName.c_str(), CP_UTF8));
+            languageMenu.ModifyMenu(MenuIDs::LanguageDiv1 + p + 1, MF_ENABLED, MenuIDs::LanguageDiv1 + p + 1, AtoT(langPacks[p].displayName.c_str(), CP_UTF8));
 
         }
     }
-
-
-    
-
     
     // Help Menu
 
@@ -428,7 +424,7 @@ void MainWindowFrame::updateControlCaptions() {
     // Language Menu
 
     // TODO: Fix this later
-    CHANGE_MENU_STRING(languageMenu, 0, "HazardMenuItem");
+    CHANGE_MENU_STRING(languageMenu, MenuIDs::DefaultLangMenuItem, "HazardMenuItem");
 
     // Zoom Menu
 

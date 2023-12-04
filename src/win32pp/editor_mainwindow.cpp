@@ -106,6 +106,23 @@ BOOL MainWindowFrame::OnCommand(WPARAM wParam, LPARAM) {
 
     }
 
+    // For the Language Menu, we'll handle it here.
+    // In a future version, this may just be moved to a more general settings dialog.
+    if(ID > MenuIDs::LanguageDiv1 && ID <= MenuIDs::LanguageDiv1 + 20) {
+        const std::vector<LanguagePack>& langPacks = LanguageMapper::getInstance().getLanguagePacks();
+
+        if(!langPacks.empty()) {
+            const size_t langID = ID - (MenuIDs::LanguageDiv1 + 1);
+            if(langID <= langPacks.size()) {
+                updateProgramLanguage(langID);
+            }
+        }
+
+    }
+    else if (ID == MenuIDs::DefaultLangMenuItem) {
+        updateProgramLanguage(-1);
+    }
+
     switch(ID) {
 
         // File Menu
@@ -520,6 +537,41 @@ void MainWindowFrame::adjustRoadPaletteDimensions() {
     roadSelectorDocker->SetDockSize(abs(rc.right - rc.left));
 
 }
+
+///----------------------------------------------------------------------------
+/// updateProgramLanguage - Change the Language the program is in
+/// @param the ID of the pack to load.
+///----------------------------------------------------------------------------
+
+void MainWindowFrame::updateProgramLanguage(const int& langID) {
+
+    // The problem with using a langID is that if the user adds more packs,
+    // it won't be the same. So TODO: Use the language IDs (en, fr, it, etc)
+    // in a future version. For now, we'll just assume they'll won't change it
+    // once they're already using it. (Which is probably 99% of people anyways)
+
+    if(langID == -1) {
+        LanguageMapper::getInstance().tryLoadDefaultLanguage();
+    }
+    else {
+
+        LanguageMapper& langMap = LanguageMapper::getInstance();
+
+        std::string fileName = langMap.getPackName(langID);
+
+        // TODO: The language should only change if successful, but the functions
+        // need to be cleaned up first.
+
+        if(!langMap.tryLoadLangauge("", fileName)) {
+            LanguageMapper::getInstance().tryLoadDefaultLanguage();
+        }
+
+    }
+
+    updateControlCaptions();
+    DrawMenuBar();
+}
+
 
 ///----------------------------------------------------------------------------
 /// onHelpRequested - Open the Help page
