@@ -388,8 +388,8 @@ void GameMapPanel::updateBackBuffer() {
                 const GameTile::DrawInfo drawInfo = drawDataVec[(k * mapCols) + i];
 
                 const int srcX = drawInfo.spriteIndex * tileWidth;
-                const int srcY = (drawInfo.hasGate && gameMap->isConnectedToOnSwitch(k, i)) 
-                                 ? TileModifiers::GateOpen * tileHeight 
+                const int srcY = (drawInfo.hasGate && gameMap->isConnectedToOnSwitch(k, i))
+                                 ? (TileModifiers::GateOpen + (drawInfo.spriteModifier & TileModifiers::DirtRoad)) * tileHeight
                                  : drawInfo.spriteModifier * tileHeight;
 
 
