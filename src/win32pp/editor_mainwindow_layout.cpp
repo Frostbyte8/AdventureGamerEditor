@@ -422,9 +422,10 @@ void MainWindowFrame::updateControlCaptions() {
     CHANGE_MENU_STRING(crossroadMenu, MenuIDs::AddSafeHaven, "SafeHavenMenuItem");
 
     // Language Menu
-
-    // TODO: Fix this later
-    CHANGE_MENU_STRING(languageMenu, MenuIDs::DefaultLangMenuItem, "HazardMenuItem");
+    languageMenu.ModifyMenu(MenuIDs::DefaultLangMenuItem,
+                            languageMenu.GetMenuState(MenuIDs::DefaultLangMenuItem, 0) & (MF_GRAYED | MF_DISABLED), 
+                            MenuIDs::DefaultLangMenuItem,
+                            _T("English"));
 
     // Zoom Menu
 
