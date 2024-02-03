@@ -24,7 +24,9 @@ class CAnsiEdit : public CEdit {
     private:
 
         bool OnChar(const wchar_t& ch, const LONG& keyData);
+#ifndef __WIN9X_COMPAT__
         void OnPaste();
+#endif
 
         bool forceTabbing;
         std::string disallowedChars;
