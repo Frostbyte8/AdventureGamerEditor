@@ -10,12 +10,8 @@ This editor is a work in progress, so it may crash and be a bit rough in places.
 
 If you want to play your worlds, you will need a copy of Adventure Gamer For Windows. You can run the game in a Virtual Machine or using OTVDM.
 
-The editor works on all versions of Windows from 98SE[^1] to 11.
+The editor works on all versions of Windows from 98SE to 11.
 
 # License
 
 Adventure Gamer Editor++ is licensed under a mixture of the Sleepycat License, with the addition of the "No Endorsement" clause from the 3-clause New BSD License.
-
-# Notes
-
-[^1] Windows 98 requires that you compile it yourself in Visual Studio 2005 with the __WIN9X_COMAPT__ option selected in CMake.

@@ -1,8 +1,8 @@
 #include "resource.h"
 
 1 VERSIONINFO
-FILEVERSION     1, 0, 0, 0
-PRODUCTVERSION  1, 0, 0, 0
+FILEVERSION     1, 0, 1, 0
+PRODUCTVERSION  1, 0, 1, 0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -15,7 +15,7 @@ BEGIN
        VALUE "LegalCopyright", L"Copyright \x00A9 2023 Frostbyte"
        VALUE "OriginalFilename", "AdvEdit.exe"
        VALUE "ProductName", "Adventure Gamer Editor"
-       VALUE "ProductVersion", "0.1"
+       VALUE "ProductVersion", "0.2"
     END
   END
   BLOCK "VarFileInfo"
